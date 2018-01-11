@@ -18,14 +18,20 @@
             android:name="io.fabric.ApiKey"
             android:value="044b7dfc84eb1a148f1ae6b840e3911a8ee29379" />
 
-        <activity android:name=".MainActivity">
+        <!-- Activities -->
+        <activity android:name=".view.activity.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ThemeMain"/>
+        <activity android:name=".view.activity.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.StartActivity"></activity>
-    </application>
 
+        <!-- Service -->
+        <!-- Receivers -->
+        <!-- Providers -->
+    </application>
 </manifest>

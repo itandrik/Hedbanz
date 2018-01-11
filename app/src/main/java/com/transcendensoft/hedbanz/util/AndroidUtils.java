@@ -1,4 +1,4 @@
-package com.brainus.hedbanz.util;
+package com.transcendensoft.hedbanz.util;
 
 import android.content.Context;
 import android.content.res.Resources;

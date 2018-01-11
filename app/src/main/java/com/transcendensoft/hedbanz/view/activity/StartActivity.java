@@ -1,16 +1,22 @@
 package com.transcendensoft.hedbanz.view.activity;
 
+import android.animation.Animator;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ViewTreeObserver;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.model.data.PreferenceManager;
+import com.transcendensoft.hedbanz.util.AndroidUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,14 +31,29 @@ public class StartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start);
         ButterKnife.bind(this, this);
 
-        if(new PreferenceManager(this).isAuthorised()){
+        if (new PreferenceManager(this).isAuthorised()) {
             //TODO go to main activity
         } else {
+            initHatAnimation();
             initSmileAnimation();
         }
     }
 
-    private void initSmileAnimation(){
+    private void initHatAnimation() {
+        Drawable drawable = VectorDrawableCompat.create(getResources(), R.drawable.hat, null);
+        mIvHat.setImageDrawable(drawable);
+
+        ViewTreeObserver vto = mIvHat.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mIvHat.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                mIvHat.setTranslationY(-mIvHat.getHeight());
+            }
+        });
+    }
+
+    private void initSmileAnimation() {
         ViewTreeObserver vto = mIvSmile.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -41,6 +62,7 @@ public class StartActivity extends AppCompatActivity {
 
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                         mIvSmile.getWidth(), mIvSmile.getWidth());
+                params.addRule(RelativeLayout.CENTER_IN_PARENT);
                 mIvSmile.setLayoutParams(params);
 
                 Drawable drawable = AnimatedVectorDrawableCompat.create(
@@ -48,15 +70,115 @@ public class StartActivity extends AppCompatActivity {
                 mIvSmile.setImageDrawable(drawable);
                 ((AnimatedVectorDrawableCompat) drawable).start();
 
-                initHatAnimation();
+                animateHat(mIvSmile.getWidth());
             }
         });
     }
 
-    private void initHatAnimation(){
-        Drawable drawable = VectorDrawableCompat.create(getResources(),R.drawable.hat, null);
-        mIvHat.setImageDrawable(drawable);
+    private void animateHat(int smileHeight) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-       // mIvHat.setTranslationY();
+        int screenHeight = metrics.heightPixels;
+        Log.d("TAG", "Height : " + smileHeight);
+        int yToGo = screenHeight / 2 - smileHeight / 2 - mIvHat.getHeight() / 2 -
+                (int) AndroidUtils.convertDpToPixel(8, this);
+
+        mIvHat.animate()
+                .setDuration(700)
+                .setStartDelay(2300)
+                .translationY(yToGo)
+                .setInterpolator(new BounceInterpolator())
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+                        // Do not need to implement
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        showLoginFragment();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+                        // Do not need to implement
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+                        // Do not need to implement
+                    }
+                }).start();
+    }
+
+    private void showLoginFragment() {
+        int hatSize = mIvHat.getWidth();
+        int smileSize = mIvSmile.getWidth();
+        int topCoordsHatX = (int) AndroidUtils.convertDpToPixel(36, this);
+        int topCoordsHatY = (int) AndroidUtils.convertDpToPixel(24, this);
+        int topCoordSmileX = (int) AndroidUtils.convertDpToPixel(36, this);
+        int topCoordSmileY = (int) (hatSize * 0.15 + topCoordsHatY);
+
+        mIvHat.animate()
+                .setDuration(1000)
+                .setStartDelay(0)
+                .scaleX(0.15f)
+                .scaleY(0.15f)
+                .setInterpolator(new DecelerateInterpolator())
+                .x(topCoordsHatX - hatSize / 2)
+                .y(topCoordsHatY - hatSize / 2)
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+
+                    }
+                })
+                .start();
+        mIvSmile.animate()
+                .setDuration(1000)
+                .setStartDelay(0)
+                .scaleX(0.2f)
+                .scaleY(0.2f)
+                .setInterpolator(new DecelerateInterpolator())
+                .x(topCoordSmileX - smileSize / 2)
+                .y(topCoordSmileY - smileSize / 2)
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+
+                    }
+                })
+                .start();
     }
 }
