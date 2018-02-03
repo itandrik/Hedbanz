@@ -5,11 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.transcendensoft.hedbanz.R;
 
-/**
- * @author
- */
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

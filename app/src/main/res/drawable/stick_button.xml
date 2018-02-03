@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <rotate android:fromDegrees="-1">
+            <layer-list>
+                <item
+                    android:right="4dp">
+                    <rotate android:fromDegrees="5">
+                        <shape
+                            android:dither="true"
+                            android:shape="rectangle">
+                            <gradient
+                                android:angle="180"
+                                android:endColor="#00000000"
+                                android:startColor="#0B000000" />
+                            <corners
+                                android:bottomLeftRadius="100dp"
+                                android:bottomRightRadius="8dp" />
+                        </shape>
+                    </rotate>
+                </item>
+                <item>
+                    <shape android:shape="rectangle">
+                        <gradient
+                            android:endColor="@color/colorPrimaryDark"
+                            android:gradientRadius="180"
+                            android:startColor="@color/colorPrimary" />
+                        <corners android:radius="4dp" />
+                    </shape>
+                </item>
+                <item
+                    android:bottom="32dp"
+                    android:drawable="@drawable/ic_push_pin"
+                    android:left="120dp"
+                    android:right="120dp"
+                    android:top="-16dp" />
+            </layer-list>
+        </rotate>
+    </item>
+</layer-list>

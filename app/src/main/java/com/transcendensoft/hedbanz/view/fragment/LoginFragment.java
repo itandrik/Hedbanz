@@ -1,4 +1,5 @@
 package com.transcendensoft.hedbanz.view.fragment;
+
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -22,6 +23,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.transcendensoft.hedbanz.R;
+
+import butterknife.ButterKnife;
+
 /**
  * Fragment that show standard form for login and
  * buttons for register and password recovery.
@@ -34,6 +39,10 @@ public class LoginFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
+
+        ButterKnife.bind(this, view);
+
+        return view;
     }
 }

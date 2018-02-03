@@ -17,12 +17,18 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="044b7dfc84eb1a148f1ae6b840e3911a8ee29379" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <!-- Activities -->
-        <activity android:name=".view.activity.MainActivity"
+        <activity
+            android:name=".view.activity.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/ThemeMain"/>
-        <activity android:name=".view.activity.StartActivity">
+            android:theme="@style/ThemeMain" />
+        <activity
+            android:name=".view.activity.StartActivity"
+            android:theme="@style/ThemeMain">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

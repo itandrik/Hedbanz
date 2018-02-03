@@ -1,3 +1,29 @@
 <resources>
+    <!-- Base -->
     <string name="app_name">Hedbanz</string>
+
+    <!-- API keys -->
+    <!-- Actions -->
+    <string name="action_enter">Войти</string>
+    <string name="action_ok">Ок</string>
+    <string name="action_yes">Да</string>
+    <string name="action_no">Нет</string>
+    <string name="action_cancel">Отмена</string>
+
+    <!-- Login fragment -->
+    <string name="login_intro">Поспешите, ваши друзья вас ждут!</string>
+    <string name="login_hint">e.g. hedbanz@example.com</string>
+    <string name="login_password_hint">*********</string>
+    <string name="login_title">Логин</string>
+    <string name="login_password_title">Пароль</string>
+    <string name="login_password_recovery">Забыли пароль?</string>
+    <string name="login_register_intro">Впервые у нас? Вам прийдется пройти этап регистрации. Не волнуйтесь, Это очень быстрая процедура.</string>
+    <string name="login_register_button">Зарегистрироваться</string>
+
+    <string name="login_error_empty_field">Упс! Вы пропустили это поле :(</string>
+    <string name="login_error_no_such_login">Пользователя с таким логином не существует!</string>
+    <string name="login_error_incorrect_password">Неправильно введен пароль. В случае амнезии воспользуйтесь функцией восстановления пароля ниже!</string>
+
+    <!-- Register activity -->
+    <string name="register_intro">Регистрация</string>
 </resources>

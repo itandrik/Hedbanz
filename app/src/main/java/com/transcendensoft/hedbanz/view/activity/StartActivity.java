@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.model.data.PreferenceManager;
 import com.transcendensoft.hedbanz.util.AndroidUtils;
+import com.transcendensoft.hedbanz.view.fragment.LoginFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -180,5 +181,11 @@ public class StartActivity extends AppCompatActivity {
                     }
                 })
                 .start();
+
+
+        LoginFragment loginFragment = new LoginFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.flLoginFragmentContainer, loginFragment)
+                .commit();
     }
 }
