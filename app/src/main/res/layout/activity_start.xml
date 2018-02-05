@@ -4,7 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@drawable/login_full_background"
     tools:context="com.transcendensoft.hedbanz.view.activity.StartActivity">
+
+    <FrameLayout
+        android:id="@+id/flLoginFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0">
+
+        <fragment
+            android:id="@+id/loginFragment"
+            android:name="com.transcendensoft.hedbanz.view.fragment.LoginFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
     <ImageView
         android:id="@+id/ivSmileImage"
@@ -15,11 +30,6 @@
     <ImageView
         android:id="@+id/ivHatImage"
         android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content" />
-
-    <FrameLayout
-        android:id="@+id/flLoginFragmentContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

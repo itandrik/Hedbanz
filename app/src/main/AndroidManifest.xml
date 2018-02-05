@@ -23,11 +23,8 @@
 
         <!-- Activities -->
         <activity
-            android:name=".view.activity.MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/ThemeMain" />
-        <activity
             android:name=".view.activity.StartActivity"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/ThemeMain">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,8 +33,19 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".view.activity.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ThemeMain" />
+
+        <activity
+            android:name=".view.activity.RegisterActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ThemeMain" />
+
         <!-- Service -->
         <!-- Receivers -->
         <!-- Providers -->
     </application>
+
 </manifest>

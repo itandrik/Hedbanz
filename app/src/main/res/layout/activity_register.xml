@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_full_background"
+    android:fillViewport="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvRegisterTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/lemon_tuesday_font_family"
+            android:gravity="center"
+            android:text="@string/register_intro"
+            android:textSize="34sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_back" />
+
+        <ImageView
+            android:id="@+id/ivRegisterDivider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="24dp"
+            app:srcCompat="@drawable/register_divider" />
+
+        <ImageView
+            android:id="@+id/ivSmileGif"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@id/ivRegisterDivider"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-48dp"
+            android:paddingBottom="4dp"
+            app:srcCompat="@drawable/logo" />
+
+        <RelativeLayout
+            android:id="@+id/rlLoginFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ivSmileGif"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="8dp"
+            android:foregroundGravity="center"
+            android:gravity="center">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/form_background"
+                android:paddingBottom="8dp"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp">
+
+                <Space
+                    android:id="@+id/topSpace"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp" />
+
+                <TextView
+                    android:id="@+id/tvLoginTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/topSpace"
+                    android:fontFamily="@font/open_sans_light"
+                    android:text="@string/login_title"
+                    android:textColor="@color/loginTextDarkRed" />
+
+                <EditText
+                    android:id="@+id/etLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvLoginTitle"
+                    android:layout_marginTop="4dp"
+                    android:backgroundTint="@color/colorPrimaryDark"
+                    android:drawableLeft="@drawable/ic_login"
+                    android:drawablePadding="8dp"
+                    android:hint="@string/login_hint"
+                    android:inputType="textEmailAddress" />
+
+                <TextView
+                    android:id="@+id/tvErrorLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/etLogin"
+                    android:drawablePadding="8dp"
+                    android:drawableRight="@drawable/ic_error_validation"
+                    android:paddingLeft="16dp"
+                    android:textColor="@color/loginError"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tvEmailTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvErrorLogin"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/open_sans_light"
+                    android:text="@string/register_email_title"
+                    android:textColor="@color/loginTextDarkRed" />
+
+                <EditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvEmailTitle"
+                    android:layout_marginTop="4dp"
+                    android:backgroundTint="@color/colorPrimaryDark"
+                    android:drawableLeft="@drawable/ic_email"
+                    android:drawablePadding="8dp"
+                    android:hint="@string/register_email_hint"
+                    android:inputType="textEmailAddress" />
+
+                <TextView
+                    android:id="@+id/tvErrorEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/etEmail"
+                    android:drawablePadding="8dp"
+                    android:drawableRight="@drawable/ic_error_validation"
+                    android:paddingLeft="16dp"
+                    android:textColor="@color/loginError"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tvPasswordTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvErrorEmail"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/open_sans_light"
+                    android:text="@string/login_password_title"
+                    android:textColor="@color/loginTextDarkRed" />
+
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvPasswordTitle"
+                    android:layout_marginTop="4dp"
+                    android:backgroundTint="@color/colorPrimaryDark"
+                    android:drawableLeft="@drawable/ic_password"
+                    android:drawablePadding="8dp"
+                    android:hint="@string/login_password_hint"
+                    android:inputType="textPassword" />
+
+                <TextView
+                    android:id="@+id/tvErrorPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/etPassword"
+                    android:drawablePadding="8dp"
+                    android:drawableRight="@drawable/ic_error_validation"
+                    android:paddingLeft="16dp"
+                    android:textColor="@color/loginError"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tvConfirmPasswordTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvErrorPassword"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/open_sans_light"
+                    android:text="@string/register_confirm_password"
+                    android:textColor="@color/loginTextDarkRed" />
+
+                <EditText
+                    android:id="@+id/etConfirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvConfirmPasswordTitle"
+                    android:layout_marginTop="4dp"
+                    android:backgroundTint="@color/colorPrimaryDark"
+                    android:drawableLeft="@drawable/ic_confirm_password"
+                    android:drawablePadding="8dp"
+                    android:hint="@string/login_password_hint"
+                    android:inputType="textPassword" />
+
+                <TextView
+                    android:id="@+id/tvErrorConfirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/etConfirmPassword"
+                    android:drawablePadding="8dp"
+                    android:drawableRight="@drawable/ic_error_validation"
+                    android:paddingLeft="16dp"
+                    android:textColor="@color/loginError"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/btnRegisterSubmit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvErrorConfirmPassword"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/button_white_round"
+                    android:elevation="8dp"
+                    android:fontFamily="@font/playfair_display_sc_bold"
+                    android:text="@string/register_action_submit"
+                    android:textColor="@color/textSecondaryDark" />
+
+                <Space
+                    android:id="@+id/bottomSpace"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_below="@id/btnRegisterSubmit" />
+            </RelativeLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

@@ -11,12 +11,16 @@
     <color name="windowBackground">#f5f5f5</color>
 
     <color name="textPrimary">#212121</color>
-    <color name="textSecondary">#757575</color>
-    <color name="textSecondaryDark">#BDBDBD</color>
+    <color name="textSecondary">#BDBDBD</color>
+    <color name="textSecondaryDark">#757575</color>
     <color name="textSecondaryLight">#E0E0E0</color>
     <color name="textWhite">#FFFFFF</color>
     <color name="textRed">#D32F2F</color>
 
     <!-- Login -->
     <color name="loginFrameBackground">#77FFFFFF</color>
+    <color name="loginTextDarkRed">#AD2201</color>
+    <color name="loginError">#ff0033</color>
+    <color name="loginRipple">#E0E0E0</color>
+    <color name="loginButton">#EEFFFFFF</color>
 </resources>

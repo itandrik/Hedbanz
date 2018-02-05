@@ -12,7 +12,7 @@
 
     <!-- Login fragment -->
     <string name="login_intro">Поспешите, ваши друзья вас ждут!</string>
-    <string name="login_hint">e.g. hedbanz@example.com</string>
+    <string name="login_hint">e.g. HedbanzUser2000</string>
     <string name="login_password_hint">*********</string>
     <string name="login_title">Логин</string>
     <string name="login_password_title">Пароль</string>
@@ -26,4 +26,9 @@
 
     <!-- Register activity -->
     <string name="register_intro">Регистрация</string>
+    <string name="register_email_title">Электронная почта</string>
+    <string name="register_email_hint">e.g. hedbanz@example.com</string>
+    <string name="register_confirm_password">Подтверждение пароля</string>
+    <string name="register_action_submit">Подтвердить</string>
+
 </resources>

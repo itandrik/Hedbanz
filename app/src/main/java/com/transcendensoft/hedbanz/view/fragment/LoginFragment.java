@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.view.fragment;
  * limitations under the License.
  */
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,8 +25,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.view.activity.RegisterActivity;
 
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Fragment that show standard form for login and
@@ -34,8 +37,7 @@ import butterknife.ButterKnife;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-
-public class LoginFragment extends Fragment{
+public class LoginFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -44,5 +46,12 @@ public class LoginFragment extends Fragment{
         ButterKnife.bind(this, view);
 
         return view;
+    }
+
+    @OnClick(R.id.btnRegister)
+    protected void onRegisterClicked() {
+        Intent intent = new Intent(getActivity(), RegisterActivity.class);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.login_page_right_in, R.anim.login_page_right_out);
     }
 }
