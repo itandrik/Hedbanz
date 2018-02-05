@@ -1,5 +1,4 @@
-package com.transcendensoft.hedbanz.view;
-
+package com.transcendensoft.hedbanz.presenter;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -17,10 +16,12 @@ package com.transcendensoft.hedbanz.view;
  */
 
 /**
- * View interface for {@link com.transcendensoft.hedbanz.view.activity.MainActivity}
+ * Interface that shows describes methods which is needed
+ * to log in some user.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface MainView {
+public interface LoginPresenter {
+    void login();
 }

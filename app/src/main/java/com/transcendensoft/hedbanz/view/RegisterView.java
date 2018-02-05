@@ -1,5 +1,4 @@
 package com.transcendensoft.hedbanz.view;
-
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -17,10 +16,20 @@ package com.transcendensoft.hedbanz.view;
  */
 
 /**
- * View interface for {@link com.transcendensoft.hedbanz.view.activity.MainActivity}
+ * Interface that describes all needed methods to
+ * show register errors or hints.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface MainView {
+public interface RegisterView {
+    void showIncorrectLogin(String message);
+
+    void showIncorrectEmail(String message);
+
+    void showIncorrectPassword(String message);
+
+    void showIncorrectConfirmPassword(String message);
+
+    void registerSuccess();
 }

@@ -31,4 +31,10 @@
     <string name="register_confirm_password">Подтверждение пароля</string>
     <string name="register_action_submit">Подтвердить</string>
 
+    <string name="register_validate_empty_field">Упс, вы пропустили это поле.</string>
+    <string name="register_validate_email">Это некорректный электронный адрес. Вы где-то ошиблись.</string>
+    <string name="register_validate_password">Это некорректный пароль. Допустимая длина от 6 до 14 символов.</string>
+    <string name="register_validate_confirm_password">Пароль подтвержен неправильно.</string>
+    <string name="register_validate_login">Некорректный логин. Длина 3&#8211;10 символов. Допустимо только буквы, цифры и точка (\".\")</string>
+
 </resources>

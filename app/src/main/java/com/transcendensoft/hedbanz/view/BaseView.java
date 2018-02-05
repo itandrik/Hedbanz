@@ -1,5 +1,4 @@
 package com.transcendensoft.hedbanz.view;
-
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -16,11 +15,23 @@ package com.transcendensoft.hedbanz.view;
  * limitations under the License.
  */
 
+import android.content.Context;
+
 /**
- * View interface for {@link com.transcendensoft.hedbanz.view.activity.MainActivity}
+ * Base view interface, that describes methods
+ * to show errors, empty lists or content.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface MainView {
+public interface BaseView {
+    void showServerError();
+
+    void showNetworkError();
+
+    void showLoading();
+
+    void showContent();
+
+    Context provideContext();
 }

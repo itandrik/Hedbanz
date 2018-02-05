@@ -1,5 +1,4 @@
-package com.transcendensoft.hedbanz.view;
-
+package com.transcendensoft.hedbanz.model.api.service;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -16,11 +15,24 @@ package com.transcendensoft.hedbanz.view;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.model.entity.ServerResult;
+import com.transcendensoft.hedbanz.model.entity.User;
+
+import io.reactivex.Observable;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+
 /**
- * View interface for {@link com.transcendensoft.hedbanz.view.activity.MainActivity}
+ * Interface that describes all API methods with server
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface MainView {
+public interface ApiService {
+    @PUT("register")
+    Observable<ServerResult<User>> registerUser(@Body User user);
+
+    @POST("authenticate")
+    Observable<ServerResult<User>> authUser(@Body User user);
 }

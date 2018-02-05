@@ -1,5 +1,4 @@
-package com.transcendensoft.hedbanz.view;
-
+package com.transcendensoft.hedbanz.presenter;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -16,11 +15,15 @@ package com.transcendensoft.hedbanz.view;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.model.entity.User;
+
 /**
- * View interface for {@link com.transcendensoft.hedbanz.view.activity.MainActivity}
+ * Interface that shows describes methods which is needed
+ * to sign up some user.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface MainView {
+public interface RegisterPresenter {
+    void registerUser(User user);
 }

@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.view;
+package com.transcendensoft.hedbanz.presenter.validation;
 
 /**
  * Copyright 2017. Andrii Chernysh
@@ -17,10 +17,14 @@ package com.transcendensoft.hedbanz.view;
  */
 
 /**
- * View interface for {@link com.transcendensoft.hedbanz.view.activity.MainActivity}
+ * Interface that describes generic methods
+ * for all validators.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface MainView {
+public interface Validator<M> {
+    boolean isValid(M model);
+
+    String getErrorMessage();
 }

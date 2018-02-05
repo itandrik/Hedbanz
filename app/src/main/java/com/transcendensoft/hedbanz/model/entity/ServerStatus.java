@@ -1,5 +1,4 @@
-package com.transcendensoft.hedbanz.view;
-
+package com.transcendensoft.hedbanz.model.entity;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -17,10 +16,31 @@ package com.transcendensoft.hedbanz.view;
  */
 
 /**
- * View interface for {@link com.transcendensoft.hedbanz.view.activity.MainActivity}
+ * Describes status, that device can receive from server
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface MainView {
+
+public enum ServerStatus {
+    SUCCESS("success"), ERROR("error");
+
+    String status;
+
+    ServerStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public static ServerStatus getServerStatusBasedOnString(String status){
+        for (ServerStatus serverStatus:ServerStatus.values()) {
+            if(serverStatus.status.equalsIgnoreCase(status)){
+                return serverStatus;
+            }
+        }
+        return ERROR;
+    }
 }
