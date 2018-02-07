@@ -2,35 +2,27 @@ package com.transcendensoft.hedbanz.view.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
-import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.model.entity.User;
 import com.transcendensoft.hedbanz.presenter.PresenterManager;
 import com.transcendensoft.hedbanz.presenter.impl.RegisterPresenterImpl;
 import com.transcendensoft.hedbanz.util.AndroidUtils;
 import com.transcendensoft.hedbanz.view.RegisterView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.URISyntaxException;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,10 +40,11 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
     @BindView(R.id.tvErrorEmail) TextView mTvEmailError;
     @BindView(R.id.tvErrorPassword) TextView mTvPasswordError;
     @BindView(R.id.tvErrorConfirmPassword) TextView mTvConfirmPasswordError;
+    @BindView(R.id.tvLoginAvailability) TextView mTvLoginAvailability;
+    @BindView(R.id.pbLoginLoading) ProgressBar mPbLoginLoading;
 
     private ProgressDialog mProgressDialog;
     private RegisterPresenterImpl mPresenter;
-    private Socket mSocket;
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -66,7 +59,6 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
             window.setStatusBarColor(getResources()
                     .getColor(R.color.colorPrimaryLight));
         }
-        //AndroidUtils.makeStatusBarTranslucent(this);
 
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this, this);
@@ -76,8 +68,6 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
 
         initProgressDialog();
         initPresenter(savedInstanceState);
-        initSocket();
-        //initEditTextListeners();
     }
 
     @Override
@@ -93,8 +83,14 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
         super.onPause();
         if (mPresenter != null) {
             mPresenter.unbindView();
-            mSocket.disconnect();
-            mSocket.off("loginResult", onLoginResultListener);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mPresenter != null) {
+            mPresenter.disconnectSockets();
         }
     }
 
@@ -124,6 +120,18 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
         } else {
             mPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
         }
+
+        if (mPresenter != null) {
+            mPresenter.initSockets();
+            mPresenter.initNameCheckingListener(mEtLogin);
+            initEditTextListeners();
+        }
+    }
+
+    private void initEditTextListeners() {
+        mPresenter.initAnimEditTextListener(mEtEmail);
+        mPresenter.initAnimEditTextListener(mEtPassword);
+        mPresenter.initAnimEditTextListener(mEtConfirmPassword);
     }
 
     private void initProgressDialog() {
@@ -131,51 +139,6 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
         mProgressDialog.setMessage(getString(R.string.action_loading));
         mProgressDialog.setCancelable(false);
         mProgressDialog.setIndeterminate(true);
-    }
-
-    private void initEditTextListeners() {
-        mPresenter.initAnimEditTextListener(mEtEmail);
-        mPresenter.initAnimEditTextListener(mEtLogin);
-        mPresenter.initAnimEditTextListener(mEtPassword);
-        mPresenter.initAnimEditTextListener(mEtConfirmPassword);
-    }
-
-    private void initSocket() {
-        try {
-            mSocket = IO.socket("http://77.47.204.201:9092/socket");
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-
-        initSocketListeners();
-        mSocket.on("loginResult", onLoginResultListener);
-        mSocket.connect();
-    }
-
-    private Emitter.Listener onLoginResultListener;
-
-    private void initSocketListeners() {
-        onLoginResultListener = args -> {
-            runOnUiThread(() -> {
-                JSONObject data = (JSONObject) args[0];
-                boolean isLoginAvaliable;
-                try {
-                    isLoginAvaliable = data.getBoolean("isLoginAvailable");
-                } catch (JSONException e) {
-                    Log.e("TAG", e.getMessage());
-                    return;
-                }
-                AndroidUtils.showShortToast(this, "Is login available : " + isLoginAvaliable);
-            });
-        };
-
-        RxTextView.textChanges(mEtLogin).debounce(300, TimeUnit.MILLISECONDS)
-                .filter(text -> text != null && !TextUtils.isEmpty(text))
-                .subscribe(text -> {
-                    if (mSocket != null && mSocket.connected()) {
-                        mSocket.emit("checkLogin", text.toString().trim());
-                    }
-                });
     }
 
     /*------------------------------------*
@@ -188,12 +151,16 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
 
     @Override
     public void startSmileAnimation() {
-        Glide.with(this).asGif().load(R.raw.smile_gif_new).into(mIvSmileGif);
+        runOnUiThread(() -> {
+            Glide.with(this).asGif().load(R.raw.smile_gif_new).into(mIvSmileGif);
+        });
     }
 
     @Override
     public void stopSmileAnimation() {
-        Glide.with(this).load(R.drawable.logo).into(mIvSmileGif);
+        runOnUiThread(() -> {
+            Glide.with(this).load(R.drawable.logo).into(mIvSmileGif);
+        });
     }
 
     /*------------------------------------*
@@ -222,25 +189,79 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
      *-------- Error and loading ---------*
      *------------------------------------*/
     @Override
+    public void showLoginAvailabilityLoading() {
+        runOnUiThread(() -> {
+            hideLoading();
+            mTvLoginError.setVisibility(GONE);
+            mPbLoginLoading.setVisibility(View.VISIBLE);
+            mTvLoginAvailability.setVisibility(View.INVISIBLE);
+        });
+    }
+
+    @Override
+    public void hideLoginAvailability() {
+        runOnUiThread(() -> {
+            hideLoading();
+            mTvLoginError.setVisibility(GONE);
+            mTvLoginAvailability.setVisibility(View.INVISIBLE);
+        });
+    }
+
+    @Override
+    public void showLoginAvailable() {
+        runOnUiThread(() -> {
+            hideLoading();
+            mTvLoginError.setVisibility(GONE);
+            mPbLoginLoading.setVisibility(View.INVISIBLE);
+            Drawable drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_check, null);
+            mTvLoginAvailability.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
+            mTvLoginAvailability.setTextColor(ContextCompat.getColor(this, R.color.loginSuccess));
+            mTvLoginAvailability.setText(getString(R.string.login_error_login_available));
+            mTvLoginAvailability.setVisibility(View.VISIBLE);
+        });
+    }
+
+    @Override
+    public void showLoginUnavailable() {
+        runOnUiThread(() -> {
+            hideLoading();
+            mPbLoginLoading.setVisibility(View.INVISIBLE);
+            Drawable drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_sad, null);
+            mTvLoginAvailability.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
+            mTvLoginAvailability.setTextColor(ContextCompat.getColor(this, R.color.loginError));
+            mTvLoginAvailability.setText(getString(R.string.login_error_login_not_available));
+            mTvLoginAvailability.setVisibility(View.VISIBLE);
+        });
+    }
+
+    @Override
     public void showIncorrectLogin(int message) {
-        mTvLoginError.setText(getString(message));
-        mTvLoginError.setVisibility(View.VISIBLE);
+        runOnUiThread(() -> {
+            hideLoading();
+            mPbLoginLoading.setVisibility(View.INVISIBLE);
+            mTvLoginAvailability.setVisibility(View.INVISIBLE);
+            mTvLoginError.setText(getString(message));
+            mTvLoginError.setVisibility(View.VISIBLE);
+        });
     }
 
     @Override
     public void showIncorrectEmail(int message) {
+        hideLoading();
         mTvEmailError.setText(getString(message));
         mTvEmailError.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showIncorrectPassword(int message) {
+        hideLoading();
         mTvPasswordError.setText(getString(message));
         mTvPasswordError.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showIncorrectConfirmPassword(int message) {
+        hideLoading();
         mTvConfirmPasswordError.setText(getString(message));
         mTvConfirmPasswordError.setVisibility(View.VISIBLE);
     }
@@ -276,6 +297,8 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
         mTvEmailError.setVisibility(GONE);
         mTvLoginError.setVisibility(GONE);
         mTvPasswordError.setVisibility(GONE);
+        mTvLoginAvailability.setVisibility(View.INVISIBLE);
+        mPbLoginLoading.setVisibility(View.INVISIBLE);
     }
 
     private void hideLoading() {

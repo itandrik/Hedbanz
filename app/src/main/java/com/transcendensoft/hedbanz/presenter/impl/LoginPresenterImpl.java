@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.model.entity;
+package com.transcendensoft.hedbanz.presenter.impl;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,37 +15,27 @@ package com.transcendensoft.hedbanz.model.entity;
  * limitations under the License.
  */
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.transcendensoft.hedbanz.model.entity.User;
+import com.transcendensoft.hedbanz.presenter.BasePresenter;
+import com.transcendensoft.hedbanz.presenter.LoginPresenter;
+import com.transcendensoft.hedbanz.view.LoginView;
 
 /**
- * Object in {@link ServerResult} which contains
- * string error message and integer error code.
+ * Presenter from MVP pattern, that contains
+ * methods to process log in work.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class ServerError {
-    @SerializedName("errorMessage")
-    @Expose
-    private String errorMessage;
-    @SerializedName("errorCode")
-    @Expose
-    private int errorCode;
 
-    public String getErrorMessage() {
-        return errorMessage;
+public class LoginPresenterImpl extends BasePresenter<User, LoginView> implements LoginPresenter{
+    @Override
+    protected void updateView() {
+
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
+    @Override
+    public void login() {
 
-    public int getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
     }
 }

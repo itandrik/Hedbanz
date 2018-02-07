@@ -12,4 +12,15 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
+    <style name="ThemeRegister" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/loginTextDarkRed</item>
+        <item name="colorPrimaryDark">@color/loginTextDarkRed</item>
+        <item name="colorAccent">@color/loginTextDarkRed</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
 </resources>

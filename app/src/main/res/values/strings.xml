@@ -32,6 +32,9 @@
     <string name="login_error_empty_field">Упс! Вы пропустили это поле :(</string>
     <string name="login_error_no_such_login">Пользователя с таким логином не существует!</string>
     <string name="login_error_incorrect_password">Неправильно введен пароль. В случае амнезии воспользуйтесь функцией восстановления пароля ниже!</string>
+    <string name="login_error_email_not_available">Фиаско, еmail занят другим пользователем.</string>
+    <string name="login_error_login_not_available">Фиаско, пользователь с таким логином уже существует.</string>
+    <string name="login_error_login_available">Логин свободен!</string>
 
     <!-- Register activity -->
     <string name="register_intro">Регистрация</string>

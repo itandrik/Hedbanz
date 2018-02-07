@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presenter;
+package com.transcendensoft.hedbanz.view;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,21 +15,13 @@ package com.transcendensoft.hedbanz.presenter;
  * limitations under the License.
  */
 
-import android.widget.EditText;
-
-import com.transcendensoft.hedbanz.model.entity.User;
-
 /**
- * Interface that shows describes methods which is needed
- * to sign up some user.
+ * Interface that describes all needed methods to
+ * show log in errors or hints.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface RegisterPresenter {
-    void registerUser(User user);
 
-    void initAnimEditTextListener(EditText editText);
-
-    void initNameCheckingListener(EditText editText);
+public interface LoginView extends BaseView{
 }

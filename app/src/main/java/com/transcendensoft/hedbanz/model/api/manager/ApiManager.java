@@ -37,7 +37,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public abstract class ApiManager {
-    private static final String BASE_URL = "http://77.47.204.201:8080/";
+    public static final String HOST = "http://77.47.204.201";
+
+    private static final String PORT_API = ":8080/";
+    private static final String BASE_URL = HOST + PORT_API;
+
+    public static final String PORT_SOCKET = ":9092";
+    public static final String SOCKET_NSP = "/socket";
+
     private Retrofit mClient;
     protected ApiService mService;
     protected final ObservableTransformer mSchedulersTransformer;

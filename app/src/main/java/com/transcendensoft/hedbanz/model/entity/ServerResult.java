@@ -17,6 +17,7 @@ package com.transcendensoft.hedbanz.model.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.transcendensoft.hedbanz.model.entity.error.ServerError;
 
 /**
  * Generic class, that describes fields which device

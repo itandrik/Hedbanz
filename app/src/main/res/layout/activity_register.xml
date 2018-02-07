@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbarAlwaysDrawVerticalTrack="false"
-    android:background="@drawable/login_full_background">
+    android:background="@drawable/login_full_background"
+    android:scrollbarAlwaysDrawVerticalTrack="false">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -15,10 +15,10 @@
             android:id="@+id/tvRegisterTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/lemon_tuesday_font_family"
             android:gravity="center"
             android:text="@string/register_intro"
-            android:layout_marginTop="8dp"
             android:textSize="34sp"
             android:textStyle="bold" />
 
@@ -48,8 +48,8 @@
             android:layout_height="100dp"
             android:layout_below="@id/ivRegisterDivider"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="-24dp"
-            android:paddingBottom="4dp"
+            android:layout_marginTop="-48dp"
+            android:paddingBottom="8dp"
             app:srcCompat="@drawable/logo" />
 
         <RelativeLayout
@@ -111,10 +111,28 @@
                     android:visibility="gone" />
 
                 <TextView
+                    android:id="@+id/tvLoginAvailability"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/etLogin"
+                    android:drawablePadding="8dp"
+                    android:paddingLeft="16dp"
+                    android:textSize="11sp"
+                    android:visibility="invisible" />
+
+                <ProgressBar
+                    android:id="@+id/pbLoginLoading"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/etLogin"
+                    android:visibility="invisible" />
+
+                <TextView
                     android:id="@+id/tvEmailTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/tvErrorLogin"
+                    android:layout_below="@id/tvLoginAvailability"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/open_sans_light"
                     android:text="@string/register_email_title"

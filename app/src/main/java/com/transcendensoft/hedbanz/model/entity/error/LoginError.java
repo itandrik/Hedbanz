@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.view;
+package com.transcendensoft.hedbanz.model.entity.error;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -17,33 +17,33 @@ package com.transcendensoft.hedbanz.view;
 
 import android.support.annotation.StringRes;
 
+import com.transcendensoft.hedbanz.R;
+
 /**
- * Interface that describes all needed methods to
- * show register errors or hints.
+ * All errors that can receive user while log in.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface RegisterView extends BaseView{
-    void showIncorrectLogin(@StringRes int message);
 
-    void showIncorrectEmail(@StringRes int message);
+public enum LoginError {
+    NO_SUCH_USER(1, R.string.login_error_no_such_login),
+    INCORRECT_PASSWORD(2,R.string.login_error_incorrect_password),
+    EMPTY_LOGIN(3, R.string.login_error_empty_field),
+    EMPTY_PASSWORD(4, R.string.login_error_empty_field);
 
-    void showIncorrectPassword(@StringRes int message);
+    private int errorCode;
+    private @StringRes int errorMessage;
+    LoginError(int errorCode, @StringRes int errorMessage){
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+    }
 
-    void showIncorrectConfirmPassword(@StringRes int message);
+    public int getErrorCode(){
+        return this.errorCode;
+    }
 
-    void startSmileAnimation();
-
-    void stopSmileAnimation();
-
-    void showLoginAvailable();
-
-    void showLoginUnavailable();
-
-    void showLoginAvailabilityLoading();
-
-    void hideLoginAvailability();
-
-    void registerSuccess();
+    public @StringRes int getErrorMessage(){
+        return this.errorMessage;
+    }
 }

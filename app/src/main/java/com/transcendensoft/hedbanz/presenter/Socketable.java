@@ -15,21 +15,15 @@ package com.transcendensoft.hedbanz.presenter;
  * limitations under the License.
  */
 
-import android.widget.EditText;
-
-import com.transcendensoft.hedbanz.model.entity.User;
-
 /**
- * Interface that shows describes methods which is needed
- * to sign up some user.
+ * All presenters, that has some job with sockets
+ * have to implement this interface
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface RegisterPresenter {
-    void registerUser(User user);
+public interface Socketable {
+    void initSockets();
 
-    void initAnimEditTextListener(EditText editText);
-
-    void initNameCheckingListener(EditText editText);
+    void disconnectSockets();
 }
