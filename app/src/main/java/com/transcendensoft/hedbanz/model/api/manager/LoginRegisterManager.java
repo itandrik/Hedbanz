@@ -15,7 +15,6 @@ package com.transcendensoft.hedbanz.model.api.manager;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.model.api.service.ApiService;
 import com.transcendensoft.hedbanz.model.entity.ServerResult;
 import com.transcendensoft.hedbanz.model.entity.User;
 
@@ -27,27 +26,26 @@ import io.reactivex.Observable;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-
-public class LoginRegisterManager {
-    private ApiService mService;
-
+public class LoginRegisterManager extends ApiManager {
     private static final class Holder {
         static final LoginRegisterManager INSTANCE = new LoginRegisterManager();
     }
 
-    public LoginRegisterManager() {
-        mService = ApiManager.getInstance().getService();
+    private LoginRegisterManager() {
+        super();
     }
 
     public static LoginRegisterManager getInstance() {
         return LoginRegisterManager.Holder.INSTANCE;
     }
 
-    public Observable<ServerResult<User>> registerUser(User user){
-        return mService.registerUser(user);
+    public Observable<ServerResult<User>> registerUser(User user) {
+        return mService.registerUser(user)
+                .compose(applySchedulers());
     }
 
-    public Observable<ServerResult<User>> authUser(User user){
-        return mService.authUser(user);
+    public Observable<ServerResult<User>> authUser(User user) {
+        return mService.authUser(user)
+                .compose(applySchedulers());
     }
 }

@@ -15,24 +15,25 @@ package com.transcendensoft.hedbanz.presenter.validation;
  * limitations under the License.
  */
 
-import android.content.Context;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.model.entity.User;
 
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
- * //TODO add class description 
+ * Validation methods for register form.
+ * Validation of email, login, password and
+ * password confirmation
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 
-public class RegisterValidator implements Validator<User>{
+public class RegisterValidator implements Validator<User> {
     private static final String EMAIL_REGEX = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     private static final String LOGIN_REGEX = "^[a-zA-Z0-9.]{3,10}$";
     private static final String PASSWORD_REGEX = "\\S{4,14}";
@@ -45,14 +46,12 @@ public class RegisterValidator implements Validator<User>{
             Pattern.compile(PASSWORD_REGEX);
 
     private User mUser;
-    private String mErrorMessage;
-    private Context mContext;
+    private @StringRes int mErrorMessage;
 
-    public RegisterValidator(Context context, User mUser) {
+    public RegisterValidator(User mUser) {
         this.mUser = mUser;
-        mContext = context;
-        if(mUser == null){
-            mUser = new User();
+        if (mUser == null) {
+            mUser = new User.Builder().build();
             Crashlytics.log("Error while validation on register. " +
                     "User entity is null. RegisterValidator class");
         }
@@ -63,49 +62,49 @@ public class RegisterValidator implements Validator<User>{
         return false;
     }
 
-    public boolean isEmailValid(){
+    public boolean isEmailValid() {
         String email = mUser.getEmail();
-        if(TextUtils.isEmpty(email.trim())){
-            mErrorMessage = mContext.getString(R.string.register_validate_empty_field);
+        if (TextUtils.isEmpty(email.trim())) {
+            mErrorMessage = R.string.register_validate_empty_field;
             return false;
-        } else if(!EMAIL_PATTERN.matcher(email).matches()){
-            mErrorMessage = mContext.getString(R.string.register_validate_email);
+        } else if (!EMAIL_PATTERN.matcher(email).matches()) {
+            mErrorMessage = R.string.register_validate_email;
             return false;
         }
         return true;
     }
 
-    public boolean isPasswordValid(){
+    public boolean isPasswordValid() {
         String password = mUser.getPassword();
-        if(TextUtils.isEmpty(password.trim())){
-            mErrorMessage = mContext.getString(R.string.register_validate_empty_field);
+        if (TextUtils.isEmpty(password.trim())) {
+            mErrorMessage = R.string.register_validate_empty_field;
             return false;
-        } else if(!PASSWORD_PATTERN.matcher(password).matches()){
-            mErrorMessage = mContext.getString(R.string.register_validate_password);
+        } else if (!PASSWORD_PATTERN.matcher(password).matches()) {
+            mErrorMessage = R.string.register_validate_password;
             return false;
         }
         return true;
     }
 
-    public boolean isConfirmPasswordValid(){
+    public boolean isConfirmPasswordValid() {
         String password = mUser.getConfirmPassword();
-        if(TextUtils.isEmpty(password.trim())){
-            mErrorMessage = mContext.getString(R.string.register_validate_empty_field);
+        if (TextUtils.isEmpty(password.trim())) {
+            mErrorMessage = R.string.register_validate_empty_field;
             return false;
-        } else if(!password.equals(mUser.getPassword())){
-            mErrorMessage = mContext.getString(R.string.register_validate_confirm_password);
+        } else if (!password.equals(mUser.getPassword())) {
+            mErrorMessage = R.string.register_validate_confirm_password;
             return false;
         }
         return true;
     }
 
-    public boolean isLoginValid(){
+    public boolean isLoginValid() {
         String name = mUser.getLogin();
-        if(TextUtils.isEmpty(name.trim())){
-            mErrorMessage = mContext.getString(R.string.register_validate_empty_field);
+        if (TextUtils.isEmpty(name.trim())) {
+            mErrorMessage = R.string.register_validate_empty_field;
             return false;
-        } else if(!LOGIN_PATTERN.matcher(name).matches()){
-            mErrorMessage = mContext.getString(R.string.register_validate_login);
+        } else if (!LOGIN_PATTERN.matcher(name).matches()) {
+            mErrorMessage = R.string.register_validate_login;
             return false;
         }
         return true;
@@ -120,7 +119,8 @@ public class RegisterValidator implements Validator<User>{
     }*/
 
     @Override
-    public String getErrorMessage() {
+    public @StringRes
+    int getErrorMessage() {
         return mErrorMessage;
     }
 }

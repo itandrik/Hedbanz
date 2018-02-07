@@ -1,4 +1,7 @@
 <resources>
+    <!-- Temporary -->
+    <string name="in_developing">Пока в разработке</string>
+
     <!-- Base -->
     <string name="app_name">Hedbanz</string>
 
@@ -9,6 +12,12 @@
     <string name="action_yes">Да</string>
     <string name="action_no">Нет</string>
     <string name="action_cancel">Отмена</string>
+    <string name="action_reload">Повторить попытку</string>
+    <string name="action_loading">Загрузка&#8230;</string>
+
+    <!-- Errors -->
+    <string name="error_server">Похоже что у нас проблемы с сервером. Повторите попытку позже.</string>
+    <string name="error_network">Отсутствует подключение к интернету.</string>
 
     <!-- Login fragment -->
     <string name="login_intro">Поспешите, ваши друзья вас ждут!</string>

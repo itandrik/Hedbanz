@@ -1,5 +1,4 @@
-package com.transcendensoft.hedbanz.presenter.validation;
-
+package com.transcendensoft.hedbanz;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -16,17 +15,24 @@ package com.transcendensoft.hedbanz.presenter.validation;
  * limitations under the License.
  */
 
-import android.support.annotation.StringRes;
+import android.app.Application;
+
+import com.crashlytics.android.Crashlytics;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
- * Interface that describes generic methods
- * for all validators.
+ * Base application class with initialization of
+ * Crashlytics, i18n and other staff.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface Validator<M> {
-    boolean isValid(M model);
 
-    @StringRes int getErrorMessage();
+public class HedbanzApplication extends Application{
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Fabric.with(this, new Crashlytics());
+    }
 }

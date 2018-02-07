@@ -15,6 +15,8 @@ package com.transcendensoft.hedbanz.view;
  * limitations under the License.
  */
 
+import android.support.annotation.StringRes;
+
 /**
  * Interface that describes all needed methods to
  * show register errors or hints.
@@ -22,14 +24,18 @@ package com.transcendensoft.hedbanz.view;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface RegisterView {
-    void showIncorrectLogin(String message);
+public interface RegisterView extends BaseView{
+    void showIncorrectLogin(@StringRes int message);
 
-    void showIncorrectEmail(String message);
+    void showIncorrectEmail(@StringRes int message);
 
-    void showIncorrectPassword(String message);
+    void showIncorrectPassword(@StringRes int message);
 
-    void showIncorrectConfirmPassword(String message);
+    void showIncorrectConfirmPassword(@StringRes int message);
+
+    void startSmileAnimation();
+
+    void stopSmileAnimation();
 
     void registerSuccess();
 }

@@ -15,6 +15,8 @@ package com.transcendensoft.hedbanz.presenter;
  * limitations under the License.
  */
 
+import android.widget.EditText;
+
 import com.transcendensoft.hedbanz.model.entity.User;
 
 /**
@@ -26,4 +28,6 @@ import com.transcendensoft.hedbanz.model.entity.User;
  */
 public interface RegisterPresenter {
     void registerUser(User user);
+
+    void initAnimEditTextListener(EditText editText);
 }

@@ -15,6 +15,9 @@ package com.transcendensoft.hedbanz.model.entity;
  * limitations under the License.
  */
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * POJO for user entity.
  * All user properties described here
@@ -23,22 +26,38 @@ package com.transcendensoft.hedbanz.model.entity;
  *         Developed by <u>Transcendensoft</u>
  */
 public class User {
+    @SerializedName("id")
+    @Expose
     private long id;
+    @SerializedName("email")
+    @Expose
     private String email;
+    @SerializedName("password")
+    @Expose
     private String password;
     private String confirmPassword;
+    @SerializedName("money")
+    @Expose
     private long money;
+    @SerializedName("registrationDate")
+    @Expose
+    private Long registrationDate;
+    @SerializedName("login")
+    @Expose
     private String login;
 
-    private User(long id, String email, String password, long money, String login) {
+    private User(long id, String email, String password, String confirmPassword, long money, Long registrationDate, String login) {
         this.id = id;
         this.email = email;
         this.password = password;
+        this.confirmPassword = confirmPassword;
         this.money = money;
+        this.registrationDate = registrationDate;
         this.login = login;
     }
 
-    public User() {}
+    public User() {
+    }
 
     public long getId() {
         return id;
@@ -88,6 +107,14 @@ public class User {
         this.login = login;
     }
 
+    public Long getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Long registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -107,7 +134,9 @@ public class User {
         private long id;
         private String email;
         private String password;
+        private String confirmPassword;
         private long money;
+        private Long registrationDate;
         private String login;
 
         public Builder setId(long id) {
@@ -125,8 +154,18 @@ public class User {
             return this;
         }
 
+        public Builder setConfirmPassword(String confirmPassword) {
+            this.confirmPassword = confirmPassword;
+            return this;
+        }
+
         public Builder setMoney(long money) {
             this.money = money;
+            return this;
+        }
+
+        public Builder setRegistrationDate(Long registrationDate) {
+            this.registrationDate = registrationDate;
             return this;
         }
 
@@ -136,7 +175,7 @@ public class User {
         }
 
         public User build() {
-            return new User(id, email, password, money, login);
+            return new User(id, email, password, confirmPassword, money, registrationDate, login);
         }
     }
 }

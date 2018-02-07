@@ -21,7 +21,6 @@ package com.transcendensoft.hedbanz.model.entity;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-
 public enum ServerStatus {
     SUCCESS("success"), ERROR("error");
 

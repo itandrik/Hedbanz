@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.lang.ref.WeakReference;
 
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 /**
  * @author Andrii Chernysh
@@ -48,6 +49,12 @@ public abstract class BasePresenter<M,V> {
             return null;
         } else {
             return view.get();
+        }
+    }
+
+    public void addDisposable(Disposable disposable){
+        if(mCompositeDisposable != null){
+            mCompositeDisposable.add(disposable);
         }
     }
 

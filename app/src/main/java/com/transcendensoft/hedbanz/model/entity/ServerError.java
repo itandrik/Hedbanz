@@ -19,44 +19,33 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Generic class, that describes fields which device
- * can receive from server.
- * There are 3 basic fields:
- * 1) Status - {@link ServerStatus} can be success or error
- * 2) Error message - message to output or null if success
- * 3) Data - result object from server
+ * Object in {@link ServerResult} which contains
+ * string error message and integer error code.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class ServerResult<T> {
-    @SerializedName("status")
+public class ServerError {
+    @SerializedName("errorMessage")
     @Expose
-    private String status;
-    @SerializedName("error")
+    private String errorMessage;
+    @SerializedName("errorCode")
     @Expose
-    private ServerError serverError;
-    @SerializedName("data")
-    @Expose
-    private T data;
+    private int errorCode;
 
-    public T getData() {
-        return data;
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
-    public void setData(T data) {
-        this.data = data;
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
-    public ServerError getServerError() {
-        return serverError;
+    public int getErrorCode() {
+        return errorCode;
     }
 
-    public void setServerError(ServerError serverError) {
-        this.serverError = serverError;
-    }
-
-    public String getStatus() {
-        return status;
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
     }
 }

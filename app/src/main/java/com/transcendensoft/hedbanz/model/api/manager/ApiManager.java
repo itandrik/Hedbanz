@@ -21,6 +21,9 @@ import com.transcendensoft.hedbanz.model.api.service.ApiService;
 
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.ObservableTransformer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -33,22 +36,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
  *         Developed by <u>Transcendensoft</u>
  */
 
-public class ApiManager {
-    public static final String BASE_URL = "http://77.47.204.201:8080/";
+public abstract class ApiManager {
+    private static final String BASE_URL = "http://77.47.204.201:8080/";
     private Retrofit mClient;
-    private ApiService mService;
+    protected ApiService mService;
+    protected final ObservableTransformer mSchedulersTransformer;
 
-    private static final class Holder {
-        static final ApiManager INSTANCE = new ApiManager();
-    }
+    protected ApiManager() {
+        mSchedulersTransformer =  o -> o
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
 
-    private ApiManager() {
         initRetrofit();
         initService();
-    }
-
-    public static ApiManager getInstance() {
-        return Holder.INSTANCE;
     }
 
     /**
@@ -77,7 +77,8 @@ public class ApiManager {
         mService = mClient.create(ApiService.class);
     }
 
-    public ApiService getService(){
-        return mService;
+    @SuppressWarnings("unchecked")
+    protected <T> ObservableTransformer<T, T> applySchedulers() {
+        return (ObservableTransformer<T, T>) mSchedulersTransformer;
     }
 }
