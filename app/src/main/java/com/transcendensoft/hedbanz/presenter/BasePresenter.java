@@ -4,6 +4,9 @@ import android.support.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
 
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+
 /**
  * @author Andrii Chernysh
  *         Developed by <u>Transcendensoft</u>
@@ -11,6 +14,7 @@ import java.lang.ref.WeakReference;
 public abstract class BasePresenter<M,V> {
     protected M model;
     private WeakReference<V> view;
+    private CompositeDisposable mCompositeDisposable;
 
     public void setModel(M model) {
         resetState();
@@ -28,10 +32,16 @@ public abstract class BasePresenter<M,V> {
         if (setupDone()) {
             updateView();
         }
+
+        mCompositeDisposable = new CompositeDisposable();
     }
 
     public void unbindView() {
         this.view = null;
+
+        if (mCompositeDisposable != null && !mCompositeDisposable.isDisposed()) {
+            mCompositeDisposable.dispose();
+        }
     }
 
     protected V view() {
@@ -39,6 +49,12 @@ public abstract class BasePresenter<M,V> {
             return null;
         } else {
             return view.get();
+        }
+    }
+
+    public void addDisposable(Disposable disposable){
+        if(mCompositeDisposable != null){
+            mCompositeDisposable.add(disposable);
         }
     }
 

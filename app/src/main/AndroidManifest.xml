@@ -2,28 +2,55 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.transcendensoft.hedbanz">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
+        android:name=".HedbanzApplication"
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <!-- Meta data -->
         <meta-data
             android:name="android.max_aspect"
-            android:value="ratio_float"/>
+            android:value="ratio_float" />
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="044b7dfc84eb1a148f1ae6b840e3911a8ee29379"/>
+            android:value="044b7dfc84eb1a148f1ae6b840e3911a8ee29379" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".MainActivity">
+        <!-- Activities -->
+        <activity
+            android:name=".view.activity.StartActivity"
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/ThemeMain">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".view.activity.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ThemeMain" />
+
+        <activity
+            android:name=".view.activity.RegisterActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/ThemeRegister" />
+
+        <!-- Service -->
+        <!-- Receivers -->
+        <!-- Providers -->
     </application>
 
 </manifest>

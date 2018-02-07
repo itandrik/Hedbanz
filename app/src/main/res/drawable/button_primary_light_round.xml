@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+    <item android:state_pressed="true">
+        <ripple android:color="@color/loginRipple" tools:targetApi="lollipop">
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/colorPrimaryLight" />
+                    <corners android:radius="32dp" />
+                </shape>
+            </item>
+        </ripple>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/colorPrimaryLight" />
+            <corners android:radius="32dp" />
+        </shape>
+    </item>
+</selector>
