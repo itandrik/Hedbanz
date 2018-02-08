@@ -15,6 +15,8 @@ package com.transcendensoft.hedbanz.presenter;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.model.entity.User;
+
 /**
  * Interface that shows describes methods which is needed
  * to log in some user.
@@ -23,5 +25,5 @@ package com.transcendensoft.hedbanz.presenter;
  *         Developed by <u>Transcendensoft</u>
  */
 public interface LoginPresenter {
-    void login();
+    void login(User user);
 }

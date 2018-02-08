@@ -119,6 +119,7 @@ public class RegisterPresenterImpl extends BasePresenter<User, RegisterView>
             if (serverError != null) {
                 processErrorFromServer(serverError);
             }
+            throw new IllegalStateException();
         }
     }
 
@@ -148,9 +149,11 @@ public class RegisterPresenterImpl extends BasePresenter<User, RegisterView>
     }
 
     private void processRegisterOnError(Throwable err) {
-        Log.e(TAG, "Error " + err.getMessage());
-        Crashlytics.logException(err);
-        view().showServerError();
+        if(!(err instanceof IllegalStateException)) {
+            Log.e(TAG, "Error " + err.getMessage());
+            Crashlytics.logException(err);
+            view().showServerError();
+        }
     }
 
     private void processRegisterOnSubscribe(Disposable d) {
@@ -166,20 +169,23 @@ public class RegisterPresenterImpl extends BasePresenter<User, RegisterView>
     /*------------------------------------*
      *------- Animation for smile --------*
      *------------------------------------*/
+    private boolean isAnimating;
     @Override
     public void initAnimEditTextListener(EditText editText) {
         addDisposable(
                 RxTextView.textChanges(editText)
-                        .debounce(400, TimeUnit.MILLISECONDS)
+                        .doOnEach(text -> {
+                            view().startSmileAnimation();
+                        })
+                        .debounce(500, TimeUnit.MILLISECONDS)
                         .subscribe(
-                                text -> view().stopSmileAnimation(),
+                                text -> {
+                                    view().stopSmileAnimation();
+                                },
                                 err -> {
                                     Log.e(TAG, "Error while setting start/stop smile animation. " +
                                             "Message : " + err.getMessage());
-                                },
-                                () -> {
-                                },
-                                d -> view().startSmileAnimation()));
+                                }));
     }
 
     /*------------------------------------*
@@ -218,14 +224,14 @@ public class RegisterPresenterImpl extends BasePresenter<User, RegisterView>
 
     @Override
     public void initNameCheckingListener(EditText editText) {
-        RxTextView.textChanges(editText).debounce(400, TimeUnit.MILLISECONDS)
+        addDisposable(RxTextView.textChanges(editText).debounce(400, TimeUnit.MILLISECONDS)
                 .filter(this::isCorrectLoginInput)
                 .subscribe(text -> {
                     if (mSocket != null && mSocket.connected()) {
                         view().showLoginAvailabilityLoading();
                         mSocket.emit(CHECK_LOGIN_EMIT_KEY, text.toString().trim());
                     }
-                });
+                }));
     }
 
     private boolean isCorrectLoginInput(CharSequence text) {

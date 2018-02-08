@@ -93,8 +93,8 @@ public class StartActivity extends AppCompatActivity {
 
         int screenHeight = metrics.heightPixels;
         Log.d("TAG", "Height : " + smileHeight);
-        int yToGo = screenHeight / 2 - smileHeight / 2 - mIvHat.getHeight() / 2 -
-                (int) AndroidUtils.convertDpToPixel(8, this);
+        int yToGo = screenHeight / 2 - smileHeight / 2 - mIvHat.getHeight() / 2 +
+                (int) AndroidUtils.convertDpToPixel(16, this);
 
         mIvHat.animate()
                 .setDuration(700)
@@ -130,7 +130,7 @@ public class StartActivity extends AppCompatActivity {
         int topCoordsHatX = (int) AndroidUtils.convertDpToPixel(44, this);
         int topCoordsHatY = (int) AndroidUtils.convertDpToPixel(40, this);
         int topCoordSmileX = (int) AndroidUtils.convertDpToPixel(44, this);
-        int topCoordSmileY = (int) (hatSize * 0.15 + topCoordsHatY);
+        int topCoordSmileY = (int) (hatSize * 0.17 + topCoordsHatY);
 
         mIvHat.animate()
                 .setDuration(1000)

@@ -15,6 +15,8 @@ package com.transcendensoft.hedbanz.view;
  * limitations under the License.
  */
 
+import android.support.annotation.StringRes;
+
 /**
  * Interface that describes all needed methods to
  * show log in errors or hints.
@@ -23,5 +25,10 @@ package com.transcendensoft.hedbanz.view;
  *         Developed by <u>Transcendensoft</u>
  */
 
-public interface LoginView extends BaseView{
+public interface LoginView extends BaseView {
+    void showLoginError(@StringRes int message);
+
+    void showPasswordError(@StringRes int message);
+
+    void loginSuccess();
 }

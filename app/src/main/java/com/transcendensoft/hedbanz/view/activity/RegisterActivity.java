@@ -2,6 +2,7 @@ package com.transcendensoft.hedbanz.view.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -75,6 +76,8 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
         super.onResume();
         if (mPresenter != null) {
             mPresenter.bindView(this);
+            mPresenter.initNameCheckingListener(mEtLogin);
+            initEditTextListeners();
         }
     }
 
@@ -123,8 +126,6 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
 
         if (mPresenter != null) {
             mPresenter.initSockets();
-            mPresenter.initNameCheckingListener(mEtLogin);
-            initEditTextListeners();
         }
     }
 
@@ -146,7 +147,10 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
      *------------------------------------*/
     @Override
     public void registerSuccess() {
-        AndroidUtils.showShortToast(this, "Login success");
+        hideAll();
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     @Override
