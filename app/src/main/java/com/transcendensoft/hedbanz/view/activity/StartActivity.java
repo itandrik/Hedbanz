@@ -1,6 +1,7 @@
 package com.transcendensoft.hedbanz.view.activity;
 
 import android.animation.Animator;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,7 +45,9 @@ public class StartActivity extends AppCompatActivity {
         ButterKnife.bind(this, this);
 
         if (new PreferenceManager(this).isAuthorised()) {
-            //TODO go to main activity
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         } else {
             initHatAnimation();
             initSmileAnimation();

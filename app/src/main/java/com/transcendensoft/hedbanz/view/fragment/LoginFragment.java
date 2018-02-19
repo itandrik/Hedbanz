@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.model.data.PreferenceManager;
 import com.transcendensoft.hedbanz.model.entity.User;
 import com.transcendensoft.hedbanz.presenter.PresenterManager;
 import com.transcendensoft.hedbanz.presenter.impl.LoginPresenterImpl;
@@ -148,6 +149,7 @@ public class LoginFragment extends Fragment implements LoginView{
     @Override
     public void loginSuccess() {
         hideLoading();
+        new PreferenceManager(getActivity()).setIsAuthorised(true);
         Intent intent = new Intent(getActivity(), MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

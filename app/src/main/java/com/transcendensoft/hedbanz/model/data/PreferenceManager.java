@@ -18,6 +18,9 @@ package com.transcendensoft.hedbanz.model.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+import com.transcendensoft.hedbanz.model.entity.User;
+
 /**
  * Wrapper for SharedPreferences with
  * business model keys
@@ -29,8 +32,9 @@ import android.content.SharedPreferences;
 public class PreferenceManager {
     private SharedPreferences mPreferences;
 
-    public static final String PREF_NAME = "HedbanzPreferences";
-    public static final String IS_AUTHORISED = "isAuthorised";
+    private static final String PREF_NAME = "HedbanzPreferences";
+    private static final String IS_AUTHORISED = "isAuthorised";
+    private static final String USER_ENTITY = "user";
 
     public PreferenceManager(Context context) {
         mPreferences = context.getSharedPreferences(PREF_NAME, 0);
@@ -46,5 +50,18 @@ public class PreferenceManager {
 
     public boolean isAuthorised(){
         return mPreferences.getBoolean(IS_AUTHORISED, false);
+    }
+
+    public void setUser(User user) {
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        getEditor().putString(USER_ENTITY, json).apply();
+    }
+
+    public User getUser() {
+        Gson gson = new Gson();
+        String json = mPreferences.getString(USER_ENTITY, "{}");
+
+        return gson.fromJson(json, User.class);
     }
 }
