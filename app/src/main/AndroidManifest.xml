@@ -29,7 +29,7 @@
         <activity
             android:name=".view.activity.StartActivity"
             android:windowSoftInputMode="stateHidden"
-            android:theme="@style/ThemeMain">
+            android:theme="@style/ThemeMainTranslucentToolbar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

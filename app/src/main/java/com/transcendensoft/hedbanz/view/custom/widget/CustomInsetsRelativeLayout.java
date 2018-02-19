@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.view.custom;
+package com.transcendensoft.hedbanz.view.custom.widget;
 
 import android.content.Context;
 import android.os.Build;

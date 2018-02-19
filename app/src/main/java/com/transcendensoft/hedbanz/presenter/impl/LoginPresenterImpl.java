@@ -15,10 +15,22 @@ package com.transcendensoft.hedbanz.presenter.impl;
  * limitations under the License.
  */
 
+import android.util.Log;
+
+import com.crashlytics.android.Crashlytics;
+import com.transcendensoft.hedbanz.model.api.manager.LoginRegisterManager;
+import com.transcendensoft.hedbanz.model.entity.ServerResult;
+import com.transcendensoft.hedbanz.model.entity.ServerStatus;
 import com.transcendensoft.hedbanz.model.entity.User;
+import com.transcendensoft.hedbanz.model.entity.error.LoginError;
+import com.transcendensoft.hedbanz.model.entity.error.ServerError;
 import com.transcendensoft.hedbanz.presenter.BasePresenter;
 import com.transcendensoft.hedbanz.presenter.LoginPresenter;
+import com.transcendensoft.hedbanz.presenter.validation.RegisterValidator;
+import com.transcendensoft.hedbanz.util.AndroidUtils;
 import com.transcendensoft.hedbanz.view.LoginView;
+
+import io.reactivex.disposables.Disposable;
 
 /**
  * Presenter from MVP pattern, that contains
@@ -28,14 +40,90 @@ import com.transcendensoft.hedbanz.view.LoginView;
  *         Developed by <u>Transcendensoft</u>
  */
 
-public class LoginPresenterImpl extends BasePresenter<User, LoginView> implements LoginPresenter{
+public class LoginPresenterImpl extends BasePresenter<User, LoginView> implements LoginPresenter {
+    private static final String TAG = LoginPresenterImpl.class.getName();
+
     @Override
     protected void updateView() {
 
     }
 
     @Override
-    public void login() {
+    public void login(User user) {
+        setModel(user);
+        if (isUserValid(user)) {
+            Disposable disposable = LoginRegisterManager.getInstance()
+                    .authUser(user)
+                    .subscribe(
+                            this::processRegisterOnNext,
+                            this::processRegisterOnError,
+                            () -> view().loginSuccess(),
+                            this::processRegisterOnSubscribe);
+            addDisposable(disposable);
+        }
+    }
 
+    private boolean isUserValid(User user) {
+        RegisterValidator validator = new RegisterValidator(user);
+        boolean result = true;
+        if (!validator.isLoginValid()) {
+            view().showLoginError(validator.getErrorMessage());
+            result = false;
+        }
+        if (!validator.isPasswordValid()) {
+            view().showPasswordError(validator.getErrorMessage());
+            result = false;
+        }
+        return result;
+    }
+
+    private void processRegisterOnNext(ServerResult<User> result) {
+        if (result == null) {
+            throw new RuntimeException("Server result is null");
+        } else if (!result.getStatus().equalsIgnoreCase(ServerStatus.SUCCESS.toString())) {
+            ServerError serverError = result.getServerError();
+            if (serverError != null) {
+                processErrorFromServer(serverError);
+            }
+            throw new IllegalStateException();
+        }
+    }
+
+    private void processErrorFromServer(ServerError serverError) {
+        for (LoginError loginError : LoginError.values()) {
+            if (loginError.getErrorCode() == serverError.getErrorCode()) {
+                switch (loginError) {
+                    case NO_SUCH_USER:
+                    case EMPTY_LOGIN:
+                        view().showLoginError(loginError.getErrorMessage());
+                        break;
+                    case INCORRECT_PASSWORD:
+                    case EMPTY_PASSWORD:
+                        view().showPasswordError(loginError.getErrorMessage());
+                        break;
+                    default:
+                        view().showServerError();
+                        break;
+                }
+            }
+        }
+    }
+
+    private void processRegisterOnError(Throwable err) {
+        if (!(err instanceof IllegalStateException)) {
+            Log.e(TAG, "Error " + err.getMessage());
+            Crashlytics.logException(err);
+            view().showServerError();
+        }
+    }
+
+    private void processRegisterOnSubscribe(Disposable d) {
+        if (!d.isDisposed() && view().provideContext() != null) {
+            if (AndroidUtils.isNetworkConnected(view().provideContext())) {
+                view().showLoading();
+            } else {
+                view().showNetworkError();
+            }
+        }
     }
 }

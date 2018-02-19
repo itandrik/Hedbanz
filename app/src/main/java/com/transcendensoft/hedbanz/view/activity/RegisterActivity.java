@@ -2,6 +2,7 @@ package com.transcendensoft.hedbanz.view.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.model.data.PreferenceManager;
 import com.transcendensoft.hedbanz.model.entity.User;
 import com.transcendensoft.hedbanz.presenter.PresenterManager;
 import com.transcendensoft.hedbanz.presenter.impl.RegisterPresenterImpl;
@@ -75,6 +77,8 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
         super.onResume();
         if (mPresenter != null) {
             mPresenter.bindView(this);
+            mPresenter.initNameCheckingListener(mEtLogin);
+            initEditTextListeners();
         }
     }
 
@@ -123,8 +127,6 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
 
         if (mPresenter != null) {
             mPresenter.initSockets();
-            mPresenter.initNameCheckingListener(mEtLogin);
-            initEditTextListeners();
         }
     }
 
@@ -146,7 +148,11 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
      *------------------------------------*/
     @Override
     public void registerSuccess() {
-        AndroidUtils.showShortToast(this, "Login success");
+        hideAll();
+        new PreferenceManager(this).setIsAuthorised(true);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     @Override

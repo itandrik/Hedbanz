@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presenter;
+package com.transcendensoft.hedbanz.view;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,15 +15,13 @@ package com.transcendensoft.hedbanz.presenter;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.model.entity.User;
-
 /**
- * Interface that shows describes methods which is needed
- * to log in some user.
+ * Describes fragment, that shows room list
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface LoginPresenter {
-    void login(User user);
+
+public interface RoomsView{
+    void setRoomsToRecycler();
 }
