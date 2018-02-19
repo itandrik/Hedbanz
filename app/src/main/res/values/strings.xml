@@ -49,4 +49,9 @@
     <string name="register_validate_confirm_password">Пароль подтвержен неправильно.</string>
     <string name="register_validate_login">Некорректный логин. Длина 3&#8211;10 символов. Допустимо только буквы, цифры и точка (\".\")</string>
 
+    <!-- Rooms fragment -->
+    <string name="rooms_title">Список комнат</string>
+
+    <!-- Create room fragment -->
+    <string name="room_creation_title">Создать комнату</string>
 </resources>

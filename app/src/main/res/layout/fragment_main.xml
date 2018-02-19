@@ -44,13 +44,26 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/tabs"
             android:layout_below="@id/toolbar"/>
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <!--<FrameLayout
+            android:id="@+id/flFabContainer"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            app:srcCompat="@drawable/ic_email"/>
+            android:layout_alignParentBottom="true">-->
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:elevation="80dp"
+                app:fabSize="mini"
+                android:layout_centerHorizontal="true"
+                app:pressedTranslationZ="12dp"
+                app:borderWidth="3dp"
+                android:layout_alignParentBottom="true"
+                app:srcCompat="@drawable/ic_arrow_up"/>
+        <!--</FrameLayout>-->
+
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

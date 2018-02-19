@@ -28,13 +28,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViewPager(){
         MainScreenFragmentAdapter adapter = new MainScreenFragmentAdapter.Holder(getSupportFragmentManager())
-                .add(MainFragment.newInstance(1, mViewPager))
+                .add(new MainFragment())
                 .add(new MenuFragment())
                 .set();
         mViewPager.setAdapter(adapter);
         mViewPager.setOverScrollMode(View.OVER_SCROLL_ALWAYS);
     }
 
+    public void openMenu(){
+        mViewPager.setCurrentItem(1, true);
+    }
     @Override
     public void onBackPressed() {
         mViewPager.setCurrentItem(0, true);

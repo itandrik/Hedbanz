@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.view.CreateRoomView;
 
 import butterknife.ButterKnife;
 
@@ -35,7 +36,7 @@ import butterknife.ButterKnife;
  *         Developed by <u>Transcendensoft</u>
  */
 
-public class CreateRoomFragment extends Fragment {
+public class CreateRoomFragment extends Fragment implements CreateRoomView{
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

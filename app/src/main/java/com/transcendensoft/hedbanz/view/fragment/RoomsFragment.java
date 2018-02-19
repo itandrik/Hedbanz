@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.view.RoomsView;
 
 import butterknife.ButterKnife;
 
@@ -34,7 +35,7 @@ import butterknife.ButterKnife;
  *         Developed by <u>Transcendensoft</u>
  */
 
-public class RoomsFragment extends Fragment{
+public class RoomsFragment extends Fragment implements RoomsView{
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -43,5 +44,10 @@ public class RoomsFragment extends Fragment{
         ButterKnife.bind(this, view);
 
         return view;
+    }
+
+    @Override
+    public void setRoomsToRecycler() {
+
     }
 }

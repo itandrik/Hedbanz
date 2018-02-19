@@ -18,38 +18,67 @@ package com.transcendensoft.hedbanz.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.SparseArray;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Adapter for {@link com.transcendensoft.hedbanz.view.activity.MainActivity}
- * to show vertical view pager items.
+ * Adapter for {@link com.transcendensoft.hedbanz.view.fragment.MainFragment}
+ * to show horizontal view pager items.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 
 public class MainScreenFragmentAdapter extends FragmentPagerAdapter {
-    private List<Fragment> fragments = new ArrayList<>();
+    private final List<String> mFragmentTitleList = new ArrayList<>();
+    private SparseArray<Fragment> mFragments = new SparseArray<>();
 
-    public MainScreenFragmentAdapter(FragmentManager fm, List<Fragment> fragments) {
+    public MainScreenFragmentAdapter(FragmentManager fm, SparseArray<Fragment> fragments) {
         super(fm);
-        this.fragments = fragments;
+        mFragments = fragments;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return fragments.get(position);
+        return mFragments.get(position);
     }
 
     @Override
     public int getCount() {
-        return fragments.size();
+        return mFragments.size();
+    }
+
+    public void addFragmentTitle(String title) {
+        mFragmentTitleList.add(title);
+    }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        Fragment fragment = (Fragment) super.instantiateItem(container, position);
+        mFragments.put(position, fragment);
+        return fragment;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        mFragments.remove(position);
+        super.destroyItem(container, position, object);
+    }
+
+    public Fragment getRegisteredFragment(int position) {
+        return mFragments.get(position);
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return mFragmentTitleList.get(position);
     }
 
     public static class Holder {
-        private final List<Fragment> fragments = new ArrayList<>();
+        private final SparseArray<Fragment> fragments = new SparseArray<>();
         private FragmentManager manager;
 
         public Holder(FragmentManager manager) {
@@ -57,7 +86,7 @@ public class MainScreenFragmentAdapter extends FragmentPagerAdapter {
         }
 
         public Holder add(Fragment f) {
-            fragments.add(f);
+            fragments.put(fragments.size(), f);
             return this;
         }
 
