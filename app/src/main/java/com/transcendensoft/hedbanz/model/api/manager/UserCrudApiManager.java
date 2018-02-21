@@ -18,6 +18,8 @@ package com.transcendensoft.hedbanz.model.api.manager;
 import com.transcendensoft.hedbanz.model.entity.ServerResult;
 import com.transcendensoft.hedbanz.model.entity.User;
 
+import java.util.HashMap;
+
 import io.reactivex.Observable;
 
 /**
@@ -26,17 +28,17 @@ import io.reactivex.Observable;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class LoginRegisterManager extends ApiManager {
+public class UserCrudApiManager extends ApiManager {
     private static final class Holder {
-        static final LoginRegisterManager INSTANCE = new LoginRegisterManager();
+        static final UserCrudApiManager INSTANCE = new UserCrudApiManager();
     }
 
-    private LoginRegisterManager() {
+    private UserCrudApiManager() {
         super();
     }
 
-    public static LoginRegisterManager getInstance() {
-        return LoginRegisterManager.Holder.INSTANCE;
+    public static UserCrudApiManager getInstance() {
+        return UserCrudApiManager.Holder.INSTANCE;
     }
 
     public Observable<ServerResult<User>> registerUser(User user) {
@@ -46,6 +48,18 @@ public class LoginRegisterManager extends ApiManager {
 
     public Observable<ServerResult<User>> authUser(User user) {
         return mService.authUser(user)
+                .compose(applySchedulers());
+    }
+
+    public Observable<ServerResult<User>> updateUser(long id, String newLogin,
+                                                     String oldPassword, String newPassword){
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("newLogin", newLogin);
+        result.put("id", id);
+        result.put("oldPassword", oldPassword);
+        result.put("newPassword", newPassword);
+
+        return mService.updateUser(result)
                 .compose(applySchedulers());
     }
 }

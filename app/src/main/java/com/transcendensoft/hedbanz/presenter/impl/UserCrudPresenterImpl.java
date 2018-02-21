@@ -24,18 +24,18 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.jakewharton.rxbinding2.widget.RxTextView;
-import com.transcendensoft.hedbanz.model.api.manager.LoginRegisterManager;
+import com.transcendensoft.hedbanz.model.api.manager.UserCrudApiManager;
 import com.transcendensoft.hedbanz.model.entity.ServerResult;
 import com.transcendensoft.hedbanz.model.entity.ServerStatus;
 import com.transcendensoft.hedbanz.model.entity.User;
 import com.transcendensoft.hedbanz.model.entity.error.RegisterError;
 import com.transcendensoft.hedbanz.model.entity.error.ServerError;
 import com.transcendensoft.hedbanz.presenter.BasePresenter;
-import com.transcendensoft.hedbanz.presenter.RegisterPresenter;
+import com.transcendensoft.hedbanz.presenter.UserCrudPresenter;
 import com.transcendensoft.hedbanz.presenter.Socketable;
-import com.transcendensoft.hedbanz.presenter.validation.RegisterValidator;
+import com.transcendensoft.hedbanz.presenter.validation.UserCrudValidator;
 import com.transcendensoft.hedbanz.util.AndroidUtils;
-import com.transcendensoft.hedbanz.view.RegisterView;
+import com.transcendensoft.hedbanz.view.UserCrudOperationView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,9 +56,9 @@ import static com.transcendensoft.hedbanz.model.api.manager.ApiManager.SOCKET_NS
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class RegisterPresenterImpl extends BasePresenter<User, RegisterView>
-        implements RegisterPresenter, Socketable {
-    public static final String TAG = RegisterPresenterImpl.class.getName();
+public class UserCrudPresenterImpl extends BasePresenter<User, UserCrudOperationView>
+        implements UserCrudPresenter, Socketable {
+    public static final String TAG = UserCrudPresenterImpl.class.getName();
     public static final String LOGIN_RESULT_LISTENER = "loginResult";
     public static final String CHECK_LOGIN_EMIT_KEY = "checkLogin";
     public static final String IS_LOGIN_AVAILABLE = "isLoginAvailable";
@@ -72,25 +72,40 @@ public class RegisterPresenterImpl extends BasePresenter<User, RegisterView>
     }
 
     /*------------------------------------*
-     *----------- Registration -----------*
+     *--------- Crud operations ----------*
      *------------------------------------*/
     @Override
     public void registerUser(User user) {
         setModel(user);
         if (isUserValid(user)) {
-            Disposable disposable = LoginRegisterManager.getInstance()
+            Disposable disposable = UserCrudApiManager.getInstance()
                     .registerUser(user)
                     .subscribe(
                             this::processRegisterOnNext,
                             this::processRegisterOnError,
-                            () -> view().registerSuccess(),
+                            () -> view().crudOperationSuccess(),
+                            this::processRegisterOnSubscribe);
+            addDisposable(disposable);
+        }
+    }
+
+    @Override
+    public void updateUser(User user, String oldPassword) {
+        setModel(user);
+        if (isUserValid(user) && isOldPasswordValid(oldPassword)) {
+            Disposable disposable = UserCrudApiManager.getInstance()
+                    .updateUser(user.getId(), user.getLogin(), oldPassword, user.getPassword())
+                    .subscribe(
+                            this::processRegisterOnNext,
+                            this::processRegisterOnError,
+                            () -> view().crudOperationSuccess(),
                             this::processRegisterOnSubscribe);
             addDisposable(disposable);
         }
     }
 
     private boolean isUserValid(User user) {
-        RegisterValidator validator = new RegisterValidator(user);
+        UserCrudValidator validator = new UserCrudValidator(user);
         boolean result = true;
         if (!validator.isLoginValid()) {
             view().showIncorrectLogin(validator.getErrorMessage());
@@ -109,6 +124,16 @@ public class RegisterPresenterImpl extends BasePresenter<User, RegisterView>
             result = false;
         }
         return result;
+    }
+
+    private boolean isOldPasswordValid(String oldPassword){
+        UserCrudValidator validator = new UserCrudValidator(new User.Builder().build());
+        if(!validator.isOldPasswordValid(oldPassword)){
+            view().showIncorrectOldPassword(validator.getErrorMessage());
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private void processRegisterOnNext(ServerResult<User> result) {
@@ -237,7 +262,7 @@ public class RegisterPresenterImpl extends BasePresenter<User, RegisterView>
     private boolean isCorrectLoginInput(CharSequence text) {
         if (text != null && !TextUtils.isEmpty(text)) {
             User user = new User.Builder().setLogin(text.toString()).build();
-            RegisterValidator validator = new RegisterValidator(user);
+            UserCrudValidator validator = new UserCrudValidator(user);
             if (!validator.isLoginValid()) {
                 view().showIncorrectLogin(validator.getErrorMessage());
                 return false;

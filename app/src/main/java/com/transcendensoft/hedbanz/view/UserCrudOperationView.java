@@ -24,7 +24,7 @@ import android.support.annotation.StringRes;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface RegisterView extends BaseView{
+public interface UserCrudOperationView extends BaseView{
     void showIncorrectLogin(@StringRes int message);
 
     void showIncorrectEmail(@StringRes int message);
@@ -32,6 +32,8 @@ public interface RegisterView extends BaseView{
     void showIncorrectPassword(@StringRes int message);
 
     void showIncorrectConfirmPassword(@StringRes int message);
+
+    void showIncorrectOldPassword(@StringRes int message);
 
     void startSmileAnimation();
 
@@ -45,5 +47,5 @@ public interface RegisterView extends BaseView{
 
     void hideLoginAvailability();
 
-    void registerSuccess();
+    void crudOperationSuccess();
 }

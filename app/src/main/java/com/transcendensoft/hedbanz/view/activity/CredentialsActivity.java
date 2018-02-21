@@ -2,14 +2,12 @@ package com.transcendensoft.hedbanz.view.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,7 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.crashlytics.android.Crashlytics;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.model.data.PreferenceManager;
 import com.transcendensoft.hedbanz.model.entity.User;
@@ -34,23 +31,23 @@ import butterknife.OnClick;
 
 import static android.view.View.GONE;
 
-public class RegisterActivity extends AppCompatActivity implements UserCrudOperationView {
-    private static final String TAG = RegisterActivity.class.getName();
-
+public class CredentialsActivity extends AppCompatActivity implements UserCrudOperationView {
     @BindView(R.id.ivSmileGif) ImageView mIvSmileGif;
     @BindView(R.id.etLogin) EditText mEtLogin;
     @BindView(R.id.etEmail) EditText mEtEmail;
-    @BindView(R.id.etPassword) EditText mEtPassword;
+    @BindView(R.id.etOldPassword) EditText mEtOldPassword;
+    @BindView(R.id.etNewPassword) EditText mEtNewPassword;
     @BindView(R.id.etConfirmPassword) EditText mEtConfirmPassword;
     @BindView(R.id.tvErrorLogin) TextView mTvLoginError;
     @BindView(R.id.tvErrorEmail) TextView mTvEmailError;
-    @BindView(R.id.tvErrorPassword) TextView mTvPasswordError;
+    @BindView(R.id.tvErrorNewPassword) TextView mTvNewPasswordError;
+    @BindView(R.id.tvErrorOldPassword) TextView mTvOldPasswordError;
     @BindView(R.id.tvErrorConfirmPassword) TextView mTvConfirmPasswordError;
     @BindView(R.id.tvLoginAvailability) TextView mTvLoginAvailability;
     @BindView(R.id.pbLoginLoading) ProgressBar mPbLoginLoading;
 
-    private ProgressDialog mProgressDialog;
     private UserCrudPresenterImpl mPresenter;
+    private ProgressDialog mProgressDialog;
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -58,6 +55,7 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudOpera
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_credentials);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -66,7 +64,6 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudOpera
                     .getColor(R.color.colorPrimaryLight));
         }
 
-        setContentView(R.layout.activity_register);
         ButterKnife.bind(this, this);
 
         int size = (int) AndroidUtils.convertDpToPixel(100, this);
@@ -74,6 +71,7 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudOpera
 
         initProgressDialog();
         initPresenter(savedInstanceState);
+        initUserData();
     }
 
     @Override
@@ -137,7 +135,8 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudOpera
     private void initEditTextListeners() {
         mPresenter.initAnimEditTextListener(mEtLogin);
         mPresenter.initAnimEditTextListener(mEtEmail);
-        mPresenter.initAnimEditTextListener(mEtPassword);
+        mPresenter.initAnimEditTextListener(mEtOldPassword);
+        mPresenter.initAnimEditTextListener(mEtNewPassword);
         mPresenter.initAnimEditTextListener(mEtConfirmPassword);
     }
 
@@ -148,16 +147,23 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudOpera
         mProgressDialog.setIndeterminate(true);
     }
 
+    private void initUserData(){
+        User user = new PreferenceManager(this).getUser();
+
+        mEtLogin.setText(user.getLogin());
+        mEtEmail.setText(user.getEmail());
+    }
+
     /*------------------------------------*
      *--------- Set data to view ---------*
      *------------------------------------*/
     @Override
     public void crudOperationSuccess() {
-        hideAll();
-        new PreferenceManager(this).setIsAuthorised(true);
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        mEtNewPassword.setText("");
+        mEtConfirmPassword.setText("");
+        mEtOldPassword.setText("");
+        AndroidUtils.showShortToast(this, R.string.credentials_update_success);
+        AndroidUtils.hideSoftKeyboard(this, this.getCurrentFocus());
     }
 
     @Override
@@ -177,18 +183,18 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudOpera
     /*------------------------------------*
      *-------- On click listeners --------*
      *------------------------------------*/
-    @OnClick(R.id.btnRegisterSubmit)
-    protected void onRegisterSubmitClicked() {
+    @OnClick(R.id.btnUpdateCredentials)
+    protected void onUpdateDataClicked() {
         hideAll();
 
         User user = new User.Builder()
                 .setEmail(mEtEmail.getText().toString())
                 .setLogin(mEtLogin.getText().toString())
-                .setPassword(mEtPassword.getText().toString())
+                .setPassword(mEtNewPassword.getText().toString())
                 .setConfirmPassword(mEtConfirmPassword.getText().toString())
                 .build();
 
-        mPresenter.registerUser(user);
+        mPresenter.updateUser(user, mEtOldPassword.getText().toString());
     }
 
     @OnClick(R.id.ivBack)
@@ -266,8 +272,15 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudOpera
     @Override
     public void showIncorrectPassword(int message) {
         hideLoading();
-        mTvPasswordError.setText(getString(message));
-        mTvPasswordError.setVisibility(View.VISIBLE);
+        mTvNewPasswordError.setText(getString(message));
+        mTvNewPasswordError.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showIncorrectOldPassword(int message) {
+        hideLoading();
+        mTvOldPasswordError.setText(getString(message));
+        mTvOldPasswordError.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -275,12 +288,6 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudOpera
         hideLoading();
         mTvConfirmPasswordError.setText(getString(message));
         mTvConfirmPasswordError.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showIncorrectOldPassword(int message) {
-        Log.e(TAG, "Cant show incorrect OLD password withing register. Here are no old password.");
-        Crashlytics.log("Cant show incorrect OLD password withing register. Here are no old password.");
     }
 
     @Override
@@ -313,7 +320,8 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudOpera
         mTvConfirmPasswordError.setVisibility(GONE);
         mTvEmailError.setVisibility(GONE);
         mTvLoginError.setVisibility(GONE);
-        mTvPasswordError.setVisibility(GONE);
+        mTvNewPasswordError.setVisibility(GONE);
+        mTvOldPasswordError.setVisibility(GONE);
         mTvLoginAvailability.setVisibility(View.INVISIBLE);
         mPbLoginLoading.setVisibility(View.INVISIBLE);
     }

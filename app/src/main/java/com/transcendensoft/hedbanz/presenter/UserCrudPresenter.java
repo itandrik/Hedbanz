@@ -26,8 +26,10 @@ import com.transcendensoft.hedbanz.model.entity.User;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface RegisterPresenter {
+public interface UserCrudPresenter {
     void registerUser(User user);
+
+    void updateUser(User user, String oldPassword);
 
     void initAnimEditTextListener(EditText editText);
 
