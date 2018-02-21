@@ -18,7 +18,7 @@ package com.transcendensoft.hedbanz.presenter.impl;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.transcendensoft.hedbanz.model.api.manager.LoginRegisterManager;
+import com.transcendensoft.hedbanz.model.api.manager.UserCrudApiManager;
 import com.transcendensoft.hedbanz.model.entity.ServerResult;
 import com.transcendensoft.hedbanz.model.entity.ServerStatus;
 import com.transcendensoft.hedbanz.model.entity.User;
@@ -26,7 +26,7 @@ import com.transcendensoft.hedbanz.model.entity.error.LoginError;
 import com.transcendensoft.hedbanz.model.entity.error.ServerError;
 import com.transcendensoft.hedbanz.presenter.BasePresenter;
 import com.transcendensoft.hedbanz.presenter.LoginPresenter;
-import com.transcendensoft.hedbanz.presenter.validation.RegisterValidator;
+import com.transcendensoft.hedbanz.presenter.validation.UserCrudValidator;
 import com.transcendensoft.hedbanz.util.AndroidUtils;
 import com.transcendensoft.hedbanz.view.LoginView;
 
@@ -52,7 +52,7 @@ public class LoginPresenterImpl extends BasePresenter<User, LoginView> implement
     public void login(User user) {
         setModel(user);
         if (isUserValid(user)) {
-            Disposable disposable = LoginRegisterManager.getInstance()
+            Disposable disposable = UserCrudApiManager.getInstance()
                     .authUser(user)
                     .subscribe(
                             this::processRegisterOnNext,
@@ -64,7 +64,7 @@ public class LoginPresenterImpl extends BasePresenter<User, LoginView> implement
     }
 
     private boolean isUserValid(User user) {
-        RegisterValidator validator = new RegisterValidator(user);
+        UserCrudValidator validator = new UserCrudValidator(user);
         boolean result = true;
         if (!validator.isLoginValid()) {
             view().showLoginError(validator.getErrorMessage());

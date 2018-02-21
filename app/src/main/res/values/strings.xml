@@ -54,4 +54,25 @@
 
     <!-- Create room fragment -->
     <string name="room_creation_title">Создать комнату</string>
+
+    <!-- Menu fragment -->
+    <string name="menu_games_played">Игр сыграно</string>
+    <string name="menu_friends">Друзей</string>
+    <string name="menu_money">Стикоинов</string>
+    <string name="menu_action_credentials">Мои данные</string>
+    <string name="menu_action_friends">Мои друзья</string>
+    <string name="menu_action_shop">Магазин</string>
+    <string name="menu_action_help">Помощь</string>
+    <string name="menu_action_settings">Настройки</string>
+    <string name="menu_action_logout">Выйти</string>
+
+    <!-- Credentials activity -->
+    <string name="credentials_title">Мои данные</string>
+    <string name="credentials_old_password">Старый пароль</string>
+    <string name="credentials_new_password">Новый пароль</string>
+    <string name="credentials_confirm_new_password">Подтверждение нового пароля</string>
+    <string name="credentials_action_save_data">Изменить данные</string>
+    <string name="credentials_error_confirm_password">Пароль подтвержден неправильно.</string>
+    <string name="credentials_update_success">Ваши данные успешно обновлены!</string>
+
 </resources>

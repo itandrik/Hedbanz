@@ -18,6 +18,8 @@ package com.transcendensoft.hedbanz.model.api.service;
 import com.transcendensoft.hedbanz.model.entity.ServerResult;
 import com.transcendensoft.hedbanz.model.entity.User;
 
+import java.util.HashMap;
+
 import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -35,4 +37,7 @@ public interface ApiService {
 
     @POST("authenticate")
     Observable<ServerResult<User>> authUser(@Body User user);
+
+    @POST("update")
+    Observable<ServerResult<User>> updateUser(@Body HashMap<String, Object> userMap);
 }

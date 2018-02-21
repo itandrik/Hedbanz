@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.view.fragment;
  * limitations under the License.
  */
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,8 +25,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.view.activity.CredentialsActivity;
 
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Fragment that shows user info and menu items such as:
@@ -43,6 +46,14 @@ public class MenuFragment extends Fragment{
 
         ButterKnife.bind(this, view);
 
+        view.findViewById(R.id.btnCredentials).setOnClickListener(v -> {
+            startActivity(new Intent(getActivity(), CredentialsActivity.class));
+        });
+
         return view;
+    }
+
+    @OnClick(R.id.btnCredentials)
+    protected void onCredentialsClicked(){
     }
 }

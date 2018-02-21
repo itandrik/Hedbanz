@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  *         Developed by <u>Transcendensoft</u>
  */
 
-public class RegisterValidator implements Validator<User> {
+public class UserCrudValidator implements Validator<User> {
     private static final String EMAIL_REGEX = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     private static final String LOGIN_REGEX = "^[a-zA-Z0-9.]{3,10}$";
     private static final String PASSWORD_REGEX = "\\S{4,14}";
@@ -48,12 +48,12 @@ public class RegisterValidator implements Validator<User> {
     private User mUser;
     private @StringRes int mErrorMessage;
 
-    public RegisterValidator(User mUser) {
+    public UserCrudValidator(User mUser) {
         this.mUser = mUser;
         if (mUser == null) {
             mUser = new User.Builder().build();
             Crashlytics.log("Error while validation on register. " +
-                    "User entity is null. RegisterValidator class");
+                    "User entity is null. UserCrudValidator class");
         }
     }
 
@@ -110,13 +110,13 @@ public class RegisterValidator implements Validator<User> {
         return true;
     }
 
-    /*public boolean isOldPasswordValid(){
-        if(TextUtils.isEmpty(mUser.getOldPassword())){
-            mErrorMessage = mContext.getString(R.string.register_validate_empty_old_password);
+    public boolean isOldPasswordValid(String oldPassword){
+        if(TextUtils.isEmpty(oldPassword)){
+            mErrorMessage = R.string.credentials_error_confirm_password;
             return false;
         }
         return true;
-    }*/
+    }
 
     @Override
     public @StringRes

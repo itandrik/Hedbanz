@@ -20,8 +20,8 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
             android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
             android:background="@android:color/white"
             android:elevation="80dp">
 
@@ -34,7 +34,7 @@
                 app:tabGravity="fill"
                 app:tabIndicatorHeight="0dp"
                 app:tabMode="fixed"
-                app:tabSelectedTextColor="@android:color/black"/>
+                app:tabSelectedTextColor="@android:color/black" />
 
         </android.support.design.widget.AppBarLayout>
 
@@ -43,27 +43,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/tabs"
-            android:layout_below="@id/toolbar"/>
-        <!--<FrameLayout
-            android:id="@+id/flFabContainer"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true">-->
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:elevation="80dp"
-                app:fabSize="mini"
-                android:layout_centerHorizontal="true"
-                app:pressedTranslationZ="12dp"
-                app:borderWidth="3dp"
-                android:layout_alignParentBottom="true"
-                app:srcCompat="@drawable/ic_arrow_up"/>
-        <!--</FrameLayout>-->
+            android:layout_below="@id/toolbar" />
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            app:borderWidth="3dp"
+            app:elevation="80dp"
+            app:fabSize="mini"
+            app:pressedTranslationZ="12dp"
+            app:srcCompat="@drawable/ic_arrow_up" />
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>
