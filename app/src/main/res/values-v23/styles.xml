@@ -24,9 +24,9 @@
     </style>
 
     <style name="ThemeRegister" parent="Theme.AppCompat.Light">
-        <item name="colorPrimary">@color/loginTextDarkRed</item>
-        <item name="colorPrimaryDark">@color/loginTextDarkRed</item>
-        <item name="colorAccent">@color/loginTextDarkRed</item>
+        <item name="colorPrimary">@color/textDarkRed</item>
+        <item name="colorPrimaryDark">@color/textDarkRed</item>
+        <item name="colorAccent">@color/textDarkRed</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 

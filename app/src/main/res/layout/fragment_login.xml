@@ -85,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/open_sans_light"
                     android:text="@string/login_title"
-                    android:textColor="@color/loginTextDarkRed" />
+                    android:textColor="@color/textDarkRed" />
 
                 <EditText
                     android:id="@+id/etLogin"
@@ -119,7 +119,7 @@
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/open_sans_light"
                     android:text="@string/login_password_title"
-                    android:textColor="@color/loginTextDarkRed" />
+                    android:textColor="@color/textDarkRed" />
 
                 <EditText
                     android:id="@+id/etPassword"
@@ -155,7 +155,7 @@
                     android:focusable="true"
                     android:fontFamily="@font/open_sans_semibold"
                     android:text="@string/login_password_recovery"
-                    android:textColor="@color/loginTextDarkRed" />
+                    android:textColor="@color/textDarkRed" />
 
                 <Button
                     android:id="@+id/btnEnter"

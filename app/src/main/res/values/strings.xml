@@ -54,6 +54,13 @@
 
     <!-- Create room fragment -->
     <string name="room_creation_title">Создать комнату</string>
+    <string name="room_creation_room_name">Название комнаты</string>
+    <string name="room_creation_players_count">Количество игроков</string>
+    <string name="room_creation_1_player">%1$d игрок</string>
+    <string name="room_creation_4_players">%1$d игрока</string>
+    <string name="room_creation_8_players">%1$d игроков</string>
+    <string name="room_creation_name_example">e.g. Game is coming!</string>
+    <string name="room_creation_action_create">Создать</string>
 
     <!-- Menu fragment -->
     <string name="menu_games_played">Игр сыграно</string>

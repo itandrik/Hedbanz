@@ -124,7 +124,7 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
     private void changeTabView(boolean isActive, int index, @DrawableRes int iconRes, TextView tabText) {
         if(getActivity() != null) {
             if (isActive) {
-                tabText.setTextColor(ContextCompat.getColor(getActivity(), R.color.loginTextDarkRed));
+                tabText.setTextColor(ContextCompat.getColor(getActivity(), R.color.textDarkRed));
             } else {
                 tabText.setTextColor(ContextCompat.getColor(getActivity(), R.color.textSecondary));
             }

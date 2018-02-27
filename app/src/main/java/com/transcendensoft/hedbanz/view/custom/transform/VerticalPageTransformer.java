@@ -26,54 +26,29 @@ import static android.view.View.GONE;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-
 public class VerticalPageTransformer implements ViewPager.PageTransformer {
     @Override
     public void transformPage(View view, float position) {
-        if (position <= -1) { // [-Infinity,-1)
-            // This page is way off-screen to the left.
+        if (position <= -1) {
             view.setAlpha(0);
             view.setVisibility(GONE);
         }else if(position <= 0){
             view.setVisibility(View.VISIBLE);
             view.setAlpha(position + 1);
-            // Counteract the default slide transition
             view.setTranslationX(view.getWidth() * -position);
 
-            //set Y position to swipe in from top
             float yPosition = position * view.getHeight()* 0.05f;
             view.setTranslationY(yPosition);
         } else if (position <= 1) {
             view.setVisibility(View.VISIBLE);
             view.setAlpha(1 - position);
-            // Counteract the default slide transition
             view.setTranslationX(view.getWidth() * -position);
 
-            //set Y position to swipe in from top
             float yPosition = position * view.getHeight();
             view.setTranslationY(yPosition);
-        } else { // (1,+Infinity]
-            // This page is way off-screen to the right.
+        } else {
             view.setVisibility(GONE);
             view.setAlpha(0);
         }
-        /*if (position < -1) { // [-Infinity,-1)
-            // This page is way off-screen to the left.
-            view.setAlpha(0);
-
-        } else if (position <= 1) { // [-1,1]
-            view.setAlpha(1);
-
-            // Counteract the default slide transition
-            view.setTranslationX(view.getWidth() * -position);
-
-            //set Y position to swipe in from top
-            float yPosition = position * view.getHeight();
-            view.setTranslationY(yPosition);
-
-        } else { // (1,+Infinity]
-            // This page is way off-screen to the right.
-            view.setAlpha(0);
-        }*/
     }
 }
