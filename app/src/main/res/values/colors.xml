@@ -16,10 +16,10 @@
     <color name="textSecondaryLight">#E0E0E0</color>
     <color name="textWhite">#FFFFFF</color>
     <color name="textRed">#D32F2F</color>
+    <color name="textDarkRed">#AD2201</color>
 
     <!-- Login -->
     <color name="loginFrameBackground">#77FFFFFF</color>
-    <color name="loginTextDarkRed">#AD2201</color>
     <color name="loginError">#ff0033</color>
     <color name="loginSuccess">#91DC5A</color>
     <color name="loginRipple">#E0E0E0</color>

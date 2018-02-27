@@ -38,8 +38,13 @@ public class MainActivity extends AppCompatActivity {
     public void openMenu(){
         mViewPager.setCurrentItem(1, true);
     }
+
     @Override
     public void onBackPressed() {
-        mViewPager.setCurrentItem(0, true);
+        if(mViewPager.getCurrentItem() != 0) {
+            mViewPager.setCurrentItem(0, true);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

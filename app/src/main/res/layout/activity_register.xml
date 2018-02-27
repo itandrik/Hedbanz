@@ -84,7 +84,7 @@
                     android:layout_below="@id/topSpace"
                     android:fontFamily="@font/open_sans_light"
                     android:text="@string/login_title"
-                    android:textColor="@color/loginTextDarkRed" />
+                    android:textColor="@color/textDarkRed" />
 
                 <EditText
                     android:id="@+id/etLogin"
@@ -136,7 +136,7 @@
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/open_sans_light"
                     android:text="@string/register_email_title"
-                    android:textColor="@color/loginTextDarkRed" />
+                    android:textColor="@color/textDarkRed" />
 
                 <EditText
                     android:id="@+id/etEmail"
@@ -170,7 +170,7 @@
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/open_sans_light"
                     android:text="@string/login_password_title"
-                    android:textColor="@color/loginTextDarkRed" />
+                    android:textColor="@color/textDarkRed" />
 
                 <EditText
                     android:id="@+id/etPassword"
@@ -204,7 +204,7 @@
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/open_sans_light"
                     android:text="@string/register_confirm_password"
-                    android:textColor="@color/loginTextDarkRed" />
+                    android:textColor="@color/textDarkRed" />
 
                 <EditText
                     android:id="@+id/etConfirmPassword"

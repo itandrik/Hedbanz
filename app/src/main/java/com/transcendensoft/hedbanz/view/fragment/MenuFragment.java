@@ -23,10 +23,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.model.data.PreferenceManager;
+import com.transcendensoft.hedbanz.util.AndroidUtils;
 import com.transcendensoft.hedbanz.view.activity.CredentialsActivity;
+import com.transcendensoft.hedbanz.view.activity.MainActivity;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -37,8 +42,11 @@ import butterknife.OnClick;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-
 public class MenuFragment extends Fragment{
+    @BindView(R.id.tvFriends) TextView mTvFriends;
+    @BindView(R.id.tvGamesPlayed) TextView mTvGamesPlayed;
+    @BindView(R.id.tvMoney) TextView mTvMoney;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,5 +63,50 @@ public class MenuFragment extends Fragment{
 
     @OnClick(R.id.btnCredentials)
     protected void onCredentialsClicked(){
+        AndroidUtils.showShortToast(getActivity(), R.string.in_developing);
+    }
+
+    @OnClick(R.id.tvFriends)
+    protected void onFriendsAmountClicked(){
+        onFriendsButtonClicked();
+    }
+
+    @OnClick(R.id.btnFriends)
+    protected void onFriendsButtonClicked(){
+        AndroidUtils.showShortToast(getActivity(), R.string.in_developing);
+    }
+
+    @OnClick(R.id.tvMoney)
+    protected void onMoneysAmountClicked(){
+        AndroidUtils.showShortToast(getActivity(), R.string.in_developing);
+        //TODO add money purchasing
+    }
+
+    @OnClick(R.id.btnShop)
+    protected void onShopClicked(){
+        AndroidUtils.showShortToast(getActivity(), R.string.in_developing);
+    }
+
+    @OnClick(R.id.btnHelp)
+    protected void onHelpClicked(){
+        AndroidUtils.showShortToast(getActivity(), R.string.in_developing);
+    }
+
+    @OnClick(R.id.btnSettings)
+    protected void onSettingsClicked(){
+        AndroidUtils.showShortToast(getActivity(), R.string.in_developing);
+    }
+
+    @OnClick(R.id.btnExit)
+    protected void onLogoutClicked(){
+        new PreferenceManager(getActivity()).setIsAuthorised(false);
+
+    }
+
+    @OnClick(R.id.fabDown)
+    protected void onFabDownClicked(){
+        if(getActivity() != null) {
+            ((MainActivity) getActivity()).onBackPressed();
+        }
     }
 }
