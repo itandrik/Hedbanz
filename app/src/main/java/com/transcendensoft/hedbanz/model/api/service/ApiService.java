@@ -15,13 +15,16 @@ package com.transcendensoft.hedbanz.model.api.service;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.model.entity.Room;
 import com.transcendensoft.hedbanz.model.entity.ServerResult;
 import com.transcendensoft.hedbanz.model.entity.User;
 
 import java.util.HashMap;
+import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 
@@ -40,4 +43,10 @@ public interface ApiService {
 
     @POST("update")
     Observable<ServerResult<User>> updateUser(@Body HashMap<String, Object> userMap);
+
+    @GET("rooms")
+    Observable<ServerResult<List<Room>>> getRooms();
+
+    @PUT("rooms")
+    Observable<ServerResult<Room>> createRoom(@Body HashMap<String, Object> roomDataMap);
 }

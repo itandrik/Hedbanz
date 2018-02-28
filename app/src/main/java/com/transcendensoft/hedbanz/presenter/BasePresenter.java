@@ -2,6 +2,9 @@ package com.transcendensoft.hedbanz.presenter;
 
 import android.support.annotation.NonNull;
 
+import com.transcendensoft.hedbanz.util.AndroidUtils;
+import com.transcendensoft.hedbanz.view.BaseView;
+
 import java.lang.ref.WeakReference;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -62,5 +65,18 @@ public abstract class BasePresenter<M,V> {
 
     protected boolean setupDone() {
         return view() != null && model != null;
+    }
+
+    protected void processOnSubscribe(Disposable d){
+        if(view() instanceof BaseView) {
+            BaseView view = (BaseView) view();
+            if (!d.isDisposed() && view.provideContext() != null) {
+                if (AndroidUtils.isNetworkConnected(view.provideContext())) {
+                    view.showLoading();
+                } else {
+                    view.showNetworkError();
+                }
+            }
+        }
     }
 }

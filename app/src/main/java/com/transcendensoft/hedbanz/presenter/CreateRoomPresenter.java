@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.view;
+package com.transcendensoft.hedbanz.presenter;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,20 +15,16 @@ package com.transcendensoft.hedbanz.view;
  * limitations under the License.
  */
 
-import android.support.annotation.StringRes;
-
 import com.transcendensoft.hedbanz.model.entity.Room;
 
 /**
- * Describes room creation fragment
+ * Interface that describes methods which is needed
+ * to create room and start game
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 
-public interface CreateRoomView extends BaseView{
-    void showIncorrectRoomName(@StringRes int errorMessage);
-    void showIncorrectRoomPassword(@StringRes int errorMessage);
-    void createRoomSuccess(Room room);
-    void createRoomError(Room room);
+public interface CreateRoomPresenter {
+    void createRoom(Room room);
 }
