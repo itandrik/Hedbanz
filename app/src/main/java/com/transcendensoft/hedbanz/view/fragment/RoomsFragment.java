@@ -21,12 +21,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.adapter.RoomsAdapter;
 import com.transcendensoft.hedbanz.model.entity.Room;
 import com.transcendensoft.hedbanz.presenter.PresenterManager;
 import com.transcendensoft.hedbanz.presenter.impl.RoomsPresenterImpl;
@@ -36,6 +41,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Fragment that shows room list.
@@ -43,12 +49,16 @@ import butterknife.ButterKnife;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-
-public class RoomsFragment extends Fragment implements RoomsView{
+public class RoomsFragment extends Fragment implements RoomsView {
     @BindView(R.id.swipeRefreshLayout) SwipeRefreshLayout mRefreshLayout;
     @BindView(R.id.rvRooms) RecyclerView mRecycler;
+    @BindView(R.id.rlEmptyListContainer) RelativeLayout mRlEmptyList;
+    @BindView(R.id.rlErrorNetwork) RelativeLayout mRlErrorNetwork;
+    @BindView(R.id.rlErrorServer) RelativeLayout mRlErrorServer;
+    @BindView(R.id.flLoadingContainer) FrameLayout mFlLoadingContainer;
 
     private RoomsPresenterImpl mPresenter;
+    private RoomsAdapter mAdapter;
 
     /*------------------------------------*
      *-------- Fragment lifecycle --------*
@@ -59,6 +69,11 @@ public class RoomsFragment extends Fragment implements RoomsView{
         View view = inflater.inflate(R.layout.fragment_rooms, container, false);
 
         ButterKnife.bind(this, view);
+
+        initPresenter(savedInstanceState);
+        if(mPresenter != null){
+            mPresenter.loadRooms();
+        }
 
         return view;
     }
@@ -93,7 +108,7 @@ public class RoomsFragment extends Fragment implements RoomsView{
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
-    private void initPresenter(Bundle savedInstanceState){
+    private void initPresenter(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             mPresenter = new RoomsPresenterImpl();
         } else {
@@ -106,37 +121,61 @@ public class RoomsFragment extends Fragment implements RoomsView{
      *------------------------------------*/
     @Override
     public void setRoomsToRecycler(List<Room> rooms) {
+        mAdapter = new RoomsAdapter();
+        mRecycler.setItemAnimator(new DefaultItemAnimator());
+        mRecycler.setLayoutManager(new LinearLayoutManager(
+                getActivity(), LinearLayoutManager.VERTICAL, false));
 
+        mRecycler.setAdapter(mAdapter);
+        mAdapter.addAll(rooms);
     }
 
     /*------------------------------------*
      *-------- On click listeners --------*
      *------------------------------------*/
+    @OnClick(R.id.btnRetryNetwork)
+    protected void onRetryNetworkClicked(){
+        onRetryServerClicked();
+    }
+
+    @OnClick(R.id.btnRetryServer)
+    protected void onRetryServerClicked(){
+        if(mPresenter != null){
+            mPresenter.loadRooms();
+        }
+    }
 
     /*------------------------------------*
      *-------- Error and loading ---------*
      *------------------------------------*/
     @Override
     public void showServerError() {
-
+        hideAll();
+        mRlErrorServer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showNetworkError() {
-
+        hideAll();
+        mRlErrorNetwork.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showLoading() {
-
+        hideAll();
+        mFlLoadingContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showContent() {
-
+        hideAll();
+        mRefreshLayout.setVisibility(View.VISIBLE);
     }
 
-    private void hideLoading(){
-
+    private void hideAll() {
+        mRlErrorServer.setVisibility(View.GONE);
+        mRlErrorNetwork.setVisibility(View.GONE);
+        mFlLoadingContainer.setVisibility(View.GONE);
+        mRefreshLayout.setVisibility(View.GONE);
     }
 }

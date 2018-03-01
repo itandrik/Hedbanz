@@ -25,6 +25,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 
@@ -35,13 +36,13 @@ import retrofit2.http.PUT;
  *         Developed by <u>Transcendensoft</u>
  */
 public interface ApiService {
-    @PUT("register")
+    @PUT("user")
     Observable<ServerResult<User>> registerUser(@Body User user);
 
-    @POST("authenticate")
+    @POST("user")
     Observable<ServerResult<User>> authUser(@Body User user);
 
-    @POST("update")
+    @PATCH("user")
     Observable<ServerResult<User>> updateUser(@Body HashMap<String, Object> userMap);
 
     @GET("rooms")
