@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.view;
+package com.transcendensoft.hedbanz.presenter.impl;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -16,16 +16,33 @@ package com.transcendensoft.hedbanz.view;
  */
 
 import com.transcendensoft.hedbanz.model.entity.Room;
+import com.transcendensoft.hedbanz.presenter.BasePresenter;
+import com.transcendensoft.hedbanz.presenter.RoomsPresenter;
+import com.transcendensoft.hedbanz.view.RoomsView;
 
 import java.util.List;
 
 /**
- * Describes fragment, that shows room list
+ * Presenter from MVP pattern, that contains
+ * methods show all available rooms
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 
-public interface RoomsView extends BaseView{
-    void setRoomsToRecycler(List<Room> rooms);
+public class RoomsPresenterImpl extends BasePresenter<List<Room>, RoomsView> implements RoomsPresenter{
+    @Override
+    protected void updateView() {
+
+    }
+
+    @Override
+    public void loadRooms() {
+
+    }
+
+    @Override
+    public void refreshRooms() {
+
+    }
 }

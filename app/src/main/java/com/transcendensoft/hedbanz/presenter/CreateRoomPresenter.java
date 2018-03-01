@@ -24,7 +24,6 @@ import com.transcendensoft.hedbanz.model.entity.Room;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-
 public interface CreateRoomPresenter {
     void createRoom(Room room);
 }

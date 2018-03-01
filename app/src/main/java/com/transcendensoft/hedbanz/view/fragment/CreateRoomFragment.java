@@ -25,15 +25,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.model.entity.Builder;
 import com.transcendensoft.hedbanz.model.entity.Room;
 import com.transcendensoft.hedbanz.presenter.PresenterManager;
 import com.transcendensoft.hedbanz.presenter.impl.CreateRoomPresenterImpl;
 import com.transcendensoft.hedbanz.util.AndroidUtils;
 import com.transcendensoft.hedbanz.view.CreateRoomView;
+import com.warkiz.widget.IndicatorSeekBar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,6 +52,9 @@ import static android.view.View.GONE;
 public class CreateRoomFragment extends Fragment implements CreateRoomView{
     @BindView(R.id.tvErrorRoomName) TextView mTvErrorRoomName;
     @BindView(R.id.tvErrorRoomPassword) TextView mTvErrorRoomPassword;
+    @BindView(R.id.etRoomName) EditText mEtRoomName;
+    @BindView(R.id.etRoomPassword) EditText mEtRoomPassword;
+    @BindView(R.id.isbPlayersQuantity) IndicatorSeekBar mIsbMaxPlayersQuantity;
 
     private CreateRoomPresenterImpl mPresenter;
     private ProgressDialog mProgress;
@@ -122,8 +126,11 @@ public class CreateRoomFragment extends Fragment implements CreateRoomView{
     @OnClick(R.id.btnCreateRoom)
     protected void onCreateRoomClicked(){
         if(mPresenter != null){
-            Room room = new Builder().createRoom();
-            //TODO set room fields
+            Room room = new Room.Builder()
+                    .setMaxPlayers((byte)mIsbMaxPlayersQuantity.getProgress())
+                    .setName(mEtRoomName.getText().toString())
+                    .setPassword(mEtRoomPassword.getText().toString())
+                    .build();
             mPresenter.createRoom(room);
         }
     }
@@ -134,11 +141,13 @@ public class CreateRoomFragment extends Fragment implements CreateRoomView{
     @Override
     public void createRoomSuccess(Room room) {
         AndroidUtils.showShortToast(getActivity(), "Room created successfully");
+        //TODO open view
     }
 
     @Override
     public void createRoomError(Room room) {
         AndroidUtils.showShortToast(getActivity(), "Error while room creation");
+        //TODO show some message
     }
 
     /*------------------------------------*

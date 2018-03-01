@@ -18,6 +18,8 @@
     <!-- Errors -->
     <string name="error_server">Похоже что у нас проблемы с сервером. Повторите попытку позже.</string>
     <string name="error_network">Отсутствует подключение к интернету.</string>
+    <string name="error_empty_list">Список пуст</string>
+    <string name="error_action_retry">Повторить попытку</string>
 
     <!-- Login fragment -->
     <string name="login_intro">Поспешите, ваши друзья вас ждут!</string>

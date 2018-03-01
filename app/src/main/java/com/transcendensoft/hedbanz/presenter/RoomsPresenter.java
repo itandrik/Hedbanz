@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.view;
+package com.transcendensoft.hedbanz.presenter;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,17 +15,15 @@ package com.transcendensoft.hedbanz.view;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.model.entity.Room;
-
-import java.util.List;
-
 /**
- * Describes fragment, that shows room list
+ * Interface that describes methods which is needed
+ * to show all rooms and refresh them
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 
-public interface RoomsView extends BaseView{
-    void setRoomsToRecycler(List<Room> rooms);
+public interface RoomsPresenter {
+    void loadRooms();
+    void refreshRooms();
 }
