@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.view;
+package com.transcendensoft.hedbanz.presenter;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -17,17 +17,13 @@ package com.transcendensoft.hedbanz.view;
 
 import com.transcendensoft.hedbanz.model.entity.Room;
 
-import java.util.List;
-
 /**
- * Describes fragment, that shows room list
+ * Interface that describes methods which is needed
+ * to create room and start game
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-
-public interface RoomsView extends BaseView{
-    void addRoomsToRecycler(List<Room> rooms);
-    void clearAndAddRoomsToRecycler(List<Room> rooms);
-    void showEmptyList();
+public interface CreateRoomPresenter {
+    void createRoom(Room room);
 }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/ivNoNetwork"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_error_server"
+        android:layout_marginTop="70dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/textSecondary"
+        android:textSize="18sp"
+        android:text="@string/error_server"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/ivNoNetwork"/>
+    <Button
+        android:id="@+id/btnRetryServer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="36dp"
+        android:layout_marginLeft="36dp"
+        android:layout_marginRight="36dp"
+        android:layout_marginStart="36dp"
+        android:text="@string/error_action_retry"
+        android:textColor="@color/textPrimary"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="36dp"/>
+
+</RelativeLayout>

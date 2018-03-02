@@ -15,6 +15,10 @@ package com.transcendensoft.hedbanz.view;
  * limitations under the License.
  */
 
+import android.support.annotation.StringRes;
+
+import com.transcendensoft.hedbanz.model.entity.Room;
+
 /**
  * Describes room creation fragment
  *
@@ -22,5 +26,9 @@ package com.transcendensoft.hedbanz.view;
  *         Developed by <u>Transcendensoft</u>
  */
 
-public interface CreateRoomView{
+public interface CreateRoomView extends BaseView{
+    void showIncorrectRoomName(@StringRes int errorMessage);
+    void showIncorrectRoomPassword(@StringRes int errorMessage);
+    void createRoomSuccess(Room room);
+    void createRoomError(Room room);
 }

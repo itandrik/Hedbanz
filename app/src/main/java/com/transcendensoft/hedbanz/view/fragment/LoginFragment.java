@@ -156,8 +156,8 @@ public class LoginFragment extends Fragment implements LoginView{
     }
 
     /*------------------------------------*
-         *-------- Error and loading ---------*
-         *------------------------------------*/
+     *-------- Error and loading ---------*
+     *------------------------------------*/
     @Override
     public void showServerError() {
         hideLoading();

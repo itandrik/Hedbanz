@@ -18,7 +18,7 @@ package com.transcendensoft.hedbanz.presenter;
 import com.transcendensoft.hedbanz.model.entity.User;
 
 /**
- * Interface that shows describes methods which is needed
+ * Interface that describes methods which is needed
  * to log in some user.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com

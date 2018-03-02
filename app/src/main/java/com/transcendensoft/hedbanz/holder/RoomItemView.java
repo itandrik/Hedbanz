@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.view;
+package com.transcendensoft.hedbanz.holder;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,19 +15,21 @@ package com.transcendensoft.hedbanz.view;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.model.entity.Room;
-
-import java.util.List;
+import android.support.annotation.DrawableRes;
 
 /**
- * Describes fragment, that shows room list
+ * Interface that describes room view holder
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 
-public interface RoomsView extends BaseView{
-    void addRoomsToRecycler(List<Room> rooms);
-    void clearAndAddRoomsToRecycler(List<Room> rooms);
-    void showEmptyList();
+public interface RoomItemView {
+    void setIcon(@DrawableRes int icon);
+
+    void setName(String name);
+
+    void setCurAndMaxPlayers(int currentPlayers, int maxPlayers);
+
+    void setIsProtected(boolean isProtected);
 }

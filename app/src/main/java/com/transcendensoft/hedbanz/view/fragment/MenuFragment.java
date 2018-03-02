@@ -30,6 +30,7 @@ import com.transcendensoft.hedbanz.model.data.PreferenceManager;
 import com.transcendensoft.hedbanz.util.AndroidUtils;
 import com.transcendensoft.hedbanz.view.activity.CredentialsActivity;
 import com.transcendensoft.hedbanz.view.activity.MainActivity;
+import com.transcendensoft.hedbanz.view.activity.StartActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -100,6 +101,11 @@ public class MenuFragment extends Fragment{
     @OnClick(R.id.btnExit)
     protected void onLogoutClicked(){
         new PreferenceManager(getActivity()).setIsAuthorised(false);
+
+        Intent intent = new Intent(getActivity(), StartActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(intent);
 
     }
 

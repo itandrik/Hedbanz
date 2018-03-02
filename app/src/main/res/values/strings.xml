@@ -18,6 +18,8 @@
     <!-- Errors -->
     <string name="error_server">Похоже что у нас проблемы с сервером. Повторите попытку позже.</string>
     <string name="error_network">Отсутствует подключение к интернету.</string>
+    <string name="error_empty_list">Список пуст</string>
+    <string name="error_action_retry">Повторить попытку</string>
 
     <!-- Login fragment -->
     <string name="login_intro">Поспешите, ваши друзья вас ждут!</string>
@@ -61,6 +63,9 @@
     <string name="room_creation_8_players">%1$d игроков</string>
     <string name="room_creation_name_example">e.g. Game is coming!</string>
     <string name="room_creation_action_create">Создать</string>
+    <string name="room_creation_error_password_incorrect">Это некорректный пароль. Допустимая длина от 6 до 14 символов.</string>
+    <string name="room_creation_error_password_empty">Введите пароль от комнаты</string>
+    <string name="room_creation_error_name_empty">Введите имя комнаты</string>
 
     <!-- Menu fragment -->
     <string name="menu_games_played">Игр сыграно</string>
