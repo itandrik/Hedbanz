@@ -28,6 +28,7 @@ import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 /**
  * Interface that describes all API methods with server
@@ -45,8 +46,8 @@ public interface ApiService {
     @PATCH("user")
     Observable<ServerResult<User>> updateUser(@Body HashMap<String, Object> userMap);
 
-    @GET("rooms")
-    Observable<ServerResult<List<Room>>> getRooms();
+    @GET("rooms/{page}")
+    Observable<ServerResult<List<Room>>> getRooms(@Path("page") int page);
 
     @PUT("rooms")
     Observable<ServerResult<Room>> createRoom(@Body HashMap<String, Object> roomDataMap);

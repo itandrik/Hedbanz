@@ -15,12 +15,20 @@ package com.transcendensoft.hedbanz.presenter.impl;
  * limitations under the License.
  */
 
+import android.util.Log;
+
+import com.crashlytics.android.Crashlytics;
+import com.transcendensoft.hedbanz.model.api.manager.RoomsCrudApiManager;
 import com.transcendensoft.hedbanz.model.entity.Room;
+import com.transcendensoft.hedbanz.model.entity.ServerResult;
+import com.transcendensoft.hedbanz.model.entity.ServerStatus;
 import com.transcendensoft.hedbanz.presenter.BasePresenter;
 import com.transcendensoft.hedbanz.presenter.RoomsPresenter;
 import com.transcendensoft.hedbanz.view.RoomsView;
 
 import java.util.List;
+
+import io.reactivex.disposables.Disposable;
 
 /**
  * Presenter from MVP pattern, that contains
@@ -30,7 +38,9 @@ import java.util.List;
  *         Developed by <u>Transcendensoft</u>
  */
 
-public class RoomsPresenterImpl extends BasePresenter<List<Room>, RoomsView> implements RoomsPresenter{
+public class RoomsPresenterImpl extends BasePresenter<List<Room>, RoomsView> implements RoomsPresenter {
+    private static final String TAG = RoomsPresenterImpl.class.getName();
+
     @Override
     protected void updateView() {
 
@@ -38,7 +48,35 @@ public class RoomsPresenterImpl extends BasePresenter<List<Room>, RoomsView> imp
 
     @Override
     public void loadRooms() {
+        Disposable disposable = RoomsCrudApiManager.getInstance()
+                .getRooms(0)
+                .subscribe(
+                        this::processRoomsOnNext,
+                        this::processRoomOnError,
+                        () -> {
+                        },
+                        this::processOnSubscribe);
+        addDisposable(disposable);
+    }
 
+    private void processRoomOnError(Throwable err) {
+        Log.e(TAG, "Error " + err.getMessage());
+        Crashlytics.logException(err);
+        view().showServerError();
+    }
+
+    private void processRoomsOnNext(ServerResult<List<Room>> result) {
+        if (result == null) {
+            throw new RuntimeException("Server result is null");
+        } else if ((result.getStatus() != null) &&
+                result.getStatus().equalsIgnoreCase(ServerStatus.SUCCESS.toString())) {
+            if (result.getData() == null || result.getData().isEmpty()) {
+                view().showEmptyList();
+            } else {
+                view().addRoomsToRecycler(result.getData());
+                view().showContent();
+            }
+        }
     }
 
     @Override

@@ -42,8 +42,8 @@ public class RoomsCrudApiManager extends ApiManager{
         return RoomsCrudApiManager.Holder.INSTANCE;
     }
 
-    public Observable<ServerResult<List<Room>>> getRooms(){
-        return mService.getRooms()
+    public Observable<ServerResult<List<Room>>> getRooms(int page){
+        return mService.getRooms(page)
                 .compose(applySchedulers());
     }
     public Observable<ServerResult<Room>> createRoom(String password, String name,

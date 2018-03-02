@@ -71,6 +71,8 @@ public class RoomsFragment extends Fragment implements RoomsView {
         ButterKnife.bind(this, view);
 
         initPresenter(savedInstanceState);
+        initSwipeToRefresh();
+        initRecycler();
         if(mPresenter != null){
             mPresenter.loadRooms();
         }
@@ -116,23 +118,43 @@ public class RoomsFragment extends Fragment implements RoomsView {
         }
     }
 
-    /*------------------------------------*
-     *--------- Set data to view ---------*
-     *------------------------------------*/
-    @Override
-    public void setRoomsToRecycler(List<Room> rooms) {
+    private void initSwipeToRefresh(){
+        mRefreshLayout.setOnRefreshListener(() -> {
+            if(mPresenter != null){
+                mPresenter.refreshRooms();
+            }
+        });
+    }
+
+    private void initRecycler(){
         mAdapter = new RoomsAdapter();
         mRecycler.setItemAnimator(new DefaultItemAnimator());
         mRecycler.setLayoutManager(new LinearLayoutManager(
                 getActivity(), LinearLayoutManager.VERTICAL, false));
 
         mRecycler.setAdapter(mAdapter);
-        mAdapter.addAll(rooms);
     }
 
     /*------------------------------------*
-     *-------- On click listeners --------*
+     *--------- Set data to view ---------*
      *------------------------------------*/
+    @Override
+    public void addRoomsToRecycler(List<Room> rooms) {
+        if(mAdapter != null){
+            mAdapter.addAll(rooms);
+        }
+    }
+
+    @Override
+    public void clearAndAddRoomsToRecycler(List<Room> rooms) {
+        if(mAdapter != null) {
+            mAdapter.clearAndAddAll(rooms);
+        }
+    }
+
+    /*------------------------------------*
+         *-------- On click listeners --------*
+         *------------------------------------*/
     @OnClick(R.id.btnRetryNetwork)
     protected void onRetryNetworkClicked(){
         onRetryServerClicked();
@@ -172,10 +194,17 @@ public class RoomsFragment extends Fragment implements RoomsView {
         mRefreshLayout.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void showEmptyList() {
+        hideAll();
+        mRlEmptyList.setVisibility(View.VISIBLE);
+    }
+
     private void hideAll() {
         mRlErrorServer.setVisibility(View.GONE);
         mRlErrorNetwork.setVisibility(View.GONE);
         mFlLoadingContainer.setVisibility(View.GONE);
         mRefreshLayout.setVisibility(View.GONE);
+        mRlEmptyList.setVisibility(View.GONE);
     }
 }
