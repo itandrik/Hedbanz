@@ -32,4 +32,8 @@ public interface RoomItemView {
     void setCurAndMaxPlayers(int currentPlayers, int maxPlayers);
 
     void setIsProtected(boolean isProtected);
+
+    void showLoadingItem();
+
+    void showCard();
 }

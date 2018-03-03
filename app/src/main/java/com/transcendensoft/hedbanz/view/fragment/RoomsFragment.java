@@ -37,6 +37,7 @@ import com.transcendensoft.hedbanz.presenter.PresenterManager;
 import com.transcendensoft.hedbanz.presenter.impl.RoomsPresenterImpl;
 import com.transcendensoft.hedbanz.view.RoomsView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -73,9 +74,6 @@ public class RoomsFragment extends Fragment implements RoomsView {
         initPresenter(savedInstanceState);
         initSwipeToRefresh();
         initRecycler();
-        if(mPresenter != null){
-            mPresenter.loadRooms();
-        }
 
         return view;
     }
@@ -113,12 +111,18 @@ public class RoomsFragment extends Fragment implements RoomsView {
     private void initPresenter(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             mPresenter = new RoomsPresenterImpl();
+            mPresenter.setModel(new ArrayList<>());
         } else {
             mPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
         }
     }
 
     private void initSwipeToRefresh(){
+        mRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         mRefreshLayout.setOnRefreshListener(() -> {
             if(mPresenter != null){
                 mPresenter.refreshRooms();
@@ -128,10 +132,10 @@ public class RoomsFragment extends Fragment implements RoomsView {
 
     private void initRecycler(){
         mAdapter = new RoomsAdapter();
+        mAdapter.setBottomReachedListener(mPresenter);
         mRecycler.setItemAnimator(new DefaultItemAnimator());
         mRecycler.setLayoutManager(new LinearLayoutManager(
                 getActivity(), LinearLayoutManager.VERTICAL, false));
-
         mRecycler.setAdapter(mAdapter);
     }
 
@@ -146,15 +150,22 @@ public class RoomsFragment extends Fragment implements RoomsView {
     }
 
     @Override
-    public void clearAndAddRoomsToRecycler(List<Room> rooms) {
-        if(mAdapter != null) {
-            mAdapter.clearAndAddAll(rooms);
+    public void clearRooms() {
+        if(mAdapter != null){
+            mAdapter.clearAll();
+        }
+    }
+
+    @Override
+    public void removeLastRoom() {
+        if(mAdapter != null){
+            mAdapter.removeLastItem();
         }
     }
 
     /*------------------------------------*
-         *-------- On click listeners --------*
-         *------------------------------------*/
+     *-------- On click listeners --------*
+     *------------------------------------*/
     @OnClick(R.id.btnRetryNetwork)
     protected void onRetryNetworkClicked(){
         onRetryServerClicked();
@@ -163,7 +174,7 @@ public class RoomsFragment extends Fragment implements RoomsView {
     @OnClick(R.id.btnRetryServer)
     protected void onRetryServerClicked(){
         if(mPresenter != null){
-            mPresenter.loadRooms();
+            mPresenter.refreshRooms();
         }
     }
 
@@ -198,6 +209,11 @@ public class RoomsFragment extends Fragment implements RoomsView {
     public void showEmptyList() {
         hideAll();
         mRlEmptyList.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void stopRefreshingBar() {
+        mRefreshLayout.setRefreshing(false);
     }
 
     private void hideAll() {

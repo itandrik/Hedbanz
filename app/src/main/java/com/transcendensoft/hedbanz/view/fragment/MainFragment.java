@@ -76,6 +76,7 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
         initViewPager();
         initTabLayout();
 
+
         return view;
     }
 

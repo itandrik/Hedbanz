@@ -47,7 +47,7 @@ import io.reactivex.disposables.Disposable;
 
 import static com.transcendensoft.hedbanz.model.api.manager.ApiManager.HOST;
 import static com.transcendensoft.hedbanz.model.api.manager.ApiManager.PORT_SOCKET;
-import static com.transcendensoft.hedbanz.model.api.manager.ApiManager.SOCKET_NSP;
+import static com.transcendensoft.hedbanz.model.api.manager.ApiManager.LOGIN_SOCKET_NSP;
 
 /**
  * Presenter from MVP pattern, that contains
@@ -219,7 +219,7 @@ public class UserCrudPresenterImpl extends BasePresenter<User, UserCrudOperation
     @Override
     public void initSockets() {
         try {
-            mSocket = IO.socket(HOST + PORT_SOCKET + SOCKET_NSP);
+            mSocket = IO.socket(HOST + PORT_SOCKET + LOGIN_SOCKET_NSP);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

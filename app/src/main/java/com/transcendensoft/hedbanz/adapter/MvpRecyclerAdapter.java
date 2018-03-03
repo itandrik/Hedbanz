@@ -1,6 +1,7 @@
 package com.transcendensoft.hedbanz.adapter;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
@@ -18,6 +19,16 @@ public abstract class MvpRecyclerAdapter<M, P extends BasePresenter, VH extends 
         extends RecyclerView.Adapter<VH> {
     private static final String TAG = MvpRecyclerAdapter.class.getName();
     protected final Map<Object, P> presenters;
+    @Nullable OnBottomReachedListener mBottomReachedListener;
+    @Nullable OnTopReachedListener mTopReachedListener;
+
+    public interface OnBottomReachedListener{
+        void onBottomReached(MvpViewHolder holder);
+    }
+
+    public interface  OnTopReachedListener{
+        void onTopReached(MvpViewHolder holder);
+    }
 
     public MvpRecyclerAdapter() {
         presenters = new HashMap<>();
@@ -47,6 +58,14 @@ public abstract class MvpRecyclerAdapter<M, P extends BasePresenter, VH extends 
     @Override
     public void onBindViewHolder(VH holder, int position) {
         holder.bindPresenter(getPresenter(getItem(position)));
+
+        if(mBottomReachedListener != null && position == presenters.size() - 1){
+            mBottomReachedListener.onBottomReached(holder);
+        }
+
+        if(mTopReachedListener != null && position <= 0){
+            mTopReachedListener.onTopReached(holder);
+        }
     }
 
     @Override
@@ -56,5 +75,13 @@ public abstract class MvpRecyclerAdapter<M, P extends BasePresenter, VH extends 
         holder.unbindPresenter();
 
         return super.onFailedToRecycleView(holder);
+    }
+
+    public void setBottomReachedListener(@Nullable OnBottomReachedListener mBottomReachedListener) {
+        this.mBottomReachedListener = mBottomReachedListener;
+    }
+
+    public void setTopReachedListener(@Nullable OnTopReachedListener topReachedListener) {
+        this.mTopReachedListener = topReachedListener;
     }
 }

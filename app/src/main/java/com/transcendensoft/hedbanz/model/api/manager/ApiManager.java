@@ -43,7 +43,8 @@ public abstract class ApiManager {
     private static final String BASE_URL = HOST + PORT_API;
 
     public static final String PORT_SOCKET = ":9092";
-    public static final String SOCKET_NSP = "/socket";
+    public static final String LOGIN_SOCKET_NSP = "/login";
+    public static final String GAME_SOCKET_NSP = "/game";
 
     private Retrofit mClient;
     protected ApiService mService;

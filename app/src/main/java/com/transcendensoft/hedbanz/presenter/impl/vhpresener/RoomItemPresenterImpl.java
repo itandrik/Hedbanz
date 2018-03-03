@@ -34,11 +34,20 @@ public class RoomItemPresenterImpl extends BasePresenter<Room, RoomItemView>{
     @Override
     protected void updateView() {
         if(model != null){
-            view().setCurAndMaxPlayers(model.getCurrentPlayersNumber(), model.getMaxPlayers());
-            view().setName(model.getName());
-            view().setIsProtected(TextUtils.isEmpty(model.getPassword()));
-            //TODO change icon of room
-            view().setIcon(R.drawable.ic_room_name);
+            if(model.getId()!= -1) {
+                view().setCurAndMaxPlayers(model.getCurrentPlayersNumber(), model.getMaxPlayers());
+                view().setName(model.getName());
+                view().setIsProtected(TextUtils.isEmpty(model.getPassword()));
+                //TODO change icon of room
+                view().setIcon(R.drawable.ic_room);
+                view().showCard();
+            } else {
+                view().showLoadingItem();
+            }
         }
+    }
+
+    public void onClickRoom(){
+        //Open game mode
     }
 }

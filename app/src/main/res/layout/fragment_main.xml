@@ -2,8 +2,8 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="in.mylo.pregnancy.baby.app.FAB">
+    android:background="@color/windowBackground"
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/rlContent"
@@ -22,14 +22,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
-            android:background="@android:color/white"
-            android:elevation="80dp">
+            android:background="@android:color/white">
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tlBottomNavigation"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:clickable="true"
                 app:tabBackground="?attr/selectableItemBackgroundBorderless"
                 app:tabGravity="fill"
                 app:tabIndicatorHeight="0dp"
@@ -44,19 +42,39 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/tabs"
             android:layout_below="@id/toolbar" />
-
-        <android.support.design.widget.FloatingActionButton
+        <!--<android.support.v7.widget.AppCompatImageButton
             android:id="@+id/fab"
+            android:layout_width="64dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_height="64dp"
+            android:elevation="100dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/ic_arrow_up"
+            android:background="@drawable/fab_bg" />-->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            app:borderWidth="3dp"
-            app:elevation="80dp"
-            app:fabSize="mini"
-            app:pressedTranslationZ="12dp"
-            app:srcCompat="@drawable/ic_arrow_up" />
+            android:background="@drawable/fab_bg"
+            android:elevation="80dp"
+            android:padding="0.3dp">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/fab_bg"
+                app:backgroundTint="@color/white"
+                app:borderWidth="2dp"
+                app:elevation="80dp"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_arrow_up"
+                app:pressedTranslationZ="12dp" />
+        </LinearLayout>
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -24,6 +24,6 @@ package com.transcendensoft.hedbanz.presenter;
  */
 
 public interface RoomsPresenter {
-    void loadRooms();
+    void loadNextRooms();
     void refreshRooms();
 }

@@ -50,6 +50,6 @@ public class RoomsAdapter extends MvpRecyclerListAdapter<Room,RoomItemPresenterI
     public RoomItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_room, parent, false);
-        return new RoomItemViewHolder(itemView);
+        return new RoomItemViewHolder(parent.getContext(), itemView);
     }
 }

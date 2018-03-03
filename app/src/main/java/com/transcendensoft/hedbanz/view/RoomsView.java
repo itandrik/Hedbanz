@@ -28,6 +28,8 @@ import java.util.List;
 
 public interface RoomsView extends BaseView{
     void addRoomsToRecycler(List<Room> rooms);
-    void clearAndAddRoomsToRecycler(List<Room> rooms);
+    void clearRooms();
+    void removeLastRoom();
     void showEmptyList();
+    void stopRefreshingBar();
 }
