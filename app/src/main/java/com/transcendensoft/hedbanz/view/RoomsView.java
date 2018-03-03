@@ -26,10 +26,14 @@ import java.util.List;
  *         Developed by <u>Transcendensoft</u>
  */
 
-public interface RoomsView extends BaseView{
+public interface RoomsView extends BaseView {
     void addRoomsToRecycler(List<Room> rooms);
+
     void clearRooms();
+
     void removeLastRoom();
+
     void showEmptyList();
+
     void stopRefreshingBar();
 }

@@ -117,21 +117,21 @@ public class RoomsFragment extends Fragment implements RoomsView {
         }
     }
 
-    private void initSwipeToRefresh(){
+    private void initSwipeToRefresh() {
         mRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
         mRefreshLayout.setOnRefreshListener(() -> {
-            if(mPresenter != null){
+            if (mPresenter != null) {
                 mPresenter.refreshRooms();
             }
         });
     }
 
-    private void initRecycler(){
-        mAdapter = new RoomsAdapter();
+    private void initRecycler() {
+        mAdapter = new RoomsAdapter(mPresenter);
         mAdapter.setBottomReachedListener(mPresenter);
         mRecycler.setItemAnimator(new DefaultItemAnimator());
         mRecycler.setLayoutManager(new LinearLayoutManager(
@@ -144,21 +144,21 @@ public class RoomsFragment extends Fragment implements RoomsView {
      *------------------------------------*/
     @Override
     public void addRoomsToRecycler(List<Room> rooms) {
-        if(mAdapter != null){
+        if (mAdapter != null) {
             mAdapter.addAll(rooms);
         }
     }
 
     @Override
     public void clearRooms() {
-        if(mAdapter != null){
+        if (mAdapter != null) {
             mAdapter.clearAll();
         }
     }
 
     @Override
     public void removeLastRoom() {
-        if(mAdapter != null){
+        if (mAdapter != null) {
             mAdapter.removeLastItem();
         }
     }
@@ -167,13 +167,13 @@ public class RoomsFragment extends Fragment implements RoomsView {
      *-------- On click listeners --------*
      *------------------------------------*/
     @OnClick(R.id.btnRetryNetwork)
-    protected void onRetryNetworkClicked(){
+    public void onRetryNetworkClicked() {
         onRetryServerClicked();
     }
 
     @OnClick(R.id.btnRetryServer)
-    protected void onRetryServerClicked(){
-        if(mPresenter != null){
+    protected void onRetryServerClicked() {
+        if (mPresenter != null) {
             mPresenter.refreshRooms();
         }
     }

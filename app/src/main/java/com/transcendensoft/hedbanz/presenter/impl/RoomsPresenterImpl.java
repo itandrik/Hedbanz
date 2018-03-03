@@ -20,6 +20,7 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.transcendensoft.hedbanz.adapter.MvpRecyclerAdapter;
 import com.transcendensoft.hedbanz.holder.MvpViewHolder;
+import com.transcendensoft.hedbanz.holder.impl.RoomItemViewHolder;
 import com.transcendensoft.hedbanz.model.api.manager.RoomsCrudApiManager;
 import com.transcendensoft.hedbanz.model.entity.Room;
 import com.transcendensoft.hedbanz.model.entity.ServerResult;
@@ -44,6 +45,7 @@ public class RoomsPresenterImpl extends BasePresenter<List<Room>, RoomsView>
         implements RoomsPresenter, MvpRecyclerAdapter.OnBottomReachedListener {
     private static final String TAG = RoomsPresenterImpl.class.getName();
     private int mCurrentPage = 0;
+    private RoomItemViewHolder mLastHolder;
 
     @Override
     protected void updateView() {
@@ -65,9 +67,15 @@ public class RoomsPresenterImpl extends BasePresenter<List<Room>, RoomsView>
     }
 
     private void processRoomOnError(Throwable err) {
-        Log.e(TAG, "Error " + err.getMessage());
-        Crashlytics.logException(err);
-        view().showServerError();
+        if(!(err instanceof IllegalStateException)) {
+            Log.e(TAG, "Error " + err.getMessage());
+            Crashlytics.logException(err);
+            if (mCurrentPage == 0) {
+                view().showServerError();
+            } else {
+                mLastHolder.showErrorServer();
+            }
+        }
     }
 
     private void processRoomOnSubscribe(Disposable d) {
@@ -77,8 +85,12 @@ public class RoomsPresenterImpl extends BasePresenter<List<Room>, RoomsView>
                     view().showLoading();
                 }
             } else {
-                //TODO add paging error
-                view().showNetworkError();
+                if(mCurrentPage == 0) {
+                    view().showNetworkError();
+                } else {
+                    mLastHolder.showErrorNetwork();
+                }
+                throw new IllegalStateException();
             }
         }
     }
@@ -119,6 +131,7 @@ public class RoomsPresenterImpl extends BasePresenter<List<Room>, RoomsView>
 
     @Override
     public void onBottomReached(MvpViewHolder holder) {
+        mLastHolder = (RoomItemViewHolder) holder;
         mCurrentPage++;
         loadNextRooms();
     }

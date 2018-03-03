@@ -36,4 +36,8 @@ public interface RoomItemView {
     void showLoadingItem();
 
     void showCard();
+
+    void showErrorServer();
+
+    void showErrorNetwork();
 }

@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.holder.impl.RoomItemViewHolder;
 import com.transcendensoft.hedbanz.model.entity.Room;
+import com.transcendensoft.hedbanz.presenter.impl.RoomsPresenterImpl;
 import com.transcendensoft.hedbanz.presenter.impl.vhpresener.RoomItemPresenterImpl;
 
 /**
@@ -32,6 +33,12 @@ import com.transcendensoft.hedbanz.presenter.impl.vhpresener.RoomItemPresenterIm
  *         Developed by <u>Transcendensoft</u>
  */
 public class RoomsAdapter extends MvpRecyclerListAdapter<Room,RoomItemPresenterImpl,RoomItemViewHolder> {
+    private RoomsPresenterImpl mCallbackPresenter;
+
+    public RoomsAdapter(RoomsPresenterImpl mCallbackPresenter) {
+        this.mCallbackPresenter = mCallbackPresenter;
+    }
+
     @NonNull
     @Override
     protected RoomItemPresenterImpl createPresenter(@NonNull Room model) {
@@ -50,6 +57,6 @@ public class RoomsAdapter extends MvpRecyclerListAdapter<Room,RoomItemPresenterI
     public RoomItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_room, parent, false);
-        return new RoomItemViewHolder(parent.getContext(), itemView);
+        return new RoomItemViewHolder(parent.getContext(), itemView, mCallbackPresenter);
     }
 }
