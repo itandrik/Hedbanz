@@ -33,6 +33,12 @@ public abstract class MvpRecyclerListAdapter<M, P extends BasePresenter, VH exte
         notifyDataSetChanged();
     }
 
+    public void clearAll() {
+        models.clear();
+        presenters.clear();
+        notifyDataSetChanged();
+    }
+
     public void addAll(Collection<M> data) {
         for (M item : data) {
             addInternal(item);
@@ -43,29 +49,39 @@ public abstract class MvpRecyclerListAdapter<M, P extends BasePresenter, VH exte
         notifyItemRangeInserted(oldSize, addedSize);
     }
 
-    public void addItem(M item){
+    public void addItem(M item) {
         addInternal(item);
         notifyItemInserted(models.size());
     }
 
-    public void updateItem(M item){
+    public void updateItem(M item) {
         Object modelId = getModelId(item);
 
         //Swap the model
         int position = getItemPosition(item);
-        if(position >= 0){
+        if (position >= 0) {
             models.remove(position);
-            models.add(position,item);
+            models.add(position, item);
         }
 
         // Swap the presenter
         P existingPresenter = presenters.get(modelId);
-        if(existingPresenter != null){
+        if (existingPresenter != null) {
             existingPresenter.setModel(item);
         }
 
         if (position >= 0) {
             notifyItemChanged(position);
+        }
+    }
+
+    public void removeLastItem() {
+        int position = models.size()-1;
+        if (position >= 0) {
+            M model = models.get(position);
+            models.remove(position);
+            presenters.remove(model);
+            notifyItemRemoved(position);
         }
     }
 
@@ -77,6 +93,22 @@ public abstract class MvpRecyclerListAdapter<M, P extends BasePresenter, VH exte
         presenters.remove(getModelId(item));
 
         if (position >= 0) {
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void removeItemWithId(Integer id) {
+        M modelToRemove = null;
+        int position = 0;
+        for (M model : models) {
+            if (getModelId(model).equals(id)) {
+                modelToRemove = model;
+                position = getItemPosition(modelToRemove);
+                break;
+            }
+        }
+        if (modelToRemove != null) {
+            removeItem(modelToRemove);
             notifyItemRemoved(position);
         }
     }

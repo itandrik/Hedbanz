@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presenter;
+package com.transcendensoft.hedbanz.view;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -16,14 +16,12 @@ package com.transcendensoft.hedbanz.presenter;
  */
 
 /**
- * Interface that describes methods which is needed
- * to show all rooms and refresh them
+ * Interface that describes methods that is needed to
+ * show game mode view.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 
-public interface RoomsPresenter {
-    void loadNextRooms();
-    void refreshRooms();
+public interface GameView extends BaseView {
 }

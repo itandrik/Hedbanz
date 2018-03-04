@@ -15,12 +15,24 @@ package com.transcendensoft.hedbanz.holder.impl;
  * limitations under the License.
  */
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.CardView;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.holder.MvpViewHolder;
 import com.transcendensoft.hedbanz.holder.RoomItemView;
+import com.transcendensoft.hedbanz.presenter.impl.RoomsPresenterImpl;
 import com.transcendensoft.hedbanz.presenter.impl.vhpresener.RoomItemPresenterImpl;
 
 /**
@@ -35,19 +47,54 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
     private ImageView mIvIcon;
     private ImageView mIvProtected;
     private TextView mTvCurAndMaxPlayers;
+    private CardView mCardContainer;
+    private LinearLayout mLlError;
+    private TextView mTvErrorText;
+    private Button mBtnRetryError;
+    private ProgressBar mPbLoading;
 
-    public RoomItemViewHolder(View itemView) {
+    private Context mContext;
+
+    public RoomItemViewHolder(Context context, View itemView, RoomsPresenterImpl callbackPresenter) {
         super(itemView);
+
+        mTvName = itemView.findViewById(R.id.tvRoomName);
+        mIvIcon = itemView.findViewById(R.id.ivRoomIcon);
+        mIvProtected = itemView.findViewById(R.id.ivRoomLocked);
+        mPbLoading = itemView.findViewById(R.id.pbRoomLoading);
+        mCardContainer = itemView.findViewById(R.id.roomCard);
+        mLlError = itemView.findViewById(R.id.llErrorContainer);
+        mTvErrorText = itemView.findViewById(R.id.tvRoomsErrorText);
+        mBtnRetryError = itemView.findViewById(R.id.btnReload);
+
+        mContext = context;
+        setOnClickListeners(callbackPresenter);
+    }
+
+    private void setOnClickListeners(RoomsPresenterImpl callbackPresenter) {
+        mCardContainer.setOnClickListener(v -> {
+            if (presenter != null) {
+                presenter.onClickRoom();
+            }
+        });
+
+        mBtnRetryError.setOnClickListener(v -> {
+            callbackPresenter.loadNextRooms();
+        });
     }
 
     @Override
     public void setIcon(int icon) {
-
+        mIvIcon.setImageResource(icon);
     }
 
     @Override
     public void setName(String name) {
-
+        if (!TextUtils.isEmpty(name)) {
+            mTvName.setText(name);
+        } else {
+            mTvName.setText("");
+        }
     }
 
     @Override
@@ -57,6 +104,56 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
 
     @Override
     public void setIsProtected(boolean isProtected) {
+        Drawable drawable;
+        if (isProtected) {
+            drawable = VectorDrawableCompat.create(
+                    mContext.getResources(), R.drawable.ic_room_locked, null);
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable, ContextCompat.getColor(mContext, R.color.textPrimary));
+            mIvProtected.setImageResource(R.drawable.ic_room_locked);
+        } else {
+            drawable = VectorDrawableCompat.create(
+                    mContext.getResources(), R.drawable.ic_password, null);
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable, ContextCompat.getColor(mContext, R.color.textSecondaryLight));
+        }
+        mIvProtected.setImageDrawable(drawable);
+    }
 
+    @Override
+    public void showLoadingItem() {
+        hideAll();
+        mPbLoading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showCard() {
+        hideAll();
+        mCardContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showErrorNetwork() {
+        hideAll();
+        mTvErrorText.setText(mContext.getString(R.string.error_network));
+        mLlError.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showErrorServer() {
+        hideAll();
+        mTvErrorText.setText(mContext.getString(R.string.error_server));
+        mLlError.setVisibility(View.VISIBLE);
+    }
+
+    private void hideAll() {
+        mLlError.setVisibility(View.GONE);
+        mPbLoading.setVisibility(View.GONE);
+        mCardContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public Context provideContext() {
+        return mContext;
     }
 }

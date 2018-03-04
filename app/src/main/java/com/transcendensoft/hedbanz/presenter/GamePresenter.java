@@ -16,14 +16,14 @@ package com.transcendensoft.hedbanz.presenter;
  */
 
 /**
- * Interface that describes methods which is needed
- * to show all rooms and refresh them
+ * Presenter that describes all methods, that is needed to
+ * process game algorithm
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 
-public interface RoomsPresenter {
-    void loadNextRooms();
-    void refreshRooms();
+public interface GamePresenter {
+    void initSockets();
+    void disconnectSockets();
 }

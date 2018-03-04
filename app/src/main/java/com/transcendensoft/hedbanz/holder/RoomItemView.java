@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.holder;
  * limitations under the License.
  */
 
+import android.content.Context;
 import android.support.annotation.DrawableRes;
 
 /**
@@ -32,4 +33,14 @@ public interface RoomItemView {
     void setCurAndMaxPlayers(int currentPlayers, int maxPlayers);
 
     void setIsProtected(boolean isProtected);
+
+    void showLoadingItem();
+
+    void showCard();
+
+    void showErrorServer();
+
+    void showErrorNetwork();
+
+    Context provideContext();
 }

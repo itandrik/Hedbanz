@@ -19,6 +19,7 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.transcendensoft.hedbanz.model.api.manager.UserCrudApiManager;
+import com.transcendensoft.hedbanz.model.data.PreferenceManager;
 import com.transcendensoft.hedbanz.model.entity.ServerResult;
 import com.transcendensoft.hedbanz.model.entity.ServerStatus;
 import com.transcendensoft.hedbanz.model.entity.User;
@@ -86,6 +87,12 @@ public class LoginPresenterImpl extends BasePresenter<User, LoginView> implement
                 processErrorFromServer(serverError);
             }
             throw new IllegalStateException();
+        } else {
+            if(result.getData() != null) {
+                new PreferenceManager(view().provideContext()).setUser(result.getData());
+            } else {
+                throw new RuntimeException("User comes NULL from server while login");
+            }
         }
     }
 

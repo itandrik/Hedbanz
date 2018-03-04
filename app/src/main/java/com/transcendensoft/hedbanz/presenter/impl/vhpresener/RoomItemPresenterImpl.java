@@ -15,12 +15,15 @@ package com.transcendensoft.hedbanz.presenter.impl.vhpresener;
  * limitations under the License.
  */
 
+import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.holder.RoomItemView;
 import com.transcendensoft.hedbanz.model.entity.Room;
 import com.transcendensoft.hedbanz.presenter.BasePresenter;
+import com.transcendensoft.hedbanz.view.activity.GameActivity;
 
 /**
  * Presenter from MVP pattern that processes concrete
@@ -34,11 +37,25 @@ public class RoomItemPresenterImpl extends BasePresenter<Room, RoomItemView>{
     @Override
     protected void updateView() {
         if(model != null){
-            view().setCurAndMaxPlayers(model.getCurrentPlayersNumber(), model.getMaxPlayers());
-            view().setName(model.getName());
-            view().setIsProtected(TextUtils.isEmpty(model.getPassword()));
-            //TODO change icon of room
-            view().setIcon(R.drawable.ic_room_name);
+            if(model.getId()!= -1) {
+                view().setCurAndMaxPlayers(model.getCurrentPlayersNumber(), model.getMaxPlayers());
+                view().setName(model.getName());
+                view().setIsProtected(TextUtils.isEmpty(model.getPassword()));
+                //TODO change icon of room
+                view().setIcon(R.drawable.ic_room);
+                view().showCard();
+            } else {
+                view().showLoadingItem();
+            }
+        }
+    }
+
+    public void onClickRoom(){
+        Context context = view().provideContext();
+        if(context != null) {
+            Intent intent = new Intent(context, GameActivity.class);
+            intent.putExtra(context.getString(R.string.bundle_room_id), model.getId());
+            context.startActivity(intent);
         }
     }
 }

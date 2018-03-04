@@ -6,6 +6,9 @@
     <string name="app_name">Hedbanz</string>
 
     <!-- API keys -->
+    <!-- Bundle -->
+    <string name="bundle_room_id">bundle_room_id</string>
+
     <!-- Actions -->
     <string name="action_enter">Войти</string>
     <string name="action_ok">Ок</string>

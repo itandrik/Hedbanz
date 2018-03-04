@@ -19,6 +19,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -37,6 +38,7 @@ import com.transcendensoft.hedbanz.presenter.PresenterManager;
 import com.transcendensoft.hedbanz.presenter.impl.RoomsPresenterImpl;
 import com.transcendensoft.hedbanz.view.RoomsView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -56,6 +58,7 @@ public class RoomsFragment extends Fragment implements RoomsView {
     @BindView(R.id.rlErrorNetwork) RelativeLayout mRlErrorNetwork;
     @BindView(R.id.rlErrorServer) RelativeLayout mRlErrorServer;
     @BindView(R.id.flLoadingContainer) FrameLayout mFlLoadingContainer;
+    @BindView(R.id.fabSearchRoom) FloatingActionButton mFabSearch;
 
     private RoomsPresenterImpl mPresenter;
     private RoomsAdapter mAdapter;
@@ -73,9 +76,6 @@ public class RoomsFragment extends Fragment implements RoomsView {
         initPresenter(savedInstanceState);
         initSwipeToRefresh();
         initRecycler();
-        if(mPresenter != null){
-            mPresenter.loadRooms();
-        }
 
         return view;
     }
@@ -113,25 +113,31 @@ public class RoomsFragment extends Fragment implements RoomsView {
     private void initPresenter(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             mPresenter = new RoomsPresenterImpl();
+            mPresenter.setModel(new ArrayList<>());
         } else {
             mPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
         }
     }
 
-    private void initSwipeToRefresh(){
+    private void initSwipeToRefresh() {
+        mRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         mRefreshLayout.setOnRefreshListener(() -> {
-            if(mPresenter != null){
+            if (mPresenter != null) {
                 mPresenter.refreshRooms();
             }
         });
     }
 
-    private void initRecycler(){
-        mAdapter = new RoomsAdapter();
+    private void initRecycler() {
+        mAdapter = new RoomsAdapter(mPresenter);
+        mAdapter.setBottomReachedListener(mPresenter);
         mRecycler.setItemAnimator(new DefaultItemAnimator());
         mRecycler.setLayoutManager(new LinearLayoutManager(
                 getActivity(), LinearLayoutManager.VERTICAL, false));
-
         mRecycler.setAdapter(mAdapter);
     }
 
@@ -140,31 +146,43 @@ public class RoomsFragment extends Fragment implements RoomsView {
      *------------------------------------*/
     @Override
     public void addRoomsToRecycler(List<Room> rooms) {
-        if(mAdapter != null){
+        if (mAdapter != null) {
             mAdapter.addAll(rooms);
         }
     }
 
     @Override
-    public void clearAndAddRoomsToRecycler(List<Room> rooms) {
-        if(mAdapter != null) {
-            mAdapter.clearAndAddAll(rooms);
+    public void clearRooms() {
+        if (mAdapter != null) {
+            mAdapter.clearAll();
+        }
+    }
+
+    @Override
+    public void removeLastRoom() {
+        if (mAdapter != null) {
+            mAdapter.removeLastItem();
         }
     }
 
     /*------------------------------------*
-         *-------- On click listeners --------*
-         *------------------------------------*/
+     *-------- On click listeners --------*
+     *------------------------------------*/
     @OnClick(R.id.btnRetryNetwork)
-    protected void onRetryNetworkClicked(){
+    public void onRetryNetworkClicked() {
         onRetryServerClicked();
     }
 
     @OnClick(R.id.btnRetryServer)
-    protected void onRetryServerClicked(){
-        if(mPresenter != null){
-            mPresenter.loadRooms();
+    protected void onRetryServerClicked() {
+        if (mPresenter != null) {
+            mPresenter.refreshRooms();
         }
+    }
+
+    @OnClick(R.id.fabSearchRoom)
+    protected void tempClick(){
+        mFabSearch.hide();
     }
 
     /*------------------------------------*
@@ -198,6 +216,11 @@ public class RoomsFragment extends Fragment implements RoomsView {
     public void showEmptyList() {
         hideAll();
         mRlEmptyList.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void stopRefreshingBar() {
+        mRefreshLayout.setRefreshing(false);
     }
 
     private void hideAll() {

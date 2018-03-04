@@ -15,6 +15,9 @@ package com.transcendensoft.hedbanz.model.entity;
  * limitations under the License.
  */
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -24,11 +27,22 @@ import java.util.List;
  *         Developed by <u>Transcendensoft</u>
  */
 public class Room {
+    public static final String ROOM_ID_KEY = "roomId";
+    @SerializedName("id")
+    @Expose
     private long id;
+    @SerializedName("password")
+    @Expose
     private String password;
+    @SerializedName("name")
+    @Expose
     private String name;
+    @SerializedName("maxPlayers")
+    @Expose
     private byte maxPlayers;
     private List<User> users;
+    @SerializedName("currentPlayersNumber")
+    @Expose
     private byte currentPlayersNumber;
     private long startDate;
     private long endDate;

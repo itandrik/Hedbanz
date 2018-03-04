@@ -13,9 +13,9 @@
     </style>
 
     <style name="ThemeMain" parent="Theme.AppCompat.Light">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/textDarkRed</item>
+        <item name="colorPrimaryDark">@color/textDarkRed</item>
+        <item name="colorAccent">@color/textDarkRed</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
