@@ -26,6 +26,8 @@ import com.google.gson.annotations.SerializedName;
  *         Developed by <u>Transcendensoft</u>
  */
 public class User {
+    public static final String USER_ID_KEY = "userId";
+
     @SerializedName("id")
     @Expose
     private long id;

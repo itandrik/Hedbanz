@@ -25,6 +25,7 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.transcendensoft.hedbanz.model.api.manager.UserCrudApiManager;
+import com.transcendensoft.hedbanz.model.data.PreferenceManager;
 import com.transcendensoft.hedbanz.model.entity.ServerResult;
 import com.transcendensoft.hedbanz.model.entity.ServerStatus;
 import com.transcendensoft.hedbanz.model.entity.User;
@@ -58,10 +59,10 @@ import static com.transcendensoft.hedbanz.model.api.manager.ApiManager.LOGIN_SOC
  */
 public class UserCrudPresenterImpl extends BasePresenter<User, UserCrudOperationView>
         implements UserCrudPresenter, Socketable {
-    public static final String TAG = UserCrudPresenterImpl.class.getName();
-    public static final String LOGIN_RESULT_LISTENER = "loginResult";
-    public static final String CHECK_LOGIN_EMIT_KEY = "checkLogin";
-    public static final String IS_LOGIN_AVAILABLE = "isLoginAvailable";
+    private static final String TAG = UserCrudPresenterImpl.class.getName();
+    private static final String LOGIN_RESULT_LISTENER = "loginResult";
+    private static final String CHECK_LOGIN_EMIT_KEY = "checkLogin";
+    private static final String IS_LOGIN_AVAILABLE = "isLoginAvailable";
 
     private Socket mSocket;
     private Emitter.Listener mLoginResultSocketListener;
@@ -145,6 +146,12 @@ public class UserCrudPresenterImpl extends BasePresenter<User, UserCrudOperation
                 processErrorFromServer(serverError);
             }
             throw new IllegalStateException();
+        } else {
+            if(result.getData() != null) {
+                new PreferenceManager(view().provideContext()).setUser(result.getData());
+            } else {
+                throw new RuntimeException("User comes NULL from server while login");
+            }
         }
     }
 
@@ -232,14 +239,14 @@ public class UserCrudPresenterImpl extends BasePresenter<User, UserCrudOperation
     private void initSocketListeners() {
         mLoginResultSocketListener = args -> {
             JSONObject data = (JSONObject) args[0];
-            boolean isLoginAvaliable;
+            boolean isLoginAvailable;
             try {
-                isLoginAvaliable = data.getBoolean(IS_LOGIN_AVAILABLE);
+                isLoginAvailable = data.getBoolean(IS_LOGIN_AVAILABLE);
             } catch (JSONException e) {
                 Log.e("TAG", e.getMessage());
                 return;
             }
-            if (isLoginAvaliable) {
+            if (isLoginAvailable) {
                 view().showLoginAvailable();
             } else {
                 view().showLoginUnavailable();

@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.holder;
+package com.transcendensoft.hedbanz.view;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,32 +15,13 @@ package com.transcendensoft.hedbanz.holder;
  * limitations under the License.
  */
 
-import android.content.Context;
-import android.support.annotation.DrawableRes;
-
 /**
- * Interface that describes room view holder
+ * Interface that describes methods that is needed to
+ * show game mode view.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 
-public interface RoomItemView {
-    void setIcon(@DrawableRes int icon);
-
-    void setName(String name);
-
-    void setCurAndMaxPlayers(int currentPlayers, int maxPlayers);
-
-    void setIsProtected(boolean isProtected);
-
-    void showLoadingItem();
-
-    void showCard();
-
-    void showErrorServer();
-
-    void showErrorNetwork();
-
-    Context provideContext();
+public interface GameView extends BaseView {
 }

@@ -19,6 +19,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -57,6 +58,7 @@ public class RoomsFragment extends Fragment implements RoomsView {
     @BindView(R.id.rlErrorNetwork) RelativeLayout mRlErrorNetwork;
     @BindView(R.id.rlErrorServer) RelativeLayout mRlErrorServer;
     @BindView(R.id.flLoadingContainer) FrameLayout mFlLoadingContainer;
+    @BindView(R.id.fabSearchRoom) FloatingActionButton mFabSearch;
 
     private RoomsPresenterImpl mPresenter;
     private RoomsAdapter mAdapter;
@@ -176,6 +178,11 @@ public class RoomsFragment extends Fragment implements RoomsView {
         if (mPresenter != null) {
             mPresenter.refreshRooms();
         }
+    }
+
+    @OnClick(R.id.fabSearchRoom)
+    protected void tempClick(){
+        mFabSearch.hide();
     }
 
     /*------------------------------------*

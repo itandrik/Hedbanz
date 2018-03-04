@@ -68,11 +68,11 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
         mBtnRetryError = itemView.findViewById(R.id.btnReload);
 
         mContext = context;
-        setOnClickListeners(itemView, callbackPresenter);
+        setOnClickListeners(callbackPresenter);
     }
 
-    private void setOnClickListeners(View itemView, RoomsPresenterImpl callbackPresenter) {
-        itemView.setOnClickListener(v -> {
+    private void setOnClickListeners(RoomsPresenterImpl callbackPresenter) {
+        mCardContainer.setOnClickListener(v -> {
             if (presenter != null) {
                 presenter.onClickRoom();
             }
@@ -150,5 +150,10 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
         mLlError.setVisibility(View.GONE);
         mPbLoading.setVisibility(View.GONE);
         mCardContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public Context provideContext() {
+        return mContext;
     }
 }
