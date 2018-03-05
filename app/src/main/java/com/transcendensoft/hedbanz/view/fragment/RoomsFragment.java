@@ -22,28 +22,46 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView;
+import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.adapter.RoomsAdapter;
 import com.transcendensoft.hedbanz.model.entity.Room;
+import com.transcendensoft.hedbanz.model.entity.RoomFilter;
 import com.transcendensoft.hedbanz.presenter.PresenterManager;
 import com.transcendensoft.hedbanz.presenter.impl.RoomsPresenterImpl;
 import com.transcendensoft.hedbanz.view.RoomsView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 /**
  * Fragment that shows room list.
@@ -58,7 +76,21 @@ public class RoomsFragment extends Fragment implements RoomsView {
     @BindView(R.id.rlErrorNetwork) RelativeLayout mRlErrorNetwork;
     @BindView(R.id.rlErrorServer) RelativeLayout mRlErrorServer;
     @BindView(R.id.flLoadingContainer) FrameLayout mFlLoadingContainer;
+
+    /**
+     * Searching and filters
+     */
+    @BindView(R.id.cvFilters) CardView mCvFilters;
     @BindView(R.id.fabSearchRoom) FloatingActionButton mFabSearch;
+    @BindView(R.id.chbApplyFilters) CheckBox mChbApplyFilters;
+    @BindView(R.id.chbWithPassword) CheckBox mChbWithPassword;
+    @BindView(R.id.spinnerFromPlayers) Spinner mSpinnerFromPlayers;
+    @BindView(R.id.spinnerToPlayers) Spinner mSpinnerToPlayers;
+    private RelativeLayout mRlSearchContainer;
+    private TextView mTvToolbarTitle;
+    private SearchView mSvRoomSearch;
+    private ImageView mIvSearchFilter;
+    private ImageView mIvCloseSearch;
 
     private RoomsPresenterImpl mPresenter;
     private RoomsAdapter mAdapter;
@@ -76,6 +108,8 @@ public class RoomsFragment extends Fragment implements RoomsView {
         initPresenter(savedInstanceState);
         initSwipeToRefresh();
         initRecycler();
+        initSearchView();
+        initFilters();
 
         return view;
     }
@@ -120,14 +154,18 @@ public class RoomsFragment extends Fragment implements RoomsView {
     }
 
     private void initSwipeToRefresh() {
-        mRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+        mRefreshLayout.setColorSchemeResources(R.color.textDarkRed,
                 android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+                android.R.color.holo_orange_light);
 
         mRefreshLayout.setOnRefreshListener(() -> {
             if (mPresenter != null) {
-                mPresenter.refreshRooms();
+                String searchText = mSvRoomSearch.getQuery().toString();
+                if(TextUtils.isEmpty(searchText)) {
+                    mPresenter.refreshRooms();
+                } else {
+                    filterRoomsWithText(searchText);
+                }
             }
         });
     }
@@ -139,6 +177,101 @@ public class RoomsFragment extends Fragment implements RoomsView {
         mRecycler.setLayoutManager(new LinearLayoutManager(
                 getActivity(), LinearLayoutManager.VERTICAL, false));
         mRecycler.setAdapter(mAdapter);
+
+        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 && mFabSearch.isShown()) {
+                    mFabSearch.hide();
+                } else if ((dy < 0) && (mRlSearchContainer.getVisibility() != VISIBLE)) {
+                    mFabSearch.show();
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+    }
+
+    private void initSearchView() {
+        MainFragment mainFragment = (MainFragment) getParentFragment();
+        if (mainFragment != null) {
+            Toolbar toolbar = mainFragment.getToolbar();
+            if (toolbar != null) {
+                mTvToolbarTitle = toolbar.findViewById(R.id.tvToolbarTitle);
+                mRlSearchContainer = toolbar.findViewById(R.id.rlSearchContainer);
+                mIvCloseSearch = toolbar.findViewById(R.id.ivCloseSearch);
+                mIvSearchFilter = toolbar.findViewById(R.id.ivSearchFilter);
+                mSvRoomSearch = toolbar.findViewById(R.id.svSearchRoom);
+
+                initSearchOnClickListeners();
+            }
+        }
+    }
+
+    private void initSearchOnClickListeners() {
+        mIvCloseSearch.setOnClickListener(v -> {
+            onCloseSearchClicked();
+        });
+
+        mIvSearchFilter.setOnClickListener(v -> {
+            if (mCvFilters.getVisibility() == VISIBLE) {
+                mCvFilters.setVisibility(GONE);
+            } else {
+                mCvFilters.setVisibility(VISIBLE);
+            }
+        });
+    }
+
+    private void initFilters() {
+        RxSearchView.queryTextChanges(mSvRoomSearch)
+                .debounce(350, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .skip(2)
+                .filter(text -> !text.equals("#"))
+                .subscribe(text -> {
+                    if (mPresenter != null) {
+                        if(!TextUtils.isEmpty(text)) {
+                            filterRoomsWithText(text);
+                        } else {
+                            mPresenter.clearFiltersAndText();
+                            mPresenter.refreshRooms();
+                        }
+                    }
+                });
+
+        RxCompoundButton.checkedChanges(mChbApplyFilters)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(isChecked -> {
+                    if(isChecked){
+                        RoomFilter roomFilter = new RoomFilter.Builder()
+                                .setIsPrivate(mChbWithPassword.isChecked())
+                                .setMinPlayers(Byte.parseByte(mSpinnerFromPlayers.getSelectedItem().toString()))
+                                .setMaxPlayers(Byte.parseByte(mSpinnerToPlayers.getSelectedItem().toString()))
+                                .build();
+                        mPresenter.filterRooms(roomFilter);
+                    } else {
+                        clearRooms();
+                    }
+                });
+
+        List<String> playersQuantity =
+                Arrays.asList("2","3","4","5","6","7","8");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                getActivity(), android.R.layout.simple_spinner_dropdown_item, playersQuantity);
+        mSpinnerFromPlayers.setAdapter(adapter);
+        mSpinnerToPlayers.setAdapter(adapter);
+        mSpinnerToPlayers.setSelection(6);
+
+    }
+
+    private void filterRoomsWithText(CharSequence text) {
+        RoomFilter roomFilter = new RoomFilter.Builder()
+                .setRoomName(text.toString())
+                .build();
+        mPresenter.filterRooms(roomFilter);
     }
 
     /*------------------------------------*
@@ -181,8 +314,19 @@ public class RoomsFragment extends Fragment implements RoomsView {
     }
 
     @OnClick(R.id.fabSearchRoom)
-    protected void tempClick(){
+    protected void onFabSearchClicked() {
+        mTvToolbarTitle.setVisibility(GONE);
+        mRlSearchContainer.setVisibility(View.VISIBLE);
+        mSvRoomSearch.onActionViewExpanded();
         mFabSearch.hide();
+    }
+
+    public void onCloseSearchClicked() {
+        mTvToolbarTitle.setVisibility(View.VISIBLE);
+        mRlSearchContainer.setVisibility(View.GONE);
+        mCvFilters.setVisibility(GONE);
+        mFabSearch.show();
+        mSvRoomSearch.setQuery("", false);
     }
 
     /*------------------------------------*
@@ -224,10 +368,10 @@ public class RoomsFragment extends Fragment implements RoomsView {
     }
 
     private void hideAll() {
-        mRlErrorServer.setVisibility(View.GONE);
-        mRlErrorNetwork.setVisibility(View.GONE);
-        mFlLoadingContainer.setVisibility(View.GONE);
-        mRefreshLayout.setVisibility(View.GONE);
-        mRlEmptyList.setVisibility(View.GONE);
+        mRlErrorServer.setVisibility(GONE);
+        mRlErrorNetwork.setVisibility(GONE);
+        mFlLoadingContainer.setVisibility(GONE);
+        mRefreshLayout.setVisibility(GONE);
+        mRlEmptyList.setVisibility(GONE);
     }
 }

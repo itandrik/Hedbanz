@@ -6,7 +6,6 @@
     android:background="@color/windowBackground"
     android:layout_height="match_parent">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -118,7 +117,7 @@
             app:isb_tick_color="@color/textSecondary"
             app:isb_track_progress_bar_color="@color/textDarkRed"
             app:isb_thumb_color="@color/textDarkRed"
-            app:isb_tick_num="6"
+            app:isb_tick_num="7"
             app:isb_tick_on_thumb_left_hide="true"
             app:isb_tick_type="oval" />
 

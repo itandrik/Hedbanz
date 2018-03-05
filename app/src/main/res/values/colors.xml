@@ -24,4 +24,7 @@
     <color name="loginSuccess">#91DC5A</color>
     <color name="loginRipple">#E0E0E0</color>
     <color name="loginButton">#EEFFFFFF</color>
+
+    <!-- Rooms -->
+    <color name="filterBackground">#99FFE0B2</color>
 </resources>

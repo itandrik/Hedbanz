@@ -17,8 +17,10 @@ package com.transcendensoft.hedbanz.view.custom.widget;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.transcendensoft.hedbanz.view.custom.transform.VerticalPageTransformer;
 
@@ -122,4 +124,11 @@ public class VerticalViewPager extends ViewPager implements Serializable {
             baseScrollX = getScrollX();
         }
     }*/
+    @Override
+    protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
+        if((v != this) && (v instanceof RecyclerView)) {
+            return true;
+        }
+        return super.canScroll(v, checkV, dx, x, y);
+    }
 }

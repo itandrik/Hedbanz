@@ -23,6 +23,7 @@ import com.transcendensoft.hedbanz.holder.MvpViewHolder;
 import com.transcendensoft.hedbanz.holder.impl.RoomItemViewHolder;
 import com.transcendensoft.hedbanz.model.api.manager.RoomsCrudApiManager;
 import com.transcendensoft.hedbanz.model.entity.Room;
+import com.transcendensoft.hedbanz.model.entity.RoomFilter;
 import com.transcendensoft.hedbanz.model.entity.ServerResult;
 import com.transcendensoft.hedbanz.model.entity.ServerStatus;
 import com.transcendensoft.hedbanz.presenter.BasePresenter;
@@ -46,6 +47,7 @@ public class RoomsPresenterImpl extends BasePresenter<List<Room>, RoomsView>
     private static final String TAG = RoomsPresenterImpl.class.getName();
     private int mCurrentPage = 0;
     private RoomItemViewHolder mLastHolder;
+    private RoomFilter mFilter;
 
     @Override
     protected void updateView() {
@@ -61,7 +63,11 @@ public class RoomsPresenterImpl extends BasePresenter<List<Room>, RoomsView>
                 .subscribe(
                         this::processRoomsOnNext,
                         this::processRoomOnError,
-                        () -> view().stopRefreshingBar(),
+                        () -> {
+                            if(view() != null) {
+                                view().stopRefreshingBar();
+                            }
+                        },
                         this::processRoomOnSubscribe);
         addDisposable(disposable);
     }
@@ -104,6 +110,7 @@ public class RoomsPresenterImpl extends BasePresenter<List<Room>, RoomsView>
                 if (mCurrentPage == 0) {
                     view().showEmptyList();
                 } else {
+                    model.remove(model.size() - 1);
                     view().removeLastRoom();
                 }
             } else {
@@ -133,6 +140,61 @@ public class RoomsPresenterImpl extends BasePresenter<List<Room>, RoomsView>
     public void onBottomReached(MvpViewHolder holder) {
         mLastHolder = (RoomItemViewHolder) holder;
         mCurrentPage++;
-        loadNextRooms();
+
+        if(mFilter == null) {
+            loadNextRooms();
+        } else {
+            loadNextFilteredRooms();
+        }
+    }
+
+    @Override
+    public void clearFiltersAndText() {
+        mFilter = null;
+    }
+
+    @Override
+    public void filterRooms(RoomFilter roomFilter) {
+        mCurrentPage = 0;
+        if(mFilter == null){
+            mFilter = roomFilter;
+        } else {
+            if(roomFilter.getMaxPlayers() != null){
+                mFilter.setMaxPlayers(roomFilter.getMaxPlayers());
+            }
+            if(roomFilter.getMinPlayers() != null){
+                mFilter.setMinPlayers(roomFilter.getMinPlayers());
+            }
+            if(roomFilter.getRoomName() != null){
+                mFilter.setRoomName(roomFilter.getRoomName());
+            }
+            if(roomFilter.isPrivate() != null){
+                mFilter.setPrivate(roomFilter.isPrivate());
+            }
+        }
+        view().clearRooms();
+        loadNextFilteredRooms();
+    }
+
+    private void loadNextFilteredRooms(){
+        Disposable disposable = RoomsCrudApiManager.getInstance()
+                .filterRooms(mCurrentPage, mFilter)
+                .subscribe(
+                        this::processRoomsOnNext,
+                        this::processRoomOnError,
+                        () -> {
+                            if(view() != null) {
+                                view().stopRefreshingBar();
+                            }
+                        },
+                        this::processRoomOnSubscribe);
+        addDisposable(disposable);
+    }
+
+    @Override
+    public void clearFilters() {
+        mFilter.setPrivate(null);
+        mFilter.setMinPlayers(null);
+        mFilter.setMaxPlayers(null);
     }
 }

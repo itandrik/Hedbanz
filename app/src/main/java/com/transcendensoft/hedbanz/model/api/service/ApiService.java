@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.model.api.service;
  */
 
 import com.transcendensoft.hedbanz.model.entity.Room;
+import com.transcendensoft.hedbanz.model.entity.RoomFilter;
 import com.transcendensoft.hedbanz.model.entity.ServerResult;
 import com.transcendensoft.hedbanz.model.entity.User;
 
@@ -51,4 +52,9 @@ public interface ApiService {
 
     @PUT("rooms")
     Observable<ServerResult<Room>> createRoom(@Body HashMap<String, Object> roomDataMap);
+
+    @POST("rooms/{page}")
+    Observable<ServerResult<List<Room>>> filterRooms(
+            @Path("page") int page,
+            @Body RoomFilter roomFilter);
 }

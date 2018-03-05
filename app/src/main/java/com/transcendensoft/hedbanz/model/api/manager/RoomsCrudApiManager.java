@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.model.api.manager;
  */
 
 import com.transcendensoft.hedbanz.model.entity.Room;
+import com.transcendensoft.hedbanz.model.entity.RoomFilter;
 import com.transcendensoft.hedbanz.model.entity.ServerResult;
 
 import java.util.HashMap;
@@ -55,6 +56,11 @@ public class RoomsCrudApiManager extends ApiManager{
         result.put("userId", userId);
 
         return mService.createRoom(result)
+                .compose(applySchedulers());
+    }
+
+    public Observable<ServerResult<List<Room>>> filterRooms(int page, RoomFilter roomFilter){
+        return mService.filterRooms(page, roomFilter)
                 .compose(applySchedulers());
     }
 

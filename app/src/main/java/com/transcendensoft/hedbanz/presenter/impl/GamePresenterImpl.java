@@ -61,7 +61,7 @@ public class GamePresenterImpl extends BasePresenter<Room, GameView> implements 
 
     @Override
     protected void updateView() {
-        if(model.getName() == null){
+        if (model.getName() == null) {
             initSockets();
         }
     }
@@ -87,21 +87,23 @@ public class GamePresenterImpl extends BasePresenter<Room, GameView> implements 
         HashMap<String, Long> joinRoomObject = new HashMap<>();
         joinRoomObject.put(Room.ROOM_ID_KEY, model.getId());
         joinRoomObject.put(User.USER_ID_KEY, user.getId());
-        mSocket.emit(JOIN_ROOM_EVENT, joinRoomObject);
+        Gson gson = new Gson();
+        String json = gson.toJson(joinRoomObject);
+        mSocket.emit(JOIN_ROOM_EVENT, json);
     }
 
-    private void initSocketListeners(){
+    private void initSocketListeners() {
         Gson gson = new Gson();
         mRoomInfoListener = args -> {
             try {
                 JSONObject data = (JSONObject) args[0];
                 Room room = gson.fromJson(data.toString(), Room.class);
-                if(room != null) {
+                if (room != null) {
                     Log.e(TAG, "Room id:" + room.getId() + "; name: " + room.getName());
                 } else {
                     Log.e(TAG, "Received room == null");
                 }
-            } catch (JsonSyntaxException e){
+            } catch (JsonSyntaxException e) {
                 Log.e(TAG, e.getMessage());
             }
         };
@@ -110,12 +112,12 @@ public class GamePresenterImpl extends BasePresenter<Room, GameView> implements 
             try {
                 JSONObject data = (JSONObject) args[0];
                 User user = gson.fromJson(data.toString(), User.class);
-                if(user != null) {
+                if (user != null) {
                     Log.e(TAG, "User conntected! User id:" + user.getId() + "; name: " + user.getLogin());
                 } else {
                     Log.e(TAG, "Connected user == null");
                 }
-            } catch (JsonSyntaxException e){
+            } catch (JsonSyntaxException e) {
                 Log.e(TAG, e.getMessage());
             }
         };
