@@ -126,6 +126,10 @@ public class RoomsPresenterImpl extends BasePresenter<List<Room>, RoomsView>
                 view().showContent();
                 model.addAll(result.getData());
             }
+        } else {
+            if(result.getServerError() != null) {
+                throw new RuntimeException(result.getServerError().getErrorMessage());
+            }
         }
     }
 

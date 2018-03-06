@@ -23,10 +23,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.model.data.PreferenceManager;
+import com.transcendensoft.hedbanz.model.entity.User;
 import com.transcendensoft.hedbanz.util.AndroidUtils;
 import com.transcendensoft.hedbanz.view.activity.CredentialsActivity;
 import com.transcendensoft.hedbanz.view.activity.MainActivity;
@@ -47,6 +49,8 @@ public class MenuFragment extends Fragment{
     @BindView(R.id.tvFriends) TextView mTvFriends;
     @BindView(R.id.tvGamesPlayed) TextView mTvGamesPlayed;
     @BindView(R.id.tvMoney) TextView mTvMoney;
+    @BindView(R.id.tvUsername) TextView mTvUsername;
+    @BindView(R.id.ivUserImage) ImageView mIvImage;
 
     @Nullable
     @Override
@@ -55,16 +59,21 @@ public class MenuFragment extends Fragment{
 
         ButterKnife.bind(this, view);
 
-        view.findViewById(R.id.btnCredentials).setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), CredentialsActivity.class));
-        });
+        initUserData();
 
         return view;
     }
 
+    private void initUserData(){
+        User user = new PreferenceManager(getActivity()).getUser();
+
+        mTvMoney.setText(String.valueOf(user.getMoney()));
+        mTvUsername.setText(user.getLogin());
+    }
+
     @OnClick(R.id.btnCredentials)
     protected void onCredentialsClicked(){
-        AndroidUtils.showShortToast(getActivity(), R.string.in_developing);
+        startActivity(new Intent(getActivity(), CredentialsActivity.class));
     }
 
     @OnClick(R.id.tvFriends)

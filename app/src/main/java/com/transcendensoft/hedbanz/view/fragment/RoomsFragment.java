@@ -21,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -29,6 +30,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +43,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView;
+import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.adapter.RoomsAdapter;
@@ -86,6 +89,11 @@ public class RoomsFragment extends Fragment implements RoomsView {
     @BindView(R.id.chbWithPassword) CheckBox mChbWithPassword;
     @BindView(R.id.spinnerFromPlayers) Spinner mSpinnerFromPlayers;
     @BindView(R.id.spinnerToPlayers) Spinner mSpinnerToPlayers;
+    @BindView(R.id.tvFilterMaxPlayersTitle) TextView mTvFilterMaxPlayersTitle;
+    @BindView(R.id.tvPlayersFrom) TextView mTvFilterPlayersFrom;
+    @BindView(R.id.tvPlayersTo) TextView mTvFilterPlayersTo;
+    @BindView(R.id.filterDividerView) View mFilterDividerView;
+
     private RelativeLayout mRlSearchContainer;
     private TextView mTvToolbarTitle;
     private SearchView mSvRoomSearch;
@@ -241,11 +249,12 @@ public class RoomsFragment extends Fragment implements RoomsView {
                         }
                     }
                 });
-
+        disableFilters();
         RxCompoundButton.checkedChanges(mChbApplyFilters)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(isChecked -> {
                     if(isChecked){
+                        enableFilters();
                         RoomFilter roomFilter = new RoomFilter.Builder()
                                 .setIsPrivate(mChbWithPassword.isChecked())
                                 .setMinPlayers(Byte.parseByte(mSpinnerFromPlayers.getSelectedItem().toString()))
@@ -253,18 +262,60 @@ public class RoomsFragment extends Fragment implements RoomsView {
                                 .build();
                         mPresenter.filterRooms(roomFilter);
                     } else {
+                        disableFilters();
                         clearRooms();
                     }
+                });
+        RxCompoundButton.checkedChanges(mChbWithPassword)
+                .observeOn(AndroidSchedulers.mainThread())
+                .skip(1)
+                .subscribe(isChecked -> {
+                    RoomFilter filter = new RoomFilter.Builder()
+                            .setIsPrivate(isChecked)
+                            .build();
+                    mPresenter.filterRooms(filter);
                 });
 
         List<String> playersQuantity =
                 Arrays.asList("2","3","4","5","6","7","8");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                getActivity(), android.R.layout.simple_spinner_dropdown_item, playersQuantity);
+                getActivity(), android.R.layout.simple_spinner_item, playersQuantity);
         mSpinnerFromPlayers.setAdapter(adapter);
         mSpinnerToPlayers.setAdapter(adapter);
         mSpinnerToPlayers.setSelection(6);
+        RxAdapterView.itemSelections(mSpinnerFromPlayers)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(integer -> {
+                    Log.v("TAG", mSpinnerFromPlayers.getAdapter().getItem(integer).toString());
+                });
+        RxAdapterView.itemSelections(mSpinnerToPlayers)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(integer -> {
+                    Log.v("TAG", mSpinnerToPlayers.getAdapter().getItem(integer).toString());
+                });
 
+    }
+
+    private void disableFilters() {
+        int disabledColor = ContextCompat.getColor(getActivity(), R.color.textDisabled);
+        mSpinnerToPlayers.setEnabled(false);
+        mSpinnerFromPlayers.setEnabled(false);
+        mChbWithPassword.setEnabled(false);
+        mTvFilterMaxPlayersTitle.setTextColor(disabledColor);
+        mTvFilterPlayersFrom.setTextColor(disabledColor);
+        mTvFilterPlayersTo.setTextColor(disabledColor);
+        mFilterDividerView.setBackgroundColor(disabledColor);
+    }
+
+    private void enableFilters(){
+        int enabledColor = ContextCompat.getColor(getActivity(), R.color.textPrimary);
+        mSpinnerToPlayers.setEnabled(true);
+        mSpinnerFromPlayers.setEnabled(true);
+        mChbWithPassword.setEnabled(true);
+        mTvFilterMaxPlayersTitle.setTextColor(enabledColor);
+        mTvFilterPlayersFrom.setTextColor(enabledColor);
+        mTvFilterPlayersTo.setTextColor(enabledColor);
+        mFilterDividerView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.textDarkRed));
     }
 
     private void filterRoomsWithText(CharSequence text) {

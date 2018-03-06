@@ -41,7 +41,7 @@
             android:name=".view.activity.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ThemeMain"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".view.activity.RegisterActivity"
             android:screenOrientation="portrait"
