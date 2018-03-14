@@ -17,6 +17,7 @@
     <color name="textWhite">#FFFFFF</color>
     <color name="textRed">#D32F2F</color>
     <color name="textDarkRed">#AD2201</color>
+    <color name="textDisabled">#55000000</color>
 
     <!-- Login -->
     <color name="loginFrameBackground">#77FFFFFF</color>
@@ -24,4 +25,7 @@
     <color name="loginSuccess">#91DC5A</color>
     <color name="loginRipple">#E0E0E0</color>
     <color name="loginButton">#EEFFFFFF</color>
+
+    <!-- Rooms -->
+    <color name="filterBackground">#99FFE0B2</color>
 </resources>

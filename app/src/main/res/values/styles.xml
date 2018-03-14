@@ -35,4 +35,9 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <!-- The hint text that appears when the user has not typed anything -->
+        <item name="queryHint">@string/rooms_search_hint</item>
+    </style>
 </resources>

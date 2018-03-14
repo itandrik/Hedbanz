@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.holder.impl.RoomItemViewHolder;
-import com.transcendensoft.hedbanz.model.entity.Room;
+import com.transcendensoft.hedbanz.data.network.dto.Room;
 import com.transcendensoft.hedbanz.presenter.impl.RoomsPresenterImpl;
 import com.transcendensoft.hedbanz.presenter.impl.vhpresener.RoomItemPresenterImpl;
 

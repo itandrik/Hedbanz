@@ -1,51 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@color/windowBackground"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/windowBackground">
+
+    <include
+        android:id="@+id/cvFilters"
+        layout="@layout/layout_room_filters"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="wrap_content" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:paddingBottom="4dp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/cvFilters"
+        android:paddingBottom="4dp">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvRooms"
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/clSwipeRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical" />
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabSearchRoom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvRooms"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabSearchRoom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginRight="16dp"
+                app:backgroundTint="@color/colorPrimaryLight"
+                app:fabSize="normal"
+                app:layout_anchor="@id/rvRooms"
+                app:layout_anchorGravity="bottom|right|end"
+                app:srcCompat="@drawable/ic_search" />
+        </android.support.design.widget.CoordinatorLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <include
-        android:visibility="gone"
         android:id="@+id/rlErrorNetwork"
         layout="@layout/layout_error_network"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_below="@id/cvFilters"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <include
-        android:visibility="gone"
         android:id="@+id/rlErrorServer"
         layout="@layout/layout_error_server"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_below="@id/cvFilters"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <include
-        android:visibility="gone"
         android:id="@+id/flLoadingContainer"
         layout="@layout/layout_loading"
+        android:layout_below="@id/cvFilters"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <include
-        android:visibility="gone"
         android:id="@+id/rlEmptyListContainer"
         layout="@layout/layout_empty_list"
+        android:layout_below="@id/cvFilters"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 </RelativeLayout>

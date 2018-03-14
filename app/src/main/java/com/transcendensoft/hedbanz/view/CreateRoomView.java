@@ -17,7 +17,7 @@ package com.transcendensoft.hedbanz.view;
 
 import android.support.annotation.StringRes;
 
-import com.transcendensoft.hedbanz.model.entity.Room;
+import com.transcendensoft.hedbanz.data.network.dto.Room;
 
 /**
  * Describes room creation fragment

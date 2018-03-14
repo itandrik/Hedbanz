@@ -20,7 +20,7 @@ import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.model.entity.Room;
+import com.transcendensoft.hedbanz.data.network.dto.Room;
 
 import java.util.regex.Pattern;
 

@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.presenter;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.model.entity.Room;
+import com.transcendensoft.hedbanz.data.network.dto.Room;
 
 /**
  * Interface that describes methods which is needed

@@ -15,6 +15,8 @@ package com.transcendensoft.hedbanz.presenter;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.network.dto.RoomFilter;
+
 /**
  * Interface that describes methods which is needed
  * to show all rooms and refresh them
@@ -26,4 +28,7 @@ package com.transcendensoft.hedbanz.presenter;
 public interface RoomsPresenter {
     void loadNextRooms();
     void refreshRooms();
+    void filterRooms(RoomFilter roomFilter);
+    void clearFiltersAndText();
+    void clearFilters();
 }

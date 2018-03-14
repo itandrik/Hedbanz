@@ -21,7 +21,7 @@ import android.text.TextUtils;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.holder.RoomItemView;
-import com.transcendensoft.hedbanz.model.entity.Room;
+import com.transcendensoft.hedbanz.data.network.dto.Room;
 import com.transcendensoft.hedbanz.presenter.BasePresenter;
 import com.transcendensoft.hedbanz.view.activity.GameActivity;
 
@@ -40,7 +40,7 @@ public class RoomItemPresenterImpl extends BasePresenter<Room, RoomItemView>{
             if(model.getId()!= -1) {
                 view().setCurAndMaxPlayers(model.getCurrentPlayersNumber(), model.getMaxPlayers());
                 view().setName(model.getName());
-                view().setIsProtected(TextUtils.isEmpty(model.getPassword()));
+                view().setIsProtected(!TextUtils.isEmpty(model.getPassword()));
                 //TODO change icon of room
                 view().setIcon(R.drawable.ic_room);
                 view().showCard();

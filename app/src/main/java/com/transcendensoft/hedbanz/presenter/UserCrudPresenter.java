@@ -17,7 +17,7 @@ package com.transcendensoft.hedbanz.presenter;
 
 import android.widget.EditText;
 
-import com.transcendensoft.hedbanz.model.entity.User;
+import com.transcendensoft.hedbanz.data.network.dto.User;
 
 /**
  * Interface that shows describes methods which is needed

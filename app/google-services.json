@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "269506011579",
+    "firebase_url": "https://hedbanz-5661b.firebaseio.com",
+    "project_id": "hedbanz-5661b",
+    "storage_bucket": "hedbanz-5661b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:269506011579:android:7a112a9ae9937ef4",
+        "android_client_info": {
+          "package_name": "com.transcendensoft.hedbanz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "269506011579-bj6kc8dtia46j185lj1jak51fsi00nls.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHUyrEKCjQf676lDC_zzsU6cjF0cEcqgQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

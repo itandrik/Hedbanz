@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.model.entity.Room;
+import com.transcendensoft.hedbanz.data.network.dto.Room;
 import com.transcendensoft.hedbanz.presenter.PresenterManager;
 import com.transcendensoft.hedbanz.presenter.impl.GamePresenterImpl;
 import com.transcendensoft.hedbanz.view.GameView;

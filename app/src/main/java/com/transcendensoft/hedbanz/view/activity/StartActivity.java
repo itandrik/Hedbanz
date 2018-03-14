@@ -20,8 +20,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.model.data.PreferenceManager;
-import com.transcendensoft.hedbanz.util.AndroidUtils;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.utils.AndroidUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

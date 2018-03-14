@@ -29,10 +29,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.model.entity.Room;
+import com.transcendensoft.hedbanz.data.network.dto.Room;
 import com.transcendensoft.hedbanz.presenter.PresenterManager;
 import com.transcendensoft.hedbanz.presenter.impl.CreateRoomPresenterImpl;
-import com.transcendensoft.hedbanz.util.AndroidUtils;
+import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.view.CreateRoomView;
 import com.warkiz.widget.IndicatorSeekBar;
 

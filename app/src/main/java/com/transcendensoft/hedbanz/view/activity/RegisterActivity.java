@@ -21,11 +21,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.crashlytics.android.Crashlytics;
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.model.data.PreferenceManager;
-import com.transcendensoft.hedbanz.model.entity.User;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.data.network.dto.User;
 import com.transcendensoft.hedbanz.presenter.PresenterManager;
 import com.transcendensoft.hedbanz.presenter.impl.UserCrudPresenterImpl;
-import com.transcendensoft.hedbanz.util.AndroidUtils;
+import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.view.UserCrudOperationView;
 
 import butterknife.BindView;

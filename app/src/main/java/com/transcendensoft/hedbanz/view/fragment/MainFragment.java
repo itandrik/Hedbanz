@@ -26,6 +26,7 @@ import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,7 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.adapter.MainScreenFragmentAdapter;
-import com.transcendensoft.hedbanz.util.AndroidUtils;
+import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.view.activity.MainActivity;
 import com.transcendensoft.hedbanz.view.custom.transform.DefaultTransformer;
 import com.transcendensoft.hedbanz.view.custom.widget.MainViewPager;
@@ -44,8 +45,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.transcendensoft.hedbanz.util.TabUtils.getIconEnabledTabWithIndex;
-import static com.transcendensoft.hedbanz.util.TabUtils.getIconForDisabledTabWithIndex;
+import static com.transcendensoft.hedbanz.utils.TabUtils.getIconEnabledTabWithIndex;
+import static com.transcendensoft.hedbanz.utils.TabUtils.getIconForDisabledTabWithIndex;
 
 /**
  * Fragment that contains view pager that shows
@@ -59,7 +60,7 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
     @BindView(R.id.mainViewPager) MainViewPager mViewPager;
     @BindView(R.id.tlBottomNavigation) TabLayout mTabLayout;
     @BindView(R.id.tvToolbarTitle) TextView mTvToolbarTitle;
-
+    @BindView(R.id.toolbarMain) Toolbar mToolbar;
     private MainScreenFragmentAdapter mAdapter;
 
     //Tabs
@@ -161,6 +162,12 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
                 changeTitle(titleSequence.toString());
             }
             changeTab(position);
+
+            if(position == 1) {
+                RoomsFragment roomsFragment = (RoomsFragment) mAdapter.getRegisteredFragment(0);
+                roomsFragment.onCloseSearchClicked();
+            }
+
         }catch (ClassCastException e){
             e.printStackTrace();
             Crashlytics.logException(e);
@@ -196,5 +203,9 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
         if(getActivity() != null) {
             ((MainActivity) getActivity()).openMenu();
         }
+    }
+
+    public Toolbar getToolbar() {
+        return mToolbar;
     }
 }
