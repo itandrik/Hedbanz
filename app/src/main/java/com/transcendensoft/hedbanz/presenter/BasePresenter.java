@@ -2,7 +2,7 @@ package com.transcendensoft.hedbanz.presenter;
 
 import android.support.annotation.NonNull;
 
-import com.transcendensoft.hedbanz.util.AndroidUtils;
+import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.view.BaseView;
 
 import java.lang.ref.WeakReference;

@@ -24,18 +24,18 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.jakewharton.rxbinding2.widget.RxTextView;
-import com.transcendensoft.hedbanz.model.api.manager.UserCrudApiManager;
-import com.transcendensoft.hedbanz.model.data.PreferenceManager;
-import com.transcendensoft.hedbanz.model.entity.ServerResult;
-import com.transcendensoft.hedbanz.model.entity.ServerStatus;
-import com.transcendensoft.hedbanz.model.entity.User;
-import com.transcendensoft.hedbanz.model.entity.error.RegisterError;
-import com.transcendensoft.hedbanz.model.entity.error.ServerError;
+import com.transcendensoft.hedbanz.data.network.manager.UserCrudApiManager;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.data.network.dto.ServerResult;
+import com.transcendensoft.hedbanz.data.network.dto.ServerStatus;
+import com.transcendensoft.hedbanz.data.network.dto.User;
+import com.transcendensoft.hedbanz.data.network.dto.error.RegisterError;
+import com.transcendensoft.hedbanz.data.network.dto.error.ServerError;
 import com.transcendensoft.hedbanz.presenter.BasePresenter;
 import com.transcendensoft.hedbanz.presenter.UserCrudPresenter;
 import com.transcendensoft.hedbanz.presenter.Socketable;
 import com.transcendensoft.hedbanz.presenter.validation.UserCrudValidator;
-import com.transcendensoft.hedbanz.util.AndroidUtils;
+import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.view.UserCrudOperationView;
 
 import org.json.JSONException;
@@ -46,9 +46,9 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.disposables.Disposable;
 
-import static com.transcendensoft.hedbanz.model.api.manager.ApiManager.HOST;
-import static com.transcendensoft.hedbanz.model.api.manager.ApiManager.PORT_SOCKET;
-import static com.transcendensoft.hedbanz.model.api.manager.ApiManager.LOGIN_SOCKET_NSP;
+import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.HOST;
+import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.PORT_SOCKET;
+import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.LOGIN_SOCKET_NSP;
 
 /**
  * Presenter from MVP pattern, that contains

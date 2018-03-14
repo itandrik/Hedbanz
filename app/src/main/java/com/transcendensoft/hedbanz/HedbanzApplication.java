@@ -15,11 +15,20 @@ package com.transcendensoft.hedbanz;
  * limitations under the License.
  */
 
+import android.app.Activity;
 import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
+import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
+import com.squareup.leakcanary.LeakCanary;
+import com.transcendensoft.hedbanz.di.component.AppComponent;
+import com.transcendensoft.hedbanz.di.component.DaggerAppComponent;
+import com.transcendensoft.hedbanz.logging.CrashReportingTree;
+
+import javax.inject.Inject;
 
 import io.fabric.sdk.android.Fabric;
+import timber.log.Timber;
 
 /**
  * Base application class with initialization of
@@ -28,11 +37,46 @@ import io.fabric.sdk.android.Fabric;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-
 public class HedbanzApplication extends Application{
+    @Inject Timber.DebugTree mDebugTimberTree;
+    @Inject CrashReportingTree mReleaseTimberTree;
+
+    public static HedbanzApplication get(Activity activity) {
+        return (HedbanzApplication) activity.getApplication();
+    }
+
+    private AppComponent mApplicationComponent;
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        initApplicationComponent();
+        initThirdParties();
+    }
+
+    private void initApplicationComponent() {
+        mApplicationComponent = DaggerAppComponent.builder().build();
+        mApplicationComponent.inject(this);
+    }
+
+    private void initThirdParties() {
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
         Fabric.with(this, new Crashlytics());
+        if (BuildConfig.DEBUG) {
+            AndroidDevMetrics.initWith(this);
+            Timber.plant(mDebugTimberTree);
+        } else {
+            Timber.plant(mReleaseTimberTree);
+        }
+    }
+
+    public AppComponent getApplicationComponent() {
+        return mApplicationComponent;
     }
 }

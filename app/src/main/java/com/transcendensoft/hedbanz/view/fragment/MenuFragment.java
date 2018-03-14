@@ -27,9 +27,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.model.data.PreferenceManager;
-import com.transcendensoft.hedbanz.model.entity.User;
-import com.transcendensoft.hedbanz.util.AndroidUtils;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.data.network.dto.User;
+import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.view.activity.CredentialsActivity;
 import com.transcendensoft.hedbanz.view.activity.MainActivity;
 import com.transcendensoft.hedbanz.view.activity.StartActivity;

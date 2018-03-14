@@ -36,7 +36,7 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.adapter.MainScreenFragmentAdapter;
-import com.transcendensoft.hedbanz.util.AndroidUtils;
+import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.view.activity.MainActivity;
 import com.transcendensoft.hedbanz.view.custom.transform.DefaultTransformer;
 import com.transcendensoft.hedbanz.view.custom.widget.MainViewPager;
@@ -45,8 +45,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.transcendensoft.hedbanz.util.TabUtils.getIconEnabledTabWithIndex;
-import static com.transcendensoft.hedbanz.util.TabUtils.getIconForDisabledTabWithIndex;
+import static com.transcendensoft.hedbanz.utils.TabUtils.getIconEnabledTabWithIndex;
+import static com.transcendensoft.hedbanz.utils.TabUtils.getIconForDisabledTabWithIndex;
 
 /**
  * Fragment that contains view pager that shows

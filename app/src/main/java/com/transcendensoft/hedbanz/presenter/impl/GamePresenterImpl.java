@@ -22,9 +22,9 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.transcendensoft.hedbanz.model.data.PreferenceManager;
-import com.transcendensoft.hedbanz.model.entity.Room;
-import com.transcendensoft.hedbanz.model.entity.User;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.data.network.dto.Room;
+import com.transcendensoft.hedbanz.data.network.dto.User;
 import com.transcendensoft.hedbanz.presenter.BasePresenter;
 import com.transcendensoft.hedbanz.presenter.GamePresenter;
 import com.transcendensoft.hedbanz.view.GameView;
@@ -34,9 +34,9 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 
-import static com.transcendensoft.hedbanz.model.api.manager.ApiManager.GAME_SOCKET_NSP;
-import static com.transcendensoft.hedbanz.model.api.manager.ApiManager.HOST;
-import static com.transcendensoft.hedbanz.model.api.manager.ApiManager.PORT_SOCKET;
+import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.GAME_SOCKET_NSP;
+import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.HOST;
+import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.PORT_SOCKET;
 
 /**
  * Implementation of game mode presenter.

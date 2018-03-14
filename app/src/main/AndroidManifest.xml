@@ -53,10 +53,24 @@
             android:theme="@style/ThemeRegister"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity android:name=".view.activity.GameActivity" />
+
         <!-- Service -->
+
+        <!-- Firebase Notifications -->
+        <service android:name=".service.HedbanzFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <service android:name=".service.HedbanzFirebaseInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
         <!-- Receivers -->
         <!-- Providers -->
-        <activity android:name=".view.activity.GameActivity"></activity>
     </application>
 
 </manifest>

@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.view;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.model.entity.Room;
+import com.transcendensoft.hedbanz.data.network.dto.Room;
 
 import java.util.List;
 
