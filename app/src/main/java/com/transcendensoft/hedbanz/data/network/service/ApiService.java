@@ -15,10 +15,10 @@ package com.transcendensoft.hedbanz.data.network.service;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.network.dto.Room;
-import com.transcendensoft.hedbanz.data.network.dto.RoomFilter;
-import com.transcendensoft.hedbanz.data.network.dto.ServerResult;
-import com.transcendensoft.hedbanz.data.network.dto.User;
+import com.transcendensoft.hedbanz.data.entity.Room;
+import com.transcendensoft.hedbanz.data.entity.RoomFilter;
+import com.transcendensoft.hedbanz.data.entity.ServerResult;
+import com.transcendensoft.hedbanz.data.entity.User;
 
 import java.util.HashMap;
 import java.util.List;

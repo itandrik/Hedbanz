@@ -16,10 +16,12 @@ package com.transcendensoft.hedbanz.di;
  */
 
 import android.app.Application;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.transcendensoft.hedbanz.data.network.ApiServiceModule;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.di.qualifier.ApplicationContext;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 
 import dagger.Module;
@@ -40,6 +42,13 @@ public class AppModule {
 
     @Provides
     public Application provideApplication(){
+        return mApplication;
+    }
+
+    @Provides
+    @ApplicationScope
+    @ApplicationContext
+    public Context provideApplicationContext() {
         return mApplication;
     }
 

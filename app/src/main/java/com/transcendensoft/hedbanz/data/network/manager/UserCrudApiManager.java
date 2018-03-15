@@ -15,10 +15,12 @@ package com.transcendensoft.hedbanz.data.network.manager;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.network.dto.ServerResult;
-import com.transcendensoft.hedbanz.data.network.dto.User;
+import com.transcendensoft.hedbanz.data.entity.ServerResult;
+import com.transcendensoft.hedbanz.data.entity.User;
 
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import io.reactivex.Observable;
 
@@ -29,16 +31,8 @@ import io.reactivex.Observable;
  *         Developed by <u>Transcendensoft</u>
  */
 public class UserCrudApiManager extends ApiManager {
-    private static final class Holder {
-        static final UserCrudApiManager INSTANCE = new UserCrudApiManager();
-    }
-
-    private UserCrudApiManager() {
+    @Inject UserCrudApiManager() {
         super();
-    }
-
-    public static UserCrudApiManager getInstance() {
-        return UserCrudApiManager.Holder.INSTANCE;
     }
 
     public Observable<ServerResult<User>> registerUser(User user) {

@@ -17,7 +17,9 @@ package com.transcendensoft.hedbanz.di.component;
 
 import com.transcendensoft.hedbanz.HedbanzApplication;
 import com.transcendensoft.hedbanz.data.network.manager.ApiManager;
+import com.transcendensoft.hedbanz.data.network.manager.ApiManagerModule;
 import com.transcendensoft.hedbanz.di.AppModule;
+import com.transcendensoft.hedbanz.di.RxModule;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 import com.transcendensoft.hedbanz.logging.LoggingModule;
 
@@ -31,8 +33,9 @@ import dagger.Component;
  *         Developed by <u>Transcendensoft</u>
  */
 @ApplicationScope
-@Component(modules = {LoggingModule.class, AppModule.class, })
+@Component(modules = {LoggingModule.class, AppModule.class,
+        ApiManagerModule.class, RxModule.class})
 public interface AppComponent {
     void inject(HedbanzApplication hedbanzApplication);
-    void inject(ApiManager dataRepository);
+    void inject(ApiManager apiManager);
 }

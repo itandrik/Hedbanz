@@ -19,7 +19,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
-import com.transcendensoft.hedbanz.data.network.dto.User;
+import com.transcendensoft.hedbanz.data.entity.User;
 import com.transcendensoft.hedbanz.di.qualifier.ApplicationContext;
 
 /**

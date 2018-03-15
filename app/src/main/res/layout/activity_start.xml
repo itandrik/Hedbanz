@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@drawable/login_full_background"
-    tools:context="com.transcendensoft.hedbanz.view.activity.StartActivity">
+    tools:context="com.transcendensoft.hedbanz.presentation.StartActivity">
 
     <FrameLayout
         android:id="@+id/flLoginFragmentContainer"
@@ -16,7 +16,7 @@
 
         <fragment
             android:id="@+id/loginFragment"
-            android:name="com.transcendensoft.hedbanz.view.fragment.LoginFragment"
+            android:name="com.transcendensoft.hedbanz.presentation.usercrud.login.LoginFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </FrameLayout>

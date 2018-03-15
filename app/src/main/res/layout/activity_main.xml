@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.transcendensoft.hedbanz.view.custom.widget.VerticalViewPager
+    <com.transcendensoft.hedbanz.presentation.customview.widget.VerticalViewPager
         android:id="@+id/verticalViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

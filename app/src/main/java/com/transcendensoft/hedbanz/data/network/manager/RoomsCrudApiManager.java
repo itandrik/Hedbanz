@@ -15,12 +15,14 @@ package com.transcendensoft.hedbanz.data.network.manager;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.network.dto.Room;
-import com.transcendensoft.hedbanz.data.network.dto.RoomFilter;
-import com.transcendensoft.hedbanz.data.network.dto.ServerResult;
+import com.transcendensoft.hedbanz.data.entity.Room;
+import com.transcendensoft.hedbanz.data.entity.RoomFilter;
+import com.transcendensoft.hedbanz.data.entity.ServerResult;
 
 import java.util.HashMap;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.reactivex.Observable;
 
@@ -31,16 +33,8 @@ import io.reactivex.Observable;
  *         Developed by <u>Transcendensoft</u>
  */
 public class RoomsCrudApiManager extends ApiManager{
-    private static final class Holder {
-        static final RoomsCrudApiManager INSTANCE = new RoomsCrudApiManager();
-    }
-
-    private RoomsCrudApiManager() {
+    @Inject RoomsCrudApiManager() {
         super();
-    }
-
-    public static RoomsCrudApiManager getInstance() {
-        return RoomsCrudApiManager.Holder.INSTANCE;
     }
 
     public Observable<ServerResult<List<Room>>> getRooms(int page){
