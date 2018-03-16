@@ -2,8 +2,6 @@ package com.transcendensoft.hedbanz.presentation.base;
 
 import android.support.annotation.NonNull;
 
-import com.transcendensoft.hedbanz.utils.AndroidUtils;
-
 import java.lang.ref.WeakReference;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -69,8 +67,8 @@ public abstract class BasePresenter<M,V> {
     protected void processOnSubscribe(Disposable d){
         if(view() instanceof BaseView) {
             BaseView view = (BaseView) view();
-            if (!d.isDisposed() && view.provideContext() != null) {
-                if (AndroidUtils.isNetworkConnected(view.provideContext())) {
+            if (!d.isDisposed()) {
+                if (view.isNetworkConnected()) {
                     view.showLoading();
                 } else {
                     view.showNetworkError();

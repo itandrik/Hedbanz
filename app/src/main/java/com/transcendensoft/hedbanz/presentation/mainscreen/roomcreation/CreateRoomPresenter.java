@@ -25,7 +25,11 @@ import com.transcendensoft.hedbanz.data.entity.User;
 import com.transcendensoft.hedbanz.data.entity.error.ServerError;
 import com.transcendensoft.hedbanz.data.network.manager.RoomsCrudApiManager;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.di.scope.FragmentScope;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
+import com.transcendensoft.hedbanz.validation.RoomValidator;
+
+import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
 
@@ -36,9 +40,18 @@ import io.reactivex.disposables.Disposable;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
+@FragmentScope
 public class CreateRoomPresenter extends BasePresenter<Room, CreateRoomContract.View>
         implements CreateRoomContract.Presenter{
     private static final String TAG = CreateRoomPresenter.class.getName();
+    private RoomsCrudApiManager mApiManager;
+    private PreferenceManager mPreferenceManager;
+
+    @Inject
+    public CreateRoomPresenter(RoomsCrudApiManager apiManager, PreferenceManager preferenceManager) {
+        this.mApiManager = apiManager;
+        this.mPreferenceManager = preferenceManager;
+    }
 
     @Override
     protected void updateView() {
@@ -49,8 +62,8 @@ public class CreateRoomPresenter extends BasePresenter<Room, CreateRoomContract.
     public void createRoom(Room room) {
         setModel(room);
         if(isRoomValid(room)){
-            User curUser = new PreferenceManager(view().provideContext()).getUser();
-            Disposable disposable = RoomsCrudApiManager.getInstance()
+            User curUser = mPreferenceManager.getUser();
+            Disposable disposable = mApiManager
                     .createRoom(room.getPassword(), room.getName(),
                             room.getMaxPlayers(), curUser.getId())
                     .subscribe(this::processCreateRoomOnNext,

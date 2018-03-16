@@ -15,13 +15,10 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation;
  * limitations under the License.
  */
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +27,11 @@ import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.entity.Room;
-import com.transcendensoft.hedbanz.presentation.base.PresenterManager;
+import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.warkiz.widget.IndicatorSeekBar;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,15 +46,14 @@ import static android.view.View.GONE;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class CreateRoomFragment extends Fragment implements CreateRoomContract.View{
+public class CreateRoomFragment extends BaseFragment implements CreateRoomContract.View{
     @BindView(R.id.tvErrorRoomName) TextView mTvErrorRoomName;
     @BindView(R.id.tvErrorRoomPassword) TextView mTvErrorRoomPassword;
     @BindView(R.id.etRoomName) EditText mEtRoomName;
     @BindView(R.id.etRoomPassword) EditText mEtRoomPassword;
     @BindView(R.id.isbPlayersQuantity) IndicatorSeekBar mIsbMaxPlayersQuantity;
 
-    private CreateRoomPresenter mPresenter;
-    private ProgressDialog mProgress;
+    @Inject CreateRoomPresenter mPresenter;
 
     /*------------------------------------*
      *-------- Fragment lifecycle --------*
@@ -66,9 +64,6 @@ public class CreateRoomFragment extends Fragment implements CreateRoomContract.V
         View view = inflater.inflate(R.layout.fragment_room_creation, container, false);
 
         ButterKnife.bind(this, view);
-
-        initProgressDialog();
-        initPresenter(savedInstanceState);
 
         return view;
     }
@@ -89,38 +84,17 @@ public class CreateRoomFragment extends Fragment implements CreateRoomContract.V
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        PresenterManager.getInstance().savePresenter(mPresenter, outState);
-    }
-
-    @Override
-    public Context provideContext() {
-        return getActivity();
-    }
-
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
-    private void initProgressDialog() {
-        mProgress = new ProgressDialog(getActivity());
-        mProgress.setMessage(getString(R.string.action_loading));
-        mProgress.setCancelable(false);
-        mProgress.setIndeterminate(true);
-    }
-
-    private void initPresenter(Bundle savedInstanceState){
-        if (savedInstanceState == null) {
-            mPresenter = new CreateRoomPresenter();
-        } else {
-            mPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
-        }
+    @Override
+    protected void injectDependencies() {
+        getFragmentComponent().inject(this);
     }
 
     /*------------------------------------*
-     *-------- On click listeners --------*
-     *------------------------------------*/
+         *-------- On click listeners --------*
+         *------------------------------------*/
     @OnClick(R.id.btnCreateRoom)
     protected void onCreateRoomClicked(){
         if(mPresenter != null){
@@ -153,22 +127,19 @@ public class CreateRoomFragment extends Fragment implements CreateRoomContract.V
      *------------------------------------*/
     @Override
     public void showServerError() {
-        hideLoading();
+        hideLoadingDialog();
         AndroidUtils.showShortToast(getActivity(), R.string.error_server);
     }
 
     @Override
     public void showNetworkError() {
-        hideLoading();
+        hideLoadingDialog();
         AndroidUtils.showShortToast(getActivity(), R.string.error_network);
     }
 
     @Override
     public void showLoading() {
-        hideAll();
-        if (mProgress != null) {
-            mProgress.show();
-        }
+        // Stub
     }
 
     @Override
@@ -178,27 +149,22 @@ public class CreateRoomFragment extends Fragment implements CreateRoomContract.V
 
     @Override
     public void showIncorrectRoomName(@StringRes int errorMessage) {
-        hideLoading();
+        hideLoadingDialog();
         mTvErrorRoomName.setVisibility(View.VISIBLE);
-        mTvErrorRoomName.setText(errorMessage);
+        mTvErrorRoomName.setText(getString(errorMessage));
     }
 
     @Override
     public void showIncorrectRoomPassword(@StringRes int errorMessage) {
-        hideLoading();
+        hideLoadingDialog();
         mTvErrorRoomPassword.setVisibility(View.VISIBLE);
-        mTvErrorRoomPassword.setText(errorMessage);
+        mTvErrorRoomPassword.setText(getString(errorMessage));
     }
 
-    private void hideAll(){
-        hideLoading();
+    @Override
+    public void hideAll(){
+        hideLoadingDialog();
         mTvErrorRoomName.setVisibility(GONE);
         mTvErrorRoomPassword.setVisibility(GONE);
-    }
-
-    private void hideLoading(){
-        if(mProgress != null){
-            mProgress.hide();
-        }
     }
 }

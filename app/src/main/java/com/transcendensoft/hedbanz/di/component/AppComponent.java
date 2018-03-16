@@ -36,6 +36,9 @@ import dagger.Component;
 @Component(modules = {LoggingModule.class, AppModule.class,
         ApiManagerModule.class, RxModule.class})
 public interface AppComponent {
+    ActivityComponent.Builder activityComponentBuilder();
+
     void inject(HedbanzApplication hedbanzApplication);
+
     void inject(ApiManager apiManager);
 }

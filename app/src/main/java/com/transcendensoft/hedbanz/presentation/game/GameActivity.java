@@ -1,20 +1,17 @@
 package com.transcendensoft.hedbanz.presentation.game;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.entity.Room;
-import com.transcendensoft.hedbanz.presentation.base.PresenterManager;
+import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 
-public class GameActivity extends AppCompatActivity implements GameContract.View{
-
-    private GamePresenterImpl mPresenter;
-    private ProgressDialog mProgressDialog;
+public class GameActivity extends BaseActivity implements GameContract.View{
+    @Inject GamePresenter mPresenter;
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -23,10 +20,15 @@ public class GameActivity extends AppCompatActivity implements GameContract.View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        ButterKnife.bind(this, this);
 
-        initPresenter(savedInstanceState);
-        initProgressDialog();
+        ButterKnife.bind(this, this);
+        getActivityComponent().inject(this);
+
+        //TODO refactor this, it should be inside Presenter
+        if (mPresenter != null && getIntent() != null) {
+            long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
+            mPresenter.setModel(new Room.Builder().setId(roomId).build());
+        }
         //TODO initRecycler();
     }
 
@@ -54,39 +56,9 @@ public class GameActivity extends AppCompatActivity implements GameContract.View
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        PresenterManager.getInstance().savePresenter(mPresenter, outState);
-    }
-
-    @Override
-    public Context provideContext() {
-        return this;
-    }
-
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
-    private void initPresenter(Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            mPresenter = new GamePresenterImpl();
-        } else {
-            mPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
-        }
-
-        if (mPresenter != null && getIntent() != null) {
-            long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
-            mPresenter.setModel(new Room.Builder().setId(roomId).build());
-        }
-    }
-
-    private void initProgressDialog(){
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setMessage(getString(R.string.action_loading));
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.setIndeterminate(true);
-    }
 
     /*------------------------------------*
      *-------- On click listeners --------*
@@ -116,6 +88,11 @@ public class GameActivity extends AppCompatActivity implements GameContract.View
 
     @Override
     public void showContent() {
+
+    }
+
+    @Override
+    public void hideAll() {
 
     }
 }

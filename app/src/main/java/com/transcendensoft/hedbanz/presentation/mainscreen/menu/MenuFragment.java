@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.menu;
  * limitations under the License.
  */
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,12 +28,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.entity.User;
-import com.transcendensoft.hedbanz.utils.AndroidUtils;
-import com.transcendensoft.hedbanz.presentation.usercrud.CredentialsActivity;
-import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.di.FragmentModule;
+import com.transcendensoft.hedbanz.di.component.FragmentComponent;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
+import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
+import com.transcendensoft.hedbanz.presentation.usercrud.CredentialsActivity;
+import com.transcendensoft.hedbanz.utils.AndroidUtils;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,20 +57,36 @@ public class MenuFragment extends Fragment{
     @BindView(R.id.tvUsername) TextView mTvUsername;
     @BindView(R.id.ivUserImage) ImageView mIvImage;
 
+    private BaseActivity mActivity;
+    @Inject PreferenceManager mPreferenceManager;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
 
         ButterKnife.bind(this, view);
-
         initUserData();
 
         return view;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof BaseActivity) {
+            mActivity = (BaseActivity) context;
+
+            FragmentComponent fragmentComponent = mActivity.getActivityComponent()
+                    .fragmentComponentBuilder()
+                    .fragmentModule(new FragmentModule())
+                    .build();
+            fragmentComponent.inject(this);
+        }
+    }
+
     private void initUserData(){
-        User user = new PreferenceManager(getActivity()).getUser();
+        User user = mPreferenceManager.getUser();
 
         mTvMoney.setText(String.valueOf(user.getMoney()));
         mTvUsername.setText(user.getLogin());
@@ -83,23 +104,23 @@ public class MenuFragment extends Fragment{
 
     @OnClick(R.id.btnFriends)
     protected void onFriendsButtonClicked(){
-        AndroidUtils.showShortToast(getActivity(), R.string.in_developing);
+        mActivity.showShortToastMessage(R.string.in_developing);
     }
 
     @OnClick(R.id.tvMoney)
     protected void onMoneysAmountClicked(){
-        AndroidUtils.showShortToast(getActivity(), R.string.in_developing);
+        mActivity.showShortToastMessage(R.string.in_developing);
         //TODO add money purchasing
     }
 
     @OnClick(R.id.btnShop)
     protected void onShopClicked(){
-        AndroidUtils.showShortToast(getActivity(), R.string.in_developing);
+        mActivity.showShortToastMessage(R.string.in_developing);
     }
 
     @OnClick(R.id.btnHelp)
     protected void onHelpClicked(){
-        AndroidUtils.showShortToast(getActivity(), R.string.in_developing);
+        mActivity.showShortToastMessage(R.string.in_developing);
     }
 
     @OnClick(R.id.btnSettings)
@@ -109,7 +130,7 @@ public class MenuFragment extends Fragment{
 
     @OnClick(R.id.btnExit)
     protected void onLogoutClicked(){
-        new PreferenceManager(getActivity()).setIsAuthorised(false);
+        mPreferenceManager.setIsAuthorised(false);
 
         Intent intent = new Intent(getActivity(), StartActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -121,7 +142,7 @@ public class MenuFragment extends Fragment{
     @OnClick(R.id.fabDown)
     protected void onFabDownClicked(){
         if(getActivity() != null) {
-            ((MainActivity) getActivity()).onBackPressed();
+            mActivity.onBackPressed();
         }
     }
 }

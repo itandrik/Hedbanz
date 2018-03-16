@@ -24,17 +24,17 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.jakewharton.rxbinding2.widget.RxTextView;
-import com.transcendensoft.hedbanz.data.network.manager.UserCrudApiManager;
-import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.entity.ServerResult;
 import com.transcendensoft.hedbanz.data.entity.ServerStatus;
 import com.transcendensoft.hedbanz.data.entity.User;
 import com.transcendensoft.hedbanz.data.entity.error.RegisterError;
 import com.transcendensoft.hedbanz.data.entity.error.ServerError;
+import com.transcendensoft.hedbanz.data.network.manager.UserCrudApiManager;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.base.Socketable;
 import com.transcendensoft.hedbanz.validation.UserCrudValidator;
-import com.transcendensoft.hedbanz.utils.AndroidUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,11 +42,13 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import io.reactivex.disposables.Disposable;
 
 import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.HOST;
-import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.PORT_SOCKET;
 import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.LOGIN_SOCKET_NSP;
+import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.PORT_SOCKET;
 
 /**
  * Presenter from MVP pattern, that contains
@@ -55,15 +57,28 @@ import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.LOGIN_
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class UserCrudPresenterImpl extends BasePresenter<User, UserCrudContract.View>
+@ActivityScope
+public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View>
         implements UserCrudContract.Presenter, Socketable {
-    private static final String TAG = UserCrudPresenterImpl.class.getName();
+    private static final String TAG = UserCrudPresenter.class.getName();
     private static final String LOGIN_RESULT_LISTENER = "loginResult";
     private static final String CHECK_LOGIN_EMIT_KEY = "checkLogin";
     private static final String IS_LOGIN_AVAILABLE = "isLoginAvailable";
 
     private Socket mSocket;
     private Emitter.Listener mLoginResultSocketListener;
+
+    private UserCrudApiManager mApiManager;
+    private PreferenceManager mPreferenceManager;
+
+    /*------------------------------------*
+     *---------- Initialization ----------*
+     *------------------------------------*/
+    @Inject
+    public UserCrudPresenter(UserCrudApiManager mApiManager, PreferenceManager mPreferenceManager) {
+        this.mApiManager = mApiManager;
+        this.mPreferenceManager = mPreferenceManager;
+    }
 
     @Override
     protected void updateView() {
@@ -77,7 +92,7 @@ public class UserCrudPresenterImpl extends BasePresenter<User, UserCrudContract.
     public void registerUser(User user) {
         setModel(user);
         if (isUserValid(user)) {
-            Disposable disposable = UserCrudApiManager.getInstance()
+            Disposable disposable = mApiManager
                     .registerUser(user)
                     .subscribe(
                             this::processRegisterOnNext,
@@ -92,7 +107,7 @@ public class UserCrudPresenterImpl extends BasePresenter<User, UserCrudContract.
     public void updateUser(User user, String oldPassword) {
         setModel(user);
         if (isUserValid(user) && isOldPasswordValid(oldPassword)) {
-            Disposable disposable = UserCrudApiManager.getInstance()
+            Disposable disposable = mApiManager
                     .updateUser(user.getId(), user.getLogin(), oldPassword, user.getPassword())
                     .subscribe(
                             this::processRegisterOnNext,
@@ -146,7 +161,7 @@ public class UserCrudPresenterImpl extends BasePresenter<User, UserCrudContract.
             throw new IllegalStateException();
         } else {
             if(result.getData() != null) {
-                new PreferenceManager(view().provideContext()).setUser(result.getData());
+                mPreferenceManager.setUser(result.getData());
             } else {
                 throw new RuntimeException("User comes NULL from server while login");
             }
@@ -187,8 +202,8 @@ public class UserCrudPresenterImpl extends BasePresenter<User, UserCrudContract.
     }
 
     private void processRegisterOnSubscribe(Disposable d) {
-        if (!d.isDisposed() && view().provideContext() != null) {
-            if (AndroidUtils.isNetworkConnected(view().provideContext())) {
+        if (!d.isDisposed()) {
+            if (view().isNetworkConnected()) {
                 view().showLoading();
             } else {
                 view().showNetworkError();
@@ -199,11 +214,11 @@ public class UserCrudPresenterImpl extends BasePresenter<User, UserCrudContract.
     /*------------------------------------*
      *------- Animation for smile --------*
      *------------------------------------*/
-    private boolean isAnimating;
     @Override
     public void initAnimEditTextListener(EditText editText) {
         addDisposable(
                 RxTextView.textChanges(editText)
+                        .skip(1)
                         .doOnEach(text -> {
                             view().startSmileAnimation();
                         })

@@ -1,13 +1,10 @@
 package com.transcendensoft.hedbanz.presentation.usercrud;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,10 +15,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.entity.User;
-import com.transcendensoft.hedbanz.presentation.base.PresenterManager;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
+import com.transcendensoft.hedbanz.utils.KeyboardUtils;
+import com.transcendensoft.hedbanz.utils.ViewUtils;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +30,7 @@ import butterknife.OnClick;
 
 import static android.view.View.GONE;
 
-public class CredentialsActivity extends AppCompatActivity implements UserCrudContract.View {
+public class CredentialsActivity extends BaseActivity implements UserCrudContract.View {
     @BindView(R.id.ivSmileGif) ImageView mIvSmileGif;
     @BindView(R.id.etLogin) EditText mEtLogin;
     @BindView(R.id.etEmail) EditText mEtEmail;
@@ -44,8 +45,8 @@ public class CredentialsActivity extends AppCompatActivity implements UserCrudCo
     @BindView(R.id.tvLoginAvailability) TextView mTvLoginAvailability;
     @BindView(R.id.pbLoginLoading) ProgressBar mPbLoginLoading;
 
-    private UserCrudPresenterImpl mPresenter;
-    private ProgressDialog mProgressDialog;
+    @Inject UserCrudPresenter mPresenter;
+    @Inject PreferenceManager mPreferenceManager;
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -63,12 +64,14 @@ public class CredentialsActivity extends AppCompatActivity implements UserCrudCo
         }
 
         ButterKnife.bind(this, this);
+        getActivityComponent().inject(this);
 
-        int size = (int) AndroidUtils.convertDpToPixel(100, this);
+        int size = (int) ViewUtils.dpToPx(this, 100);
         Glide.with(this).asGif().load(R.raw.smile_gif_new).preload(size, size);
 
-        initProgressDialog();
-        initPresenter(savedInstanceState);
+        if (mPresenter != null) {
+            mPresenter.initSockets();
+        }
         initUserData();
     }
 
@@ -99,36 +102,14 @@ public class CredentialsActivity extends AppCompatActivity implements UserCrudCo
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        PresenterManager.getInstance().savePresenter(mPresenter, outState);
-    }
-
-    @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.login_page_left_in, R.anim.login_page_left_out);
     }
 
-    @Override
-    public Context provideContext() {
-        return this;
-    }
-
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
-    private void initPresenter(Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            mPresenter = new UserCrudPresenterImpl();
-        } else {
-            mPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
-        }
-
-        if (mPresenter != null) {
-            mPresenter.initSockets();
-        }
-    }
 
     private void initEditTextListeners() {
         mPresenter.initAnimEditTextListener(mEtLogin);
@@ -138,15 +119,8 @@ public class CredentialsActivity extends AppCompatActivity implements UserCrudCo
         mPresenter.initAnimEditTextListener(mEtConfirmPassword);
     }
 
-    private void initProgressDialog() {
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setMessage(getString(R.string.action_loading));
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.setIndeterminate(true);
-    }
-
     private void initUserData(){
-        User user = new PreferenceManager(this).getUser();
+        User user = mPreferenceManager.getUser();
 
         mEtLogin.setText(user.getLogin());
         mEtEmail.setText(user.getEmail());
@@ -161,7 +135,7 @@ public class CredentialsActivity extends AppCompatActivity implements UserCrudCo
         mEtConfirmPassword.setText("");
         mEtOldPassword.setText("");
         AndroidUtils.showShortToast(this, R.string.credentials_update_success);
-        AndroidUtils.hideSoftKeyboard(this, this.getCurrentFocus());
+        handleKeyboard(KeyboardUtils.KeyboardState.HIDE, null);
     }
 
     @Override
@@ -192,7 +166,9 @@ public class CredentialsActivity extends AppCompatActivity implements UserCrudCo
                 .setConfirmPassword(mEtConfirmPassword.getText().toString())
                 .build();
 
-        mPresenter.updateUser(user, mEtOldPassword.getText().toString());
+        if(mPresenter != null) {
+            mPresenter.updateUser(user, mEtOldPassword.getText().toString());
+        }
     }
 
     @OnClick(R.id.ivBack)
@@ -303,9 +279,7 @@ public class CredentialsActivity extends AppCompatActivity implements UserCrudCo
     @Override
     public void showLoading() {
         hideAll();
-        if (mProgressDialog != null) {
-            mProgressDialog.show();
-        }
+        showLoadingDialog();
     }
 
     @Override
@@ -313,7 +287,8 @@ public class CredentialsActivity extends AppCompatActivity implements UserCrudCo
         // Stub
     }
 
-    private void hideAll() {
+    @Override
+    public void hideAll() {
         hideLoading();
         mTvConfirmPasswordError.setVisibility(GONE);
         mTvEmailError.setVisibility(GONE);
@@ -325,8 +300,6 @@ public class CredentialsActivity extends AppCompatActivity implements UserCrudCo
     }
 
     private void hideLoading() {
-        if (mProgressDialog != null) {
-            mProgressDialog.hide();
-        }
+        hideLoadingDialog();
     }
 }

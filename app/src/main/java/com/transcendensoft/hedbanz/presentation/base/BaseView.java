@@ -15,7 +15,11 @@ package com.transcendensoft.hedbanz.presentation.base;
  * limitations under the License.
  */
 
-import android.content.Context;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.widget.EditText;
+
+import com.transcendensoft.hedbanz.utils.KeyboardUtils;
 
 /**
  * Base view interface, that describes methods
@@ -25,6 +29,7 @@ import android.content.Context;
  *         Developed by <u>Transcendensoft</u>
  */
 public interface BaseView {
+    // When visible instead of content
     void showServerError();
 
     void showNetworkError();
@@ -33,5 +38,30 @@ public interface BaseView {
 
     void showContent();
 
-    Context provideContext();
+    void hideAll();
+
+    // Base views
+    void showSnackError(String message);
+
+    void showSnackError(@StringRes int messageRes);
+
+    void showSnackMessage(String message);
+
+    void showSnackMessage(@StringRes int messageRes);
+
+    void showShortToastMessage(String message);
+
+    void showShortToastMessage(@StringRes int messageRes);
+
+    void showLongToastMessage(String message);
+
+    void showLongToastMessage(@StringRes int messageRes);
+
+    boolean isNetworkConnected();
+
+    void handleKeyboard(KeyboardUtils.KeyboardState state, @Nullable EditText editText);
+
+    void showLoadingDialog();
+
+    void hideLoadingDialog();
 }

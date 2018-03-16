@@ -133,7 +133,6 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     implementation files('libs/jBCrypt-0.4.jar')
-    implementation 'com.google.guava:guava:22.0-android' // without -android there are bugs
 
     //Tests
     testCompile 'junit:junit:4.12'

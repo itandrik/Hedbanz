@@ -35,11 +35,11 @@ import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.utils.AndroidUtils;
-import com.transcendensoft.hedbanz.presentation.customview.transform.DefaultTransformer;
-import com.transcendensoft.hedbanz.presentation.customview.widget.MainViewPager;
+import com.transcendensoft.hedbanz.presentation.custom.transform.DefaultTransformer;
+import com.transcendensoft.hedbanz.presentation.custom.widget.MainViewPager;
 import com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation.CreateRoomFragment;
 import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.RoomsFragment;
+import com.transcendensoft.hedbanz.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -129,7 +129,7 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
                 tabText.setTextColor(ContextCompat.getColor(getActivity(), R.color.textSecondary));
             }
             Drawable icon = VectorDrawableCompat.create(getResources(), iconRes, null);
-            int size = (int) AndroidUtils.convertDpToPixel(20, getActivity());
+            int size = (int) ViewUtils.dpToPx(getActivity(), 20);
             if (icon != null) {
                 icon.setBounds(0, 0, size, size);
                 if(index == 0) {

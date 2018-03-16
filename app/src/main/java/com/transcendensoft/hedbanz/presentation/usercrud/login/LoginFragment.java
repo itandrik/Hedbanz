@@ -16,12 +16,14 @@ package com.transcendensoft.hedbanz.presentation.usercrud.login;
  * limitations under the License.
  */
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +33,11 @@ import android.widget.TextView;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.entity.User;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
-import com.transcendensoft.hedbanz.presentation.base.PresenterManager;
-import com.transcendensoft.hedbanz.utils.AndroidUtils;
+import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.RegisterActivity;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,14 +52,15 @@ import static android.view.View.GONE;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class LoginFragment extends Fragment implements LoginContract.View{
+public class LoginFragment extends BaseFragment implements LoginContract.View{
     @BindView(R.id.etLogin) EditText mEtLogin;
     @BindView(R.id.etPassword) EditText mEtPassword;
     @BindView(R.id.tvErrorLogin) TextView mTvLoginError;
     @BindView(R.id.tvErrorPassword) TextView mTvPasswordError;
 
-    private ProgressDialog mProgressDialog;
-    private LoginPresenter mPresenter;
+    @Inject LoginPresenter mPresenter;
+    @Inject AppCompatActivity mActivity;
+    @Inject PreferenceManager mPreferenceManager;
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -67,9 +71,7 @@ public class LoginFragment extends Fragment implements LoginContract.View{
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         ButterKnife.bind(this, view);
-
-        initProgressDialog();
-        initPresenter(savedInstanceState);
+        initPasswordIcon();
 
         return view;
     }
@@ -90,33 +92,20 @@ public class LoginFragment extends Fragment implements LoginContract.View{
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        PresenterManager.getInstance().savePresenter(mPresenter, outState);
-    }
-
-    @Override
-    public Context provideContext() {
-        return getActivity();
-    }
-
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
-    private void initProgressDialog() {
-        mProgressDialog = new ProgressDialog(getActivity());
-        mProgressDialog.setMessage(getString(R.string.action_loading));
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.setIndeterminate(true);
+    @Override
+    protected void injectDependencies() {
+        getFragmentComponent().inject(this);
     }
 
-    private void initPresenter(Bundle savedInstanceState){
-        if (savedInstanceState == null) {
-            mPresenter = new LoginPresenter();
-        } else {
-            mPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
-        }
+    private void initPasswordIcon(){
+        Drawable drawable = VectorDrawableCompat.create(
+                getResources(), R.drawable.ic_password, null);
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(getActivity(), R.color.textDarkRed));
+        mEtPassword.setCompoundDrawablesWithIntrinsicBounds(drawable, null,null,null);
     }
 
     /*------------------------------------*
@@ -125,10 +114,10 @@ public class LoginFragment extends Fragment implements LoginContract.View{
     @OnClick(R.id.btnRegister)
     protected void onRegisterClicked() {
         hideAll();
-        Intent intent = new Intent(getActivity(), RegisterActivity.class);
+        Intent intent = new Intent(mActivity, RegisterActivity.class);
         startActivity(intent);
-        if(getActivity() != null) {
-            getActivity().overridePendingTransition(R.anim.login_page_right_in, R.anim.login_page_right_out);
+        if(mActivity != null) {
+            mActivity.overridePendingTransition(R.anim.login_page_right_in, R.anim.login_page_right_out);
         }
     }
 
@@ -146,9 +135,9 @@ public class LoginFragment extends Fragment implements LoginContract.View{
 
     @Override
     public void loginSuccess() {
-        hideLoading();
-        new PreferenceManager(getActivity()).setIsAuthorised(true);
-        Intent intent = new Intent(getActivity(), MainActivity.class);
+        hideLoadingDialog();
+        mPreferenceManager.setIsAuthorised(true);
+        Intent intent = new Intent(mActivity, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
@@ -158,22 +147,19 @@ public class LoginFragment extends Fragment implements LoginContract.View{
      *------------------------------------*/
     @Override
     public void showServerError() {
-        hideLoading();
-        AndroidUtils.showShortToast(getActivity(), R.string.error_server);
+        hideLoadingDialog();
+        showShortToastMessage(R.string.error_server);
     }
 
     @Override
     public void showNetworkError() {
-        hideLoading();
-        AndroidUtils.showShortToast(getActivity(), R.string.error_network);
+        hideLoadingDialog();
+        showShortToastMessage(R.string.error_network);
     }
 
     @Override
     public void showLoading() {
-        hideAll();
-        if (mProgressDialog != null) {
-            mProgressDialog.show();
-        }
+        // Stub
     }
 
     @Override
@@ -183,27 +169,22 @@ public class LoginFragment extends Fragment implements LoginContract.View{
 
     @Override
     public void showLoginError(int message) {
-        hideLoading();
+        hideLoadingDialog();
         mTvLoginError.setVisibility(View.VISIBLE);
         mTvLoginError.setText(getString(message));
     }
 
     @Override
     public void showPasswordError(int message) {
-        hideLoading();
+        hideLoadingDialog();
         mTvPasswordError.setVisibility(View.VISIBLE);
         mTvPasswordError.setText(getString(message));
     }
 
-    private void hideAll(){
-        hideLoading();
+    @Override
+    public void hideAll(){
+        hideLoadingDialog();
         mTvLoginError.setVisibility(GONE);
         mTvPasswordError.setVisibility(GONE);
-    }
-
-    private void hideLoading(){
-        if(mProgressDialog != null){
-            mProgressDialog.hide();
-        }
     }
 }

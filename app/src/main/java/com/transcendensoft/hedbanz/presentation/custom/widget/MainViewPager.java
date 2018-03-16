@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.customview.widget;
+package com.transcendensoft.hedbanz.presentation.custom.widget;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>

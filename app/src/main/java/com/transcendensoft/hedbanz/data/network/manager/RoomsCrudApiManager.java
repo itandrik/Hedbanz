@@ -15,9 +15,12 @@ package com.transcendensoft.hedbanz.data.network.manager;
  * limitations under the License.
  */
 
+import android.app.Application;
+
 import com.transcendensoft.hedbanz.data.entity.Room;
 import com.transcendensoft.hedbanz.data.entity.RoomFilter;
 import com.transcendensoft.hedbanz.data.entity.ServerResult;
+import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,9 +35,10 @@ import io.reactivex.Observable;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
+@ApplicationScope
 public class RoomsCrudApiManager extends ApiManager{
-    @Inject RoomsCrudApiManager() {
-        super();
+    @Inject RoomsCrudApiManager(Application application) {
+        super(application);
     }
 
     public Observable<ServerResult<List<Room>>> getRooms(int page){

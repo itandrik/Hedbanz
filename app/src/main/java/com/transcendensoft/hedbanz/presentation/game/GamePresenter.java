@@ -25,12 +25,15 @@ import com.google.gson.JsonSyntaxException;
 import com.transcendensoft.hedbanz.data.entity.Room;
 import com.transcendensoft.hedbanz.data.entity.User;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.GAME_SOCKET_NSP;
 import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.HOST;
@@ -44,10 +47,9 @@ import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.PORT_S
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-
-public class GamePresenterImpl extends BasePresenter<Room, GameContract.View>
-        implements GameContract.Presenter {
-    private static final String TAG = GamePresenterImpl.class.getName();
+@ActivityScope
+public class GamePresenter extends BasePresenter<Room, GameContract.View> implements GameContract.Presenter {
+    private static final String TAG = GamePresenter.class.getName();
 
     private static final String JOIN_ROOM_EVENT = "join-room";
     private static final String LEAVE_ROOM_EVENT = "leave-room";
@@ -57,6 +59,13 @@ public class GamePresenterImpl extends BasePresenter<Room, GameContract.View>
     private Socket mSocket;
     private Emitter.Listener mRoomInfoListener;
     private Emitter.Listener mJoinedUserListener;
+
+    private PreferenceManager mPreferenceManager;
+
+    @Inject
+    public GamePresenter(PreferenceManager mPreferenceManager) {
+        this.mPreferenceManager = mPreferenceManager;
+    }
 
     @Override
     protected void updateView() {
@@ -82,7 +91,7 @@ public class GamePresenterImpl extends BasePresenter<Room, GameContract.View>
     }
 
     private void emitJoinToRoom() {
-        User user = new PreferenceManager(view().provideContext()).getUser();
+        User user = mPreferenceManager.getUser();
         HashMap<String, Long> joinRoomObject = new HashMap<>();
         joinRoomObject.put(Room.ROOM_ID_KEY, model.getId());
         joinRoomObject.put(User.USER_ID_KEY, user.getId());
@@ -131,7 +140,7 @@ public class GamePresenterImpl extends BasePresenter<Room, GameContract.View>
     }
 
     private void emitDisconnectFromRoom() {
-        User user = new PreferenceManager(view().provideContext()).getUser();
+        User user = mPreferenceManager.getUser();
         HashMap<String, Long> joinRoomObject = new HashMap<>();
         joinRoomObject.put(Room.ROOM_ID_KEY, model.getId());
         joinRoomObject.put(User.USER_ID_KEY, user.getId());

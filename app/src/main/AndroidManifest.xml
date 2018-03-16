@@ -28,7 +28,6 @@
         <!-- Activities -->
         <activity
             android:name=".presentation.StartActivity"
-            android:noHistory="true"
             android:theme="@style/ThemeMainTranslucentToolbar"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>

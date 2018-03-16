@@ -30,7 +30,7 @@ import java.util.List;
 
 public class RoomsContract {
 
-    interface View extends BaseView {
+    public interface View extends BaseView {
         void addRoomsToRecycler(List<Room> rooms);
 
         void clearRooms();
@@ -42,7 +42,7 @@ public class RoomsContract {
         void stopRefreshingBar();
     }
 
-    interface Presenter {
+    public interface Presenter {
         void loadNextRooms();
 
         void refreshRooms();

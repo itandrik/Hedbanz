@@ -1,17 +1,17 @@
 package com.transcendensoft.hedbanz.presentation.mainscreen;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.presentation.customview.widget.VerticalViewPager;
+import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
+import com.transcendensoft.hedbanz.presentation.custom.widget.VerticalViewPager;
 import com.transcendensoft.hedbanz.presentation.mainscreen.menu.MenuFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     @BindView(R.id.verticalViewPager) VerticalViewPager mViewPager;
 
     @Override
@@ -44,5 +44,30 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void showServerError() {
+
+    }
+
+    @Override
+    public void showNetworkError() {
+
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void showContent() {
+
+    }
+
+    @Override
+    public void hideAll() {
+
     }
 }

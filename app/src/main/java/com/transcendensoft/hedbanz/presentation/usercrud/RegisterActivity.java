@@ -1,14 +1,12 @@
 package com.transcendensoft.hedbanz.presentation.usercrud;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -23,9 +21,12 @@ import com.crashlytics.android.Crashlytics;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.entity.User;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
-import com.transcendensoft.hedbanz.presentation.base.PresenterManager;
-import com.transcendensoft.hedbanz.utils.AndroidUtils;
+import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
+import com.transcendensoft.hedbanz.utils.AndroidUtils;
+import com.transcendensoft.hedbanz.utils.ViewUtils;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +34,7 @@ import butterknife.OnClick;
 
 import static android.view.View.GONE;
 
-public class RegisterActivity extends AppCompatActivity implements UserCrudContract.View {
+public class RegisterActivity extends BaseActivity implements UserCrudContract.View {
     private static final String TAG = RegisterActivity.class.getName();
 
     @BindView(R.id.ivSmileGif) ImageView mIvSmileGif;
@@ -48,8 +49,8 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudContr
     @BindView(R.id.tvLoginAvailability) TextView mTvLoginAvailability;
     @BindView(R.id.pbLoginLoading) ProgressBar mPbLoginLoading;
 
-    private ProgressDialog mProgressDialog;
-    private UserCrudPresenterImpl mPresenter;
+    @Inject UserCrudPresenter mPresenter;
+    @Inject PreferenceManager mPreferenceManager;
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -67,12 +68,15 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudContr
 
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this, this);
+        getActivityComponent().inject(this);
 
-        int size = (int) AndroidUtils.convertDpToPixel(100, this);
+        if (mPresenter != null) {
+            mPresenter.initSockets();
+        }
+
+        int size = (int) ViewUtils.dpToPx(this, 100);
         Glide.with(this).asGif().load(R.raw.smile_gif_new).preload(size, size);
-
-        initProgressDialog();
-        initPresenter(savedInstanceState);
+        initPasswordIcon();
     }
 
     @Override
@@ -102,36 +106,14 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudContr
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        PresenterManager.getInstance().savePresenter(mPresenter, outState);
-    }
-
-    @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.login_page_left_in, R.anim.login_page_left_out);
     }
 
-    @Override
-    public Context provideContext() {
-        return this;
-    }
-
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
-    private void initPresenter(Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            mPresenter = new UserCrudPresenterImpl();
-        } else {
-            mPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
-        }
-
-        if (mPresenter != null) {
-            mPresenter.initSockets();
-        }
-    }
 
     private void initEditTextListeners() {
         mPresenter.initAnimEditTextListener(mEtLogin);
@@ -140,11 +122,12 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudContr
         mPresenter.initAnimEditTextListener(mEtConfirmPassword);
     }
 
-    private void initProgressDialog() {
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setMessage(getString(R.string.action_loading));
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.setIndeterminate(true);
+    private void initPasswordIcon(){
+        Drawable drawable = VectorDrawableCompat.create(
+                getResources(), R.drawable.ic_password, null);
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(this, R.color.textDarkRed));
+        mEtPassword.setCompoundDrawablesWithIntrinsicBounds(drawable, null,null,null);
     }
 
     /*------------------------------------*
@@ -153,7 +136,7 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudContr
     @Override
     public void crudOperationSuccess() {
         hideAll();
-        new PreferenceManager(this).setIsAuthorised(true);
+        mPreferenceManager.setIsAuthorised(true);
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -169,7 +152,7 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudContr
     @Override
     public void stopSmileAnimation() {
         runOnUiThread(() -> {
-            Glide.with(this).load(R.drawable.logo).into(mIvSmileGif);
+            Glide.with(this).load(R.mipmap.ic_launcher).into(mIvSmileGif);
         });
     }
 
@@ -297,9 +280,7 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudContr
     @Override
     public void showLoading() {
         hideAll();
-        if (mProgressDialog != null) {
-            mProgressDialog.show();
-        }
+        showLoadingDialog();
     }
 
     @Override
@@ -307,7 +288,8 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudContr
         // Stub
     }
 
-    private void hideAll() {
+    @Override
+    public void hideAll() {
         hideLoading();
         mTvConfirmPasswordError.setVisibility(GONE);
         mTvEmailError.setVisibility(GONE);
@@ -318,8 +300,6 @@ public class RegisterActivity extends AppCompatActivity implements UserCrudContr
     }
 
     private void hideLoading() {
-        if (mProgressDialog != null) {
-            mProgressDialog.hide();
-        }
+        hideLoadingDialog();
     }
 }

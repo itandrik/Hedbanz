@@ -18,16 +18,18 @@ package com.transcendensoft.hedbanz.presentation.usercrud.login;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.transcendensoft.hedbanz.data.network.manager.UserCrudApiManager;
-import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.entity.ServerResult;
 import com.transcendensoft.hedbanz.data.entity.ServerStatus;
 import com.transcendensoft.hedbanz.data.entity.User;
 import com.transcendensoft.hedbanz.data.entity.error.LoginError;
 import com.transcendensoft.hedbanz.data.entity.error.ServerError;
+import com.transcendensoft.hedbanz.data.network.manager.UserCrudApiManager;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.di.scope.FragmentScope;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.validation.UserCrudValidator;
-import com.transcendensoft.hedbanz.utils.AndroidUtils;
+
+import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
 
@@ -38,10 +40,18 @@ import io.reactivex.disposables.Disposable;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-
+@FragmentScope
 public class LoginPresenter extends BasePresenter<User, LoginContract.View>
         implements LoginContract.Presenter {
     private static final String TAG = LoginPresenter.class.getName();
+    private PreferenceManager mPreferenceManager;
+    private UserCrudApiManager mApiManager;
+
+    @Inject
+    public LoginPresenter(PreferenceManager preferenceManager, UserCrudApiManager apiManager) {
+        this.mPreferenceManager = preferenceManager;
+        this.mApiManager = apiManager;
+    }
 
     @Override
     protected void updateView() {
@@ -52,13 +62,13 @@ public class LoginPresenter extends BasePresenter<User, LoginContract.View>
     public void login(User user) {
         setModel(user);
         if (isUserValid(user)) {
-            Disposable disposable = UserCrudApiManager.getInstance()
+            Disposable disposable = mApiManager
                     .authUser(user)
                     .subscribe(
                             this::processLoginOnNext,
                             this::processLoginOnError,
                             () -> view().loginSuccess(),
-                            this::processLoginOnSubscribe);
+                            this::processOnSubscribe);
             addDisposable(disposable);
         }
     }
@@ -88,7 +98,7 @@ public class LoginPresenter extends BasePresenter<User, LoginContract.View>
             throw new IllegalStateException();
         } else {
             if(result.getData() != null) {
-                new PreferenceManager(view().provideContext()).setUser(result.getData());
+                mPreferenceManager.setUser(result.getData());
             } else {
                 throw new RuntimeException("User comes NULL from server while login");
             }
@@ -120,16 +130,6 @@ public class LoginPresenter extends BasePresenter<User, LoginContract.View>
             Log.e(TAG, "Error " + err.getMessage());
             Crashlytics.logException(err);
             view().showServerError();
-        }
-    }
-
-    private void processLoginOnSubscribe(Disposable d) {
-        if (!d.isDisposed() && view().provideContext() != null) {
-            if (AndroidUtils.isNetworkConnected(view().provideContext())) {
-                view().showLoading();
-            } else {
-                view().showNetworkError();
-            }
         }
     }
 }

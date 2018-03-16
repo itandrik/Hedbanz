@@ -27,8 +27,8 @@ import dagger.Module;
 @Module
 public interface ApiManagerModule {
     @Binds
-    RoomsCrudApiManager provideRoomsCrudApiManager(RoomsCrudApiManager roomsCrudApiManager);
+    ApiManager provideRoomsCrudApiManager(RoomsCrudApiManager roomsCrudApiManager);
 
     @Binds
-    UserCrudApiManager provideUsersCrudApiManager(UserCrudApiManager roomsCrudApiManager);
+    ApiManager provideUsersCrudApiManager(UserCrudApiManager roomsCrudApiManager);
 }

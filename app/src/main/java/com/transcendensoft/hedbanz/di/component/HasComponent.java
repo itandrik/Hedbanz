@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.usercrud.login;
+package com.transcendensoft.hedbanz.di.component;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,28 +15,14 @@ package com.transcendensoft.hedbanz.presentation.usercrud.login;
  * limitations under the License.
  */
 
-import android.support.annotation.StringRes;
-
-import com.transcendensoft.hedbanz.data.entity.User;
-import com.transcendensoft.hedbanz.presentation.base.BaseView;
-
 /**
- * View and Presenter interfaces for Login presentation
+ * Interface that shows Activity or fragment
+ * that has dagger component
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class LoginContract {
 
-    public interface View extends BaseView {
-        void showLoginError(@StringRes int message);
-
-        void showPasswordError(@StringRes int message);
-
-        void loginSuccess();
-    }
-
-    public interface Presenter {
-        void login(User user);
-    }
+public interface HasComponent {
+    ActivityComponent getActivityComponent();
 }

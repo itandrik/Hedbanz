@@ -34,33 +34,34 @@ import io.reactivex.schedulers.Schedulers;
  *         Developed by <u>Transcendensoft</u>
  */
 @Module
-public interface RxModule {
+public class RxModule {
     @ApplicationScope
     @SchedulerComputation
     @Provides
-    static Scheduler provideComputationScheduler(){
+    public Scheduler provideComputationScheduler(){
         return Schedulers.computation();
     }
 
     @ApplicationScope
     @SchedulerIO
     @Provides
-    static Scheduler provideIoScheduler(){
+    public Scheduler provideIoScheduler(){
         return Schedulers.io();
     }
 
     @ApplicationScope
     @SchedulerUI
     @Provides
-    static Scheduler provideUiScheduler(){
+    public Scheduler provideUiScheduler(){
         return AndroidSchedulers.mainThread();
     }
 
     @ApplicationScope
     @Provides
-    static ObservableTransformer provideObservableTransformer(){
+    public ObservableTransformer provideObservableTransformer(
+            @SchedulerIO Scheduler ioScheduler, @SchedulerUI Scheduler uiScheduler){
         return o -> o
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(ioScheduler)
+                .observeOn(uiScheduler);
     }
 }

@@ -56,6 +56,7 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
     public RoomItemViewHolder(Context context, View itemView, RoomsPresenter callbackPresenter) {
         super(itemView);
 
+        //TODO try butterKnife
         mTvName = itemView.findViewById(R.id.tvRoomName);
         mIvIcon = itemView.findViewById(R.id.ivRoomIcon);
         mIvProtected = itemView.findViewById(R.id.ivRoomLocked);

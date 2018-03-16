@@ -18,19 +18,20 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.rooms;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.transcendensoft.hedbanz.presentation.base.MvpRecyclerAdapter;
-import com.transcendensoft.hedbanz.presentation.base.MvpViewHolder;
-import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.list.RoomItemViewHolder;
-import com.transcendensoft.hedbanz.data.network.manager.RoomsCrudApiManager;
 import com.transcendensoft.hedbanz.data.entity.Room;
 import com.transcendensoft.hedbanz.data.entity.RoomFilter;
 import com.transcendensoft.hedbanz.data.entity.ServerResult;
 import com.transcendensoft.hedbanz.data.entity.ServerStatus;
+import com.transcendensoft.hedbanz.data.network.manager.RoomsCrudApiManager;
+import com.transcendensoft.hedbanz.di.scope.FragmentScope;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
-import com.transcendensoft.hedbanz.utils.AndroidUtils;
-import com.transcendensoft.hedbanz.view.RoomsView;
+import com.transcendensoft.hedbanz.presentation.base.MvpRecyclerAdapter;
+import com.transcendensoft.hedbanz.presentation.base.MvpViewHolder;
+import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.list.RoomItemViewHolder;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
 
@@ -41,23 +42,33 @@ import io.reactivex.disposables.Disposable;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
+@FragmentScope
 public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View>
         implements RoomsContract.Presenter, MvpRecyclerAdapter.OnBottomReachedListener {
     private static final String TAG = RoomsPresenter.class.getName();
     private int mCurrentPage = 0;
     private RoomItemViewHolder mLastHolder;
     private RoomFilter mFilter;
+    private RoomsCrudApiManager mApiManager;
+
+    @Inject
+    public RoomsPresenter(RoomsCrudApiManager mApiManager) {
+        this.mApiManager = mApiManager;
+    }
 
     @Override
     protected void updateView() {
         if (model.isEmpty()) {
             refreshRooms();
+        } else {
+            view().clearRooms();
+            view().addRoomsToRecycler(model);
         }
     }
 
     @Override
     public void loadNextRooms() {
-        Disposable disposable = RoomsCrudApiManager.getInstance()
+        Disposable disposable = mApiManager
                 .getRooms(mCurrentPage)
                 .subscribe(
                         this::processRoomsOnNext,
@@ -84,8 +95,8 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
     }
 
     private void processRoomOnSubscribe(Disposable d) {
-        if (!d.isDisposed() && view().provideContext() != null) {
-            if (AndroidUtils.isNetworkConnected(view().provideContext())) {
+        if (!d.isDisposed()) {
+            if (view().isNetworkConnected()) {
                 if (mCurrentPage == 0) {
                     view().showLoading();
                 }
@@ -180,7 +191,7 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
     }
 
     private void loadNextFilteredRooms(){
-        Disposable disposable = RoomsCrudApiManager.getInstance()
+        Disposable disposable = mApiManager
                 .filterRooms(mCurrentPage, mFilter)
                 .subscribe(
                         this::processRoomsOnNext,

@@ -19,41 +19,72 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.transcendensoft.hedbanz.HedbanzApplication;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
-import com.transcendensoft.hedbanz.utils.AndroidUtils;
+import com.transcendensoft.hedbanz.di.ActivityModule;
+import com.transcendensoft.hedbanz.di.component.ActivityComponent;
+import com.transcendensoft.hedbanz.di.component.HasComponent;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
+import com.transcendensoft.hedbanz.utils.ViewUtils;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StartActivity extends AppCompatActivity {
+public class StartActivity extends AppCompatActivity implements HasComponent{
     @BindView(R.id.ivHatImage) ImageView mIvHat;
     @BindView(R.id.ivSmileImage) ImageView mIvSmile;
     @BindView(R.id.flLoginFragmentContainer) FrameLayout mFlLoginContainer;
+
+    @Inject PreferenceManager mPreferenceManager;
+    private ActivityComponent mActivityComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (new PreferenceManager(this).isAuthorised()) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+        injectDependencies();
+
+        if (mPreferenceManager.isAuthorised()) {
+            startMainActivity();
         } else {
-            setContentView(R.layout.activity_start);
+            showLoginWithAnimation();
+        }
+    }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                Window w = getWindow();
-                w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-            }
+    private void injectDependencies() {
+        mActivityComponent = HedbanzApplication.get(this).getApplicationComponent()
+                .activityComponentBuilder()
+                .activityModule(new ActivityModule(this))
+                .build();
+        mActivityComponent.inject(this);
+    }
 
-            ButterKnife.bind(this, this);
+    @Override
+    public ActivityComponent getActivityComponent() {
+        return mActivityComponent;
+    }
 
-            initHatAnimation();
-            initSmileAnimation();
+    private void startMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    private void showLoginWithAnimation() {
+        setContentView(R.layout.activity_start);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow();
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
 
+        ButterKnife.bind(this, this);
+
+        initHatAnimation();
+        initSmileAnimation();
     }
 
     private void initHatAnimation() {
@@ -99,7 +130,7 @@ public class StartActivity extends AppCompatActivity {
         int screenHeight = metrics.heightPixels;
         Log.d("TAG", "Height : " + smileHeight);
         int yToGo = screenHeight / 2 - smileHeight / 2 - mIvHat.getHeight() / 2 +
-                (int) AndroidUtils.convertDpToPixel(16, this);
+                ViewUtils.dpToPx(this, 16);
 
         mIvHat.animate()
                 .setDuration(700)
@@ -132,9 +163,9 @@ public class StartActivity extends AppCompatActivity {
     private void showLoginFragment() {
         int hatSize = mIvHat.getWidth();
         int smileSize = mIvSmile.getWidth();
-        int topCoordsHatX = (int) AndroidUtils.convertDpToPixel(44, this);
-        int topCoordsHatY = (int) AndroidUtils.convertDpToPixel(40, this);
-        int topCoordSmileX = (int) AndroidUtils.convertDpToPixel(44, this);
+        int topCoordsHatX = ViewUtils.dpToPx(this, 44);
+        int topCoordsHatY = ViewUtils.dpToPx(this, 40);
+        int topCoordSmileX = ViewUtils.dpToPx(this, 44);
         int topCoordSmileY = (int) (hatSize * 0.17 + topCoordsHatY);
 
         mIvHat.animate()

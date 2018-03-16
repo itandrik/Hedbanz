@@ -15,12 +15,10 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.rooms;
  * limitations under the License.
  */
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
@@ -48,7 +46,7 @@ import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.entity.Room;
 import com.transcendensoft.hedbanz.data.entity.RoomFilter;
-import com.transcendensoft.hedbanz.presentation.base.PresenterManager;
+import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainFragment;
 import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.list.RoomsAdapter;
 
@@ -56,6 +54,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,7 +71,7 @@ import static android.view.View.VISIBLE;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class RoomsFragment extends Fragment implements RoomsContract.View {
+public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     @BindView(R.id.swipeRefreshLayout) SwipeRefreshLayout mRefreshLayout;
     @BindView(R.id.rvRooms) RecyclerView mRecycler;
     @BindView(R.id.rlEmptyListContainer) RelativeLayout mRlEmptyList;
@@ -99,7 +99,7 @@ public class RoomsFragment extends Fragment implements RoomsContract.View {
     private ImageView mIvSearchFilter;
     private ImageView mIvCloseSearch;
 
-    private RoomsPresenter mPresenter;
+    @Inject RoomsPresenter mPresenter;
     private RoomsAdapter mAdapter;
 
     /*------------------------------------*
@@ -112,7 +112,6 @@ public class RoomsFragment extends Fragment implements RoomsContract.View {
 
         ButterKnife.bind(this, view);
 
-        initPresenter(savedInstanceState);
         initSwipeToRefresh();
         initRecycler();
         initSearchView();
@@ -138,26 +137,9 @@ public class RoomsFragment extends Fragment implements RoomsContract.View {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        PresenterManager.getInstance().savePresenter(mPresenter, outState);
-    }
-
-    @Override
-    public Context provideContext() {
-        return getActivity();
-    }
-
-    /*------------------------------------*
-     *---------- Initialization ----------*
-     *------------------------------------*/
-    private void initPresenter(Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            mPresenter = new RoomsPresenter();
-            mPresenter.setModel(new ArrayList<>());
-        } else {
-            mPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
-        }
+    protected void injectDependencies() {
+        getFragmentComponent().inject(this);
+        mPresenter.setModel(new ArrayList<>());
     }
 
     private void initSwipeToRefresh() {
@@ -417,7 +399,8 @@ public class RoomsFragment extends Fragment implements RoomsContract.View {
         mRefreshLayout.setRefreshing(false);
     }
 
-    private void hideAll() {
+    @Override
+    public void hideAll() {
         mRlErrorServer.setVisibility(GONE);
         mRlErrorNetwork.setVisibility(GONE);
         mFlLoadingContainer.setVisibility(GONE);

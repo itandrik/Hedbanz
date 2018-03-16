@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.customview.widget;
+package com.transcendensoft.hedbanz.presentation.custom.widget;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -22,7 +22,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.transcendensoft.hedbanz.presentation.customview.transform.VerticalPageTransformer;
+import com.transcendensoft.hedbanz.presentation.custom.transform.VerticalPageTransformer;
 
 import java.io.Serializable;
 
