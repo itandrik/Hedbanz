@@ -8,11 +8,17 @@ import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.custom.widget.VerticalViewPager;
 import com.transcendensoft.hedbanz.presentation.mainscreen.menu.MenuFragment;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.Lazy;
 
 public class MainActivity extends BaseActivity {
     @BindView(R.id.verticalViewPager) VerticalViewPager mViewPager;
+
+    @Inject Lazy<MainFragment> mainFragmentLazy;
+    @Inject Lazy<MenuFragment> menuFragmentLazy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +32,8 @@ public class MainActivity extends BaseActivity {
 
     private void initViewPager(){
         MainScreenFragmentAdapter adapter = new MainScreenFragmentAdapter.Holder(getSupportFragmentManager())
-                .add(new MainFragment())
-                .add(new MenuFragment())
+                .add(mainFragmentLazy.get())
+                .add(menuFragmentLazy.get())
                 .set();
         mViewPager.setAdapter(adapter);
         mViewPager.setOverScrollMode(View.OVER_SCROLL_ALWAYS);

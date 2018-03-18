@@ -64,7 +64,6 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
         }
 
         ButterKnife.bind(this, this);
-        getActivityComponent().inject(this);
 
         int size = (int) ViewUtils.dpToPx(this, 100);
         Glide.with(this).asGif().load(R.raw.smile_gif_new).preload(size, size);

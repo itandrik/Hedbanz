@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.di;
+package com.transcendensoft.hedbanz.presentation.mainscreen;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,43 +15,42 @@ package com.transcendensoft.hedbanz.di;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.network.manager.RoomsCrudApiManager;
 import com.transcendensoft.hedbanz.di.scope.FragmentScope;
+import com.transcendensoft.hedbanz.di.scope.ViewPagerFragmentScope;
 import com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation.CreateRoomContract;
+import com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation.CreateRoomFragment;
 import com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation.CreateRoomPresenter;
 import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.RoomsContract;
+import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.RoomsFragment;
 import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.RoomsPresenter;
-import com.transcendensoft.hedbanz.presentation.usercrud.login.LoginContract;
-import com.transcendensoft.hedbanz.presentation.usercrud.login.LoginPresenter;
 
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
+import dagger.android.ContributesAndroidInjector;
 
 /**
- * Dagger 2 module for all fragments
+ * Module that provides fragments, presenter
+ * and other instances for room creation and rooms list
+ * views
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 @Module
-@FragmentScope
-@Deprecated
-public class FragmentModule {
-    @Provides
-    @FragmentScope
-    public RoomsContract.Presenter provideRoomsPresenter(RoomsCrudApiManager roomsCrudApiManager){
-        return new RoomsPresenter(roomsCrudApiManager);
-    }
+public interface MainFragmentModule {
+    @ViewPagerFragmentScope
+    @ContributesAndroidInjector
+    CreateRoomFragment createRoomFragment();
 
-    @Provides
-    @FragmentScope
-    public CreateRoomContract.Presenter provideCreateRoomPresenter(CreateRoomPresenter createRoomPresenter){
-        return createRoomPresenter;
-    }
+    @ViewPagerFragmentScope
+    @ContributesAndroidInjector
+    RoomsFragment roomsFragment();
 
-    @Provides
     @FragmentScope
-    public LoginContract.Presenter provideLoginPresenter(LoginPresenter loginPresenter){
-        return loginPresenter;
-    }
+    @Binds
+    CreateRoomContract.Presenter createRoomPresenter(CreateRoomPresenter createRoomPresenter);
+
+    @FragmentScope
+    @Binds
+    RoomsContract.Presenter roomsPresenter(RoomsPresenter roomsPresenter);
 }

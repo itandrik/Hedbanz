@@ -34,6 +34,7 @@ import dagger.Subcomponent;
  */
 @Subcomponent(modules = {ActivityModule.class, BaseViewModule.class})
 @ActivityScope
+@Deprecated
 public interface ActivityComponent {
     @Subcomponent.Builder
     interface Builder {

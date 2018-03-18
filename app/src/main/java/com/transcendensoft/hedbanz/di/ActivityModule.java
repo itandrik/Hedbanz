@@ -35,6 +35,7 @@ import dagger.Provides;
  *         Developed by <u>Transcendensoft</u>
  */
 @Module
+@Deprecated
 public class ActivityModule {
     private AppCompatActivity mActivity;
 

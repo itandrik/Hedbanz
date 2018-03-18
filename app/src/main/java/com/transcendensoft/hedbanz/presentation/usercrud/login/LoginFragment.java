@@ -62,6 +62,11 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
     @Inject AppCompatActivity mActivity;
     @Inject PreferenceManager mPreferenceManager;
 
+    @Inject
+    public LoginFragment() {
+        // Requires empty public constructor
+    }
+
     /*------------------------------------*
      *-------- Activity lifecycle --------*
      *------------------------------------*/
@@ -95,10 +100,6 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
-    @Override
-    protected void injectDependencies() {
-        getFragmentComponent().inject(this);
-    }
 
     private void initPasswordIcon(){
         Drawable drawable = VectorDrawableCompat.create(

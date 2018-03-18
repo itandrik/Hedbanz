@@ -16,22 +16,18 @@ package com.transcendensoft.hedbanz.presentation.base;
  */
 
 import android.app.ProgressDialog;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
-import com.transcendensoft.hedbanz.HedbanzApplication;
-import com.transcendensoft.hedbanz.di.ActivityModule;
-import com.transcendensoft.hedbanz.di.component.ActivityComponent;
-import com.transcendensoft.hedbanz.di.component.HasComponent;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
 import com.transcendensoft.hedbanz.utils.NetworkUtils;
 
 import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
 
 /**
  * It is base activity for all activities in application.
@@ -41,9 +37,9 @@ import javax.inject.Inject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public abstract class BaseActivity extends AppCompatActivity implements BaseView, HasComponent {
+public abstract class BaseActivity extends DaggerAppCompatActivity implements BaseView {
     @Inject ProgressDialog mProgressDialog;
-    private ActivityComponent mActivityComponent;
+   /* private ActivityComponent mActivityComponent;
 
     public ActivityComponent getActivityComponent() {
         return mActivityComponent;
@@ -57,7 +53,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
                 .activityModule(new ActivityModule(this))
                 .baseViewModule(new BaseViewModule())
                 .build();
-    }
+    }*/
 
     @Override
     public void showSnackError(int messageRes) {

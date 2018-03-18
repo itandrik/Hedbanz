@@ -15,19 +15,14 @@ package com.transcendensoft.hedbanz.presentation.base;
  * limitations under the License.
  */
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.EditText;
 
-import com.transcendensoft.hedbanz.di.FragmentModule;
-import com.transcendensoft.hedbanz.di.component.FragmentComponent;
-import com.transcendensoft.hedbanz.di.component.HasComponent;
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
@@ -35,6 +30,7 @@ import com.transcendensoft.hedbanz.utils.NetworkUtils;
 
 import javax.inject.Inject;
 
+import dagger.android.support.DaggerFragment;
 import timber.log.Timber;
 
 /**
@@ -45,18 +41,18 @@ import timber.log.Timber;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public abstract class BaseFragment extends Fragment implements BaseView {
+public abstract class BaseFragment extends DaggerFragment implements BaseView {
     private static final String TAG = BaseFragment.class.getName();
 
     @Inject ProgressDialog mProgressDialog;
     @Inject @ActivityContext Context mActivityContext;
 
-    private FragmentComponent mFragmentComponent;
-    private Activity mActivity;
+   // private FragmentComponent mFragmentComponent;
+    @Inject BaseActivity mActivity;
 
-    public FragmentComponent getFragmentComponent() {
-        return mFragmentComponent;
-    }
+   // public FragmentComponent getFragmentComponent() {
+    //    return mFragmentComponent;
+    //}
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +60,7 @@ public abstract class BaseFragment extends Fragment implements BaseView {
         setHasOptionsMenu(false);
     }
 
-    @Override
+    /*@Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof HasComponent) {
@@ -75,9 +71,9 @@ public abstract class BaseFragment extends Fragment implements BaseView {
                     .build();
             injectDependencies();
         }
-    }
+    }*/
 
-    protected abstract void injectDependencies();
+    //protected abstract void injectDependencies();
 
     @Override
     public void showSnackError(int messageRes) {

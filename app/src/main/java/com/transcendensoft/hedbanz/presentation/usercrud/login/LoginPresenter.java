@@ -25,7 +25,7 @@ import com.transcendensoft.hedbanz.data.entity.error.LoginError;
 import com.transcendensoft.hedbanz.data.entity.error.ServerError;
 import com.transcendensoft.hedbanz.data.network.manager.UserCrudApiManager;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
-import com.transcendensoft.hedbanz.di.scope.FragmentScope;
+import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.validation.UserCrudValidator;
 
@@ -40,7 +40,7 @@ import io.reactivex.disposables.Disposable;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-@FragmentScope
+@ActivityScope
 public class LoginPresenter extends BasePresenter<User, LoginContract.View>
         implements LoginContract.Presenter {
     private static final String TAG = LoginPresenter.class.getName();

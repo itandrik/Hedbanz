@@ -19,6 +19,7 @@ import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.transcendensoft.hedbanz.HedbanzApplication;
 import com.transcendensoft.hedbanz.data.network.ApiServiceModule;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.qualifier.ApplicationContext;
@@ -33,29 +34,24 @@ import dagger.Provides;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-@Module(includes = ApiServiceModule.class)
+@Module(includes = {ApiServiceModule.class, ActivityBindingModule.class})
 public class AppModule {
-    private Application mApplication;
-    public AppModule(Application application) {
-        this.mApplication = application;
-    }
-
     @Provides
-    public Application provideApplication(){
-        return mApplication;
+    public Application provideApplication(HedbanzApplication hedbanzApplication) {
+        return hedbanzApplication;
     }
 
     @Provides
     @ApplicationScope
     @ApplicationContext
-    public Context provideApplicationContext() {
-        return mApplication;
+    public Context provideApplicationContext(HedbanzApplication hedbanzApplication) {
+        return hedbanzApplication;
     }
 
     @Provides
     @ApplicationScope
     @NonNull
-    public PreferenceManager providePreferenceManger(){
-        return new PreferenceManager(mApplication);
+    public PreferenceManager providePreferenceManger(@ApplicationContext Context context) {
+        return new PreferenceManager(context);
     }
 }

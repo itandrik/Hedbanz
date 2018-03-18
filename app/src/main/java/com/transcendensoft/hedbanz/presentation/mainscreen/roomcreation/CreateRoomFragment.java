@@ -46,7 +46,7 @@ import static android.view.View.GONE;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class CreateRoomFragment extends BaseFragment implements CreateRoomContract.View{
+public class CreateRoomFragment extends BaseFragment implements CreateRoomContract.View {
     @BindView(R.id.tvErrorRoomName) TextView mTvErrorRoomName;
     @BindView(R.id.tvErrorRoomPassword) TextView mTvErrorRoomPassword;
     @BindView(R.id.etRoomName) EditText mEtRoomName;
@@ -54,6 +54,11 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
     @BindView(R.id.isbPlayersQuantity) IndicatorSeekBar mIsbMaxPlayersQuantity;
 
     @Inject CreateRoomPresenter mPresenter;
+
+    @Inject
+    public CreateRoomFragment() {
+        //Requires empty public constructor
+    }
 
     /*------------------------------------*
      *-------- Fragment lifecycle --------*
@@ -87,19 +92,16 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
-    @Override
-    protected void injectDependencies() {
-        getFragmentComponent().inject(this);
-    }
+
 
     /*------------------------------------*
-         *-------- On click listeners --------*
-         *------------------------------------*/
+     *-------- On click listeners --------*
+     *------------------------------------*/
     @OnClick(R.id.btnCreateRoom)
-    protected void onCreateRoomClicked(){
-        if(mPresenter != null){
+    protected void onCreateRoomClicked() {
+        if (mPresenter != null) {
             Room room = new Room.Builder()
-                    .setMaxPlayers((byte)mIsbMaxPlayersQuantity.getProgress())
+                    .setMaxPlayers((byte) mIsbMaxPlayersQuantity.getProgress())
                     .setName(mEtRoomName.getText().toString())
                     .setPassword(mEtRoomPassword.getText().toString())
                     .build();
@@ -162,7 +164,7 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
     }
 
     @Override
-    public void hideAll(){
+    public void hideAll() {
         hideLoadingDialog();
         mTvErrorRoomName.setVisibility(GONE);
         mTvErrorRoomPassword.setVisibility(GONE);

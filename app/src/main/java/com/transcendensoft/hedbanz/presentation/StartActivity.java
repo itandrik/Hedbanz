@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.graphics.drawable.VectorDrawableCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ViewTreeObserver;
@@ -19,12 +18,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.transcendensoft.hedbanz.HedbanzApplication;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
-import com.transcendensoft.hedbanz.di.ActivityModule;
-import com.transcendensoft.hedbanz.di.component.ActivityComponent;
-import com.transcendensoft.hedbanz.di.component.HasComponent;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.utils.ViewUtils;
 
@@ -32,39 +27,24 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.support.DaggerAppCompatActivity;
 
-public class StartActivity extends AppCompatActivity implements HasComponent{
+public class StartActivity extends DaggerAppCompatActivity {
     @BindView(R.id.ivHatImage) ImageView mIvHat;
     @BindView(R.id.ivSmileImage) ImageView mIvSmile;
     @BindView(R.id.flLoginFragmentContainer) FrameLayout mFlLoginContainer;
 
     @Inject PreferenceManager mPreferenceManager;
-    private ActivityComponent mActivityComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        injectDependencies();
 
         if (mPreferenceManager.isAuthorised()) {
             startMainActivity();
         } else {
             showLoginWithAnimation();
         }
-    }
-
-    private void injectDependencies() {
-        mActivityComponent = HedbanzApplication.get(this).getApplicationComponent()
-                .activityComponentBuilder()
-                .activityModule(new ActivityModule(this))
-                .build();
-        mActivityComponent.inject(this);
-    }
-
-    @Override
-    public ActivityComponent getActivityComponent() {
-        return mActivityComponent;
     }
 
     private void startMainActivity() {

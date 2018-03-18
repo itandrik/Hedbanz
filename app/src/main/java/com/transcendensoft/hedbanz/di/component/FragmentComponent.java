@@ -33,6 +33,7 @@ import dagger.Subcomponent;
  */
 @Subcomponent(modules = FragmentModule.class)
 @FragmentScope
+@Deprecated
 public interface FragmentComponent {
     @Subcomponent.Builder
     interface Builder {

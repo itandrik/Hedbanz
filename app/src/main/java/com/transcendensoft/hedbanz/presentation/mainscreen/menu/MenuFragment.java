@@ -15,12 +15,10 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.menu;
  * limitations under the License.
  */
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +28,6 @@ import android.widget.TextView;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.entity.User;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
-import com.transcendensoft.hedbanz.di.FragmentModule;
-import com.transcendensoft.hedbanz.di.component.FragmentComponent;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.CredentialsActivity;
@@ -42,6 +38,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import dagger.android.support.DaggerFragment;
 
 /**
  * Fragment that shows user info and menu items such as:
@@ -50,15 +47,20 @@ import butterknife.OnClick;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class MenuFragment extends Fragment{
+public class MenuFragment extends DaggerFragment{
     @BindView(R.id.tvFriends) TextView mTvFriends;
     @BindView(R.id.tvGamesPlayed) TextView mTvGamesPlayed;
     @BindView(R.id.tvMoney) TextView mTvMoney;
     @BindView(R.id.tvUsername) TextView mTvUsername;
     @BindView(R.id.ivUserImage) ImageView mIvImage;
 
-    private BaseActivity mActivity;
     @Inject PreferenceManager mPreferenceManager;
+    @Inject BaseActivity mActivity;
+
+    @Inject
+    public MenuFragment() {
+        //Requires empty public constructor
+    }
 
     @Nullable
     @Override
@@ -69,20 +71,6 @@ public class MenuFragment extends Fragment{
         initUserData();
 
         return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof BaseActivity) {
-            mActivity = (BaseActivity) context;
-
-            FragmentComponent fragmentComponent = mActivity.getActivityComponent()
-                    .fragmentComponentBuilder()
-                    .fragmentModule(new FragmentModule())
-                    .build();
-            fragmentComponent.inject(this);
-        }
     }
 
     private void initUserData(){

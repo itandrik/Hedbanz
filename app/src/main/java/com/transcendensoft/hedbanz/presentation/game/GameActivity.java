@@ -22,7 +22,6 @@ public class GameActivity extends BaseActivity implements GameContract.View{
         setContentView(R.layout.activity_game);
 
         ButterKnife.bind(this, this);
-        getActivityComponent().inject(this);
 
         //TODO refactor this, it should be inside Presenter
         if (mPresenter != null && getIntent() != null) {

@@ -102,9 +102,14 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     @Inject RoomsPresenter mPresenter;
     private RoomsAdapter mAdapter;
 
+    @Inject
+    public RoomsFragment() {
+        // Requires empty public constructor
+    }
+
     /*------------------------------------*
-     *-------- Fragment lifecycle --------*
-     *------------------------------------*/
+         *-------- Fragment lifecycle --------*
+         *------------------------------------*/
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -116,6 +121,8 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         initRecycler();
         initSearchView();
         initFilters();
+
+        mPresenter.setModel(new ArrayList<>());
 
         return view;
     }
@@ -134,12 +141,6 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         if (mPresenter != null) {
             mPresenter.unbindView();
         }
-    }
-
-    @Override
-    protected void injectDependencies() {
-        getFragmentComponent().inject(this);
-        mPresenter.setModel(new ArrayList<>());
     }
 
     private void initSwipeToRefresh() {

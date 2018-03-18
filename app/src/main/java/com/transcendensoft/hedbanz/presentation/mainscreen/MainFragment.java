@@ -23,7 +23,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.graphics.drawable.VectorDrawableCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -41,9 +40,13 @@ import com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation.CreateRo
 import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.RoomsFragment;
 import com.transcendensoft.hedbanz.utils.ViewUtils;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import dagger.Lazy;
+import dagger.android.support.DaggerFragment;
 
 import static com.transcendensoft.hedbanz.utils.TabUtils.getIconEnabledTabWithIndex;
 import static com.transcendensoft.hedbanz.utils.TabUtils.getIconForDisabledTabWithIndex;
@@ -56,7 +59,7 @@ import static com.transcendensoft.hedbanz.utils.TabUtils.getIconForDisabledTabWi
  *         Developed by <u>Transcendensoft</u>
  */
 
-public class MainFragment extends Fragment implements ViewPager.OnPageChangeListener{
+public class MainFragment extends DaggerFragment implements ViewPager.OnPageChangeListener{
     @BindView(R.id.mainViewPager) MainViewPager mViewPager;
     @BindView(R.id.tlBottomNavigation) TabLayout mTabLayout;
     @BindView(R.id.tvToolbarTitle) TextView mTvToolbarTitle;
@@ -66,6 +69,14 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
     //Tabs
     private TextView mTvTabRooms;
     private TextView mTvTabCreateRoom;
+
+    @Inject Lazy<RoomsFragment> roomsFragmentLazy;
+    @Inject Lazy<CreateRoomFragment> createRoomFragmentLazy;
+
+    @Inject
+    public MainFragment() {
+        // Requires empty public constructor
+    }
 
     @Nullable
     @Override
@@ -81,8 +92,8 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
 
     private void initViewPager(){
         mAdapter = new MainScreenFragmentAdapter.Holder(getChildFragmentManager())
-                .add(new RoomsFragment())
-                .add(new CreateRoomFragment())
+                .add(roomsFragmentLazy.get())
+                .add(createRoomFragmentLazy.get())
                 .set();
         mAdapter.addFragmentTitle(getString(R.string.rooms_title));
         mAdapter.addFragmentTitle(getString(R.string.room_creation_title));
