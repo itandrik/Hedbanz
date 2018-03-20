@@ -27,7 +27,7 @@
             android:text="@string/rooms_max_players_title"
             android:textColor="@color/textPrimary" />
 
-        <LinearLayout
+        <!--<LinearLayout
             android:id="@+id/llMaxPlayersContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,13 +64,33 @@
                 android:dropDownWidth="56dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp" />
-        </LinearLayout>
+        </LinearLayout>-->
+        <com.transcendensoft.hedbanz.presentation.custom.widget.rangeseekbar.RangeSeekBar
+            android:id="@+id/rsbMaxPlayers"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="30dp"
+            android:layout_below="@id/tvFilterMaxPlayersTitle"
+            android:layout_marginTop="12dp"
+            android:layout_height="wrap_content"
+            app:isb_progress_1="2"
+            app:isb_progress_2="8"
+            app:isb_max="8"
+            app:isb_min="2"
+            app:isb_seek_bar_type="discrete_ticks_texts"
+            app:isb_text_color="@color/textDarkRed"
+            app:isb_show_indicator="false"
+            app:isb_tick_color="@color/textSecondary"
+            app:isb_track_progress_bar_color="@color/textDarkRed"
+            app:isb_thumb_color="@color/textDarkRed"
+            app:isb_tick_num="7"
+            app:isb_tick_on_thumb_left_hide="true"
+            app:isb_tick_type="oval" />
 
         <CheckBox
             android:id="@+id/chbWithPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/llMaxPlayersContainer"
+            android:layout_below="@id/rsbMaxPlayers"
             android:layout_marginLeft="32dp"
             android:text="@string/rooms_with_password" />
 

@@ -23,7 +23,6 @@ import android.support.annotation.Nullable;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +32,7 @@ import android.widget.TextView;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.entity.User;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.RegisterActivity;
@@ -59,7 +59,7 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
     @BindView(R.id.tvErrorPassword) TextView mTvPasswordError;
 
     @Inject LoginPresenter mPresenter;
-    @Inject AppCompatActivity mActivity;
+    @Inject StartActivity mActivity;
     @Inject PreferenceManager mPreferenceManager;
 
     @Inject

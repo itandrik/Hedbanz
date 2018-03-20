@@ -20,7 +20,6 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 import com.transcendensoft.hedbanz.data.entity.User;
-import com.transcendensoft.hedbanz.di.qualifier.ApplicationContext;
 
 /**
  * Wrapper for SharedPreferences with
@@ -36,7 +35,7 @@ public class PreferenceManager {
     private static final String IS_AUTHORISED = "isAuthorised";
     private static final String USER_ENTITY = "user";
 
-    public PreferenceManager(@ApplicationContext Context context) {
+    public PreferenceManager(Context context) {
         mPreferences = context.getSharedPreferences(PREF_NAME, 0);
     }
 

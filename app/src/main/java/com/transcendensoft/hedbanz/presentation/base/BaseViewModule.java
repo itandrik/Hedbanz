@@ -19,7 +19,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 
 import dagger.Module;
 import dagger.Provides;
@@ -36,7 +35,7 @@ import dagger.Reusable;
 public class BaseViewModule {
     @Provides
     @Reusable
-    public ProgressDialog provideProgressDialog(@ActivityContext Context context){
+    public ProgressDialog provideProgressDialog(Context context){
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(context.getString(R.string.action_loading));
         progressDialog.setCancelable(false);

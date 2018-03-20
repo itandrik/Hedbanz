@@ -16,11 +16,7 @@ package com.transcendensoft.hedbanz.data.network.manager;
  */
 
 
-import android.app.Application;
-
 import com.transcendensoft.hedbanz.data.network.service.ApiService;
-import com.transcendensoft.hedbanz.di.AppModule;
-import com.transcendensoft.hedbanz.di.component.DaggerAppComponent;
 
 import javax.inject.Inject;
 
@@ -45,11 +41,8 @@ public abstract class ApiManager {
     @Inject ApiService mService;
     @Inject ObservableTransformer mSchedulersTransformer;
 
-    protected ApiManager(Application application) {
-        DaggerAppComponent.builder()
-                .appModule(new AppModule(application))
-                .build()
-                .inject(this);
+    protected ApiManager() {
+       // DaggerAppComponent.builder().
     }
 
     @SuppressWarnings("unchecked")

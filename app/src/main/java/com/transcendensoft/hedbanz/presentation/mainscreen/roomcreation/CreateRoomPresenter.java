@@ -25,7 +25,6 @@ import com.transcendensoft.hedbanz.data.entity.User;
 import com.transcendensoft.hedbanz.data.entity.error.ServerError;
 import com.transcendensoft.hedbanz.data.network.manager.RoomsCrudApiManager;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
-import com.transcendensoft.hedbanz.di.scope.FragmentScope;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.validation.RoomValidator;
 
@@ -40,7 +39,6 @@ import io.reactivex.disposables.Disposable;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-@FragmentScope
 public class CreateRoomPresenter extends BasePresenter<Room, CreateRoomContract.View>
         implements CreateRoomContract.Presenter{
     private static final String TAG = CreateRoomPresenter.class.getName();

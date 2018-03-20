@@ -68,7 +68,6 @@ public class RegisterActivity extends BaseActivity implements UserCrudContract.V
 
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this, this);
-        getActivityComponent().inject(this);
 
         if (mPresenter != null) {
             mPresenter.initSockets();

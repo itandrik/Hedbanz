@@ -15,8 +15,6 @@ package com.transcendensoft.hedbanz.data.network.manager;
  * limitations under the License.
  */
 
-import android.app.Application;
-
 import com.transcendensoft.hedbanz.data.entity.Room;
 import com.transcendensoft.hedbanz.data.entity.RoomFilter;
 import com.transcendensoft.hedbanz.data.entity.ServerResult;
@@ -37,8 +35,8 @@ import io.reactivex.Observable;
  */
 @ApplicationScope
 public class RoomsCrudApiManager extends ApiManager{
-    @Inject RoomsCrudApiManager(Application application) {
-        super(application);
+    @Inject RoomsCrudApiManager() {
+        super();
     }
 
     public Observable<ServerResult<List<Room>>> getRooms(int page){
@@ -61,5 +59,4 @@ public class RoomsCrudApiManager extends ApiManager{
         return mService.filterRooms(page, roomFilter)
                 .compose(applySchedulers());
     }
-
 }

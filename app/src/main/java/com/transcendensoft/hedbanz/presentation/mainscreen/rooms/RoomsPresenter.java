@@ -23,7 +23,6 @@ import com.transcendensoft.hedbanz.data.entity.RoomFilter;
 import com.transcendensoft.hedbanz.data.entity.ServerResult;
 import com.transcendensoft.hedbanz.data.entity.ServerStatus;
 import com.transcendensoft.hedbanz.data.network.manager.RoomsCrudApiManager;
-import com.transcendensoft.hedbanz.di.scope.FragmentScope;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.base.MvpRecyclerAdapter;
 import com.transcendensoft.hedbanz.presentation.base.MvpViewHolder;
@@ -42,7 +41,6 @@ import io.reactivex.disposables.Disposable;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-@FragmentScope
 public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View>
         implements RoomsContract.Presenter, MvpRecyclerAdapter.OnBottomReachedListener {
     private static final String TAG = RoomsPresenter.class.getName();

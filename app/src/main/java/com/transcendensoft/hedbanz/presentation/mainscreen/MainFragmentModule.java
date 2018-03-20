@@ -15,7 +15,6 @@ package com.transcendensoft.hedbanz.presentation.mainscreen;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.di.scope.FragmentScope;
 import com.transcendensoft.hedbanz.di.scope.ViewPagerFragmentScope;
 import com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation.CreateRoomContract;
 import com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation.CreateRoomFragment;
@@ -46,11 +45,9 @@ public interface MainFragmentModule {
     @ContributesAndroidInjector
     RoomsFragment roomsFragment();
 
-    @FragmentScope
     @Binds
     CreateRoomContract.Presenter createRoomPresenter(CreateRoomPresenter createRoomPresenter);
 
-    @FragmentScope
     @Binds
     RoomsContract.Presenter roomsPresenter(RoomsPresenter roomsPresenter);
 }

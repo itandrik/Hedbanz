@@ -1,8 +1,8 @@
 <resources>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -40,4 +40,9 @@
         <!-- The hint text that appears when the user has not typed anything -->
         <item name="queryHint">@string/rooms_search_hint</item>
     </style>
+
+    <declare-styleable name="IndicatorSeekBar">
+        <attr name="isb_progress_1" format="float" />
+        <attr name="isb_progress_2" format="float" />
+    </declare-styleable>
 </resources>

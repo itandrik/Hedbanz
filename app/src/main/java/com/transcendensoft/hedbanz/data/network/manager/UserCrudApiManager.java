@@ -15,8 +15,6 @@ package com.transcendensoft.hedbanz.data.network.manager;
  * limitations under the License.
  */
 
-import android.app.Application;
-
 import com.transcendensoft.hedbanz.data.entity.ServerResult;
 import com.transcendensoft.hedbanz.data.entity.User;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
@@ -35,8 +33,8 @@ import io.reactivex.Observable;
  */
 @ApplicationScope
 public class UserCrudApiManager extends ApiManager {
-    @Inject UserCrudApiManager(Application application) {
-        super(application);
+    @Inject UserCrudApiManager() {
+        super();
     }
 
     public Observable<ServerResult<User>> registerUser(User user) {

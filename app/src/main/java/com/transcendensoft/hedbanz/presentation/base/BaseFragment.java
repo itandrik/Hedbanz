@@ -23,7 +23,6 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.EditText;
 
-import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
 import com.transcendensoft.hedbanz.utils.NetworkUtils;
@@ -45,10 +44,10 @@ public abstract class BaseFragment extends DaggerFragment implements BaseView {
     private static final String TAG = BaseFragment.class.getName();
 
     @Inject ProgressDialog mProgressDialog;
-    @Inject @ActivityContext Context mActivityContext;
+    @Inject Context mActivityContext;
 
    // private FragmentComponent mFragmentComponent;
-    @Inject BaseActivity mActivity;
+   // @Inject BaseActivity mActivity;
 
    // public FragmentComponent getFragmentComponent() {
     //    return mFragmentComponent;
@@ -134,7 +133,7 @@ public abstract class BaseFragment extends DaggerFragment implements BaseView {
     public void handleKeyboard(KeyboardUtils.KeyboardState state, @Nullable EditText editText) {
         switch (state) {
             case HIDE:
-                KeyboardUtils.hideSoftInput(mActivity);
+                KeyboardUtils.hideSoftInput(getActivity());
                 break;
             case SHOW:
                 KeyboardUtils.showSoftInput(editText, mActivityContext);

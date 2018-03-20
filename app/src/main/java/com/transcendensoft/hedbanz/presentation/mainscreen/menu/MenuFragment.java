@@ -29,7 +29,7 @@ import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.entity.User;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
-import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
+import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.CredentialsActivity;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 
@@ -55,7 +55,7 @@ public class MenuFragment extends DaggerFragment{
     @BindView(R.id.ivUserImage) ImageView mIvImage;
 
     @Inject PreferenceManager mPreferenceManager;
-    @Inject BaseActivity mActivity;
+    @Inject MainActivity mActivity;
 
     @Inject
     public MenuFragment() {

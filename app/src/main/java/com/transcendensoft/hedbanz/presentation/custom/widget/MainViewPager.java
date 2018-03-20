@@ -38,7 +38,7 @@ public class MainViewPager extends ViewPager {
 
     @Override
     protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
-        if((v != this) &&(v instanceof ProgressBar)) {
+        if((v != this) &&((v instanceof ProgressBar))) {
             return true;
         }
         return super.canScroll(v, checkV, dx, x, y);
