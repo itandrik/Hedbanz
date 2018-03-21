@@ -30,8 +30,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.data.entity.User;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;

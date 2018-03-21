@@ -24,17 +24,18 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.jakewharton.rxbinding2.widget.RxTextView;
-import com.transcendensoft.hedbanz.data.entity.ServerResult;
-import com.transcendensoft.hedbanz.data.entity.ServerStatus;
-import com.transcendensoft.hedbanz.data.entity.User;
-import com.transcendensoft.hedbanz.data.entity.error.RegisterError;
-import com.transcendensoft.hedbanz.data.entity.error.ServerError;
-import com.transcendensoft.hedbanz.data.network.manager.UserCrudApiManager;
+import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
+import com.transcendensoft.hedbanz.data.models.common.ServerError;
+import com.transcendensoft.hedbanz.data.models.mapper.UserModelDataMapper;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
+import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.repository.UserDataRepository;
+import com.transcendensoft.hedbanz.domain.validation.RegisterError;
+import com.transcendensoft.hedbanz.domain.validation.UserCrudValidator;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.base.Socketable;
-import com.transcendensoft.hedbanz.validation.UserCrudValidator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,9 +47,9 @@ import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
 
-import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.HOST;
-import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.LOGIN_SOCKET_NSP;
-import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.PORT_SOCKET;
+import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.HOST;
+import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.LOGIN_SOCKET_NSP;
+import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.PORT_SOCKET;
 
 /**
  * Presenter from MVP pattern, that contains
@@ -68,16 +69,16 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
     private Socket mSocket;
     private Emitter.Listener mLoginResultSocketListener;
 
-    private UserCrudApiManager mApiManager;
+    private UserDataRepository mUserRepository;
     private PreferenceManager mPreferenceManager;
 
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
     @Inject
-    public UserCrudPresenter(UserCrudApiManager mApiManager, PreferenceManager mPreferenceManager) {
-        this.mApiManager = mApiManager;
-        this.mPreferenceManager = mPreferenceManager;
+    public UserCrudPresenter(UserDataRepository userRepository, PreferenceManager preferenceManager) {
+        this.mUserRepository = userRepository;
+        this.mPreferenceManager = preferenceManager;
     }
 
     @Override
@@ -92,7 +93,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
     public void registerUser(User user) {
         setModel(user);
         if (isUserValid(user)) {
-            Disposable disposable = mApiManager
+            Disposable disposable = mUserRepository
                     .registerUser(user)
                     .subscribe(
                             this::processRegisterOnNext,
@@ -107,8 +108,9 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
     public void updateUser(User user, String oldPassword) {
         setModel(user);
         if (isUserValid(user) && isOldPasswordValid(oldPassword)) {
-            Disposable disposable = mApiManager
-                    .updateUser(user.getId(), user.getLogin(), oldPassword, user.getPassword())
+            Disposable disposable = mUserRepository
+                    .updateUser(user.getId(), user.getLogin(),
+                            oldPassword, user.getPassword(), DataPolicy.API)
                     .subscribe(
                             this::processRegisterOnNext,
                             this::processRegisterOnError,
@@ -140,9 +142,9 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
         return result;
     }
 
-    private boolean isOldPasswordValid(String oldPassword){
+    private boolean isOldPasswordValid(String oldPassword) {
         UserCrudValidator validator = new UserCrudValidator(new User.Builder().build());
-        if(!validator.isOldPasswordValid(oldPassword)){
+        if (!validator.isOldPasswordValid(oldPassword)) {
             view().showIncorrectOldPassword(validator.getErrorMessage());
             return false;
         } else {
@@ -150,8 +152,8 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
         }
     }
 
-    private void processRegisterOnNext(ServerResult<User> result) {
-        if (result == null) {
+    private void processRegisterOnNext(User user) {
+        /*if (result == null) {
             throw new RuntimeException("Server result is null");
         } else if (!result.getStatus().equalsIgnoreCase(ServerStatus.SUCCESS.toString())) {
             ServerError serverError = result.getServerError();
@@ -159,13 +161,13 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
                 processErrorFromServer(serverError);
             }
             throw new IllegalStateException();
+        } else {*/
+        if (user != null) {
+            mPreferenceManager.setUser(new UserModelDataMapper().convert(user));
         } else {
-            if(result.getData() != null) {
-                mPreferenceManager.setUser(result.getData());
-            } else {
-                throw new RuntimeException("User comes NULL from server while login");
-            }
+            throw new HedbanzApiException("UserDTO comes NULL from server while login");
         }
+        //}
     }
 
     private void processErrorFromServer(ServerError serverError) {
@@ -194,7 +196,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
     }
 
     private void processRegisterOnError(Throwable err) {
-        if(!(err instanceof IllegalStateException)) {
+        if (!(err instanceof IllegalStateException)) {
             Log.e(TAG, "Error " + err.getMessage());
             Crashlytics.logException(err);
             view().showServerError();

@@ -17,6 +17,7 @@ package com.transcendensoft.hedbanz.data.network;
 
 import android.content.Context;
 
+import com.transcendensoft.hedbanz.BuildConfig;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 
 import java.io.File;
@@ -42,7 +43,9 @@ public class NetworkModule {
     public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(
                 message -> Timber.i(message));
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        if(BuildConfig.DEBUG) {
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        }
         return loggingInterceptor;
     }
 

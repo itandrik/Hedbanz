@@ -16,12 +16,12 @@ package com.transcendensoft.hedbanz.di.component;
  */
 
 import com.transcendensoft.hedbanz.HedbanzApplication;
-import com.transcendensoft.hedbanz.data.network.manager.ApiManagerModule;
+import com.transcendensoft.hedbanz.data.repository.RepositoryModule;
 import com.transcendensoft.hedbanz.di.AppModule;
 import com.transcendensoft.hedbanz.di.RxModule;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
-import com.transcendensoft.hedbanz.logging.LoggingModule;
 import com.transcendensoft.hedbanz.presentation.base.BaseViewModule;
+import com.transcendensoft.hedbanz.utils.logging.LoggingModule;
 
 import dagger.Component;
 import dagger.android.AndroidInjector;
@@ -40,7 +40,7 @@ import dagger.android.support.AndroidSupportInjectionModule;
         AppModule.class,
         BaseViewModule.class,
         LoggingModule.class,
-        ApiManagerModule.class,
+        RepositoryModule.class,
         RxModule.class})
 public interface AppComponent extends AndroidInjector<HedbanzApplication> {
     @Component.Builder

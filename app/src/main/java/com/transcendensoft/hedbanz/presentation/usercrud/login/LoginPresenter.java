@@ -18,16 +18,16 @@ package com.transcendensoft.hedbanz.presentation.usercrud.login;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.transcendensoft.hedbanz.data.entity.ServerResult;
-import com.transcendensoft.hedbanz.data.entity.ServerStatus;
-import com.transcendensoft.hedbanz.data.entity.User;
-import com.transcendensoft.hedbanz.data.entity.error.LoginError;
-import com.transcendensoft.hedbanz.data.entity.error.ServerError;
-import com.transcendensoft.hedbanz.data.network.manager.UserCrudApiManager;
+import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
+import com.transcendensoft.hedbanz.data.models.common.ServerError;
+import com.transcendensoft.hedbanz.data.models.mapper.UserModelDataMapper;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
+import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.repository.UserDataRepository;
+import com.transcendensoft.hedbanz.domain.validation.LoginError;
+import com.transcendensoft.hedbanz.domain.validation.UserCrudValidator;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
-import com.transcendensoft.hedbanz.validation.UserCrudValidator;
 
 import javax.inject.Inject;
 
@@ -45,12 +45,12 @@ public class LoginPresenter extends BasePresenter<User, LoginContract.View>
         implements LoginContract.Presenter {
     private static final String TAG = LoginPresenter.class.getName();
     private PreferenceManager mPreferenceManager;
-    private UserCrudApiManager mApiManager;
+    private UserDataRepository mUserRepository;
 
     @Inject
-    public LoginPresenter(PreferenceManager preferenceManager, UserCrudApiManager apiManager) {
+    public LoginPresenter(PreferenceManager preferenceManager, UserDataRepository userRepository) {
         this.mPreferenceManager = preferenceManager;
-        this.mApiManager = apiManager;
+        this.mUserRepository = userRepository;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class LoginPresenter extends BasePresenter<User, LoginContract.View>
     public void login(User user) {
         setModel(user);
         if (isUserValid(user)) {
-            Disposable disposable = mApiManager
+            Disposable disposable = mUserRepository
                     .authUser(user)
                     .subscribe(
                             this::processLoginOnNext,
@@ -87,8 +87,8 @@ public class LoginPresenter extends BasePresenter<User, LoginContract.View>
         return result;
     }
 
-    private void processLoginOnNext(ServerResult<User> result) {
-        if (result == null) {
+    private void processLoginOnNext(User user) {
+        /*if (result == null) {
             throw new RuntimeException("Server result is null");
         } else if (!result.getStatus().equalsIgnoreCase(ServerStatus.SUCCESS.toString())) {
             ServerError serverError = result.getServerError();
@@ -96,13 +96,13 @@ public class LoginPresenter extends BasePresenter<User, LoginContract.View>
                 processErrorFromServer(serverError);
             }
             throw new IllegalStateException();
-        } else {
-            if(result.getData() != null) {
-                mPreferenceManager.setUser(result.getData());
+        } else {*/
+            if(user != null) {
+                mPreferenceManager.setUser(new UserModelDataMapper().convert(user));
             } else {
-                throw new RuntimeException("User comes NULL from server while login");
+                throw new HedbanzApiException("User comes NULL from server while login");
             }
-        }
+        //}
     }
 
     private void processErrorFromServer(ServerError serverError) {

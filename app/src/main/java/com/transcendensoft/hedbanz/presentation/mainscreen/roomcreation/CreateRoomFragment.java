@@ -26,7 +26,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.data.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.warkiz.widget.IndicatorSeekBar;
@@ -114,7 +114,7 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
      *------------------------------------*/
     @Override
     public void createRoomSuccess(Room room) {
-        AndroidUtils.showShortToast(getActivity(), "Room created successfully");
+        AndroidUtils.showShortToast(getActivity(), "RoomDTO created successfully");
         //TODO open view
     }
 

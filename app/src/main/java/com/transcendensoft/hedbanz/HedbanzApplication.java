@@ -15,16 +15,11 @@ package com.transcendensoft.hedbanz;
  * limitations under the License.
  */
 
-import android.app.Activity;
-import android.app.Application;
-
 import com.crashlytics.android.Crashlytics;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.squareup.leakcanary.LeakCanary;
-import com.transcendensoft.hedbanz.di.AppModule;
-import com.transcendensoft.hedbanz.di.component.AppComponent;
 import com.transcendensoft.hedbanz.di.component.DaggerAppComponent;
-import com.transcendensoft.hedbanz.logging.CrashReportingTree;
+import com.transcendensoft.hedbanz.utils.logging.CrashReportingTree;
 
 import javax.inject.Inject;
 

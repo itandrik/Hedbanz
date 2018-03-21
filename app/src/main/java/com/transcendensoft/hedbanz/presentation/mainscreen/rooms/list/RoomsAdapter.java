@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.data.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.presentation.base.MvpRecyclerListAdapter;
 import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.RoomsPresenter;
 

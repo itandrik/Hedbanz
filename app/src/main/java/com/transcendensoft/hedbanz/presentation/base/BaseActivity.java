@@ -39,21 +39,6 @@ import dagger.android.support.DaggerAppCompatActivity;
  */
 public abstract class BaseActivity extends DaggerAppCompatActivity implements BaseView {
     @Inject ProgressDialog mProgressDialog;
-   /* private ActivityComponent mActivityComponent;
-
-    public ActivityComponent getActivityComponent() {
-        return mActivityComponent;
-    }
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mActivityComponent = HedbanzApplication.get(this).getApplicationComponent()
-                .activityComponentBuilder()
-                .activityModule(new ActivityModule(this))
-                .baseViewModule(new BaseViewModule())
-                .build();
-    }*/
 
     @Override
     public void showSnackError(int messageRes) {

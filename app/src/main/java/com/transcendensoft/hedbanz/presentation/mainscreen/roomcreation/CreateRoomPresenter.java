@@ -18,15 +18,12 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.transcendensoft.hedbanz.data.entity.Room;
-import com.transcendensoft.hedbanz.data.entity.ServerResult;
-import com.transcendensoft.hedbanz.data.entity.ServerStatus;
-import com.transcendensoft.hedbanz.data.entity.User;
-import com.transcendensoft.hedbanz.data.entity.error.ServerError;
-import com.transcendensoft.hedbanz.data.network.manager.RoomsCrudApiManager;
+import com.transcendensoft.hedbanz.data.models.UserDTO;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.repository.RoomDataRepository;
+import com.transcendensoft.hedbanz.domain.validation.RoomValidator;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
-import com.transcendensoft.hedbanz.validation.RoomValidator;
 
 import javax.inject.Inject;
 
@@ -42,12 +39,12 @@ import io.reactivex.disposables.Disposable;
 public class CreateRoomPresenter extends BasePresenter<Room, CreateRoomContract.View>
         implements CreateRoomContract.Presenter{
     private static final String TAG = CreateRoomPresenter.class.getName();
-    private RoomsCrudApiManager mApiManager;
+    private RoomDataRepository mRoomRepository;
     private PreferenceManager mPreferenceManager;
 
     @Inject
-    public CreateRoomPresenter(RoomsCrudApiManager apiManager, PreferenceManager preferenceManager) {
-        this.mApiManager = apiManager;
+    public CreateRoomPresenter(RoomDataRepository roomRepository, PreferenceManager preferenceManager) {
+        this.mRoomRepository = roomRepository;
         this.mPreferenceManager = preferenceManager;
     }
 
@@ -60,10 +57,9 @@ public class CreateRoomPresenter extends BasePresenter<Room, CreateRoomContract.
     public void createRoom(Room room) {
         setModel(room);
         if(isRoomValid(room)){
-            User curUser = mPreferenceManager.getUser();
-            Disposable disposable = mApiManager
-                    .createRoom(room.getPassword(), room.getName(),
-                            room.getMaxPlayers(), curUser.getId())
+            UserDTO curUser = mPreferenceManager.getUser();
+            Disposable disposable = mRoomRepository
+                    .createRoom(room, curUser.getId())
                     .subscribe(this::processCreateRoomOnNext,
                             this::processCreateRoomOnError,
                             () -> view().createRoomSuccess(room),
@@ -86,15 +82,15 @@ public class CreateRoomPresenter extends BasePresenter<Room, CreateRoomContract.
         return result;
     }
 
-    private void processCreateRoomOnNext(ServerResult<Room> result) {
-        if (result == null) {
-            throw new RuntimeException("Server result is null");
-        } else if (!result.getStatus().equalsIgnoreCase(ServerStatus.SUCCESS.toString())) {
-            ServerError serverError = result.getServerError();
-            if (serverError != null) {
-                throw new RuntimeException(serverError.getErrorMessage());
-            }
-        }
+    private void processCreateRoomOnNext(Room result) {
+       // if (result == null) {
+       ///     throw new RuntimeException("Server result is null");
+       // } else if (!result.getStatus().equalsIgnoreCase(ServerStatus.SUCCESS.toString())) {
+        //    ServerError serverError = result.getServerError();
+        //    if (serverError != null) {
+        //        throw new RuntimeException(serverError.getErrorMessage());
+       //     }
+     //   }
     }
 
     private void processCreateRoomOnError(Throwable err) {

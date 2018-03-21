@@ -46,33 +46,11 @@ public abstract class BaseFragment extends DaggerFragment implements BaseView {
     @Inject ProgressDialog mProgressDialog;
     @Inject Context mActivityContext;
 
-   // private FragmentComponent mFragmentComponent;
-   // @Inject BaseActivity mActivity;
-
-   // public FragmentComponent getFragmentComponent() {
-    //    return mFragmentComponent;
-    //}
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
     }
-
-    /*@Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof HasComponent) {
-            mActivity = (Activity) context;
-            mFragmentComponent = ((HasComponent)context).getActivityComponent()
-                    .fragmentComponentBuilder()
-                    .fragmentModule(new FragmentModule())
-                    .build();
-            injectDependencies();
-        }
-    }*/
-
-    //protected abstract void injectDependencies();
 
     @Override
     public void showSnackError(int messageRes) {

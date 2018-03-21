@@ -18,11 +18,10 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.rooms;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.transcendensoft.hedbanz.data.entity.Room;
-import com.transcendensoft.hedbanz.data.entity.RoomFilter;
-import com.transcendensoft.hedbanz.data.entity.ServerResult;
-import com.transcendensoft.hedbanz.data.entity.ServerStatus;
-import com.transcendensoft.hedbanz.data.network.manager.RoomsCrudApiManager;
+import com.transcendensoft.hedbanz.data.source.DataPolicy;
+import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
+import com.transcendensoft.hedbanz.domain.repository.RoomDataRepository;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.base.MvpRecyclerAdapter;
 import com.transcendensoft.hedbanz.presentation.base.MvpViewHolder;
@@ -47,11 +46,11 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
     private int mCurrentPage = 0;
     private RoomItemViewHolder mLastHolder;
     private RoomFilter mFilter;
-    private RoomsCrudApiManager mApiManager;
+    private RoomDataRepository mRoomRepository;
 
     @Inject
-    public RoomsPresenter(RoomsCrudApiManager mApiManager) {
-        this.mApiManager = mApiManager;
+    public RoomsPresenter(RoomDataRepository roomRepository) {
+        this.mRoomRepository = roomRepository;
     }
 
     @Override
@@ -66,13 +65,13 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
 
     @Override
     public void loadNextRooms() {
-        Disposable disposable = mApiManager
-                .getRooms(mCurrentPage)
+        Disposable disposable = mRoomRepository
+                .getRooms(mCurrentPage, DataPolicy.API)
                 .subscribe(
                         this::processRoomsOnNext,
                         this::processRoomOnError,
                         () -> {
-                            if(view() != null) {
+                            if (view() != null) {
                                 view().stopRefreshingBar();
                             }
                         },
@@ -81,7 +80,7 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
     }
 
     private void processRoomOnError(Throwable err) {
-        if(!(err instanceof IllegalStateException)) {
+        if (!(err instanceof IllegalStateException)) {
             Log.e(TAG, "Error " + err.getMessage());
             Crashlytics.logException(err);
             if (mCurrentPage == 0) {
@@ -99,7 +98,7 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
                     view().showLoading();
                 }
             } else {
-                if(mCurrentPage == 0) {
+                if (mCurrentPage == 0) {
                     view().showNetworkError();
                 } else {
                     mLastHolder.showErrorNetwork();
@@ -109,35 +108,26 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
         }
     }
 
-    private void processRoomsOnNext(ServerResult<List<Room>> result) {
-        if (result == null) {
-            throw new RuntimeException("Server result is null");
-        } else if ((result.getStatus() != null) &&
-                result.getStatus().equalsIgnoreCase(ServerStatus.SUCCESS.toString())) {
-            if (result.getData() == null || result.getData().isEmpty()) {
-                if (mCurrentPage == 0) {
-                    view().showEmptyList();
-                } else {
-                    model.remove(model.size() - 1);
-                    view().removeLastRoom();
-                }
+    private void processRoomsOnNext(List<Room> result) {
+        if (result == null || result.isEmpty()) {
+            if (mCurrentPage == 0) {
+                view().showEmptyList();
             } else {
-                if (mCurrentPage != 0) {
-                    model.remove(model.size() - 1);
-                    view().removeLastRoom();
-                }
-
-                List<Room> rooms = result.getData();
-                rooms.add(new Room.Builder().setId(-1).build()); //ProgressBar view
-
-                view().addRoomsToRecycler(result.getData());
-                view().showContent();
-                model.addAll(result.getData());
+                model.remove(model.size() - 1);
+                view().removeLastRoom();
             }
         } else {
-            if(result.getServerError() != null) {
-                throw new RuntimeException(result.getServerError().getErrorMessage());
+            if (mCurrentPage != 0) {
+                model.remove(model.size() - 1);
+                view().removeLastRoom();
             }
+
+            //List<Room> rooms = result;
+            result.add(new Room.Builder().setId(-1).build()); //ProgressBar view
+
+            view().addRoomsToRecycler(result);
+            view().showContent();
+            model.addAll(result);
         }
     }
 
@@ -153,7 +143,7 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
         mLastHolder = (RoomItemViewHolder) holder;
         mCurrentPage++;
 
-        if(mFilter == null) {
+        if (mFilter == null) {
             loadNextRooms();
         } else {
             loadNextFilteredRooms();
@@ -168,19 +158,19 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
     @Override
     public void filterRooms(RoomFilter roomFilter) {
         mCurrentPage = 0;
-        if(mFilter == null){
+        if (mFilter == null) {
             mFilter = roomFilter;
         } else {
-            if(roomFilter.getMaxPlayers() != null){
+            if (roomFilter.getMaxPlayers() != null) {
                 mFilter.setMaxPlayers(roomFilter.getMaxPlayers());
             }
-            if(roomFilter.getMinPlayers() != null){
+            if (roomFilter.getMinPlayers() != null) {
                 mFilter.setMinPlayers(roomFilter.getMinPlayers());
             }
-            if(roomFilter.getRoomName() != null){
+            if (roomFilter.getRoomName() != null) {
                 mFilter.setRoomName(roomFilter.getRoomName());
             }
-            if(roomFilter.isPrivate() != null){
+            if (roomFilter.isPrivate() != null) {
                 mFilter.setPrivate(roomFilter.isPrivate());
             }
         }
@@ -188,14 +178,14 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
         loadNextFilteredRooms();
     }
 
-    private void loadNextFilteredRooms(){
-        Disposable disposable = mApiManager
-                .filterRooms(mCurrentPage, mFilter)
+    private void loadNextFilteredRooms() {
+        Disposable disposable = mRoomRepository
+                .filterRooms(mCurrentPage, mFilter,DataPolicy.API)
                 .subscribe(
                         this::processRoomsOnNext,
                         this::processRoomOnError,
                         () -> {
-                            if(view() != null) {
+                            if (view() != null) {
                                 view().stopRefreshingBar();
                             }
                         },

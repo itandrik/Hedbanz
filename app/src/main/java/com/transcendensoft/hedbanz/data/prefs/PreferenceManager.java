@@ -19,7 +19,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
-import com.transcendensoft.hedbanz.data.entity.User;
+import com.transcendensoft.hedbanz.data.models.UserDTO;
 
 /**
  * Wrapper for SharedPreferences with
@@ -51,16 +51,16 @@ public class PreferenceManager {
         return mPreferences.getBoolean(IS_AUTHORISED, false);
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDTO user) {
         Gson gson = new Gson();
         String json = gson.toJson(user);
         getEditor().putString(USER_ENTITY, json).apply();
     }
 
-    public User getUser() {
+    public UserDTO getUser() {
         Gson gson = new Gson();
         String json = mPreferences.getString(USER_ENTITY, "{}");
 
-        return gson.fromJson(json, User.class);
+        return gson.fromJson(json, UserDTO.class);
     }
 }

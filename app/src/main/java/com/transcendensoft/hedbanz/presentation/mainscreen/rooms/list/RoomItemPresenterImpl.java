@@ -20,7 +20,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.data.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.game.GameActivity;
 

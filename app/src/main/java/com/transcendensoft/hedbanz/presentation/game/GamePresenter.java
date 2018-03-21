@@ -22,8 +22,8 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.transcendensoft.hedbanz.data.entity.Room;
-import com.transcendensoft.hedbanz.data.entity.User;
+import com.transcendensoft.hedbanz.data.models.RoomDTO;
+import com.transcendensoft.hedbanz.data.models.UserDTO;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
@@ -35,9 +35,9 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
-import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.GAME_SOCKET_NSP;
-import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.HOST;
-import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.PORT_SOCKET;
+import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.GAME_SOCKET_NSP;
+import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.HOST;
+import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.PORT_SOCKET;
 
 /**
  * Implementation of game mode presenter.
@@ -48,7 +48,7 @@ import static com.transcendensoft.hedbanz.data.network.manager.ApiManager.PORT_S
  *         Developed by <u>Transcendensoft</u>
  */
 @ActivityScope
-public class GamePresenter extends BasePresenter<Room, GameContract.View> implements GameContract.Presenter {
+public class GamePresenter extends BasePresenter<RoomDTO, GameContract.View> implements GameContract.Presenter {
     private static final String TAG = GamePresenter.class.getName();
 
     private static final String JOIN_ROOM_EVENT = "join-room";
@@ -91,10 +91,10 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View> implem
     }
 
     private void emitJoinToRoom() {
-        User user = mPreferenceManager.getUser();
+        UserDTO user = mPreferenceManager.getUser();
         HashMap<String, Long> joinRoomObject = new HashMap<>();
-        joinRoomObject.put(Room.ROOM_ID_KEY, model.getId());
-        joinRoomObject.put(User.USER_ID_KEY, user.getId());
+        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, model.getId());
+        joinRoomObject.put(UserDTO.USER_ID_KEY, user.getId());
         Gson gson = new Gson();
         String json = gson.toJson(joinRoomObject);
         mSocket.emit(JOIN_ROOM_EVENT, json);
@@ -105,9 +105,9 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View> implem
         mRoomInfoListener = args -> {
             try {
                 JSONObject data = (JSONObject) args[0];
-                Room room = gson.fromJson(data.toString(), Room.class);
+                RoomDTO room = gson.fromJson(data.toString(), RoomDTO.class);
                 if (room != null) {
-                    Log.e(TAG, "Room id:" + room.getId() + "; name: " + room.getName());
+                    Log.e(TAG, "RoomDTO id:" + room.getId() + "; name: " + room.getName());
                 } else {
                     Log.e(TAG, "Received room == null");
                 }
@@ -119,9 +119,9 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View> implem
         mJoinedUserListener = args -> {
             try {
                 JSONObject data = (JSONObject) args[0];
-                User user = gson.fromJson(data.toString(), User.class);
+                UserDTO user = gson.fromJson(data.toString(), UserDTO.class);
                 if (user != null) {
-                    Log.e(TAG, "User conntected! User id:" + user.getId() + "; name: " + user.getLogin());
+                    Log.e(TAG, "UserDTO conntected! UserDTO id:" + user.getId() + "; name: " + user.getLogin());
                 } else {
                     Log.e(TAG, "Connected user == null");
                 }
@@ -140,10 +140,10 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View> implem
     }
 
     private void emitDisconnectFromRoom() {
-        User user = mPreferenceManager.getUser();
+        UserDTO user = mPreferenceManager.getUser();
         HashMap<String, Long> joinRoomObject = new HashMap<>();
-        joinRoomObject.put(Room.ROOM_ID_KEY, model.getId());
-        joinRoomObject.put(User.USER_ID_KEY, user.getId());
+        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, model.getId());
+        joinRoomObject.put(UserDTO.USER_ID_KEY, user.getId());
         mSocket.emit(LEAVE_ROOM_EVENT, joinRoomObject);
     }
 }

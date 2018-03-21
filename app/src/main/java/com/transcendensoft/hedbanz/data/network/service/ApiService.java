@@ -15,10 +15,9 @@ package com.transcendensoft.hedbanz.data.network.service;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.entity.Room;
-import com.transcendensoft.hedbanz.data.entity.RoomFilter;
-import com.transcendensoft.hedbanz.data.entity.ServerResult;
-import com.transcendensoft.hedbanz.data.entity.User;
+import com.transcendensoft.hedbanz.data.models.RoomDTO;
+import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
+import com.transcendensoft.hedbanz.data.models.UserDTO;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,22 +38,22 @@ import retrofit2.http.Path;
  */
 public interface ApiService {
     @PUT("user")
-    Observable<ServerResult<User>> registerUser(@Body User user);
+    Observable<UserDTO> registerUser(@Body UserDTO user);
 
     @POST("user")
-    Observable<ServerResult<User>> authUser(@Body User user);
+    Observable<UserDTO> authUser(@Body UserDTO user);
 
     @PATCH("user")
-    Observable<ServerResult<User>> updateUser(@Body HashMap<String, Object> userMap);
+    Observable<UserDTO> updateUser(@Body HashMap<String, Object> userMap);
 
     @GET("rooms/{page}")
-    Observable<ServerResult<List<Room>>> getRooms(@Path("page") int page);
+    Observable<List<RoomDTO>> getRooms(@Path("page") int page);
 
     @PUT("rooms")
-    Observable<ServerResult<Room>> createRoom(@Body HashMap<String, Object> roomDataMap);
+    Observable<RoomDTO> createRoom(@Body HashMap<String, Object> roomDataMap);
 
     @POST("rooms/{page}")
-    Observable<ServerResult<List<Room>>> filterRooms(
+    Observable<List<RoomDTO>> filterRooms(
             @Path("page") int page,
-            @Body RoomFilter roomFilter);
+            @Body RoomFilterDTO roomFilter);
 }

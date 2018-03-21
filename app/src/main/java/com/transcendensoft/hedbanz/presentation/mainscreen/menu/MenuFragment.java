@@ -26,7 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.data.entity.User;
+import com.transcendensoft.hedbanz.data.models.UserDTO;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
@@ -74,7 +74,7 @@ public class MenuFragment extends DaggerFragment{
     }
 
     private void initUserData(){
-        User user = mPreferenceManager.getUser();
+        UserDTO user = mPreferenceManager.getUser();
 
         mTvMoney.setText(String.valueOf(user.getMoney()));
         mTvUsername.setText(user.getLogin());

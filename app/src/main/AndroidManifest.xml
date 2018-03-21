@@ -57,12 +57,12 @@
         <!-- Service -->
 
         <!-- Firebase Notifications -->
-        <service android:name=".service.firebase.HedbanzFirebaseMessagingService">
+        <service android:name=".data.network.service.firebase.HedbanzFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-        <service android:name=".service.firebase.HedbanzFirebaseInstanceIdService">
+        <service android:name=".data.network.service.firebase.HedbanzFirebaseInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>

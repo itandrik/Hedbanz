@@ -15,8 +15,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.data.entity.User;
+import com.transcendensoft.hedbanz.data.models.UserDTO;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
@@ -119,7 +120,7 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
     }
 
     private void initUserData(){
-        User user = mPreferenceManager.getUser();
+        UserDTO user = mPreferenceManager.getUser();
 
         mEtLogin.setText(user.getLogin());
         mEtEmail.setText(user.getEmail());

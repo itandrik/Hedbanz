@@ -17,7 +17,7 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation;
 
 import android.support.annotation.StringRes;
 
-import com.transcendensoft.hedbanz.data.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.presentation.base.BaseView;
 
 /**

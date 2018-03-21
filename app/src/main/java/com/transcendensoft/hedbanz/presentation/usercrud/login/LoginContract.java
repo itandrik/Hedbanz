@@ -17,7 +17,7 @@ package com.transcendensoft.hedbanz.presentation.usercrud.login;
 
 import android.support.annotation.StringRes;
 
-import com.transcendensoft.hedbanz.data.entity.User;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BaseView;
 
 /**

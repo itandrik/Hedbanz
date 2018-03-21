@@ -15,8 +15,8 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.rooms;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.entity.Room;
-import com.transcendensoft.hedbanz.data.entity.RoomFilter;
+import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
 import com.transcendensoft.hedbanz.presentation.base.BaseView;
 
 import java.util.List;

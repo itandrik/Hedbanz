@@ -3,7 +3,7 @@ package com.transcendensoft.hedbanz.presentation.game;
 import android.os.Bundle;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.data.entity.Room;
+import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 
 import javax.inject.Inject;
@@ -26,7 +26,7 @@ public class GameActivity extends BaseActivity implements GameContract.View{
         //TODO refactor this, it should be inside Presenter
         if (mPresenter != null && getIntent() != null) {
             long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
-            mPresenter.setModel(new Room.Builder().setId(roomId).build());
+            mPresenter.setModel(new RoomDTO.Builder().setId(roomId).build());
         }
         //TODO initRecycler();
     }
