@@ -36,7 +36,7 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <com.transcendensoft.hedbanz.view.custom.widget.MainViewPager
+        <com.transcendensoft.hedbanz.presentation.custom.widget.MainViewPager
             android:id="@+id/mainViewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

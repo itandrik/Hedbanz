@@ -15,18 +15,16 @@ package com.transcendensoft.hedbanz;
  * limitations under the License.
  */
 
-import android.app.Activity;
-import android.app.Application;
-
 import com.crashlytics.android.Crashlytics;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.squareup.leakcanary.LeakCanary;
-import com.transcendensoft.hedbanz.di.component.AppComponent;
 import com.transcendensoft.hedbanz.di.component.DaggerAppComponent;
-import com.transcendensoft.hedbanz.logging.CrashReportingTree;
+import com.transcendensoft.hedbanz.utils.logging.CrashReportingTree;
 
 import javax.inject.Inject;
 
+import dagger.android.AndroidInjector;
+import dagger.android.support.DaggerApplication;
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
@@ -37,27 +35,15 @@ import timber.log.Timber;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class HedbanzApplication extends Application{
+public class HedbanzApplication extends DaggerApplication{
     @Inject Timber.DebugTree mDebugTimberTree;
     @Inject CrashReportingTree mReleaseTimberTree;
-
-    public static HedbanzApplication get(Activity activity) {
-        return (HedbanzApplication) activity.getApplication();
-    }
-
-    private AppComponent mApplicationComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        initApplicationComponent();
         initThirdParties();
-    }
-
-    private void initApplicationComponent() {
-        mApplicationComponent = DaggerAppComponent.builder().build();
-        mApplicationComponent.inject(this);
     }
 
     private void initThirdParties() {
@@ -76,7 +62,8 @@ public class HedbanzApplication extends Application{
         }
     }
 
-    public AppComponent getApplicationComponent() {
-        return mApplicationComponent;
+    @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        return DaggerAppComponent.builder().create(this);
     }
 }

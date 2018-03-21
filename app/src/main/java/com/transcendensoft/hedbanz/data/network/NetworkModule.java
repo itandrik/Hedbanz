@@ -17,7 +17,7 @@ package com.transcendensoft.hedbanz.data.network;
 
 import android.content.Context;
 
-import com.transcendensoft.hedbanz.di.qualifier.ApplicationContext;
+import com.transcendensoft.hedbanz.BuildConfig;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 
 import java.io.File;
@@ -43,13 +43,15 @@ public class NetworkModule {
     public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(
                 message -> Timber.i(message));
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        if(BuildConfig.DEBUG) {
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        }
         return loggingInterceptor;
     }
 
     @Provides
     @ApplicationScope
-    public File provideCacheFile(@ApplicationContext Context context) {
+    public File provideCacheFile(Context context) {
         File cacheFile = new File(context.getCacheDir(), "okhttp_cache");
         cacheFile.mkdirs();
         return cacheFile;

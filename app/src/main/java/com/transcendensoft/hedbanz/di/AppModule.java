@@ -16,14 +16,19 @@ package com.transcendensoft.hedbanz.di;
  */
 
 import android.app.Application;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.transcendensoft.hedbanz.HedbanzApplication;
 import com.transcendensoft.hedbanz.data.network.ApiServiceModule;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
+import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import dagger.android.support.DaggerAppCompatActivity;
 
 /**
  * Dagger 2 module for HedbanzApplication
@@ -31,22 +36,23 @@ import dagger.Provides;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-@Module(includes = ApiServiceModule.class)
-public class AppModule {
-    private Application mApplication;
-    public AppModule(Application application) {
-        this.mApplication = application;
+@Module(includes = {ApiServiceModule.class, ActivityBindingModule.class})
+public abstract class AppModule {
+    @Provides
+    public static Application provideApplication(HedbanzApplication hedbanzApplication) {
+        return hedbanzApplication;
     }
 
-    @Provides
-    public Application provideApplication(){
-        return mApplication;
-    }
+    @Binds
+    public abstract Context bindContext(HedbanzApplication hedbanzApplication);
+
+    @Binds
+    public abstract DaggerAppCompatActivity bindBaseActivity(BaseActivity baseActivity);
 
     @Provides
     @ApplicationScope
     @NonNull
-    public PreferenceManager providePreferenceManger(){
-        return new PreferenceManager(mApplication);
+    public static PreferenceManager providePreferenceManger(Context context) {
+        return new PreferenceManager(context);
     }
 }

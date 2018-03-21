@@ -17,7 +17,7 @@ package com.transcendensoft.hedbanz.data.network;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.transcendensoft.hedbanz.data.network.manager.ApiManager;
+import com.transcendensoft.hedbanz.data.network.source.ApiDataSource;
 import com.transcendensoft.hedbanz.data.network.service.ApiService;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 
@@ -55,10 +55,11 @@ public class ApiServiceModule {
     @ApplicationScope
     public Retrofit provideRetrofit(Gson gson, OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
+                .addConverterFactory(HedbanzApiErrorHandlerFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okHttpClient)
-                .baseUrl(ApiManager.BASE_URL)
+                .baseUrl(ApiDataSource.BASE_URL)
                 .build();
     }
 }

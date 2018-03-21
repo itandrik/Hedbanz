@@ -27,8 +27,7 @@
 
         <!-- Activities -->
         <activity
-            android:name=".view.activity.StartActivity"
-            android:noHistory="true"
+            android:name=".presentation.StartActivity"
             android:theme="@style/ThemeMainTranslucentToolbar"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -38,32 +37,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.MainActivity"
+            android:name=".presentation.mainscreen.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ThemeMain"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".view.activity.RegisterActivity"
+            android:name=".presentation.usercrud.RegisterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ThemeRegister"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".view.activity.CredentialsActivity"
+            android:name=".presentation.usercrud.CredentialsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ThemeRegister"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity android:name=".view.activity.GameActivity" />
+        <activity android:name=".presentation.game.GameActivity" />
 
         <!-- Service -->
 
         <!-- Firebase Notifications -->
-        <service android:name=".service.HedbanzFirebaseMessagingService">
+        <service android:name=".data.network.service.firebase.HedbanzFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-        <service android:name=".service.HedbanzFirebaseInstanceIdService">
+        <service android:name=".data.network.service.firebase.HedbanzFirebaseInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
