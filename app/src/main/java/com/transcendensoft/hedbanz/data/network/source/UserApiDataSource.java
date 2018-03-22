@@ -40,14 +40,12 @@ public class UserApiDataSource extends ApiDataSource implements UserDataSource{
 
     @Override
     public Observable<UserDTO> registerUser(UserDTO user) {
-        return mService.registerUser(user)
-                .compose(applySchedulers());
+        return mService.registerUser(user);
     }
 
     @Override
     public Observable<UserDTO> authUser(UserDTO user) {
-        return mService.authUser(user)
-                .compose(applySchedulers());
+        return mService.authUser(user);
     }
 
     @Override
@@ -59,7 +57,6 @@ public class UserApiDataSource extends ApiDataSource implements UserDataSource{
         result.put("oldPassword", oldPassword);
         result.put("newPassword", newPassword);
 
-        return mService.updateUser(result)
-                .compose(applySchedulers());
+        return mService.updateUser(result);
     }
 }

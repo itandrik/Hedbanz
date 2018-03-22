@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.data.models.mapper;
  */
 
 import com.transcendensoft.hedbanz.data.models.UserDTO;
+import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 import com.transcendensoft.hedbanz.domain.entity.User;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import javax.inject.Inject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
+@ApplicationScope
 public class UserModelDataMapper {
     @Inject
     public UserModelDataMapper() {
@@ -69,6 +71,10 @@ public class UserModelDataMapper {
 
 
     public List<User> convertToUsers(Collection<UserDTO> userDTOCollection) {
+        if(userDTOCollection == null){
+            return null;
+        }
+
         final List<User> usersResult = new ArrayList<>(20);
         for (UserDTO userDTO : userDTOCollection) {
             final User user = convert(userDTO);
@@ -80,6 +86,10 @@ public class UserModelDataMapper {
     }
 
     public List<UserDTO> convertToDtoUsers(Collection<User> userCollection) {
+        if(userCollection == null) {
+            return null;
+        }
+
         final List<UserDTO> usersResult = new ArrayList<>(20);
         for (User user : userCollection) {
             final UserDTO userDTO = convert(user);

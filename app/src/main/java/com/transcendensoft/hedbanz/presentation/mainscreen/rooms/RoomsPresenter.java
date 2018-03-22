@@ -15,13 +15,11 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.rooms;
  * limitations under the License.
  */
 
-import android.util.Log;
-
-import com.crashlytics.android.Crashlytics;
-import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
-import com.transcendensoft.hedbanz.domain.repository.RoomDataRepository;
+import com.transcendensoft.hedbanz.domain.interactor.PaginationState;
+import com.transcendensoft.hedbanz.domain.interactor.rooms.FilterRoomsInteractor;
+import com.transcendensoft.hedbanz.domain.interactor.rooms.GetRoomsInteractor;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.base.MvpRecyclerAdapter;
 import com.transcendensoft.hedbanz.presentation.base.MvpViewHolder;
@@ -31,7 +29,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
 
 /**
  * Presenter from MVP pattern, that contains
@@ -42,15 +40,17 @@ import io.reactivex.disposables.Disposable;
  */
 public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View>
         implements RoomsContract.Presenter, MvpRecyclerAdapter.OnBottomReachedListener {
-    private static final String TAG = RoomsPresenter.class.getName();
-    private int mCurrentPage = 0;
     private RoomItemViewHolder mLastHolder;
-    private RoomFilter mFilter;
-    private RoomDataRepository mRoomRepository;
+    private RoomFilter mRoomFilter;
+
+    private FilterRoomsInteractor mFilterRoomsInteractor;
+    private GetRoomsInteractor mGetRoomsInteractor;
 
     @Inject
-    public RoomsPresenter(RoomDataRepository roomRepository) {
-        this.mRoomRepository = roomRepository;
+    public RoomsPresenter(FilterRoomsInteractor filterRoomsInteractor,
+                          GetRoomsInteractor getRoomsInteractor) {
+        this.mFilterRoomsInteractor = filterRoomsInteractor;
+        this.mGetRoomsInteractor = getRoomsInteractor;
     }
 
     @Override
@@ -65,138 +65,154 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
 
     @Override
     public void loadNextRooms() {
-        Disposable disposable = mRoomRepository
-                .getRooms(mCurrentPage, DataPolicy.API)
-                .subscribe(
-                        this::processRoomsOnNext,
-                        this::processRoomOnError,
-                        () -> {
-                            if (view() != null) {
-                                view().stopRefreshingBar();
-                            }
-                        },
-                        this::processRoomOnSubscribe);
-        addDisposable(disposable);
-    }
-
-    private void processRoomOnError(Throwable err) {
-        if (!(err instanceof IllegalStateException)) {
-            Log.e(TAG, "Error " + err.getMessage());
-            Crashlytics.logException(err);
-            if (mCurrentPage == 0) {
-                view().showServerError();
-            } else {
-                mLastHolder.showErrorServer();
-            }
-        }
-    }
-
-    private void processRoomOnSubscribe(Disposable d) {
-        if (!d.isDisposed()) {
-            if (view().isNetworkConnected()) {
-                if (mCurrentPage == 0) {
-                    view().showLoading();
-                }
-            } else {
-                if (mCurrentPage == 0) {
-                    view().showNetworkError();
-                } else {
-                    mLastHolder.showErrorNetwork();
-                }
-                throw new IllegalStateException();
-            }
-        }
-    }
-
-    private void processRoomsOnNext(List<Room> result) {
-        if (result == null || result.isEmpty()) {
-            if (mCurrentPage == 0) {
-                view().showEmptyList();
-            } else {
-                model.remove(model.size() - 1);
-                view().removeLastRoom();
-            }
-        } else {
-            if (mCurrentPage != 0) {
-                model.remove(model.size() - 1);
-                view().removeLastRoom();
-            }
-
-            //List<Room> rooms = result;
-            result.add(new Room.Builder().setId(-1).build()); //ProgressBar view
-
-            view().addRoomsToRecycler(result);
-            view().showContent();
-            model.addAll(result);
-        }
+        mGetRoomsInteractor.loadNextPage()
+                .execute(new RoomListObserver(), null);
     }
 
     @Override
     public void refreshRooms() {
-        mCurrentPage = 0;
         view().clearRooms();
-        loadNextRooms();
+        mGetRoomsInteractor.refresh(null)
+                .execute(new RoomListObserver(), null);
     }
 
     @Override
     public void onBottomReached(MvpViewHolder holder) {
         mLastHolder = (RoomItemViewHolder) holder;
-        mCurrentPage++;
 
-        if (mFilter == null) {
+        if (mRoomFilter == null) {
             loadNextRooms();
         } else {
-            loadNextFilteredRooms();
+            mFilterRoomsInteractor.loadNextPage()
+                    .execute(new RoomListObserver(), null);
         }
-    }
-
-    @Override
-    public void clearFiltersAndText() {
-        mFilter = null;
     }
 
     @Override
     public void filterRooms(RoomFilter roomFilter) {
-        mCurrentPage = 0;
-        if (mFilter == null) {
-            mFilter = roomFilter;
-        } else {
-            if (roomFilter.getMaxPlayers() != null) {
-                mFilter.setMaxPlayers(roomFilter.getMaxPlayers());
-            }
-            if (roomFilter.getMinPlayers() != null) {
-                mFilter.setMinPlayers(roomFilter.getMinPlayers());
-            }
-            if (roomFilter.getRoomName() != null) {
-                mFilter.setRoomName(roomFilter.getRoomName());
-            }
-            if (roomFilter.isPrivate() != null) {
-                mFilter.setPrivate(roomFilter.isPrivate());
-            }
-        }
+        mRoomFilter = roomFilter;
         view().clearRooms();
-        loadNextFilteredRooms();
+        if(mRoomFilter == null){
+            mRoomFilter = new RoomFilter.Builder().build();
+        }
+        mFilterRoomsInteractor.refresh(mRoomFilter)
+                .execute(new RoomListObserver(), null);
     }
 
-    private void loadNextFilteredRooms() {
-        Disposable disposable = mRoomRepository
-                .filterRooms(mCurrentPage, mFilter,DataPolicy.API)
-                .subscribe(
-                        this::processRoomsOnNext,
-                        this::processRoomOnError,
-                        () -> {
-                            if (view() != null) {
-                                view().stopRefreshingBar();
-                            }
-                        },
-                        this::processRoomOnSubscribe);
-        addDisposable(disposable);
+    @Override
+    public void updateFilter(RoomFilter roomFilter) {
+        if(roomFilter != null) {
+            if (mRoomFilter == null) {
+                mRoomFilter = roomFilter;
+            } else {
+                if (roomFilter.getMaxPlayers() != null) {
+                    mRoomFilter.setMaxPlayers(roomFilter.getMaxPlayers());
+                }
+                if (roomFilter.getMinPlayers() != null) {
+                    mRoomFilter.setMinPlayers(roomFilter.getMinPlayers());
+                }
+                if (roomFilter.getRoomName() != null) {
+                    mRoomFilter.setRoomName(roomFilter.getRoomName());
+                }
+                if (roomFilter.isPrivate() != null) {
+                    mRoomFilter.setPrivate(roomFilter.isPrivate());
+                }
+            }
+        }
+        filterRooms(mRoomFilter);
     }
 
     @Override
     public void clearFilters() {
-        mFilter.setPrivate(null);
-        mFilter.setMinPlayers(null);
-        mFilter.setMaxPlayers(null);
+        mRoomFilter = null;
+    }
+
+    private final class RoomListObserver extends DisposableObserver<PaginationState<Room>> {
+        @Override
+        public void onNext(PaginationState<Room> roomPaginationState) {
+            if (roomPaginationState != null) {
+                if(processErrors(roomPaginationState)){
+                    return;
+                }
+
+                List<Room> rooms = roomPaginationState.getData();
+                if (rooms == null || rooms.isEmpty()) {
+                    processEmptyRoomList(roomPaginationState);
+                } else {
+                    processNotEmptyRoomList(roomPaginationState, rooms);
+                }
+            }
+        }
+
+        private boolean processErrors(PaginationState<Room> roomPaginationState) {
+            boolean hasErrors = false;
+            if(roomPaginationState.isHasInternetError()){
+                processNetworkError(roomPaginationState);
+                hasErrors = true;
+            }
+            if(roomPaginationState.isHasServerError()){
+                processServerError(roomPaginationState);
+                hasErrors = true;
+            }
+            return hasErrors;
+        }
+
+        private void processNetworkError(PaginationState<Room> roomPaginationState) {
+            if (roomPaginationState.isRefreshed()) {
+                view().showNetworkError();
+            } else {
+                mLastHolder.showErrorNetwork();
+            }
+        }
+
+        private void processServerError(PaginationState<Room> roomPaginationState) {
+            if (roomPaginationState.isRefreshed()) {
+                view().showServerError();
+            } else {
+                mLastHolder.showErrorServer();
+            }
+        }
+
+        private void processEmptyRoomList(PaginationState<Room> roomPaginationState) {
+            if (roomPaginationState.isRefreshed()) {
+                view().showEmptyList();
+            } else {
+                model.remove(model.size() - 1);
+                view().removeLastRoom();
+            }
+        }
+
+        private void processNotEmptyRoomList(PaginationState<Room> roomPaginationState, List<Room> rooms) {
+            if (!roomPaginationState.isRefreshed()) {
+                model.remove(model.size() - 1);
+                view().removeLastRoom();
+            }
+
+            rooms.add(new Room.Builder().setId(-1).build()); //ProgressBar view
+
+            view().addRoomsToRecycler(rooms);
+            view().showContent();
+            model.addAll(rooms);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (view() != null) {
+                view().showServerError();
+            }
+        }
+
+        @Override
+        public void onComplete() {
+            if (view() != null) {
+                view().stopRefreshingBar();
+            }
+        }
+
+        @Override
+        protected void onStart() {
+            view().showLoading();
+        }
     }
 }
+

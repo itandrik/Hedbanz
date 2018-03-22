@@ -49,7 +49,7 @@ public class RoomsContract {
 
         void filterRooms(RoomFilter roomFilter);
 
-        void clearFiltersAndText();
+        void updateFilter(RoomFilter roomFilter);
 
         void clearFilters();
     }

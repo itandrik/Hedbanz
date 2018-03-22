@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.data.network.source;
+package com.transcendensoft.hedbanz.domain.interactor.rooms;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,30 +15,12 @@ package com.transcendensoft.hedbanz.data.network.source;
  * limitations under the License.
  */
 
-
-import com.transcendensoft.hedbanz.data.network.service.ApiService;
-
-import javax.inject.Inject;
-
 /**
- * Manager to get entity API data source.
- * Contains common string constants for API purposes.
+ * //TODO add class description 
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public abstract class ApiDataSource {
-    public static final String HOST = "http://77.47.204.201";
 
-    private static final String PORT_API = ":8080/";
-    public static final String BASE_URL = HOST + PORT_API;
-
-    public static final String PORT_SOCKET = ":9092";
-    public static final String LOGIN_SOCKET_NSP = "/login";
-    public static final String GAME_SOCKET_NSP = "/game";
-
-    @Inject ApiService mService;
-
-    protected ApiDataSource() {
-    }
+public class CreateRoomInteractor {
 }

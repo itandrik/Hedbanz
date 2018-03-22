@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.data.models.mapper;
  */
 
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
+import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 
 import java.util.ArrayList;
@@ -32,11 +33,13 @@ import javax.inject.Inject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
+@ApplicationScope
 public class RoomModelDataMapper {
-    UserModelDataMapper userModelDataMapper;
+    private UserModelDataMapper mUserModelDataMapper;
 
     @Inject
-    public RoomModelDataMapper(UserModelDataMapper userModelDataMapper) {
+    public RoomModelDataMapper() {
+        mUserModelDataMapper = new UserModelDataMapper();
     }
 
     public Room convert(RoomDTO roomDTO){
@@ -50,7 +53,7 @@ public class RoomModelDataMapper {
                     .setMaxPlayers(roomDTO.getMaxPlayers())
                     .setName(roomDTO.getName())
                     .setPassword(roomDTO.getPassword())
-                    .setUsers(userModelDataMapper.convertToUsers(roomDTO.getUsers()))
+                    .setUsers(mUserModelDataMapper.convertToUsers(roomDTO.getUsers()))
                     .build();
         }
         return roomResult;
@@ -67,7 +70,7 @@ public class RoomModelDataMapper {
                     .setMaxPlayers(room.getMaxPlayers())
                     .setName(room.getName())
                     .setPassword(room.getPassword())
-                    .setUsers(userModelDataMapper.convertToDtoUsers(room.getUsers()))
+                    .setUsers(mUserModelDataMapper.convertToDtoUsers(room.getUsers()))
                     .build();
         }
         return roomResult;

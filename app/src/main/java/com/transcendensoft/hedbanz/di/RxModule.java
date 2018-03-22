@@ -25,6 +25,7 @@ import dagger.Provides;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -38,30 +39,35 @@ public class RxModule {
     @ApplicationScope
     @SchedulerComputation
     @Provides
-    public Scheduler provideComputationScheduler(){
+    public Scheduler provideComputationScheduler() {
         return Schedulers.computation();
     }
 
     @ApplicationScope
     @SchedulerIO
     @Provides
-    public Scheduler provideIoScheduler(){
+    public Scheduler provideIoScheduler() {
         return Schedulers.io();
     }
 
     @ApplicationScope
     @SchedulerUI
     @Provides
-    public Scheduler provideUiScheduler(){
+    public Scheduler provideUiScheduler() {
         return AndroidSchedulers.mainThread();
     }
 
     @ApplicationScope
     @Provides
     public ObservableTransformer provideObservableTransformer(
-            @SchedulerIO Scheduler ioScheduler, @SchedulerUI Scheduler uiScheduler){
+            @SchedulerIO Scheduler ioScheduler, @SchedulerUI Scheduler uiScheduler) {
         return o -> o
                 .subscribeOn(ioScheduler)
                 .observeOn(uiScheduler);
+    }
+
+    @Provides
+    CompositeDisposable provideCompositeDisposable() {
+        return new CompositeDisposable();
     }
 }
