@@ -39,7 +39,7 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public interface ActivityBindingModule {
     @ActivityScope
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector()
     BaseActivity baseActivity();
 
     @ActivityScope

@@ -20,7 +20,6 @@ import com.transcendensoft.hedbanz.data.repository.RepositoryModule;
 import com.transcendensoft.hedbanz.di.AppModule;
 import com.transcendensoft.hedbanz.di.RxModule;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
-import com.transcendensoft.hedbanz.presentation.base.BaseViewModule;
 import com.transcendensoft.hedbanz.utils.logging.LoggingModule;
 
 import dagger.Component;
@@ -38,7 +37,6 @@ import dagger.android.support.AndroidSupportInjectionModule;
 @Component(modules = {
         AndroidSupportInjectionModule.class,
         AppModule.class,
-        BaseViewModule.class,
         LoggingModule.class,
         RepositoryModule.class,
         RxModule.class})

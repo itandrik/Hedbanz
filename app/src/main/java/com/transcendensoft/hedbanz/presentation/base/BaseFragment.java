@@ -23,6 +23,8 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.EditText;
 
+import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
 import com.transcendensoft.hedbanz.utils.NetworkUtils;
@@ -43,13 +45,23 @@ import timber.log.Timber;
 public abstract class BaseFragment extends DaggerFragment implements BaseView {
     private static final String TAG = BaseFragment.class.getName();
 
-    @Inject ProgressDialog mProgressDialog;
-    @Inject Context mActivityContext;
+    private ProgressDialog mProgressDialog;
+    @Inject
+    @ActivityContext
+    Context mActivityContext;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
+        initProgressDialog();
+    }
+
+    private void initProgressDialog() {
+        mProgressDialog = new ProgressDialog(mActivityContext);
+        mProgressDialog.setMessage(getString(R.string.action_loading));
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setIndeterminate(true);
     }
 
     @Override

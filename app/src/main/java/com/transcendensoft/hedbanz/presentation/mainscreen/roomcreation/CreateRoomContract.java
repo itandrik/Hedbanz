@@ -35,7 +35,7 @@ public interface CreateRoomContract {
 
         void createRoomSuccess(Room room);
 
-        void createRoomError(Room room);
+        void createRoomError();
     }
 
     interface Presenter {

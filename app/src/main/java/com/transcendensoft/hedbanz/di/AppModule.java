@@ -22,6 +22,7 @@ import android.support.annotation.NonNull;
 import com.transcendensoft.hedbanz.HedbanzApplication;
 import com.transcendensoft.hedbanz.data.network.ApiServiceModule;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.di.qualifier.ApplicationContext;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 
@@ -44,6 +45,7 @@ public abstract class AppModule {
     }
 
     @Binds
+    @ApplicationContext
     public abstract Context bindContext(HedbanzApplication hedbanzApplication);
 
     @Binds
@@ -52,7 +54,7 @@ public abstract class AppModule {
     @Provides
     @ApplicationScope
     @NonNull
-    public static PreferenceManager providePreferenceManger(Context context) {
+    public static PreferenceManager providePreferenceManger(@ApplicationContext Context context) {
         return new PreferenceManager(context);
     }
 }

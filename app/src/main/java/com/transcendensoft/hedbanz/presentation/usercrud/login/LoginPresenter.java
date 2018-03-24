@@ -15,23 +15,18 @@ package com.transcendensoft.hedbanz.presentation.usercrud.login;
  * limitations under the License.
  */
 
-import android.util.Log;
-
-import com.crashlytics.android.Crashlytics;
 import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
-import com.transcendensoft.hedbanz.data.models.common.ServerError;
-import com.transcendensoft.hedbanz.data.models.mapper.UserModelDataMapper;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.domain.entity.User;
-import com.transcendensoft.hedbanz.domain.repository.UserDataRepository;
-import com.transcendensoft.hedbanz.domain.validation.LoginError;
-import com.transcendensoft.hedbanz.domain.validation.UserCrudValidator;
+import com.transcendensoft.hedbanz.domain.interactor.user.AuthorizeUserInteractor;
+import com.transcendensoft.hedbanz.domain.interactor.user.exception.UserCredentialsException;
+import com.transcendensoft.hedbanz.domain.validation.UserError;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 
 import javax.inject.Inject;
 
-import io.reactivex.disposables.Disposable;
+import timber.log.Timber;
 
 /**
  * Presenter from MVP pattern, that contains
@@ -43,93 +38,65 @@ import io.reactivex.disposables.Disposable;
 @ActivityScope
 public class LoginPresenter extends BasePresenter<User, LoginContract.View>
         implements LoginContract.Presenter {
-    private static final String TAG = LoginPresenter.class.getName();
     private PreferenceManager mPreferenceManager;
-    private UserDataRepository mUserRepository;
+    private AuthorizeUserInteractor mAuthorizeUserInteractorInteractor;
 
     @Inject
-    public LoginPresenter(PreferenceManager preferenceManager, UserDataRepository userRepository) {
+    public LoginPresenter(PreferenceManager preferenceManager, AuthorizeUserInteractor authorizeUserInteractorInteractor) {
         this.mPreferenceManager = preferenceManager;
-        this.mUserRepository = userRepository;
+        this.mAuthorizeUserInteractorInteractor = authorizeUserInteractorInteractor;
     }
 
     @Override
     protected void updateView() {
-
+        // Stub
     }
 
     @Override
     public void login(User user) {
         setModel(user);
-        if (isUserValid(user)) {
-            Disposable disposable = mUserRepository
-                    .authUser(user)
-                    .subscribe(
-                            this::processLoginOnNext,
-                            this::processLoginOnError,
-                            () -> view().loginSuccess(),
-                            this::processOnSubscribe);
-            addDisposable(disposable);
-        }
-    }
-
-    private boolean isUserValid(User user) {
-        UserCrudValidator validator = new UserCrudValidator(user);
-        boolean result = true;
-        if (!validator.isLoginValid()) {
-            view().showLoginError(validator.getErrorMessage());
-            result = false;
-        }
-        if (!validator.isPasswordValid()) {
-            view().showPasswordError(validator.getErrorMessage());
-            result = false;
-        }
-        return result;
+        view().showLoadingDialog();
+        mAuthorizeUserInteractorInteractor.execute(user,
+                this::processLoginOnNext,
+                this::processLoginOnError,
+                () -> view().loginSuccess());
     }
 
     private void processLoginOnNext(User user) {
-        /*if (result == null) {
-            throw new RuntimeException("Server result is null");
-        } else if (!result.getStatus().equalsIgnoreCase(ServerStatus.SUCCESS.toString())) {
-            ServerError serverError = result.getServerError();
-            if (serverError != null) {
-                processErrorFromServer(serverError);
-            }
-            throw new IllegalStateException();
-        } else {*/
-            if(user != null) {
-                mPreferenceManager.setUser(new UserModelDataMapper().convert(user));
-            } else {
-                throw new HedbanzApiException("User comes NULL from server while login");
-            }
-        //}
-    }
-
-    private void processErrorFromServer(ServerError serverError) {
-        for (LoginError loginError : LoginError.values()) {
-            if (loginError.getErrorCode() == serverError.getErrorCode()) {
-                switch (loginError) {
-                    case NO_SUCH_USER:
-                    case EMPTY_LOGIN:
-                        view().showLoginError(loginError.getErrorMessage());
-                        break;
-                    case INCORRECT_PASSWORD:
-                    case EMPTY_PASSWORD:
-                        view().showPasswordError(loginError.getErrorMessage());
-                        break;
-                    default:
-                        view().showServerError();
-                        break;
-                }
-            }
+        if (user != null) {
+            mPreferenceManager.setUser(user);
+        } else {
+            throw new HedbanzApiException("User comes NULL from server while login");
         }
     }
 
     private void processLoginOnError(Throwable err) {
-        if (!(err instanceof IllegalStateException)) {
-            Log.e(TAG, "Error " + err.getMessage());
-            Crashlytics.logException(err);
+        if (err instanceof UserCredentialsException) {
+            UserCredentialsException exception = (UserCredentialsException) err;
+            for (UserError userError: exception.getUserErrors()) {
+                processUserError(userError);
+            }
+        } else {
+            Timber.e(err);
             view().showServerError();
+        }
+    }
+
+    private void processUserError(UserError userError){
+        switch (userError) {
+            case INVALID_LOGIN:
+            case NO_SUCH_USER:
+            case EMPTY_LOGIN:
+                view().showLoginError(userError.getErrorMessage());
+                break;
+            case INVALID_PASSWORD:
+            case INCORRECT_PASSWORD:
+            case EMPTY_PASSWORD:
+                view().showPasswordError(userError.getErrorMessage());
+                break;
+            default:
+                view().showServerError();
+                break;
         }
     }
 }

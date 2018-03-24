@@ -23,6 +23,7 @@
     <string name="error_network">Отсутствует подключение к интернету.</string>
     <string name="error_empty_list">Список пуст</string>
     <string name="error_action_retry">Повторить попытку</string>
+    <string name="error_undefined_error">Неизвестная ошибка сервера. Неадекватный код ошибки.</string>
 
     <!-- Login fragment -->
     <string name="login_intro">Поспешите, ваши друзья вас ждут!</string>

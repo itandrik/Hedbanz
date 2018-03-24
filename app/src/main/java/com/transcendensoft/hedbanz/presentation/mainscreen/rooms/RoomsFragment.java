@@ -143,7 +143,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
 
         mRefreshLayout.setOnRefreshListener(() -> {
             if (mPresenter != null) {
-                if(mCvFilters.getVisibility() == VISIBLE){
+                if (mCvFilters.getVisibility() == VISIBLE) {
                     mPresenter.updateFilter(null); //filter with old filters
                 }
                 String searchText = mSvRoomSearch.getQuery().toString();
@@ -223,7 +223,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
                         if (!TextUtils.isEmpty(text)) {
                             filterRoomsWithText(text);
                         } else {
-                            mPresenter.clearFilters();
+                            mPresenter.clearTextFilter();
                             mPresenter.refreshRooms();
                         }
                     }
@@ -234,7 +234,13 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
                 .subscribe(isChecked -> {
                     if (isChecked) {
                         enableFilters();
-                        mPresenter.updateFilter(null); //filter with old filters
+                        RoomFilter currentFilter = new RoomFilter.Builder()
+                                .setIsPrivate(mChbWithPassword.isChecked())
+                                .setRoomName(mSvRoomSearch.getQuery().toString())
+                                .setMinPlayers((byte) mRangeSeekBarMaxPlayers.getProgress1())
+                                .setMaxPlayers((byte) mRangeSeekBarMaxPlayers.getProgress2())
+                                .build();
+                        mPresenter.filterRooms(currentFilter);
                     } else {
                         disableFilters();
                         clearRooms();
@@ -273,8 +279,8 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
             @Override
             public void onStopTrackingTouch(RangeSeekBar seekBar, int progressLeft, int progressRight) {
                 mPresenter.updateFilter(new RoomFilter.Builder()
-                        .setMinPlayers((byte)progressLeft)
-                        .setMaxPlayers((byte)progressRight)
+                        .setMinPlayers((byte) progressLeft)
+                        .setMaxPlayers((byte) progressRight)
                         .build());
             }
         });
@@ -356,6 +362,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         mFabSearch.show();
         mSvRoomSearch.setQuery("", false);
         mPresenter.clearFilters();
+        mPresenter.refreshRooms();
     }
 
     /*------------------------------------*

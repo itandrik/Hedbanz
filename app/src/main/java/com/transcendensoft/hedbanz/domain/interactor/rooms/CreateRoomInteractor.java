@@ -15,12 +15,78 @@ package com.transcendensoft.hedbanz.domain.interactor.rooms;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.UseCase;
+import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.interactor.rooms.exception.RoomCreationException;
+import com.transcendensoft.hedbanz.domain.repository.RoomDataRepository;
+import com.transcendensoft.hedbanz.domain.validation.RoomError;
+import com.transcendensoft.hedbanz.domain.validation.RoomValidator;
+
+import javax.inject.Inject;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.disposables.CompositeDisposable;
+
 /**
- * //TODO add class description 
+ * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
+ * that represents a use case for
+ * {@link com.transcendensoft.hedbanz.domain.entity.Room} creation.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
+public class CreateRoomInteractor extends UseCase<Room, Room>{
+    private RoomDataRepository mRoomRepository;
+    private PreferenceManager mPreferenceManager;
+    private RoomCreationException mRoomException;
 
-public class CreateRoomInteractor {
+    @Inject
+    public CreateRoomInteractor(ObservableTransformer mSchedulersTransformer,
+                                CompositeDisposable mCompositeDisposable,
+                                RoomDataRepository mRoomRepository,
+                                PreferenceManager mPreferenceManager) {
+        super(mSchedulersTransformer, mCompositeDisposable);
+        this.mRoomRepository = mRoomRepository;
+        this.mPreferenceManager = mPreferenceManager;
+    }
+
+    @Override
+    protected Observable<Room> buildUseCaseObservable(Room params) {
+        mRoomException = new RoomCreationException();
+        if(isValidRoom(params)){
+            User currentUser = mPreferenceManager.getUser();
+            mRoomRepository.createRoom(params, currentUser.getId())
+                    .onErrorResumeNext(this::processCreateRoomOnError);
+        }
+        return Observable.error(mRoomException);
+    }
+
+    private boolean isValidRoom(Room room){
+        RoomValidator validator = new RoomValidator(room);
+        boolean result = true;
+        if (!validator.isNameValid()) {
+            mRoomException.addRoomError(validator.getError());
+            result = false;
+        }
+        if (!validator.isPasswordValid()) {
+            mRoomException.addRoomError(validator.getError());
+            result = false;
+        }
+        return result;
+    }
+
+    private Observable<Room> processCreateRoomOnError(Throwable throwable) {
+        if(throwable instanceof HedbanzApiException){
+            HedbanzApiException exception = (HedbanzApiException) throwable;
+            mRoomException.addRoomError(
+                    RoomError.getRoomErrorByCode(exception.getServerErrorCode()));
+        } else {
+            mRoomException.addRoomError(RoomError.UNDEFINED_ERROR);
+        }
+        return Observable.error(mRoomException);
+    }
 }

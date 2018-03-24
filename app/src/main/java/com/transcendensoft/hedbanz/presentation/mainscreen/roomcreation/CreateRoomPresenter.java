@@ -15,19 +15,20 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation;
  * limitations under the License.
  */
 
-import android.util.Log;
+import android.content.Context;
 
-import com.crashlytics.android.Crashlytics;
-import com.transcendensoft.hedbanz.data.models.UserDTO;
-import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.domain.entity.Room;
-import com.transcendensoft.hedbanz.domain.repository.RoomDataRepository;
-import com.transcendensoft.hedbanz.domain.validation.RoomValidator;
+import com.transcendensoft.hedbanz.domain.interactor.rooms.CreateRoomInteractor;
+import com.transcendensoft.hedbanz.domain.interactor.rooms.exception.RoomCreationException;
+import com.transcendensoft.hedbanz.domain.validation.RoomError;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
+
+import java.net.ConnectException;
 
 import javax.inject.Inject;
 
-import io.reactivex.disposables.Disposable;
+import timber.log.Timber;
 
 /**
  * Presenter from MVP pattern, that contains
@@ -37,65 +38,65 @@ import io.reactivex.disposables.Disposable;
  *         Developed by <u>Transcendensoft</u>
  */
 public class CreateRoomPresenter extends BasePresenter<Room, CreateRoomContract.View>
-        implements CreateRoomContract.Presenter{
-    private static final String TAG = CreateRoomPresenter.class.getName();
-    private RoomDataRepository mRoomRepository;
-    private PreferenceManager mPreferenceManager;
+        implements CreateRoomContract.Presenter {
+    private CreateRoomInteractor mCreateRoomInteractor;
+    private Context mContext;  //Only for logging purposes
 
     @Inject
-    public CreateRoomPresenter(RoomDataRepository roomRepository, PreferenceManager preferenceManager) {
-        this.mRoomRepository = roomRepository;
-        this.mPreferenceManager = preferenceManager;
+    public CreateRoomPresenter(CreateRoomInteractor createRoomInteractor, @ActivityContext Context context) {
+        this.mCreateRoomInteractor = createRoomInteractor;
+        mContext = context;
     }
 
     @Override
     protected void updateView() {
-
+        // Stub
     }
 
     @Override
     public void createRoom(Room room) {
         setModel(room);
-        if(isRoomValid(room)){
-            UserDTO curUser = mPreferenceManager.getUser();
-            Disposable disposable = mRoomRepository
-                    .createRoom(room, curUser.getId())
-                    .subscribe(this::processCreateRoomOnNext,
-                            this::processCreateRoomOnError,
-                            () -> view().createRoomSuccess(room),
-                            this::processOnSubscribe);
-            addDisposable(disposable);
-        }
-    }
-
-    private boolean isRoomValid(Room room){
-        RoomValidator validator = new RoomValidator(room);
-        boolean result = true;
-        if (!validator.isNameValid()) {
-            view().showIncorrectRoomName(validator.getErrorMessage());
-            result = false;
-        }
-        if (!validator.isPasswordValid()) {
-            view().showIncorrectRoomPassword(validator.getErrorMessage());
-            result = false;
-        }
-        return result;
+        mCreateRoomInteractor.execute(room,
+                this::processCreateRoomOnNext,
+                this::processCreateRoomOnError);
     }
 
     private void processCreateRoomOnNext(Room result) {
-       // if (result == null) {
-       ///     throw new RuntimeException("Server result is null");
-       // } else if (!result.getStatus().equalsIgnoreCase(ServerStatus.SUCCESS.toString())) {
-        //    ServerError serverError = result.getServerError();
-        //    if (serverError != null) {
-        //        throw new RuntimeException(serverError.getErrorMessage());
-       //     }
-     //   }
+        view().createRoomSuccess(result);
     }
 
     private void processCreateRoomOnError(Throwable err) {
-        Log.e(TAG, "Error " + err.getMessage());
-        Crashlytics.logException(err);
-        view().showServerError();
+        if (err instanceof RoomCreationException) {
+            RoomCreationException exception = (RoomCreationException) err;
+            for (RoomError roomError : exception.getErrors()) {
+                processRoomError(roomError);
+            }
+        } else if (err instanceof ConnectException) {
+            view().showNetworkError();
+        } else {
+            Timber.e(err);
+            view().showServerError();
+        }
+    }
+
+    private void processRoomError(RoomError roomError) {
+        switch (roomError) {
+            case NO_SUCH_USER:
+            case UNDEFINED_ERROR:
+                Timber.e(mContext.getString(roomError.getErrorMessage()));
+                view().createRoomError();
+                break;
+            case EMPTY_NAME:
+                view().showIncorrectRoomName(roomError.getErrorMessage());
+                break;
+            case EMPTY_PASSWORD:
+            case INVALID_PASSWORD:
+                view().showIncorrectRoomPassword(roomError.getErrorMessage());
+                break;
+            default:
+                Timber.e(mContext.getString(roomError.getErrorMessage()));
+                view().showServerError();
+
+        }
     }
 }

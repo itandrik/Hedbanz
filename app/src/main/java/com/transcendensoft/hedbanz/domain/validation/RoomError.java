@@ -20,30 +20,42 @@ import android.support.annotation.StringRes;
 import com.transcendensoft.hedbanz.R;
 
 /**
- * All errors that can receive user while log in.
+ * All errors that can receive user while create room.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 
-public enum LoginError {
-    NO_SUCH_USER(1, R.string.login_error_no_such_login),
-    INCORRECT_PASSWORD(2,R.string.login_error_incorrect_password),
-    EMPTY_LOGIN(3, R.string.login_error_empty_field),
-    EMPTY_PASSWORD(4, R.string.login_error_empty_field);
+public enum RoomError {
+    NO_SUCH_USER(1, R.string.error_server),
+    EMPTY_NAME(2, R.string.room_creation_error_name_empty),
+    EMPTY_PASSWORD(3, R.string.room_creation_error_password_empty),
+    INVALID_PASSWORD(4, R.string.room_creation_error_password_incorrect),
+    UNDEFINED_ERROR(100, R.string.error_undefined_error);
 
     private int errorCode;
     private @StringRes int errorMessage;
-    LoginError(int errorCode, @StringRes int errorMessage){
+
+    RoomError(int errorCode, @StringRes int errorMessage) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }
 
-    public int getErrorCode(){
+    public int getErrorCode() {
         return this.errorCode;
     }
 
-    public @StringRes int getErrorMessage(){
+    public @StringRes
+    int getErrorMessage() {
         return this.errorMessage;
+    }
+
+    public static RoomError getRoomErrorByCode(int code) {
+        for (RoomError roomError : RoomError.values()) {
+            if (roomError.getErrorCode() == code) {
+                return roomError;
+            }
+        }
+        return RoomError.UNDEFINED_ERROR;
     }
 }

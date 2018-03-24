@@ -15,11 +15,9 @@ package com.transcendensoft.hedbanz.domain.validation;
  * limitations under the License.
  */
 
-import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
-import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 
 import java.util.regex.Pattern;
@@ -32,14 +30,14 @@ import java.util.regex.Pattern;
  *         Developed by <u>Transcendensoft</u>
  */
 
-public class RoomValidator implements Validator<Room> {
+public class RoomValidator implements Validator<Room, RoomError> {
     private static final String PASSWORD_REGEX = "\\S{4,14}";
 
     private static final Pattern PASSWORD_PATTERN =
             Pattern.compile(PASSWORD_REGEX);
 
     private Room mRoom;
-    private @StringRes int mErrorMessage;
+    private RoomError mError;
 
     public RoomValidator(Room room) {
         this.mRoom = room;
@@ -53,7 +51,7 @@ public class RoomValidator implements Validator<Room> {
     public boolean isNameValid(){
         String password = mRoom.getPassword();
         if (TextUtils.isEmpty(password.trim())) {
-            mErrorMessage = R.string.room_creation_error_name_empty;
+            mError = RoomError.EMPTY_NAME;
             return false;
         }
         return true;
@@ -62,10 +60,10 @@ public class RoomValidator implements Validator<Room> {
     public boolean isPasswordValid(){
         String password = mRoom.getPassword();
         if (TextUtils.isEmpty(password.trim())) {
-            mErrorMessage = R.string.room_creation_error_password_empty;
+            mError = RoomError.EMPTY_PASSWORD;
             return false;
         } else if (!PASSWORD_PATTERN.matcher(password).matches()) {
-            mErrorMessage = R.string.room_creation_error_password_incorrect;
+            mError = RoomError.INVALID_PASSWORD;
             return false;
         }
         return true;
@@ -77,7 +75,7 @@ public class RoomValidator implements Validator<Room> {
     }
 
     @Override
-    public int getErrorMessage() {
-        return 0;
+    public RoomError getError() {
+        return mError;
     }
 }

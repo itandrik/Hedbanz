@@ -109,6 +109,17 @@ public abstract class UseCase<T, PARAM> {
     }
 
     /**
+     * Executes the current use case without result to Presenter
+     *
+     */
+    public void execute(PARAM params) {
+        final Observable<T> observable = this.buildUseCaseObservable(params)
+                .compose(applySchedulers());
+
+        addDisposable(observable.subscribe());
+    }
+
+    /**
      * Dispose from current {@link CompositeDisposable}.
      */
     public void dispose() {

@@ -70,13 +70,13 @@ public class UserDataRepositoryImpl implements UserDataRepository {
             return mUserApiDataSource.updateUser(id, newLogin, oldPassword, newPassword)
                     .map(mUserModelDataMapper::convert);
         } else if (dataPolicy == DataPolicy.DB) {
-            UserDTO currentUser = mPreferenceManager.getUser();
+            User currentUser = mPreferenceManager.getUser();
             currentUser.setId(id);
             currentUser.setLogin(newLogin);
             currentUser.setPassword(newPassword);
             mPreferenceManager.setUser(currentUser);
 
-            return Observable.just(currentUser).map(mUserModelDataMapper::convert);
+            return Observable.just(currentUser);
         }
         return Observable.error(new UnsupportedOperationException());
     }

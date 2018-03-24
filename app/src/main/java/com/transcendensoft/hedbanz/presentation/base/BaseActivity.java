@@ -16,16 +16,16 @@ package com.transcendensoft.hedbanz.presentation.base;
  */
 
 import android.app.ProgressDialog;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.EditText;
 
+import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
 import com.transcendensoft.hedbanz.utils.NetworkUtils;
-
-import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatActivity;
 
@@ -38,7 +38,21 @@ import dagger.android.support.DaggerAppCompatActivity;
  *         Developed by <u>Transcendensoft</u>
  */
 public abstract class BaseActivity extends DaggerAppCompatActivity implements BaseView {
-    @Inject ProgressDialog mProgressDialog;
+    private ProgressDialog mProgressDialog;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        initProgressDialog();
+    }
+
+    private void initProgressDialog() {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage(this.getString(R.string.action_loading));
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setIndeterminate(true);
+    }
 
     @Override
     public void showSnackError(int messageRes) {

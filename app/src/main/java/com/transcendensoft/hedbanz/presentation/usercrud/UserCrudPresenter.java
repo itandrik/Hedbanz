@@ -19,21 +19,19 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.EditText;
 
-import com.crashlytics.android.Crashlytics;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
-import com.transcendensoft.hedbanz.data.models.common.ServerError;
-import com.transcendensoft.hedbanz.data.models.mapper.UserModelDataMapper;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
-import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.domain.entity.User;
-import com.transcendensoft.hedbanz.domain.repository.UserDataRepository;
-import com.transcendensoft.hedbanz.domain.validation.RegisterError;
+import com.transcendensoft.hedbanz.domain.interactor.user.RegisterUserInteractor;
+import com.transcendensoft.hedbanz.domain.interactor.user.UpdateUserInteractor;
+import com.transcendensoft.hedbanz.domain.interactor.user.exception.UserCredentialsException;
 import com.transcendensoft.hedbanz.domain.validation.UserCrudValidator;
+import com.transcendensoft.hedbanz.domain.validation.UserError;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.base.Socketable;
 
@@ -45,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import io.reactivex.disposables.Disposable;
+import timber.log.Timber;
 
 import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.HOST;
 import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.LOGIN_SOCKET_NSP;
@@ -69,21 +67,24 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
     private Socket mSocket;
     private Emitter.Listener mLoginResultSocketListener;
 
-    private UserDataRepository mUserRepository;
+    private RegisterUserInteractor mRegisterUserInteractorInteractor;
+    private UpdateUserInteractor mUpdateUserInteractorInteractor;
     private PreferenceManager mPreferenceManager;
 
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
     @Inject
-    public UserCrudPresenter(UserDataRepository userRepository, PreferenceManager preferenceManager) {
-        this.mUserRepository = userRepository;
+    public UserCrudPresenter(RegisterUserInteractor registerUserInteractorInteractor, UpdateUserInteractor updateUserInteractorInteractor,
+                             PreferenceManager preferenceManager) {
+        this.mRegisterUserInteractorInteractor = registerUserInteractorInteractor;
+        this.mUpdateUserInteractorInteractor = updateUserInteractorInteractor;
         this.mPreferenceManager = preferenceManager;
     }
 
     @Override
     protected void updateView() {
-
+        // Stub
     }
 
     /*------------------------------------*
@@ -92,124 +93,74 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
     @Override
     public void registerUser(User user) {
         setModel(user);
-        if (isUserValid(user)) {
-            Disposable disposable = mUserRepository
-                    .registerUser(user)
-                    .subscribe(
-                            this::processRegisterOnNext,
-                            this::processRegisterOnError,
-                            () -> view().crudOperationSuccess(),
-                            this::processRegisterOnSubscribe);
-            addDisposable(disposable);
-        }
+        view().showLoadingDialog();
+        mRegisterUserInteractorInteractor.execute(user,
+                this::processRegisterOnNext,
+                this::processRegisterOnError,
+                () -> view().crudOperationSuccess());
     }
 
     @Override
     public void updateUser(User user, String oldPassword) {
         setModel(user);
-        if (isUserValid(user) && isOldPasswordValid(oldPassword)) {
-            Disposable disposable = mUserRepository
-                    .updateUser(user.getId(), user.getLogin(),
-                            oldPassword, user.getPassword(), DataPolicy.API)
-                    .subscribe(
-                            this::processRegisterOnNext,
-                            this::processRegisterOnError,
-                            () -> view().crudOperationSuccess(),
-                            this::processRegisterOnSubscribe);
-            addDisposable(disposable);
-        }
-    }
+        UpdateUserInteractor.Params params = new UpdateUserInteractor.Params()
+                .setUser(user)
+                .setOldPassword(oldPassword);
 
-    private boolean isUserValid(User user) {
-        UserCrudValidator validator = new UserCrudValidator(user);
-        boolean result = true;
-        if (!validator.isLoginValid()) {
-            view().showIncorrectLogin(validator.getErrorMessage());
-            result = false;
-        }
-        if (!validator.isEmailValid()) {
-            view().showIncorrectEmail(validator.getErrorMessage());
-            result = false;
-        }
-        if (!validator.isPasswordValid()) {
-            view().showIncorrectPassword(validator.getErrorMessage());
-            result = false;
-        }
-        if (!validator.isConfirmPasswordValid()) {
-            view().showIncorrectConfirmPassword(validator.getErrorMessage());
-            result = false;
-        }
-        return result;
-    }
-
-    private boolean isOldPasswordValid(String oldPassword) {
-        UserCrudValidator validator = new UserCrudValidator(new User.Builder().build());
-        if (!validator.isOldPasswordValid(oldPassword)) {
-            view().showIncorrectOldPassword(validator.getErrorMessage());
-            return false;
-        } else {
-            return true;
-        }
+        view().showLoadingDialog();
+        mUpdateUserInteractorInteractor.execute(params,
+                this::processRegisterOnNext,
+                this::processRegisterOnError,
+                () -> view().crudOperationSuccess());
     }
 
     private void processRegisterOnNext(User user) {
-        /*if (result == null) {
-            throw new RuntimeException("Server result is null");
-        } else if (!result.getStatus().equalsIgnoreCase(ServerStatus.SUCCESS.toString())) {
-            ServerError serverError = result.getServerError();
-            if (serverError != null) {
-                processErrorFromServer(serverError);
-            }
-            throw new IllegalStateException();
-        } else {*/
         if (user != null) {
-            mPreferenceManager.setUser(new UserModelDataMapper().convert(user));
+            mPreferenceManager.setUser(user);
         } else {
-            throw new HedbanzApiException("UserDTO comes NULL from server while login");
-        }
-        //}
-    }
-
-    private void processErrorFromServer(ServerError serverError) {
-        for (RegisterError registerError : RegisterError.values()) {
-            if (registerError.getErrorCode() == serverError.getErrorCode()) {
-                switch (registerError) {
-                    case SUCH_EMAIL_ALREADY_USING:
-                    case EMPTY_EMAIL:
-                        view().showIncorrectEmail(registerError.getErrorMessage());
-                        break;
-                    case SUCH_LOGIN_ALREADY_EXIST:
-                        view().showLoginUnavailable();
-                        break;
-                    case EMPTY_LOGIN:
-                        view().showIncorrectLogin(registerError.getErrorMessage());
-                        break;
-                    case EMPTY_PASSWORD:
-                        view().showIncorrectPassword(registerError.getErrorMessage());
-                        break;
-                    default:
-                        view().showServerError();
-                        break;
-                }
-            }
+            throw new HedbanzApiException("User comes NULL from server while login");
         }
     }
 
     private void processRegisterOnError(Throwable err) {
-        if (!(err instanceof IllegalStateException)) {
-            Log.e(TAG, "Error " + err.getMessage());
-            Crashlytics.logException(err);
+        if ((err instanceof UserCredentialsException)) {
+            UserCredentialsException exception = (UserCredentialsException) err;
+            for (UserError userError: exception.getUserErrors()) {
+                processUserError(userError);
+            }
+        } else {
+            Timber.e(err);
             view().showServerError();
         }
     }
 
-    private void processRegisterOnSubscribe(Disposable d) {
-        if (!d.isDisposed()) {
-            if (view().isNetworkConnected()) {
-                view().showLoading();
-            } else {
-                view().showNetworkError();
-            }
+    private void processUserError(UserError userError){
+        switch (userError) {
+            case INVALID_EMAIL:
+            case SUCH_EMAIL_ALREADY_USING:
+            case EMPTY_EMAIL:
+                view().showIncorrectEmail(userError.getErrorMessage());
+                break;
+            case SUCH_LOGIN_ALREADY_EXIST:
+                view().showLoginUnavailable();
+                break;
+            case EMPTY_LOGIN:
+            case INVALID_LOGIN:
+                view().showIncorrectLogin(userError.getErrorMessage());
+                break;
+            case EMPTY_PASSWORD:
+            case INVALID_PASSWORD:
+                view().showIncorrectPassword(userError.getErrorMessage());
+                break;
+            case INVALID_OLD_PASSWORD:
+                view().showIncorrectOldPassword(userError.getErrorMessage());
+                break;
+            case INVALID_PASSWORD_CONFIRMATION:
+                view().showIncorrectConfirmPassword(userError.getErrorMessage());
+                break;
+            default:
+                view().showServerError();
+                break;
         }
     }
 
@@ -230,7 +181,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
                                     view().stopSmileAnimation();
                                 },
                                 err -> {
-                                    Log.e(TAG, "Error while setting start/stop smile animation. " +
+                                    Timber.e(TAG, "Error while setting start/stop smile animation. " +
                                             "Message : " + err.getMessage());
                                 }));
     }
@@ -286,7 +237,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
             User user = new User.Builder().setLogin(text.toString()).build();
             UserCrudValidator validator = new UserCrudValidator(user);
             if (!validator.isLoginValid()) {
-                view().showIncorrectLogin(validator.getErrorMessage());
+                view().showIncorrectLogin(validator.getError().getErrorMessage());
                 return false;
             }
             return true;

@@ -52,5 +52,7 @@ public class RoomsContract {
         void updateFilter(RoomFilter roomFilter);
 
         void clearFilters();
+
+        void clearTextFilter();
     }
 }

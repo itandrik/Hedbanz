@@ -15,9 +15,13 @@ package com.transcendensoft.hedbanz.presentation.mainscreen;
  * limitations under the License.
  */
 
+import android.content.Context;
+
+import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.di.scope.FragmentScope;
 import com.transcendensoft.hedbanz.presentation.mainscreen.menu.MenuFragment;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
@@ -37,4 +41,8 @@ public interface MainActivityModule {
     @FragmentScope
     @ContributesAndroidInjector
     MenuFragment menuFragment();
+
+    @ActivityContext
+    @Binds
+    Context bindActivityContext(MainActivity mainActivity);
 }

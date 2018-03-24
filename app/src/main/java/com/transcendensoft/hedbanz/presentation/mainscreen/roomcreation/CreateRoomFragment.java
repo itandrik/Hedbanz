@@ -114,12 +114,12 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
      *------------------------------------*/
     @Override
     public void createRoomSuccess(Room room) {
-        AndroidUtils.showShortToast(getActivity(), "RoomDTO created successfully");
+        AndroidUtils.showShortToast(getActivity(), "Room created successfully");
         //TODO open view
     }
 
     @Override
-    public void createRoomError(Room room) {
+    public void createRoomError() {
         AndroidUtils.showShortToast(getActivity(), "Error while room creation");
         //TODO show some message
     }

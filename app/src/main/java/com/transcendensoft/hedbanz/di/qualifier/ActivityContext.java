@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.game;
+package com.transcendensoft.hedbanz.di.qualifier;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,26 +15,20 @@ package com.transcendensoft.hedbanz.presentation.game;
  * limitations under the License.
  */
 
-import android.content.Context;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
-import com.transcendensoft.hedbanz.di.scope.ActivityScope;
-
-import dagger.Binds;
-import dagger.Module;
+import javax.inject.Qualifier;
 
 /**
- * Module that provides fragments, presenter
- * and other instances for game mode screens.
+ * Dagger 2 qualifier for activity context
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-@Module
-public interface GameModule {
-    @ActivityScope
-    @Binds GameContract.Presenter bindGamePresenter(GamePresenter gamePresenter);
-
-    @ActivityContext
-    @Binds Context bindActivityContext(GameActivity gameActivity);
+@Documented
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ActivityContext {
 }

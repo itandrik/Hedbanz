@@ -72,6 +72,7 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
     @Override
     public void refreshRooms() {
         view().clearRooms();
+        model.clear();
         mGetRoomsInteractor.refresh(null)
                 .execute(new RoomListObserver(), null);
     }
@@ -95,6 +96,7 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
         if(mRoomFilter == null){
             mRoomFilter = new RoomFilter.Builder().build();
         }
+        model.clear();
         mFilterRoomsInteractor.refresh(mRoomFilter)
                 .execute(new RoomListObserver(), null);
     }
@@ -125,6 +127,13 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
     @Override
     public void clearFilters() {
         mRoomFilter = null;
+    }
+
+    @Override
+    public void clearTextFilter() {
+        if(mRoomFilter != null){
+            mRoomFilter.setRoomName("");
+        }
     }
 
     private final class RoomListObserver extends DisposableObserver<PaginationState<Room>> {
@@ -211,7 +220,9 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
 
         @Override
         protected void onStart() {
-            view().showLoading();
+            if(model == null || model.isEmpty()) {
+                view().showLoading();
+            }
         }
     }
 }

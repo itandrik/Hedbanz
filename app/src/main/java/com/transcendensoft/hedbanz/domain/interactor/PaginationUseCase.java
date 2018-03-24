@@ -33,7 +33,8 @@ import timber.log.Timber;
  *         Developed by <u>Transcendensoft</u>
  */
 
-public abstract class PaginationUseCase<T, ParamUseCase, ParamPaginator> extends UseCase<PaginationState<T>, ParamUseCase>
+public abstract class PaginationUseCase<T, ParamUseCase, ParamPaginator>
+        extends UseCase<PaginationState<T>, ParamUseCase>
         implements Paginator<T, ParamPaginator> {
     protected int mCurrentPage = 0;
 
