@@ -97,6 +97,12 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.destroy();
+    }
+
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/

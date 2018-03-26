@@ -68,9 +68,6 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
         int size = (int) ViewUtils.dpToPx(this, 100);
         Glide.with(this).asGif().load(R.raw.smile_gif_new).preload(size, size);
 
-        if (mPresenter != null) {
-            mPresenter.initSockets();
-        }
         initUserData();
     }
 
@@ -96,7 +93,7 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
     protected void onDestroy() {
         super.onDestroy();
         if (mPresenter != null) {
-            mPresenter.disconnectSockets();
+            mPresenter.destroy();
         }
     }
 
@@ -147,7 +144,7 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
     @Override
     public void stopSmileAnimation() {
         runOnUiThread(() -> {
-            Glide.with(this).load(R.drawable.logo).into(mIvSmileGif);
+            Glide.with(this).load(R.drawable.logo_for_anim).into(mIvSmileGif);
         });
     }
 

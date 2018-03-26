@@ -69,10 +69,6 @@ public class RegisterActivity extends BaseActivity implements UserCrudContract.V
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this, this);
 
-        if (mPresenter != null) {
-            mPresenter.initSockets();
-        }
-
         int size = (int) ViewUtils.dpToPx(this, 100);
         Glide.with(this).asGif().load(R.raw.smile_gif_new).preload(size, size);
         initPasswordIcon();
@@ -100,7 +96,7 @@ public class RegisterActivity extends BaseActivity implements UserCrudContract.V
     protected void onDestroy() {
         super.onDestroy();
         if (mPresenter != null) {
-            mPresenter.disconnectSockets();
+            mPresenter.destroy();
         }
     }
 
@@ -151,7 +147,8 @@ public class RegisterActivity extends BaseActivity implements UserCrudContract.V
     @Override
     public void stopSmileAnimation() {
         runOnUiThread(() -> {
-            Glide.with(this).load(R.mipmap.ic_launcher).into(mIvSmileGif);
+            Glide.with(this).load(R.drawable.logo_for_anim)
+                    .into(mIvSmileGif);
         });
     }
 

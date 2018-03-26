@@ -36,8 +36,8 @@ import com.crashlytics.android.Crashlytics;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.presentation.custom.transform.DefaultTransformer;
 import com.transcendensoft.hedbanz.presentation.custom.widget.MainViewPager;
-import com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation.CreateRoomFragment;
-import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.RoomsFragment;
+import com.transcendensoft.hedbanz.presentation.roomcreation.CreateRoomFragment;
+import com.transcendensoft.hedbanz.presentation.rooms.RoomsFragment;
 import com.transcendensoft.hedbanz.utils.ViewUtils;
 
 import javax.inject.Inject;

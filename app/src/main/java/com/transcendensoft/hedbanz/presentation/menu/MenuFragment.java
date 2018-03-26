@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.mainscreen.menu;
+package com.transcendensoft.hedbanz.presentation.menu;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>

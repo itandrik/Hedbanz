@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation;
+package com.transcendensoft.hedbanz.presentation.roomcreation;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>

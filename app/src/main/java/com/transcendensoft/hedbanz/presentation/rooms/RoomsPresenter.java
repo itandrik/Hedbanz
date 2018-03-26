@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.mainscreen.rooms;
+package com.transcendensoft.hedbanz.presentation.rooms;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -17,13 +17,13 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.rooms;
 
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
-import com.transcendensoft.hedbanz.domain.interactor.PaginationState;
+import com.transcendensoft.hedbanz.domain.PaginationState;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.FilterRoomsInteractor;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.GetRoomsInteractor;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.base.MvpRecyclerAdapter;
 import com.transcendensoft.hedbanz.presentation.base.MvpViewHolder;
-import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.list.RoomItemViewHolder;
+import com.transcendensoft.hedbanz.presentation.rooms.list.RoomItemViewHolder;
 
 import java.util.List;
 
@@ -61,6 +61,12 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
             view().clearRooms();
             view().addRoomsToRecycler(model);
         }
+    }
+
+    @Override
+    public void destroy() {
+        mFilterRoomsInteractor.dispose();
+        mGetRoomsInteractor.dispose();
     }
 
     @Override

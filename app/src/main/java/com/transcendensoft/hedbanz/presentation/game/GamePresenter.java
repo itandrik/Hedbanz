@@ -76,6 +76,11 @@ public class GamePresenter extends BasePresenter<RoomDTO, GameContract.View> imp
     }
 
     @Override
+    public void destroy() {
+
+    }
+
+    @Override
     public void initSockets() {
         try {
             mSocket = IO.socket(HOST + PORT_SOCKET + GAME_SOCKET_NSP);

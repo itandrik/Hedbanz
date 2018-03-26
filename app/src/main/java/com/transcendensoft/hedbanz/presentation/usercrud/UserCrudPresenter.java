@@ -16,38 +16,27 @@ package com.transcendensoft.hedbanz.presentation.usercrud;
  */
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.EditText;
 
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.interactor.user.IsLoginAvailableInteractor;
 import com.transcendensoft.hedbanz.domain.interactor.user.RegisterUserInteractor;
 import com.transcendensoft.hedbanz.domain.interactor.user.UpdateUserInteractor;
 import com.transcendensoft.hedbanz.domain.interactor.user.exception.UserCredentialsException;
 import com.transcendensoft.hedbanz.domain.validation.UserCrudValidator;
 import com.transcendensoft.hedbanz.domain.validation.UserError;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
-import com.transcendensoft.hedbanz.presentation.base.Socketable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.URISyntaxException;
+import java.net.ConnectException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
-
-import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.HOST;
-import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.LOGIN_SOCKET_NSP;
-import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.PORT_SOCKET;
 
 /**
  * Presenter from MVP pattern, that contains
@@ -58,15 +47,8 @@ import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.PORT
  */
 @ActivityScope
 public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View>
-        implements UserCrudContract.Presenter, Socketable {
-    private static final String TAG = UserCrudPresenter.class.getName();
-    private static final String LOGIN_RESULT_LISTENER = "loginResult";
-    private static final String CHECK_LOGIN_EMIT_KEY = "checkLogin";
-    private static final String IS_LOGIN_AVAILABLE = "isLoginAvailable";
-
-    private Socket mSocket;
-    private Emitter.Listener mLoginResultSocketListener;
-
+        implements UserCrudContract.Presenter {
+    private IsLoginAvailableInteractor mIsLoginAvailableInteractor;
     private RegisterUserInteractor mRegisterUserInteractorInteractor;
     private UpdateUserInteractor mUpdateUserInteractorInteractor;
     private PreferenceManager mPreferenceManager;
@@ -75,16 +57,26 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
      *---------- Initialization ----------*
      *------------------------------------*/
     @Inject
-    public UserCrudPresenter(RegisterUserInteractor registerUserInteractorInteractor, UpdateUserInteractor updateUserInteractorInteractor,
+    public UserCrudPresenter(RegisterUserInteractor registerUserInteractorInteractor,
+                             UpdateUserInteractor updateUserInteractorInteractor,
+                             IsLoginAvailableInteractor isLoginAvailableInteractor,
                              PreferenceManager preferenceManager) {
         this.mRegisterUserInteractorInteractor = registerUserInteractorInteractor;
         this.mUpdateUserInteractorInteractor = updateUserInteractorInteractor;
         this.mPreferenceManager = preferenceManager;
+        this.mIsLoginAvailableInteractor = isLoginAvailableInteractor;
     }
 
     @Override
     protected void updateView() {
         // Stub
+    }
+
+    @Override
+    public void destroy() {
+        mRegisterUserInteractorInteractor.dispose();
+        mUpdateUserInteractorInteractor.dispose();
+        mIsLoginAvailableInteractor.dispose();
     }
 
     /*------------------------------------*
@@ -116,6 +108,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
 
     private void processRegisterOnNext(User user) {
         if (user != null) {
+            Timber.tag(UserCrudPresenter.class.getName()).i("Current user = %s", user.toString());
             mPreferenceManager.setUser(user);
         } else {
             throw new HedbanzApiException("User comes NULL from server while login");
@@ -125,7 +118,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
     private void processRegisterOnError(Throwable err) {
         if ((err instanceof UserCredentialsException)) {
             UserCredentialsException exception = (UserCredentialsException) err;
-            for (UserError userError: exception.getUserErrors()) {
+            for (UserError userError : exception.getUserErrors()) {
                 processUserError(userError);
             }
         } else {
@@ -134,7 +127,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
         }
     }
 
-    private void processUserError(UserError userError){
+    private void processUserError(UserError userError) {
         switch (userError) {
             case INVALID_EMAIL:
             case SUCH_EMAIL_ALREADY_USING:
@@ -169,67 +162,56 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
      *------------------------------------*/
     @Override
     public void initAnimEditTextListener(EditText editText) {
-        addDisposable(
-                RxTextView.textChanges(editText)
-                        .skip(1)
-                        .doOnEach(text -> {
-                            view().startSmileAnimation();
-                        })
-                        .debounce(500, TimeUnit.MILLISECONDS)
-                        .subscribe(
-                                text -> {
-                                    view().stopSmileAnimation();
-                                },
-                                err -> {
-                                    Timber.e(TAG, "Error while setting start/stop smile animation. " +
-                                            "Message : " + err.getMessage());
-                                }));
+        RxTextView.textChanges(editText)
+                .skip(1)
+                .doOnEach(text -> {
+                    view().startSmileAnimation();
+                })
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .subscribe(
+                        text -> {
+                            view().stopSmileAnimation();
+                        },
+                        err -> {
+                            Timber.e("Error while setting start/stop smile animation. " +
+                                    "Message : " + err.getMessage());
+                        });
     }
 
     /*------------------------------------*
      *- Checking for login availability --*
      *------------------------------------*/
     @Override
-    public void initSockets() {
-        try {
-            mSocket = IO.socket(HOST + PORT_SOCKET + LOGIN_SOCKET_NSP);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-
-        initSocketListeners();
-        mSocket.on(LOGIN_RESULT_LISTENER, mLoginResultSocketListener);
-        mSocket.connect();
+    public void initNameCheckingListener(EditText editText) {
+        RxTextView.textChanges(editText).debounce(400, TimeUnit.MILLISECONDS)
+                .filter(this::isCorrectLoginInput)
+                .subscribe(text -> {
+                    view().showLoginAvailabilityLoading();
+                    mIsLoginAvailableInteractor.execute(
+                            text.toString(),
+                            this::processLoginAvailability,
+                            this::processLoginAvailabilityError);
+                });
     }
 
-    private void initSocketListeners() {
-        mLoginResultSocketListener = args -> {
-            JSONObject data = (JSONObject) args[0];
-            boolean isLoginAvailable;
-            try {
-                isLoginAvailable = data.getBoolean(IS_LOGIN_AVAILABLE);
-            } catch (JSONException e) {
-                Log.e("TAG", e.getMessage());
-                return;
-            }
+    private void processLoginAvailability(Boolean isLoginAvailable) {
+        if(view() != null) {
             if (isLoginAvailable) {
                 view().showLoginAvailable();
             } else {
                 view().showLoginUnavailable();
             }
-        };
+        }
     }
 
-    @Override
-    public void initNameCheckingListener(EditText editText) {
-        addDisposable(RxTextView.textChanges(editText).debounce(400, TimeUnit.MILLISECONDS)
-                .filter(this::isCorrectLoginInput)
-                .subscribe(text -> {
-                    if (mSocket != null && mSocket.connected()) {
-                        view().showLoginAvailabilityLoading();
-                        mSocket.emit(CHECK_LOGIN_EMIT_KEY, text.toString().trim());
-                    }
-                }));
+    private void processLoginAvailabilityError(Throwable err) {
+        if(view() != null) {
+            if (err instanceof ConnectException) {
+                view().showNetworkError();
+            } else {
+                view().showServerError();
+            }
+        }
     }
 
     private boolean isCorrectLoginInput(CharSequence text) {
@@ -245,11 +227,5 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
             view().hideLoginAvailability();
             return false;
         }
-    }
-
-    @Override
-    public void disconnectSockets() {
-        mSocket.disconnect();
-        mSocket.off(LOGIN_RESULT_LISTENER, mLoginResultSocketListener);
     }
 }

@@ -19,7 +19,7 @@ import android.content.Context;
 
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.di.scope.FragmentScope;
-import com.transcendensoft.hedbanz.presentation.mainscreen.menu.MenuFragment;
+import com.transcendensoft.hedbanz.presentation.menu.MenuFragment;
 
 import dagger.Binds;
 import dagger.Module;

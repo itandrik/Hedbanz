@@ -2,8 +2,6 @@ package com.brainus.hedbanz;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
@@ -12,6 +10,15 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+        Object obj = new int[]{1, 2, 3};
+        int[] someAr = (int[]) obj;
+        for (int i : someAr) {
+            System.out.printf(i + " ");
+        }
+        if(null instanceof Object){
+            System.out.println("true");
+        }
+        int[] x = {1,2,3};
+        int y[] = {4,5,6};
     }
 }

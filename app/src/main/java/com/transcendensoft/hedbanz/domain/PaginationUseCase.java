@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor;
+package com.transcendensoft.hedbanz.domain;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -14,8 +14,6 @@ package com.transcendensoft.hedbanz.domain.interactor;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import com.transcendensoft.hedbanz.domain.UseCase;
 
 import java.net.ConnectException;
 import java.util.List;

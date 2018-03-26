@@ -16,12 +16,12 @@ package com.transcendensoft.hedbanz.presentation.mainscreen;
  */
 
 import com.transcendensoft.hedbanz.di.scope.ViewPagerFragmentScope;
-import com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation.CreateRoomContract;
-import com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation.CreateRoomFragment;
-import com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation.CreateRoomPresenter;
-import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.RoomsContract;
-import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.RoomsFragment;
-import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.RoomsPresenter;
+import com.transcendensoft.hedbanz.presentation.roomcreation.CreateRoomContract;
+import com.transcendensoft.hedbanz.presentation.roomcreation.CreateRoomFragment;
+import com.transcendensoft.hedbanz.presentation.roomcreation.CreateRoomPresenter;
+import com.transcendensoft.hedbanz.presentation.rooms.RoomsContract;
+import com.transcendensoft.hedbanz.presentation.rooms.RoomsFragment;
+import com.transcendensoft.hedbanz.presentation.rooms.RoomsPresenter;
 
 import dagger.Binds;
 import dagger.Module;

@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation;
+package com.transcendensoft.hedbanz.presentation.roomcreation;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -87,6 +87,12 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
         if (mPresenter != null) {
             mPresenter.unbindView();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.destroy();
     }
 
     /*------------------------------------*

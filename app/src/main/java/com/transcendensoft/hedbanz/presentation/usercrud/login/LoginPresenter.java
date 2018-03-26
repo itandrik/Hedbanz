@@ -53,6 +53,11 @@ public class LoginPresenter extends BasePresenter<User, LoginContract.View>
     }
 
     @Override
+    public void destroy() {
+        mAuthorizeUserInteractorInteractor.dispose();
+    }
+
+    @Override
     public void login(User user) {
         setModel(user);
         view().showLoadingDialog();
@@ -64,6 +69,7 @@ public class LoginPresenter extends BasePresenter<User, LoginContract.View>
 
     private void processLoginOnNext(User user) {
         if (user != null) {
+            Timber.tag(LoginPresenter.class.getName()).i("Current user = %s", user.toString());
             mPreferenceManager.setUser(user);
         } else {
             throw new HedbanzApiException("User comes NULL from server while login");

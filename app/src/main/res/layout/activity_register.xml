@@ -44,13 +44,12 @@
 
         <ImageView
             android:id="@+id/ivSmileGif"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             android:layout_below="@id/ivRegisterDivider"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="-48dp"
-            android:paddingBottom="8dp"
-            app:srcCompat="@drawable/logo" />
+            app:srcCompat="@drawable/logo_for_anim" />
 
         <RelativeLayout
             android:id="@+id/rlLoginFrame"
@@ -60,7 +59,7 @@
             android:layout_below="@id/ivSmileGif"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="-8dp"
             android:foregroundGravity="center"
             android:gravity="center">
 

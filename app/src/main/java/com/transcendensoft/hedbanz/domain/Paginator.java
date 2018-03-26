@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor;
+package com.transcendensoft.hedbanz.domain;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>

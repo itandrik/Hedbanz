@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.mainscreen.rooms;
+package com.transcendensoft.hedbanz.presentation.rooms;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -45,7 +45,7 @@ import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.custom.widget.rangeseekbar.RangeSeekBar;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainFragment;
-import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.list.RoomsAdapter;
+import com.transcendensoft.hedbanz.presentation.rooms.list.RoomsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,6 +134,12 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         if (mPresenter != null) {
             mPresenter.unbindView();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.destroy();
     }
 
     private void initSwipeToRefresh() {
