@@ -65,6 +65,7 @@ public class FilterRoomsInteractor extends PaginationUseCase<Room, Void, RoomFil
         }
 
         return mRoomRepository.filterRooms(mCurrentPage, mRoomFilter, DataPolicy.API)
-                .flatMap(this::convertEntitiesToPagingResult);
+                .flatMap(this::convertEntitiesToPagingResult)
+                .onErrorReturn(this::mapPaginationStateBasedOnError);
     }
 }

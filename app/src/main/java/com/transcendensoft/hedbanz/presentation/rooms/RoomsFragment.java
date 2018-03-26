@@ -149,14 +149,11 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
 
         mRefreshLayout.setOnRefreshListener(() -> {
             if (mPresenter != null) {
-                if (mCvFilters.getVisibility() == VISIBLE) {
-                    mPresenter.updateFilter(null); //filter with old filters
-                }
                 String searchText = mSvRoomSearch.getQuery().toString();
-                if (TextUtils.isEmpty(searchText)) {
+                if(!mChbApplyFilters.isChecked() && TextUtils.isEmpty(searchText)){
                     mPresenter.refreshRooms();
                 } else {
-                    filterRoomsWithText(searchText);
+                    mPresenter.updateFilter(null); //filter with old filters
                 }
             }
         });
@@ -226,7 +223,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
                 .filter(text -> !text.equals("#"))
                 .subscribe(text -> {
                     if (mPresenter != null) {
-                        if (!TextUtils.isEmpty(text)) {
+                        if (!TextUtils.isEmpty(text) || mChbApplyFilters.isChecked()) {
                             filterRoomsWithText(text);
                         } else {
                             mPresenter.clearTextFilter();
@@ -366,6 +363,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         mRlSearchContainer.setVisibility(View.GONE);
         mCvFilters.setVisibility(GONE);
         mFabSearch.show();
+        mChbApplyFilters.setChecked(false);
         mSvRoomSearch.setQuery("", false);
         mPresenter.clearFilters();
         mPresenter.refreshRooms();

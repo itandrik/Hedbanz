@@ -27,7 +27,11 @@ import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
 import com.transcendensoft.hedbanz.utils.NetworkUtils;
 
+import javax.inject.Inject;
+
 import dagger.android.support.DaggerAppCompatActivity;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 /**
  * It is base activity for all activities in application.
@@ -39,12 +43,29 @@ import dagger.android.support.DaggerAppCompatActivity;
  */
 public abstract class BaseActivity extends DaggerAppCompatActivity implements BaseView {
     private ProgressDialog mProgressDialog;
+    @Inject CompositeDisposable mViewCompositeDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         initProgressDialog();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mViewCompositeDisposable != null && !mViewCompositeDisposable.isDisposed()) {
+            mViewCompositeDisposable.dispose();
+        }
+        mProgressDialog.hide();
+        mProgressDialog = null;
+    }
+
+    protected void addRxBindingDisposable(Disposable disposable){
+        if(mViewCompositeDisposable != null){
+            mViewCompositeDisposable.add(disposable);
+        }
     }
 
     private void initProgressDialog() {

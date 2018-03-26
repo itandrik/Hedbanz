@@ -59,21 +59,23 @@ public abstract class PaginationUseCase<T, ParamUseCase, ParamPaginator>
                 .setHasInternetError(false)
                 .setHasServerError(false);
 
-        return Observable.just(paginationState)
-                .onErrorReturn(err -> mapPaginationStateBasedOnError(err, paginationState));
+        return Observable.just(paginationState);
     }
 
-    private PaginationState<T> mapPaginationStateBasedOnError(Throwable throwable,
-                                                              PaginationState<T> paginationState) {
+    protected PaginationState<T> mapPaginationStateBasedOnError(Throwable throwable) {
         Timber.e(throwable);
+        PaginationState<T> paginationState = new PaginationState<>();
+        paginationState.setRefreshed(mCurrentPage == 0);
+
         if (throwable instanceof ConnectException) {
-            return paginationState
+            paginationState
                     .setHasServerError(false)
                     .setHasInternetError(true);
         } else {
-            return paginationState
+            paginationState
                     .setHasServerError(true)
                     .setHasInternetError(false);
         }
+        return paginationState;
     }
 }

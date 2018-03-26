@@ -23,6 +23,7 @@ import com.transcendensoft.hedbanz.domain.interactor.user.exception.UserCredenti
 import com.transcendensoft.hedbanz.domain.repository.UserDataRepository;
 import com.transcendensoft.hedbanz.domain.validation.UserCrudValidator;
 import com.transcendensoft.hedbanz.domain.validation.UserError;
+import com.transcendensoft.hedbanz.utils.SecurityUtils;
 
 import javax.inject.Inject;
 
@@ -56,6 +57,7 @@ public class RegisterUserInteractor extends UseCase<User, User> {
         mUserException = new UserCredentialsException();
 
         if(isUserValid(params)){
+            params.setPassword(SecurityUtils.hash(params.getPassword()));
             return mUserRepository.registerUser(params)
                     .onErrorResumeNext(this::processRegisterUserOnError);
         }

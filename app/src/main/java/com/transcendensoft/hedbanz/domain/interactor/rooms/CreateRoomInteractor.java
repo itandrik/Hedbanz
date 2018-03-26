@@ -15,6 +15,8 @@ package com.transcendensoft.hedbanz.domain.interactor.rooms;
  * limitations under the License.
  */
 
+import android.text.TextUtils;
+
 import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.UseCase;
@@ -24,6 +26,7 @@ import com.transcendensoft.hedbanz.domain.interactor.rooms.exception.RoomCreatio
 import com.transcendensoft.hedbanz.domain.repository.RoomDataRepository;
 import com.transcendensoft.hedbanz.domain.validation.RoomError;
 import com.transcendensoft.hedbanz.domain.validation.RoomValidator;
+import com.transcendensoft.hedbanz.utils.SecurityUtils;
 
 import javax.inject.Inject;
 
@@ -59,6 +62,11 @@ public class CreateRoomInteractor extends UseCase<Room, Room>{
         mRoomException = new RoomCreationException();
         if(isValidRoom(params)){
             User currentUser = mPreferenceManager.getUser();
+
+            if(!TextUtils.isEmpty(params.getPassword()) && params.isWithPassword()) {
+                params.setPassword(SecurityUtils.hash(params.getPassword()));
+            }
+
             mRoomRepository.createRoom(params, currentUser.getId())
                     .onErrorResumeNext(this::processCreateRoomOnError);
         }

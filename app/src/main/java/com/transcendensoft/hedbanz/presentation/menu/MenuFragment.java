@@ -119,6 +119,7 @@ public class MenuFragment extends DaggerFragment{
     @OnClick(R.id.btnExit)
     protected void onLogoutClicked(){
         mPreferenceManager.setIsAuthorised(false);
+        mPreferenceManager.setUser(null);
 
         Intent intent = new Intent(getActivity(), StartActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -59,12 +59,14 @@ public class RoomValidator implements Validator<Room, RoomError> {
 
     public boolean isPasswordValid(){
         String password = mRoom.getPassword();
-        if (TextUtils.isEmpty(password.trim())) {
-            mError = RoomError.EMPTY_PASSWORD;
-            return false;
-        } else if (!PASSWORD_PATTERN.matcher(password).matches()) {
-            mError = RoomError.INVALID_PASSWORD;
-            return false;
+        if(mRoom.isWithPassword()) {
+            if (TextUtils.isEmpty(password.trim())) {
+                mError = RoomError.EMPTY_PASSWORD;
+                return false;
+            } else if (!PASSWORD_PATTERN.matcher(password).matches()) {
+                mError = RoomError.INVALID_PASSWORD;
+                return false;
+            }
         }
         return true;
     }

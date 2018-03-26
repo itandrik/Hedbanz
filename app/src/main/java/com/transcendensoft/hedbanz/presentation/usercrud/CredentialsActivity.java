@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -68,6 +69,7 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
         int size = (int) ViewUtils.dpToPx(this, 100);
         Glide.with(this).asGif().load(R.raw.smile_gif_new).preload(size, size);
 
+        initPasswordIcon();
         initUserData();
     }
 
@@ -120,6 +122,15 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
 
         mEtLogin.setText(user.getLogin());
         mEtEmail.setText(user.getEmail());
+    }
+
+    private void initPasswordIcon(){
+        Drawable drawable = VectorDrawableCompat.create(
+                getResources(), R.drawable.ic_password, null);
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(this, R.color.textDarkRed));
+        mEtOldPassword.setCompoundDrawablesWithIntrinsicBounds(drawable, null,null,null);
+        mEtNewPassword.setCompoundDrawablesWithIntrinsicBounds(drawable, null,null,null);
     }
 
     /*------------------------------------*

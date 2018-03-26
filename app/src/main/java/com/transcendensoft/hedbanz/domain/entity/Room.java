@@ -32,9 +32,11 @@ public class Room {
     private byte currentPlayersNumber;
     private long startDate;
     private long endDate;
+    private boolean isWithPassword;
 
     private Room(long id, String password, byte maxPlayers, List<User> users,
-                    String name, byte currentPlayersNumber, long startDate, long endDate) {
+                    String name, byte currentPlayersNumber, long startDate, long endDate,
+                 boolean isWithPassword) {
         this.id = id;
         this.password = password;
         this.maxPlayers = maxPlayers;
@@ -43,6 +45,7 @@ public class Room {
         this.startDate = startDate;
         this.endDate = endDate;
         this.name = name;
+        this.isWithPassword = isWithPassword;
     }
 
     public long getId() {
@@ -109,6 +112,14 @@ public class Room {
         this.name = name;
     }
 
+    public boolean isWithPassword() {
+        return isWithPassword;
+    }
+
+    public void setWithPassword(boolean withPassword) {
+        isWithPassword = withPassword;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -133,6 +144,7 @@ public class Room {
         private byte currentPlayersNumber;
         private long startDate;
         private long endDate;
+        private boolean isWithPassword;
 
         public Room.Builder setId(long id) {
             this.id = id;
@@ -174,8 +186,13 @@ public class Room {
             return this;
         }
 
+        public Room.Builder setWithPassword(boolean isWithPassword) {
+            this.isWithPassword = isWithPassword;
+            return this;
+        }
+
         public Room build() {
-            return new Room(id, password, maxPlayers, users, name, currentPlayersNumber, startDate, endDate);
+            return new Room(id, password, maxPlayers, users, name, currentPlayersNumber, startDate, endDate, isWithPassword);
         }
     }
 }

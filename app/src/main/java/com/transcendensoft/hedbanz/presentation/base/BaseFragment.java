@@ -32,6 +32,8 @@ import com.transcendensoft.hedbanz.utils.NetworkUtils;
 import javax.inject.Inject;
 
 import dagger.android.support.DaggerFragment;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
 /**
@@ -44,6 +46,7 @@ import timber.log.Timber;
  */
 public abstract class BaseFragment extends DaggerFragment implements BaseView {
     private static final String TAG = BaseFragment.class.getName();
+    @Inject CompositeDisposable mViewCompositeDisposable;
 
     private ProgressDialog mProgressDialog;
     @Inject
@@ -55,6 +58,22 @@ public abstract class BaseFragment extends DaggerFragment implements BaseView {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
         initProgressDialog();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mViewCompositeDisposable != null && !mViewCompositeDisposable.isDisposed()) {
+            mViewCompositeDisposable.dispose();
+        }
+        mProgressDialog.hide();
+        mProgressDialog = null;
+    }
+
+    protected void addRxBindingDisposable(Disposable disposable){
+        if(mViewCompositeDisposable != null){
+            mViewCompositeDisposable.add(disposable);
+        }
     }
 
     private void initProgressDialog() {

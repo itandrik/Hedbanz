@@ -87,7 +87,7 @@ public class UserCrudValidator implements Validator<User, UserError> {
     public boolean isConfirmPasswordValid() {
         String password = mUser.getConfirmPassword();
         if (TextUtils.isEmpty(password.trim())) {
-            mUserError = UserError.EMPTY_PASSWORD;
+            mUserError = UserError.EMPTY_PASSWORD_CONFIRMATION;
             return false;
         } else if (!password.equals(mUser.getPassword())) {
             mUserError = UserError.INVALID_PASSWORD_CONFIRMATION;

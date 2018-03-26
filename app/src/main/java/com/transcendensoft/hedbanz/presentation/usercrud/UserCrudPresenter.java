@@ -149,6 +149,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
                 view().showIncorrectOldPassword(userError.getErrorMessage());
                 break;
             case INVALID_PASSWORD_CONFIRMATION:
+            case EMPTY_PASSWORD_CONFIRMATION:
                 view().showIncorrectConfirmPassword(userError.getErrorMessage());
                 break;
             default:
@@ -184,6 +185,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
     @Override
     public void initNameCheckingListener(EditText editText) {
         RxTextView.textChanges(editText).debounce(400, TimeUnit.MILLISECONDS)
+                .skip(1)
                 .filter(this::isCorrectLoginInput)
                 .subscribe(text -> {
                     view().showLoginAvailabilityLoading();
@@ -215,7 +217,14 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
     }
 
     private boolean isCorrectLoginInput(CharSequence text) {
-        if (text != null && !TextUtils.isEmpty(text)) {
+        User currentUser = mPreferenceManager.getUser();
+
+        String currentUserLogin = "";
+        if(currentUser != null){
+            currentUserLogin = currentUser.getLogin();
+        }
+
+        if (text != null && !TextUtils.isEmpty(text) && !text.toString().equalsIgnoreCase(currentUserLogin)) {
             User user = new User.Builder().setLogin(text.toString()).build();
             UserCrudValidator validator = new UserCrudValidator(user);
             if (!validator.isLoginValid()) {

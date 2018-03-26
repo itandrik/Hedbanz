@@ -1,154 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@color/windowBackground"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:scrollbarAlwaysDrawVerticalTrack="false"
+    android:fillViewport="true"
+    android:background="@color/windowBackground">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/form_background"
-        android:paddingBottom="8dp"
-        android:paddingLeft="32dp"
-        android:paddingRight="32dp"
-        android:layout_marginRight="16dp"
-        android:layout_centerInParent="true"
-        android:paddingTop="48dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvRoomNameTitle"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans_light"
-            android:text="@string/room_creation_room_name"
-            android:textColor="@color/textDarkRed" />
-
-        <EditText
-            android:id="@+id/etRoomName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvRoomNameTitle"
-            android:layout_marginTop="4dp"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:drawableLeft="@drawable/ic_room_name"
-            android:drawablePadding="8dp"
-            android:hint="@string/room_creation_name_example"
-            android:inputType="textEmailAddress" />
-
-        <TextView
-            android:id="@+id/tvErrorRoomName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/etRoomName"
-            android:drawablePadding="8dp"
-            android:drawableRight="@drawable/ic_error_validation"
-            android:paddingLeft="16dp"
-            android:textColor="@color/loginError"
-            android:textSize="14sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tvRoomPasswordTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvErrorRoomName"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/open_sans_light"
-            android:text="@string/login_password_title"
-            android:textColor="@color/textDarkRed" />
-
-        <EditText
-            android:id="@+id/etRoomPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvRoomPasswordTitle"
-            android:layout_marginTop="4dp"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:drawableLeft="@drawable/ic_room_password"
-            android:drawablePadding="8dp"
-            android:hint="@string/login_password_hint"
-            android:inputType="textPassword" />
-
-        <TextView
-            android:id="@+id/tvErrorRoomPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/etRoomPassword"
-            android:drawablePadding="8dp"
-            android:drawableRight="@drawable/ic_error_validation"
-            android:paddingLeft="16dp"
-            android:textColor="@color/loginError"
-            android:textSize="14sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tvPlayersQuantityTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvErrorRoomPassword"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/open_sans_light"
-            android:text="@string/room_creation_players_count"
-            android:textColor="@color/textDarkRed" />
-
-        <!--<android.support.v7.widget.AppCompatSeekBar
-            android:id="@+id/sbPlayersQuantity"
-            android:layout_width="match_parent"
-            android:max="6"
-            app:tickMark="@drawable/player_quantity_seekbar_tick"
-
-            android:layout_height="32dp"
-            android:layout_marginTop="10dp"
-            android:layout_below="@id/tvPlayersQuantityTitle"/>-->
-        <com.warkiz.widget.IndicatorSeekBar
-            android:id="@+id/isbPlayersQuantity"
-            android:layout_width="match_parent"
-            android:layout_below="@id/tvPlayersQuantityTitle"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:isb_progress="4"
-            app:isb_max="8"
-            app:isb_min="2"
-            app:isb_seek_bar_type="discrete_ticks_texts"
-            app:isb_text_color="@color/textDarkRed"
-            app:isb_show_indicator="false"
-            app:isb_tick_color="@color/textSecondary"
-            app:isb_track_progress_bar_color="@color/textDarkRed"
-            app:isb_thumb_color="@color/textDarkRed"
-            app:isb_tick_num="7"
-            app:isb_tick_on_thumb_left_hide="true"
-            app:isb_tick_type="oval" />
-
-        <!--<TextView
-            android:id="@+id/tvPlayersQuantity"
-            android:layout_below="@id/isbPlayersQuantity"
-            android:gravity="center"
-            android:textSize="16sp"
-            android:text="4 игрока"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/textDarkRed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />-->
-
-        <Button
-            android:id="@+id/btnCreateRoom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/isbPlayersQuantity"
-            android:layout_marginLeft="16dp"
+            android:layout_centerInParent="true"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/button_white_round"
-            android:elevation="8dp"
-            android:fontFamily="@font/playfair_display_sc_bold"
-            android:text="@string/room_creation_action_create"
-            android:textColor="@color/textSecondaryDark" />
+            android:background="@drawable/form_background"
+            android:paddingBottom="8dp"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:paddingTop="48dp">
 
-        <android.support.v4.widget.Space
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_below="@id/btnCreateRoom" />
+            <TextView
+                android:id="@+id/tvRoomNameTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_light"
+                android:text="@string/room_creation_room_name"
+                android:textColor="@color/textDarkRed" />
+
+            <EditText
+                android:id="@+id/etRoomName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvRoomNameTitle"
+                android:layout_marginTop="4dp"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:drawableLeft="@drawable/ic_room_name"
+                android:drawablePadding="8dp"
+                android:hint="@string/room_creation_name_example"
+                android:inputType="textEmailAddress" />
+
+            <TextView
+                android:id="@+id/tvErrorRoomName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/etRoomName"
+                android:drawablePadding="8dp"
+                android:drawableRight="@drawable/ic_error_validation"
+                android:paddingLeft="16dp"
+                android:textColor="@color/loginError"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/chbRoomPasswordTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvErrorRoomName"
+                android:layout_marginTop="8dp"
+                android:buttonTint="@color/textDarkRed"
+                android:fontFamily="@font/open_sans_light"
+                android:text="@string/login_password_title"
+                android:textColor="@color/textDarkRed"
+                app:buttonTint="@color/textDarkRed" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/etRoomPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/chbRoomPasswordTitle"
+                android:layout_marginTop="4dp"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:drawableLeft="@drawable/ic_room_password"
+                android:drawablePadding="8dp"
+                android:hint="@string/login_password_hint"
+                android:inputType="textPassword" />
+
+            <TextView
+                android:id="@+id/tvErrorRoomPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/etRoomPassword"
+                android:drawablePadding="8dp"
+                android:drawableRight="@drawable/ic_error_validation"
+                android:paddingLeft="16dp"
+                android:textColor="@color/loginError"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvPlayersQuantityTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvErrorRoomPassword"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/open_sans_light"
+                android:text="@string/room_creation_players_count"
+                android:textColor="@color/textDarkRed" />
+
+            <!--<android.support.v7.widget.AppCompatSeekBar
+                android:id="@+id/sbPlayersQuantity"
+                android:layout_width="match_parent"
+                android:max="6"
+                app:tickMark="@drawable/player_quantity_seekbar_tick"
+
+                android:layout_height="32dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/tvPlayersQuantityTitle"/>-->
+            <com.warkiz.widget.IndicatorSeekBar
+                android:id="@+id/isbPlayersQuantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvPlayersQuantityTitle"
+                android:layout_marginTop="16dp"
+                app:isb_max="8"
+                app:isb_min="2"
+                app:isb_progress="4"
+                app:isb_seek_bar_type="discrete_ticks_texts"
+                app:isb_show_indicator="false"
+                app:isb_text_color="@color/textDarkRed"
+                app:isb_thumb_color="@color/textDarkRed"
+                app:isb_tick_color="@color/textSecondary"
+                app:isb_tick_num="7"
+                app:isb_tick_on_thumb_left_hide="true"
+                app:isb_tick_type="oval"
+                app:isb_track_progress_bar_color="@color/textDarkRed" />
+
+            <!--<TextView
+                android:id="@+id/tvPlayersQuantity"
+                android:layout_below="@id/isbPlayersQuantity"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:text="4 игрока"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/textDarkRed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />-->
+
+            <Button
+                android:id="@+id/btnCreateRoom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/isbPlayersQuantity"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_white_round"
+                android:elevation="8dp"
+                android:fontFamily="@font/playfair_display_sc_bold"
+                android:text="@string/room_creation_action_create"
+                android:textColor="@color/textSecondaryDark" />
+
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_below="@id/btnCreateRoom" />
+        </RelativeLayout>
     </RelativeLayout>
-</RelativeLayout>
+</ScrollView>
