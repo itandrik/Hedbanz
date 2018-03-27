@@ -19,6 +19,7 @@ import android.content.Context;
 
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.RoomList;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.CreateRoomInteractor;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.exception.RoomCreationException;
 import com.transcendensoft.hedbanz.domain.validation.RoomError;
@@ -37,7 +38,7 @@ import timber.log.Timber;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class CreateRoomPresenter extends BasePresenter<Room, CreateRoomContract.View>
+public class CreateRoomPresenter extends BasePresenter<RoomList, CreateRoomContract.View>
         implements CreateRoomContract.Presenter {
     private CreateRoomInteractor mCreateRoomInteractor;
     private Context mContext;  //Only for logging purposes
@@ -60,13 +61,15 @@ public class CreateRoomPresenter extends BasePresenter<Room, CreateRoomContract.
 
     @Override
     public void createRoom(Room room) {
-        setModel(room);
         mCreateRoomInteractor.execute(room,
                 this::processCreateRoomOnNext,
-                this::processCreateRoomOnError);
+                this::processCreateRoomOnError,
+                () -> view().hideLoadingDialog(),
+                d -> view().showLoadingDialog());
     }
 
     private void processCreateRoomOnNext(Room result) {
+        model.addRoom(result);
         view().createRoomSuccess(result);
     }
 

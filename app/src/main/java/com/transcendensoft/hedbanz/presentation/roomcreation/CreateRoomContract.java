@@ -18,6 +18,7 @@ package com.transcendensoft.hedbanz.presentation.roomcreation;
 import android.support.annotation.StringRes;
 
 import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.RoomList;
 import com.transcendensoft.hedbanz.presentation.base.BaseView;
 
 /**
@@ -36,6 +37,8 @@ public interface CreateRoomContract {
         void createRoomSuccess(Room room);
 
         void createRoomError();
+
+        void setPresenterModel(RoomList model);
     }
 
     interface Presenter {

@@ -18,11 +18,16 @@ package com.transcendensoft.hedbanz.presentation.mainscreen;
 import android.content.Context;
 
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
+import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.di.scope.FragmentScope;
+import com.transcendensoft.hedbanz.domain.entity.RoomList;
 import com.transcendensoft.hedbanz.presentation.menu.MenuFragment;
+
+import java.util.ArrayList;
 
 import dagger.Binds;
 import dagger.Module;
+import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
 
 /**
@@ -45,4 +50,10 @@ public interface MainActivityModule {
     @ActivityContext
     @Binds
     Context bindActivityContext(MainActivity mainActivity);
+
+    @Provides
+    @ActivityScope
+    static RoomList provideModel(){
+        return new RoomList(new ArrayList<>());
+    }
 }

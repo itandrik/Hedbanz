@@ -15,9 +15,10 @@ package com.transcendensoft.hedbanz.presentation.rooms;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.domain.PaginationState;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
-import com.transcendensoft.hedbanz.domain.PaginationState;
+import com.transcendensoft.hedbanz.domain.entity.RoomList;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.FilterRoomsInteractor;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.GetRoomsInteractor;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
@@ -38,7 +39,7 @@ import io.reactivex.observers.DisposableObserver;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View>
+public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
         implements RoomsContract.Presenter, MvpRecyclerAdapter.OnBottomReachedListener {
     private RoomItemViewHolder mLastHolder;
     private RoomFilter mRoomFilter;
@@ -56,10 +57,11 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
     @Override
     protected void updateView() {
         if (model.isEmpty()) {
+            model.subscribe(room -> view().closeSearchAndRefresh());
             refreshRooms();
         } else {
             view().clearRooms();
-            view().addRoomsToRecycler(model);
+            view().addRoomsToRecycler(model.getRooms());
         }
     }
 
@@ -67,6 +69,7 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
     public void destroy() {
         mFilterRoomsInteractor.dispose();
         mGetRoomsInteractor.dispose();
+        model.dispose();
     }
 
     @Override
@@ -78,7 +81,7 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
     @Override
     public void refreshRooms() {
         view().clearRooms();
-        model.clear();
+        model.clearRooms();
         mGetRoomsInteractor.refresh(null)
                 .execute(new RoomListObserver(), null);
     }
@@ -102,7 +105,7 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
         if(mRoomFilter == null){
             mRoomFilter = new RoomFilter.Builder().build();
         }
-        model.clear();
+        model.clearRooms();
         mFilterRoomsInteractor.refresh(mRoomFilter)
                 .execute(new RoomListObserver(), null);
     }
@@ -192,14 +195,14 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
             if (roomPaginationState.isRefreshed()) {
                 view().showEmptyList();
             } else {
-                model.remove(model.size() - 1);
+                model.getRooms().remove(model.getRooms().size() - 1);
                 view().removeLastRoom();
             }
         }
 
         private void processNotEmptyRoomList(PaginationState<Room> roomPaginationState, List<Room> rooms) {
             if (!roomPaginationState.isRefreshed()) {
-                model.remove(model.size() - 1);
+                model.getRooms().remove(model.getRooms().size() - 1);
                 view().removeLastRoom();
             }
 
@@ -207,7 +210,7 @@ public class RoomsPresenter extends BasePresenter<List<Room>, RoomsContract.View
 
             view().addRoomsToRecycler(rooms);
             view().showContent();
-            model.addAll(rooms);
+            model.addAllRooms(rooms);
         }
 
         @Override

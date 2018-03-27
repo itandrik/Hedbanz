@@ -166,4 +166,14 @@ public abstract class BaseFragment extends DaggerFragment implements BaseView {
             mProgressDialog.hide();
         }
     }
+
+    @Override
+    public void showServerError() {
+        hideLoadingDialog();
+    }
+
+    @Override
+    public void showNetworkError() {
+        hideLoadingDialog();
+    }
 }

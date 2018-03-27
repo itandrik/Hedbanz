@@ -35,7 +35,7 @@ import io.reactivex.observers.DisposableObserver;
  * job in a background thread and will post the result in the UI thread.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 
 public abstract class UseCase<T, PARAM> {
@@ -60,10 +60,9 @@ public abstract class UseCase<T, PARAM> {
 
     /**
      * Executes the current use case.
-     *
      */
     public void execute(DisposableObserver<T> disposableObserver, PARAM params) {
-        if(disposableObserver == null){
+        if (disposableObserver == null) {
             throw new NullPointerException(NULL_DISPOSABLE_OBSERVER_MSG);
         }
         final Observable<T> observable = this.buildUseCaseObservable(params)
@@ -74,7 +73,6 @@ public abstract class UseCase<T, PARAM> {
 
     /**
      * Executes the current use case.
-     *
      */
     public void execute(PARAM params, @NonNull Consumer<? super T> onNext,
                         @NonNull Consumer<? super Throwable> onError,
@@ -87,7 +85,20 @@ public abstract class UseCase<T, PARAM> {
 
     /**
      * Executes the current use case.
-     *
+     */
+    public void execute(PARAM params, @NonNull Consumer<? super T> onNext,
+                        @NonNull Consumer<? super Throwable> onError,
+                        @NonNull Action onComplete,
+                        @NonNull Consumer<? super Disposable> onSubscribe) {
+        final Observable<T> observable = this.buildUseCaseObservable(params)
+                .compose(applySchedulers());
+
+        addDisposable(observable.subscribe(onNext, onError, onComplete, onSubscribe));
+    }
+
+
+    /**
+     * Executes the current use case.
      */
     public void execute(PARAM params, @NonNull Consumer<? super T> onNext,
                         @NonNull Consumer<? super Throwable> onError) {
@@ -99,7 +110,6 @@ public abstract class UseCase<T, PARAM> {
 
     /**
      * Executes the current use case.
-     *
      */
     public void execute(PARAM params, @NonNull Consumer<? super T> onNext) {
         final Observable<T> observable = this.buildUseCaseObservable(params)
@@ -110,7 +120,6 @@ public abstract class UseCase<T, PARAM> {
 
     /**
      * Executes the current use case without result to Presenter
-     *
      */
     public void execute(PARAM params) {
         final Observable<T> observable = this.buildUseCaseObservable(params)
@@ -132,10 +141,10 @@ public abstract class UseCase<T, PARAM> {
      * Dispose from current {@link CompositeDisposable}.
      */
     private void addDisposable(Disposable disposable) {
-        if(disposable == null){
+        if (disposable == null) {
             throw new NullPointerException();
         }
-        if(mCompositeDisposable == null){
+        if (mCompositeDisposable == null) {
             throw new NullPointerException(NULL_COMPOSITE_DISPOSABLE_MSG);
         }
         mCompositeDisposable.add(disposable);

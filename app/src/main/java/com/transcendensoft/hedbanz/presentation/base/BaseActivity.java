@@ -150,4 +150,14 @@ public abstract class BaseActivity extends DaggerAppCompatActivity implements Ba
             mProgressDialog.hide();
         }
     }
+
+    @Override
+    public void showServerError() {
+        hideLoadingDialog();
+    }
+
+    @Override
+    public void showNetworkError() {
+        hideLoadingDialog();
+    }
 }

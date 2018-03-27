@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.presentation.rooms;
  * limitations under the License.
  */
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,12 +43,12 @@ import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
+import com.transcendensoft.hedbanz.domain.entity.RoomList;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.custom.widget.rangeseekbar.RangeSeekBar;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainFragment;
 import com.transcendensoft.hedbanz.presentation.rooms.list.RoomsAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -93,6 +94,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     private ImageView mIvCloseSearch;
 
     @Inject RoomsPresenter mPresenter;
+    @Inject RoomList mPresenterModel;
     private RoomsAdapter mAdapter;
 
     @Inject
@@ -101,8 +103,8 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     }
 
     /*------------------------------------*
-         *-------- Fragment lifecycle --------*
-         *------------------------------------*/
+     *-------- Fragment lifecycle --------*
+     *------------------------------------*/
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -110,12 +112,11 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
 
         ButterKnife.bind(this, view);
 
+        mPresenter.setModel(mPresenterModel);
         initSwipeToRefresh();
         initRecycler();
         initSearchView();
         initFilters();
-
-        mPresenter.setModel(new ArrayList<>());
 
         return view;
     }
@@ -140,6 +141,13 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     public void onDestroy() {
         super.onDestroy();
         mPresenter.destroy();
+    }
+
+    @Override
+    public void setPresenterModel(RoomList model) {
+        if(mPresenter != null){
+            mPresenter.setModel(model);
+        }
     }
 
     private void initSwipeToRefresh() {
@@ -202,7 +210,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
 
     private void initSearchOnClickListeners() {
         mIvCloseSearch.setOnClickListener(v -> {
-            onCloseSearchClicked();
+            closeSearchAndRefresh();
         });
 
         mIvSearchFilter.setOnClickListener(v -> {
@@ -214,6 +222,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         });
     }
 
+    @SuppressLint("CheckResult")
     private void initFilters() {
         disableFilters();
         RxSearchView.queryTextChanges(mSvRoomSearch)
@@ -358,7 +367,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         mFabSearch.hide();
     }
 
-    public void onCloseSearchClicked() {
+    public void closeSearchAndRefresh() {
         mTvToolbarTitle.setVisibility(View.VISIBLE);
         mRlSearchContainer.setVisibility(View.GONE);
         mCvFilters.setVisibility(GONE);
@@ -367,6 +376,13 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         mSvRoomSearch.setQuery("", false);
         mPresenter.clearFilters();
         mPresenter.refreshRooms();
+    }
+
+    public void hideFilters(){
+        mTvToolbarTitle.setVisibility(View.VISIBLE);
+        mRlSearchContainer.setVisibility(View.GONE);
+        mCvFilters.setVisibility(GONE);
+        mFabSearch.show();
     }
 
     /*------------------------------------*

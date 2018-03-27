@@ -67,7 +67,7 @@ public class CreateRoomInteractor extends UseCase<Room, Room>{
                 params.setPassword(SecurityUtils.hash(params.getPassword()));
             }
 
-            mRoomRepository.createRoom(params, currentUser.getId())
+            return mRoomRepository.createRoom(params, currentUser.getId())
                     .onErrorResumeNext(this::processCreateRoomOnError);
         }
         return Observable.error(mRoomException);

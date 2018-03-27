@@ -16,9 +16,8 @@ package com.transcendensoft.hedbanz;
  */
 
 import com.crashlytics.android.Crashlytics;
-import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.squareup.leakcanary.LeakCanary;
-import com.transcendensoft.hedbanz.di.component                                                                                                                                    .DaggerAppComponent;
+import com.transcendensoft.hedbanz.di.component.DaggerAppComponent;
 import com.transcendensoft.hedbanz.utils.logging.CrashReportingTree;
 
 import javax.inject.Inject;
@@ -55,10 +54,10 @@ public class HedbanzApplication extends DaggerApplication{
         LeakCanary.install(this);
         Fabric.with(this, new Crashlytics());
         if (BuildConfig.DEBUG) {
-            AndroidDevMetrics.initWith(this);
+           // AndroidDevMetrics.initWith(this);
             Timber.plant(mDebugTimberTree);
         } else {
-            Timber.plant(mReleaseTimberTree);
+           Timber.plant(mReleaseTimberTree);
         }
     }
 

@@ -70,8 +70,8 @@ public class MainFragment extends DaggerFragment implements ViewPager.OnPageChan
     private TextView mTvTabRooms;
     private TextView mTvTabCreateRoom;
 
-    @Inject Lazy<RoomsFragment> roomsFragmentLazy;
-    @Inject Lazy<CreateRoomFragment> createRoomFragmentLazy;
+    @Inject Lazy<RoomsFragment> mRoomsFragmentLazy;
+    @Inject Lazy<CreateRoomFragment> mCreateRoomFragmentLazy;
 
     @Inject
     public MainFragment() {
@@ -91,9 +91,15 @@ public class MainFragment extends DaggerFragment implements ViewPager.OnPageChan
     }
 
     private void initViewPager(){
+        RoomsFragment roomsFragment = mRoomsFragmentLazy.get();
+        CreateRoomFragment createRoomFragment = mCreateRoomFragmentLazy.get();
+        //RoomList model = new RoomList(new ArrayList<>());
+        //roomsFragment.setPresenterModel(model);
+        //createRoomFragment.setPresenterModel(model);
+
         mAdapter = new MainScreenFragmentAdapter.Holder(getChildFragmentManager())
-                .add(roomsFragmentLazy.get())
-                .add(createRoomFragmentLazy.get())
+                .add(roomsFragment)
+                .add(createRoomFragment)
                 .set();
         mAdapter.addFragmentTitle(getString(R.string.rooms_title));
         mAdapter.addFragmentTitle(getString(R.string.room_creation_title));
@@ -174,7 +180,7 @@ public class MainFragment extends DaggerFragment implements ViewPager.OnPageChan
 
             if(position == 1) {
                 RoomsFragment roomsFragment = (RoomsFragment) mAdapter.getRegisteredFragment(0);
-                roomsFragment.onCloseSearchClicked();
+                roomsFragment.hideFilters();
             }
 
         }catch (ClassCastException e){

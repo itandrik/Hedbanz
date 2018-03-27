@@ -39,6 +39,7 @@ import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.RoomList;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.warkiz.widget.IndicatorSeekBar;
@@ -69,6 +70,7 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
 
     @Inject CreateRoomPresenter mPresenter;
     @Inject @ActivityContext Context mContext;
+    @Inject RoomList mPresenterModel;
 
     @Inject
     public CreateRoomFragment() {
@@ -85,6 +87,7 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
 
         ButterKnife.bind(this, view);
 
+        mPresenter.setModel(mPresenterModel);
         initPasswordCheckBox();
 
         return view;
@@ -152,6 +155,13 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
                         PorterDuff.Mode.SRC_ATOP);
     }
 
+    @Override
+    public void setPresenterModel(RoomList model) {
+        if(mPresenter != null){
+            mPresenter.setModel(model);
+        }
+    }
+
     /*------------------------------------*
      *-------- On click listeners --------*
      *------------------------------------*/
@@ -173,12 +183,17 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
      *------------------------------------*/
     @Override
     public void createRoomSuccess(Room room) {
+        hideLoadingDialog();
+        mEtRoomName.setText("");
+        mEtRoomPassword.setText("");
         AndroidUtils.showShortToast(getActivity(), "Room created successfully");
         //TODO open view
     }
 
     @Override
     public void createRoomError() {
+        hideLoadingDialog();
+        mEtRoomPassword.setText("");
         AndroidUtils.showShortToast(getActivity(), "Error while room creation");
         //TODO show some message
     }
@@ -188,13 +203,13 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
      *------------------------------------*/
     @Override
     public void showServerError() {
-        hideLoadingDialog();
+        super.showServerError();
         AndroidUtils.showShortToast(getActivity(), R.string.error_server);
     }
 
     @Override
     public void showNetworkError() {
-        hideLoadingDialog();
+        super.showNetworkError();
         AndroidUtils.showShortToast(getActivity(), R.string.error_network);
     }
 

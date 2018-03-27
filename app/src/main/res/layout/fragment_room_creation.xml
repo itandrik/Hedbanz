@@ -40,7 +40,7 @@
                 android:drawableLeft="@drawable/ic_room_name"
                 android:drawablePadding="8dp"
                 android:hint="@string/room_creation_name_example"
-                android:inputType="textEmailAddress" />
+                android:inputType="textCapSentences" />
 
             <TextView
                 android:id="@+id/tvErrorRoomName"

@@ -49,8 +49,8 @@ public class RoomValidator implements Validator<Room, RoomError> {
     }
 
     public boolean isNameValid(){
-        String password = mRoom.getPassword();
-        if (TextUtils.isEmpty(password.trim())) {
+        String name = mRoom.getName();
+        if (TextUtils.isEmpty(name.trim())) {
             mError = RoomError.EMPTY_NAME;
             return false;
         }
