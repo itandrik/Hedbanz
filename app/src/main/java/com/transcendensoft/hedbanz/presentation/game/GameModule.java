@@ -15,6 +15,9 @@ package com.transcendensoft.hedbanz.presentation.game;
  * limitations under the License.
  */
 
+import android.content.Context;
+
+import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 
 import dagger.Binds;
@@ -30,5 +33,8 @@ import dagger.Module;
 @Module
 public interface GameModule {
     @ActivityScope
-    @Binds GameContract.Presenter provideGamePresenter(GamePresenter gamePresenter);
+    @Binds GameContract.Presenter bindGamePresenter(GamePresenter gamePresenter);
+
+    @ActivityContext
+    @Binds Context bindActivityContext(GameActivity gameActivity);
 }

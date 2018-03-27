@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.mainscreen.rooms.list;
+package com.transcendensoft.hedbanz.presentation.rooms.list;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -31,7 +31,7 @@ import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.presentation.base.MvpViewHolder;
-import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.RoomsPresenter;
+import com.transcendensoft.hedbanz.presentation.rooms.RoomsPresenter;
 
 /**
  * View holder realization for concrete room.

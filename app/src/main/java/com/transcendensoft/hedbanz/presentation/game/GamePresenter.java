@@ -26,6 +26,7 @@ import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.UserDTO;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 
 import org.json.JSONObject;
@@ -75,6 +76,11 @@ public class GamePresenter extends BasePresenter<RoomDTO, GameContract.View> imp
     }
 
     @Override
+    public void destroy() {
+
+    }
+
+    @Override
     public void initSockets() {
         try {
             mSocket = IO.socket(HOST + PORT_SOCKET + GAME_SOCKET_NSP);
@@ -91,7 +97,7 @@ public class GamePresenter extends BasePresenter<RoomDTO, GameContract.View> imp
     }
 
     private void emitJoinToRoom() {
-        UserDTO user = mPreferenceManager.getUser();
+        User user = mPreferenceManager.getUser();
         HashMap<String, Long> joinRoomObject = new HashMap<>();
         joinRoomObject.put(RoomDTO.ROOM_ID_KEY, model.getId());
         joinRoomObject.put(UserDTO.USER_ID_KEY, user.getId());
@@ -140,7 +146,7 @@ public class GamePresenter extends BasePresenter<RoomDTO, GameContract.View> imp
     }
 
     private void emitDisconnectFromRoom() {
-        UserDTO user = mPreferenceManager.getUser();
+        User user = mPreferenceManager.getUser();
         HashMap<String, Long> joinRoomObject = new HashMap<>();
         joinRoomObject.put(RoomDTO.ROOM_ID_KEY, model.getId());
         joinRoomObject.put(UserDTO.USER_ID_KEY, user.getId());

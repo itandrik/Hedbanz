@@ -15,6 +15,9 @@ package com.transcendensoft.hedbanz.presentation.usercrud;
  * limitations under the License.
  */
 
+import android.content.Context;
+
+import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 
 import dagger.Binds;
@@ -33,4 +36,8 @@ public interface UserCrudModule {
     @ActivityScope
     @Binds
     UserCrudContract.Presenter userCrudPresenter(UserCrudPresenter userCrudPresenter);
+
+    @Binds
+    @ActivityContext
+    Context provideRegisterActivityContext(RegisterActivity registerActivity);
 }

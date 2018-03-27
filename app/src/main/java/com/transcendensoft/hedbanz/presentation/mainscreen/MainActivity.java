@@ -6,7 +6,7 @@ import android.view.View;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.custom.widget.VerticalViewPager;
-import com.transcendensoft.hedbanz.presentation.mainscreen.menu.MenuFragment;
+import com.transcendensoft.hedbanz.presentation.menu.MenuFragment;
 
 import javax.inject.Inject;
 

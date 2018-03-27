@@ -23,6 +23,8 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.EditText;
 
+import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
 import com.transcendensoft.hedbanz.utils.NetworkUtils;
@@ -30,6 +32,8 @@ import com.transcendensoft.hedbanz.utils.NetworkUtils;
 import javax.inject.Inject;
 
 import dagger.android.support.DaggerFragment;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
 /**
@@ -42,14 +46,41 @@ import timber.log.Timber;
  */
 public abstract class BaseFragment extends DaggerFragment implements BaseView {
     private static final String TAG = BaseFragment.class.getName();
+    @Inject CompositeDisposable mViewCompositeDisposable;
 
-    @Inject ProgressDialog mProgressDialog;
-    @Inject Context mActivityContext;
+    private ProgressDialog mProgressDialog;
+    @Inject
+    @ActivityContext
+    Context mActivityContext;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
+        initProgressDialog();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mViewCompositeDisposable != null && !mViewCompositeDisposable.isDisposed()) {
+            mViewCompositeDisposable.dispose();
+        }
+        mProgressDialog.hide();
+        mProgressDialog = null;
+    }
+
+    protected void addRxBindingDisposable(Disposable disposable){
+        if(mViewCompositeDisposable != null){
+            mViewCompositeDisposable.add(disposable);
+        }
+    }
+
+    private void initProgressDialog() {
+        mProgressDialog = new ProgressDialog(mActivityContext);
+        mProgressDialog.setMessage(getString(R.string.action_loading));
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setIndeterminate(true);
     }
 
     @Override
@@ -134,5 +165,15 @@ public abstract class BaseFragment extends DaggerFragment implements BaseView {
         if (mProgressDialog != null) {
             mProgressDialog.hide();
         }
+    }
+
+    @Override
+    public void showServerError() {
+        hideLoadingDialog();
+    }
+
+    @Override
+    public void showNetworkError() {
+        hideLoadingDialog();
     }
 }

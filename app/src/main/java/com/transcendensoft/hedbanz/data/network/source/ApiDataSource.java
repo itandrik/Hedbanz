@@ -20,10 +20,9 @@ import com.transcendensoft.hedbanz.data.network.service.ApiService;
 
 import javax.inject.Inject;
 
-import io.reactivex.ObservableTransformer;
-
 /**
- * Manager to get
+ * Manager to get entity API data source.
+ * Contains common string constants for API purposes.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
@@ -39,13 +38,7 @@ public abstract class ApiDataSource {
     public static final String GAME_SOCKET_NSP = "/game";
 
     @Inject ApiService mService;
-    @Inject ObservableTransformer mSchedulersTransformer;
 
     protected ApiDataSource() {
-    }
-
-    @SuppressWarnings("unchecked")
-    protected <T> ObservableTransformer<T, T> applySchedulers() {
-        return (ObservableTransformer<T, T>) mSchedulersTransformer;
     }
 }

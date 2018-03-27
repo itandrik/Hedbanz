@@ -16,8 +16,6 @@ package com.transcendensoft.hedbanz.domain.validation;
  * limitations under the License.
  */
 
-import android.support.annotation.StringRes;
-
 /**
  * Interface that describes generic methods
  * for all validators.
@@ -25,8 +23,8 @@ import android.support.annotation.StringRes;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface Validator<M> {
+public interface Validator<M, E> {
     boolean isValid(M model);
 
-    @StringRes int getErrorMessage();
+    E getError();
 }

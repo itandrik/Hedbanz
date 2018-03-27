@@ -1,8 +1,8 @@
 package com.brainus.hedbanz;
 
+import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -12,6 +12,9 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+        String salt = BCrypt.gensalt();
+        String hashedPassword = BCrypt.hashpw("1111", salt);
+        Assert.assertTrue(BCrypt.checkpw("1111", hashedPassword));
+        System.out.println("Salt : " + salt + "\nHASH : " + hashedPassword);
     }
 }

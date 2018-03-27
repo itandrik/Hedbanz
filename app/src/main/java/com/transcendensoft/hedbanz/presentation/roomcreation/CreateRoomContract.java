@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.mainscreen.rooms;
+package com.transcendensoft.hedbanz.presentation.roomcreation;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,42 +15,33 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.rooms;
  * limitations under the License.
  */
 
+import android.support.annotation.StringRes;
+
 import com.transcendensoft.hedbanz.domain.entity.Room;
-import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
+import com.transcendensoft.hedbanz.domain.entity.RoomList;
 import com.transcendensoft.hedbanz.presentation.base.BaseView;
 
-import java.util.List;
-
 /**
- * View and Presenter interfaces contract for rooms presentation
+ * View and Presenter interfaces contract for room creation.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
+public interface CreateRoomContract {
 
-public class RoomsContract {
+    interface View extends BaseView {
+        void showIncorrectRoomName(@StringRes int errorMessage);
 
-    public interface View extends BaseView {
-        void addRoomsToRecycler(List<Room> rooms);
+        void showIncorrectRoomPassword(@StringRes int errorMessage);
 
-        void clearRooms();
+        void createRoomSuccess(Room room);
 
-        void removeLastRoom();
+        void createRoomError();
 
-        void showEmptyList();
-
-        void stopRefreshingBar();
+        void setPresenterModel(RoomList model);
     }
 
-    public interface Presenter {
-        void loadNextRooms();
-
-        void refreshRooms();
-
-        void filterRooms(RoomFilter roomFilter);
-
-        void clearFiltersAndText();
-
-        void clearFilters();
+    interface Presenter {
+        void createRoom(Room room);
     }
 }

@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.mainscreen.rooms.list;
+package com.transcendensoft.hedbanz.presentation.rooms.list;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -48,6 +48,11 @@ public class RoomItemPresenterImpl extends BasePresenter<Room, RoomItemContract.
                 view().showLoadingItem();
             }
         }
+    }
+
+    @Override
+    public void destroy() {
+        // Stub
     }
 
     public void onClickRoom(){

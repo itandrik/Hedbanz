@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.mainscreen.rooms;
+package com.transcendensoft.hedbanz.presentation.rooms;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.rooms;
  * limitations under the License.
  */
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,12 +43,12 @@ import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
+import com.transcendensoft.hedbanz.domain.entity.RoomList;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.custom.widget.rangeseekbar.RangeSeekBar;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainFragment;
-import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.list.RoomsAdapter;
+import com.transcendensoft.hedbanz.presentation.rooms.list.RoomsAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -93,6 +94,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     private ImageView mIvCloseSearch;
 
     @Inject RoomsPresenter mPresenter;
+    @Inject RoomList mPresenterModel;
     private RoomsAdapter mAdapter;
 
     @Inject
@@ -101,8 +103,8 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     }
 
     /*------------------------------------*
-         *-------- Fragment lifecycle --------*
-         *------------------------------------*/
+     *-------- Fragment lifecycle --------*
+     *------------------------------------*/
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -110,12 +112,11 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
 
         ButterKnife.bind(this, view);
 
+        mPresenter.setModel(mPresenterModel);
         initSwipeToRefresh();
         initRecycler();
         initSearchView();
         initFilters();
-
-        mPresenter.setModel(new ArrayList<>());
 
         return view;
     }
@@ -136,6 +137,19 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.destroy();
+    }
+
+    @Override
+    public void setPresenterModel(RoomList model) {
+        if(mPresenter != null){
+            mPresenter.setModel(model);
+        }
+    }
+
     private void initSwipeToRefresh() {
         mRefreshLayout.setColorSchemeResources(R.color.textDarkRed,
                 android.R.color.holo_green_light,
@@ -144,10 +158,10 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         mRefreshLayout.setOnRefreshListener(() -> {
             if (mPresenter != null) {
                 String searchText = mSvRoomSearch.getQuery().toString();
-                if (TextUtils.isEmpty(searchText)) {
+                if(!mChbApplyFilters.isChecked() && TextUtils.isEmpty(searchText)){
                     mPresenter.refreshRooms();
                 } else {
-                    filterRoomsWithText(searchText);
+                    mPresenter.updateFilter(null); //filter with old filters
                 }
             }
         });
@@ -196,7 +210,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
 
     private void initSearchOnClickListeners() {
         mIvCloseSearch.setOnClickListener(v -> {
-            onCloseSearchClicked();
+            closeSearchAndRefresh();
         });
 
         mIvSearchFilter.setOnClickListener(v -> {
@@ -208,6 +222,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         });
     }
 
+    @SuppressLint("CheckResult")
     private void initFilters() {
         disableFilters();
         RxSearchView.queryTextChanges(mSvRoomSearch)
@@ -217,10 +232,10 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
                 .filter(text -> !text.equals("#"))
                 .subscribe(text -> {
                     if (mPresenter != null) {
-                        if (!TextUtils.isEmpty(text)) {
+                        if (!TextUtils.isEmpty(text) || mChbApplyFilters.isChecked()) {
                             filterRoomsWithText(text);
                         } else {
-                            mPresenter.clearFiltersAndText();
+                            mPresenter.clearTextFilter();
                             mPresenter.refreshRooms();
                         }
                     }
@@ -231,7 +246,13 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
                 .subscribe(isChecked -> {
                     if (isChecked) {
                         enableFilters();
-                        filterRoomsWithWidgetsData();
+                        RoomFilter currentFilter = new RoomFilter.Builder()
+                                .setIsPrivate(mChbWithPassword.isChecked())
+                                .setRoomName(mSvRoomSearch.getQuery().toString())
+                                .setMinPlayers((byte) mRangeSeekBarMaxPlayers.getProgress1())
+                                .setMaxPlayers((byte) mRangeSeekBarMaxPlayers.getProgress2())
+                                .build();
+                        mPresenter.filterRooms(currentFilter);
                     } else {
                         disableFilters();
                         clearRooms();
@@ -239,7 +260,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
                         if (!TextUtils.isEmpty(mSvRoomSearch.getQuery().toString())) {
                             filterRoomsWithText(mSvRoomSearch.getQuery().toString());
                         } else {
-                            mPresenter.clearFiltersAndText();
+                            mPresenter.clearFilters();
                             mPresenter.refreshRooms();
                         }
                     }
@@ -248,7 +269,8 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
                 .observeOn(AndroidSchedulers.mainThread())
                 .skip(1)
                 .subscribe(isChecked -> {
-                    filterRoomsWithWidgetsData();
+                    mPresenter.updateFilter(new RoomFilter.Builder()
+                            .setIsPrivate(isChecked).build());
                 });
         mRangeSeekBarMaxPlayers.setOnSeekChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener() {
             @Override
@@ -268,18 +290,12 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
 
             @Override
             public void onStopTrackingTouch(RangeSeekBar seekBar, int progressLeft, int progressRight) {
-                filterRoomsWithWidgetsData();
+                mPresenter.updateFilter(new RoomFilter.Builder()
+                        .setMinPlayers((byte) progressLeft)
+                        .setMaxPlayers((byte) progressRight)
+                        .build());
             }
         });
-    }
-
-    private void filterRoomsWithWidgetsData() {
-        RoomFilter roomFilter = new RoomFilter.Builder()
-                .setIsPrivate(mChbWithPassword.isChecked())
-                .setMinPlayers((byte) mRangeSeekBarMaxPlayers.getProgress1())
-                .setMaxPlayers((byte) mRangeSeekBarMaxPlayers.getProgress2())
-                .build();
-        mPresenter.filterRooms(roomFilter);
     }
 
     private void disableFilters() {
@@ -299,10 +315,9 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     }
 
     private void filterRoomsWithText(CharSequence text) {
-        RoomFilter roomFilter = new RoomFilter.Builder()
+        mPresenter.updateFilter(new RoomFilter.Builder()
                 .setRoomName(text.toString())
-                .build();
-        mPresenter.filterRooms(roomFilter);
+                .build());
     }
 
     /*------------------------------------*
@@ -352,12 +367,22 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         mFabSearch.hide();
     }
 
-    public void onCloseSearchClicked() {
+    public void closeSearchAndRefresh() {
         mTvToolbarTitle.setVisibility(View.VISIBLE);
         mRlSearchContainer.setVisibility(View.GONE);
         mCvFilters.setVisibility(GONE);
         mFabSearch.show();
+        mChbApplyFilters.setChecked(false);
         mSvRoomSearch.setQuery("", false);
+        mPresenter.clearFilters();
+        mPresenter.refreshRooms();
+    }
+
+    public void hideFilters(){
+        mTvToolbarTitle.setVisibility(View.VISIBLE);
+        mRlSearchContainer.setVisibility(View.GONE);
+        mCvFilters.setVisibility(GONE);
+        mFabSearch.show();
     }
 
     /*------------------------------------*

@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation;
+package com.transcendensoft.hedbanz.di.qualifier;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,30 +15,20 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation;
  * limitations under the License.
  */
 
-import android.support.annotation.StringRes;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import com.transcendensoft.hedbanz.domain.entity.Room;
-import com.transcendensoft.hedbanz.presentation.base.BaseView;
+import javax.inject.Qualifier;
 
 /**
- * View and Presenter interfaces contract for room creation.
+ * Dagger 2 qualifier for application context
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface CreateRoomContract {
-
-    interface View extends BaseView {
-        void showIncorrectRoomName(@StringRes int errorMessage);
-
-        void showIncorrectRoomPassword(@StringRes int errorMessage);
-
-        void createRoomSuccess(Room room);
-
-        void createRoomError(Room room);
-    }
-
-    interface Presenter {
-        void createRoom(Room room);
-    }
+@Documented
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ApplicationContext {
 }

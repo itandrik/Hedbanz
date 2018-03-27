@@ -16,26 +16,22 @@ package com.transcendensoft.hedbanz.presentation.base;
  */
 
 import android.app.ProgressDialog;
-import android.content.Context;
 
 import com.transcendensoft.hedbanz.R;
 
 import dagger.Module;
 import dagger.Provides;
-import dagger.Reusable;
 
 /**
- * Dagger 2 module that provides some view instances
- * or helpers for presentation
+ * Module that provides view dependencies like progress and so on
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 @Module
-public class BaseViewModule {
+public abstract class BaseViewModule {
     @Provides
-    @Reusable
-    public ProgressDialog provideProgressDialog(Context context){
+    public static ProgressDialog provideProgressDialog(BaseActivity context) {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(context.getString(R.string.action_loading));
         progressDialog.setCancelable(false);

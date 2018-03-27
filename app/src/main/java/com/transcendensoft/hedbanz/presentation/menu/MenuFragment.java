@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.mainscreen.menu;
+package com.transcendensoft.hedbanz.presentation.menu;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -26,8 +26,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.data.models.UserDTO;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.CredentialsActivity;
@@ -74,7 +74,7 @@ public class MenuFragment extends DaggerFragment{
     }
 
     private void initUserData(){
-        UserDTO user = mPreferenceManager.getUser();
+        User user = mPreferenceManager.getUser();
 
         mTvMoney.setText(String.valueOf(user.getMoney()));
         mTvUsername.setText(user.getLogin());
@@ -119,6 +119,7 @@ public class MenuFragment extends DaggerFragment{
     @OnClick(R.id.btnExit)
     protected void onLogoutClicked(){
         mPreferenceManager.setIsAuthorised(false);
+        mPreferenceManager.setUser(null);
 
         Intent intent = new Intent(getActivity(), StartActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

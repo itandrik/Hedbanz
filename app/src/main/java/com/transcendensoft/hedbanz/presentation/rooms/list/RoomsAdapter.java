@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.mainscreen.rooms.list;
+package com.transcendensoft.hedbanz.presentation.rooms.list;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -23,7 +23,7 @@ import android.view.ViewGroup;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.presentation.base.MvpRecyclerListAdapter;
-import com.transcendensoft.hedbanz.presentation.mainscreen.rooms.RoomsPresenter;
+import com.transcendensoft.hedbanz.presentation.rooms.RoomsPresenter;
 
 /**
  * Recycler view adapter, that shows all rooms.

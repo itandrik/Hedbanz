@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.data.models.UserDTO;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
@@ -69,9 +69,7 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
         int size = (int) ViewUtils.dpToPx(this, 100);
         Glide.with(this).asGif().load(R.raw.smile_gif_new).preload(size, size);
 
-        if (mPresenter != null) {
-            mPresenter.initSockets();
-        }
+        initPasswordIcon();
         initUserData();
     }
 
@@ -97,7 +95,7 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
     protected void onDestroy() {
         super.onDestroy();
         if (mPresenter != null) {
-            mPresenter.disconnectSockets();
+            mPresenter.destroy();
         }
     }
 
@@ -120,10 +118,19 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
     }
 
     private void initUserData(){
-        UserDTO user = mPreferenceManager.getUser();
+        User user = mPreferenceManager.getUser();
 
         mEtLogin.setText(user.getLogin());
         mEtEmail.setText(user.getEmail());
+    }
+
+    private void initPasswordIcon(){
+        Drawable drawable = VectorDrawableCompat.create(
+                getResources(), R.drawable.ic_password, null);
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(this, R.color.textDarkRed));
+        mEtOldPassword.setCompoundDrawablesWithIntrinsicBounds(drawable, null,null,null);
+        mEtNewPassword.setCompoundDrawablesWithIntrinsicBounds(drawable, null,null,null);
     }
 
     /*------------------------------------*
@@ -148,7 +155,7 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
     @Override
     public void stopSmileAnimation() {
         runOnUiThread(() -> {
-            Glide.with(this).load(R.drawable.logo).into(mIvSmileGif);
+            Glide.with(this).load(R.drawable.logo_for_anim).into(mIvSmileGif);
         });
     }
 

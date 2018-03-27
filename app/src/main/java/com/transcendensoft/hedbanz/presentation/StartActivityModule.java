@@ -15,6 +15,9 @@ package com.transcendensoft.hedbanz.presentation;
  * limitations under the License.
  */
 
+import android.content.Context;
+
+import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.di.scope.FragmentScope;
 import com.transcendensoft.hedbanz.presentation.usercrud.login.LoginContract;
@@ -42,4 +45,8 @@ public interface StartActivityModule {
     @ActivityScope
     @Binds
     LoginContract.Presenter loginPresenter(LoginPresenter loginPresenter);
+
+    @Binds
+    @ActivityContext
+    Context bindContext(StartActivity startActivity);
 }

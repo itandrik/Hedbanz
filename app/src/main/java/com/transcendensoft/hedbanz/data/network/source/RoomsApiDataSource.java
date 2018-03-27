@@ -41,8 +41,7 @@ public class RoomsApiDataSource extends ApiDataSource implements RoomDataSource 
     }
 
     public Observable<List<RoomDTO>> getRooms(int page) {
-        return mService.getRooms(page)
-                .compose(applySchedulers());
+        return mService.getRooms(page);
     }
 
     public Observable<RoomDTO> createRoom(RoomDTO roomDTO, long userId) {
@@ -52,12 +51,10 @@ public class RoomsApiDataSource extends ApiDataSource implements RoomDataSource 
         result.put("maxPlayers", roomDTO.getMaxPlayers());
         result.put("userId", userId);
 
-        return mService.createRoom(result)
-                .compose(applySchedulers());
+        return mService.createRoom(result);
     }
 
     public Observable<List<RoomDTO>> filterRooms(int page, RoomFilterDTO roomFilter) {
-        return mService.filterRooms(page, roomFilter)
-                .compose(applySchedulers());
+        return mService.filterRooms(page, roomFilter);
     }
 }

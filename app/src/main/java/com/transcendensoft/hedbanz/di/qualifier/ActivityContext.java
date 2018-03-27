@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.mainscreen.rooms.list;
+package com.transcendensoft.hedbanz.di.qualifier;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,38 +15,20 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.rooms.list;
  * limitations under the License.
  */
 
-import android.content.Context;
-import android.support.annotation.DrawableRes;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import javax.inject.Qualifier;
 
 /**
- * View and Presenter interfaces contract for room item presentation
+ * Dagger 2 qualifier for activity context
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface RoomItemContract {
-
-    interface View {
-        void setIcon(@DrawableRes int icon);
-
-        void setName(String name);
-
-        void setCurAndMaxPlayers(int currentPlayers, int maxPlayers);
-
-        void setIsProtected(boolean isProtected);
-
-        void showLoadingItem();
-
-        void showCard();
-
-        void showErrorServer();
-
-        void showErrorNetwork();
-
-        Context provideContext();
-    }
-
-    interface Presenter {
-        void onClickRoom();
-    }
+@Documented
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ActivityContext {
 }

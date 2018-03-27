@@ -18,6 +18,7 @@ package com.transcendensoft.hedbanz.data.network;
 import android.content.Context;
 
 import com.transcendensoft.hedbanz.BuildConfig;
+import com.transcendensoft.hedbanz.di.qualifier.ApplicationContext;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 
 import java.io.File;
@@ -51,7 +52,7 @@ public class NetworkModule {
 
     @Provides
     @ApplicationScope
-    public File provideCacheFile(Context context) {
+    public File provideCacheFile(@ApplicationContext Context context) {
         File cacheFile = new File(context.getCacheDir(), "okhttp_cache");
         cacheFile.mkdirs();
         return cacheFile;

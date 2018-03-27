@@ -8,6 +8,7 @@
     <!-- API keys -->
     <!-- Bundle -->
     <string name="bundle_room_id">bundle_room_id</string>
+    <string name="salt">$2a$10$3L8fxrPhH3/qLYhjmsuEku</string>
 
     <!-- Actions -->
     <string name="action_enter">Войти</string>
@@ -23,6 +24,7 @@
     <string name="error_network">Отсутствует подключение к интернету.</string>
     <string name="error_empty_list">Список пуст</string>
     <string name="error_action_retry">Повторить попытку</string>
+    <string name="error_undefined_error">Неизвестная ошибка сервера. Неадекватный код ошибки.</string>
 
     <!-- Login fragment -->
     <string name="login_intro">Поспешите, ваши друзья вас ждут!</string>

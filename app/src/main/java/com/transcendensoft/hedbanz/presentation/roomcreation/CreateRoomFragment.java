@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation;
+package com.transcendensoft.hedbanz.presentation.roomcreation;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,18 +15,31 @@ package com.transcendensoft.hedbanz.presentation.mainscreen.roomcreation;
  * limitations under the License.
  */
 
+import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.RoomList;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.warkiz.widget.IndicatorSeekBar;
@@ -36,6 +49,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.disposables.Disposable;
 
 import static android.view.View.GONE;
 
@@ -48,12 +62,15 @@ import static android.view.View.GONE;
  */
 public class CreateRoomFragment extends BaseFragment implements CreateRoomContract.View {
     @BindView(R.id.tvErrorRoomName) TextView mTvErrorRoomName;
+    @BindView(R.id.chbRoomPasswordTitle) AppCompatCheckBox mChbPasswordTitle;
     @BindView(R.id.tvErrorRoomPassword) TextView mTvErrorRoomPassword;
     @BindView(R.id.etRoomName) EditText mEtRoomName;
-    @BindView(R.id.etRoomPassword) EditText mEtRoomPassword;
+    @BindView(R.id.etRoomPassword) AppCompatEditText mEtRoomPassword;
     @BindView(R.id.isbPlayersQuantity) IndicatorSeekBar mIsbMaxPlayersQuantity;
 
     @Inject CreateRoomPresenter mPresenter;
+    @Inject @ActivityContext Context mContext;
+    @Inject RoomList mPresenterModel;
 
     @Inject
     public CreateRoomFragment() {
@@ -69,6 +86,9 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
         View view = inflater.inflate(R.layout.fragment_room_creation, container, false);
 
         ButterKnife.bind(this, view);
+
+        mPresenter.setModel(mPresenterModel);
+        initPasswordCheckBox();
 
         return view;
     }
@@ -89,10 +109,58 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.destroy();
+    }
+
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
+    private void initPasswordCheckBox(){
+        Disposable disposable = RxCompoundButton.checkedChanges(mChbPasswordTitle)
+                .subscribe(isChecked -> {
+                    if(isChecked){
+                        mEtRoomPassword.setEnabled(true);
+                        mTvErrorRoomPassword.setEnabled(true);
+                        changeEditTextColor(mEtRoomPassword, R.color.colorPrimaryDark);
+                        changeEditTextDrawable(R.drawable.ic_room_password,
+                                R.color.textDarkRed, mEtRoomPassword);
+                    } else {
+                        mEtRoomPassword.setEnabled(false);
+                        mTvErrorRoomPassword.setEnabled(false);
+                        changeEditTextColor(mEtRoomPassword, R.color.textSecondaryLight);
+                        changeEditTextDrawable(R.drawable.ic_room_password,
+                                R.color.disabledField, mEtRoomPassword);
+                    }
+                });
+        addRxBindingDisposable(disposable);
+    }
 
+    private void changeEditTextDrawable(@DrawableRes int drawable, @ColorRes int color,
+                                        AppCompatEditText editText) {
+        Drawable drawableLeft = VectorDrawableCompat.create(getResources(), drawable, null);
+        drawableLeft = DrawableCompat.wrap(drawableLeft);
+        DrawableCompat.setTint(drawableLeft, ContextCompat.getColor(
+                mContext, color));
+        editText.setCompoundDrawablesWithIntrinsicBounds(
+                drawableLeft, null, null, null);
+    }
+
+    private void changeEditTextColor(AppCompatEditText editText, @ColorRes int color) {
+        editText.getBackground().mutate()
+                .setColorFilter(ContextCompat.getColor(
+                        mContext, color),
+                        PorterDuff.Mode.SRC_ATOP);
+    }
+
+    @Override
+    public void setPresenterModel(RoomList model) {
+        if(mPresenter != null){
+            mPresenter.setModel(model);
+        }
+    }
 
     /*------------------------------------*
      *-------- On click listeners --------*
@@ -101,6 +169,7 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
     protected void onCreateRoomClicked() {
         if (mPresenter != null) {
             Room room = new Room.Builder()
+                    .setWithPassword(mChbPasswordTitle.isChecked())
                     .setMaxPlayers((byte) mIsbMaxPlayersQuantity.getProgress())
                     .setName(mEtRoomName.getText().toString())
                     .setPassword(mEtRoomPassword.getText().toString())
@@ -114,12 +183,17 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
      *------------------------------------*/
     @Override
     public void createRoomSuccess(Room room) {
-        AndroidUtils.showShortToast(getActivity(), "RoomDTO created successfully");
+        hideLoadingDialog();
+        mEtRoomName.setText("");
+        mEtRoomPassword.setText("");
+        AndroidUtils.showShortToast(getActivity(), "Room created successfully");
         //TODO open view
     }
 
     @Override
-    public void createRoomError(Room room) {
+    public void createRoomError() {
+        hideLoadingDialog();
+        mEtRoomPassword.setText("");
         AndroidUtils.showShortToast(getActivity(), "Error while room creation");
         //TODO show some message
     }
@@ -129,13 +203,13 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
      *------------------------------------*/
     @Override
     public void showServerError() {
-        hideLoadingDialog();
+        super.showServerError();
         AndroidUtils.showShortToast(getActivity(), R.string.error_server);
     }
 
     @Override
     public void showNetworkError() {
-        hideLoadingDialog();
+        super.showNetworkError();
         AndroidUtils.showShortToast(getActivity(), R.string.error_network);
     }
 

@@ -18,6 +18,8 @@ package com.transcendensoft.hedbanz.domain.repository;
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.domain.entity.User;
 
+import org.json.JSONObject;
+
 import io.reactivex.Observable;
 
 /**
@@ -34,4 +36,12 @@ public interface UserDataRepository {
 
     Observable<User> updateUser(long id, String newLogin,
                                 String oldPassword, String newPassword, DataPolicy dataPolicy);
+
+    void connectIsLoginAvailable();
+
+    Observable<JSONObject> isLoginAvailableObservable();
+
+    void checkIsLoginAvailable(String login);
+
+    void disconnectIsLoginAvailable();
 }

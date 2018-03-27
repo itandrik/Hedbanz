@@ -52,6 +52,7 @@ public class GameActivity extends BaseActivity implements GameContract.View{
         super.onDestroy();
         if (mPresenter != null) {
             mPresenter.disconnectSockets();
+            mPresenter.destroy();
         }
     }
 

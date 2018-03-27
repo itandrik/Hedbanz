@@ -115,6 +115,19 @@ public class User {
         return (int) (id ^ (id >>> 32));
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", confirmPassword='" + confirmPassword + '\'' +
+                ", money=" + money +
+                ", registrationDate=" + registrationDate +
+                ", login='" + login + '\'' +
+                '}';
+    }
+
     public static class Builder {
         private long id;
         private String email;

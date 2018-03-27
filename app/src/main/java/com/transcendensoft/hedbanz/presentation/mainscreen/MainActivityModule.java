@@ -15,10 +15,19 @@ package com.transcendensoft.hedbanz.presentation.mainscreen;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.di.scope.FragmentScope;
-import com.transcendensoft.hedbanz.presentation.mainscreen.menu.MenuFragment;
+import android.content.Context;
 
+import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
+import com.transcendensoft.hedbanz.di.scope.ActivityScope;
+import com.transcendensoft.hedbanz.di.scope.FragmentScope;
+import com.transcendensoft.hedbanz.domain.entity.RoomList;
+import com.transcendensoft.hedbanz.presentation.menu.MenuFragment;
+
+import java.util.ArrayList;
+
+import dagger.Binds;
 import dagger.Module;
+import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
 
 /**
@@ -37,4 +46,14 @@ public interface MainActivityModule {
     @FragmentScope
     @ContributesAndroidInjector
     MenuFragment menuFragment();
+
+    @ActivityContext
+    @Binds
+    Context bindActivityContext(MainActivity mainActivity);
+
+    @Provides
+    @ActivityScope
+    static RoomList provideModel(){
+        return new RoomList(new ArrayList<>());
+    }
 }

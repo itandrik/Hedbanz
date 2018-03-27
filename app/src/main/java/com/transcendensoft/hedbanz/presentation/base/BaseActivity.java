@@ -16,11 +16,13 @@ package com.transcendensoft.hedbanz.presentation.base;
  */
 
 import android.app.ProgressDialog;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.EditText;
 
+import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
 import com.transcendensoft.hedbanz.utils.NetworkUtils;
@@ -28,6 +30,8 @@ import com.transcendensoft.hedbanz.utils.NetworkUtils;
 import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatActivity;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 /**
  * It is base activity for all activities in application.
@@ -38,7 +42,38 @@ import dagger.android.support.DaggerAppCompatActivity;
  *         Developed by <u>Transcendensoft</u>
  */
 public abstract class BaseActivity extends DaggerAppCompatActivity implements BaseView {
-    @Inject ProgressDialog mProgressDialog;
+    private ProgressDialog mProgressDialog;
+    @Inject CompositeDisposable mViewCompositeDisposable;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        initProgressDialog();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mViewCompositeDisposable != null && !mViewCompositeDisposable.isDisposed()) {
+            mViewCompositeDisposable.dispose();
+        }
+        mProgressDialog.hide();
+        mProgressDialog = null;
+    }
+
+    protected void addRxBindingDisposable(Disposable disposable){
+        if(mViewCompositeDisposable != null){
+            mViewCompositeDisposable.add(disposable);
+        }
+    }
+
+    private void initProgressDialog() {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage(this.getString(R.string.action_loading));
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setIndeterminate(true);
+    }
 
     @Override
     public void showSnackError(int messageRes) {
@@ -114,5 +149,15 @@ public abstract class BaseActivity extends DaggerAppCompatActivity implements Ba
         if (mProgressDialog != null) {
             mProgressDialog.hide();
         }
+    }
+
+    @Override
+    public void showServerError() {
+        hideLoadingDialog();
+    }
+
+    @Override
+    public void showNetworkError() {
+        hideLoadingDialog();
     }
 }
