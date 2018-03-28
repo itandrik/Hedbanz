@@ -51,25 +51,26 @@
             android:screenOrientation="portrait"
             android:theme="@style/ThemeRegister"
             android:windowSoftInputMode="adjustResize" />
-
         <activity android:name=".presentation.game.GameActivity" />
 
         <!-- Service -->
 
+
         <!-- Firebase Notifications -->
         <service android:name=".data.network.service.firebase.HedbanzFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <service android:name=".data.network.service.firebase.HedbanzFirebaseInstanceIdService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
         <!-- Receivers -->
         <!-- Providers -->
+        <activity android:name=".presentation.friends.FriendsActivity"></activity>
     </application>
 
 </manifest>

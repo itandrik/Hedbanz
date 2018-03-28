@@ -36,6 +36,8 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.GAME_SOCKET_NSP;
 import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.HOST;
 import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.PORT_SOCKET;
@@ -83,7 +85,10 @@ public class GamePresenter extends BasePresenter<RoomDTO, GameContract.View> imp
     @Override
     public void initSockets() {
         try {
-            mSocket = IO.socket(HOST + PORT_SOCKET + GAME_SOCKET_NSP);
+            IO.Options options = new IO.Options();
+            options.forceNew = false;
+            options.reconnection = true;
+            mSocket = IO.socket(HOST + PORT_SOCKET + GAME_SOCKET_NSP, options);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -91,6 +96,18 @@ public class GamePresenter extends BasePresenter<RoomDTO, GameContract.View> imp
         emitJoinToRoom();
         initSocketListeners();
 
+        mSocket.on(Socket.EVENT_DISCONNECT, (args) -> {
+            Timber.i("Disconnected socket");
+        });
+        mSocket.on(Socket.EVENT_CONNECT, (args) -> {
+            Timber.i("EVENT_CONNECT socket");
+        });
+        mSocket.on(Socket.EVENT_CONNECT_ERROR, (args) -> {
+            Timber.i("EVENT_CONNECT_ERROR socket");
+        });
+        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, (args) -> {
+            Timber.i("EVENT_CONNECT_TIMEOUT socket");
+        });
         mSocket.on(ROOM_INFO_EVENT, mRoomInfoListener);
         mSocket.on(JOINED_USER_EVENT, mJoinedUserListener);
         mSocket.connect();
@@ -140,9 +157,11 @@ public class GamePresenter extends BasePresenter<RoomDTO, GameContract.View> imp
     @Override
     public void disconnectSockets() {
         emitDisconnectFromRoom();
-        mSocket.disconnect();
-        mSocket.off(JOIN_ROOM_EVENT, mRoomInfoListener);
-        mSocket.off(JOINED_USER_EVENT, mRoomInfoListener);
+        if(mSocket.connected()) {
+            mSocket.disconnect();
+            mSocket.off(JOIN_ROOM_EVENT, mRoomInfoListener);
+            mSocket.off(JOINED_USER_EVENT, mRoomInfoListener);
+        }
     }
 
     private void emitDisconnectFromRoom() {

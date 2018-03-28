@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.data.source;
+package com.transcendensoft.hedbanz.presentation.friends;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,28 +15,28 @@ package com.transcendensoft.hedbanz.data.source;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.network.source.ApiDataSource;
-import com.transcendensoft.hedbanz.data.network.source.FriendsApiDataSource;
-import com.transcendensoft.hedbanz.data.network.source.RoomsApiDataSource;
-import com.transcendensoft.hedbanz.data.network.source.UserApiDataSource;
+import android.content.Context;
+
+import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
+import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 
 import dagger.Binds;
 import dagger.Module;
 
 /**
- * Dagger 2 module to provide different API and DB data sources.
+ * Module that provides fragments, presenter
+ * and other instances for friends screens.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 @Module
-public interface DataSourceModule {
+public interface FriendsModule {
+    @ActivityScope
     @Binds
-    ApiDataSource provideRoomsApiDataSource(RoomsApiDataSource roomsApiDataSource);
+    FriendsContract.Presenter bindFriendsPresenter(FriendsPresenter friendsPresenter);
 
+    @ActivityContext
     @Binds
-    ApiDataSource provideUserApiDataSource(UserApiDataSource userApiDataSource);
-
-    @Binds
-    ApiDataSource provideFriendApiDataSource(FriendsApiDataSource friendApiDataSource);
+    Context bindActivityContext(FriendsActivity friendsActivity);
 }

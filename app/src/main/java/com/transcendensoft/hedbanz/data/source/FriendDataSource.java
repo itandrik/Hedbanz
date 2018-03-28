@@ -15,28 +15,24 @@ package com.transcendensoft.hedbanz.data.source;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.network.source.ApiDataSource;
-import com.transcendensoft.hedbanz.data.network.source.FriendsApiDataSource;
-import com.transcendensoft.hedbanz.data.network.source.RoomsApiDataSource;
-import com.transcendensoft.hedbanz.data.network.source.UserApiDataSource;
+import com.transcendensoft.hedbanz.data.models.FriendDTO;
 
-import dagger.Binds;
-import dagger.Module;
+import java.util.List;
+
+import io.reactivex.Completable;
+import io.reactivex.Observable;
 
 /**
- * Dagger 2 module to provide different API and DB data sources.
+ * Base interface for remote and local data that
+ * describes methods of getting or deleting friends
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-@Module
-public interface DataSourceModule {
-    @Binds
-    ApiDataSource provideRoomsApiDataSource(RoomsApiDataSource roomsApiDataSource);
+public interface FriendDataSource {
+    Observable<List<FriendDTO>> getFriends(long userId);
 
-    @Binds
-    ApiDataSource provideUserApiDataSource(UserApiDataSource userApiDataSource);
+    Completable removeFriend(long userId, long friendId);
 
-    @Binds
-    ApiDataSource provideFriendApiDataSource(FriendsApiDataSource friendApiDataSource);
+    Completable acceptFriend(long userId, long friendId);
 }

@@ -19,7 +19,7 @@ import android.text.TextUtils;
 
 import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
-import com.transcendensoft.hedbanz.domain.UseCase;
+import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.exception.RoomCreationException;
@@ -42,7 +42,7 @@ import io.reactivex.disposables.CompositeDisposable;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class CreateRoomInteractor extends UseCase<Room, Room>{
+public class CreateRoomInteractor extends ObservableUseCase<Room, Room> {
     private RoomDataRepository mRoomRepository;
     private PreferenceManager mPreferenceManager;
     private RoomCreationException mRoomException;

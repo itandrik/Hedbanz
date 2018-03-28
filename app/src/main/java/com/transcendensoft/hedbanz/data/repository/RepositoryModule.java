@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.data.repository;
  */
 
 import com.transcendensoft.hedbanz.data.source.DataSourceModule;
+import com.transcendensoft.hedbanz.domain.repository.FriendsDataRepository;
 import com.transcendensoft.hedbanz.domain.repository.RoomDataRepository;
 import com.transcendensoft.hedbanz.domain.repository.UserDataRepository;
 
@@ -35,4 +36,7 @@ public interface RepositoryModule {
 
     @Binds
     UserDataRepository bindUserDataRepository(UserDataRepositoryImpl userDataRepository);
+
+    @Binds
+    FriendsDataRepository bindFriendsDataRepository(FriendsDataRepositoryImpl friendsDataRepository);
 }

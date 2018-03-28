@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.domain.interactor.user;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.domain.UseCase;
+import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.repository.UserDataRepository;
 
 import org.json.JSONException;
@@ -35,7 +35,7 @@ import io.reactivex.subjects.PublishSubject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class IsLoginAvailableInteractor extends UseCase<Boolean, String>{
+public class IsLoginAvailableInteractor extends ObservableUseCase<Boolean, String> {
     private static final String IS_LOGIN_AVAILABLE = "isLoginAvailable";
 
     private UserDataRepository mUserDataRepository;

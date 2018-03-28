@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.data.network.service;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.models.FriendDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
 import com.transcendensoft.hedbanz.data.models.UserDTO;
@@ -29,6 +30,7 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Interface that describes all API methods with server
@@ -56,4 +58,7 @@ public interface ApiService {
     Observable<List<RoomDTO>> filterRooms(
             @Path("page") int page,
             @Body RoomFilterDTO roomFilter);
+
+    @GET("friends")
+    Observable<List<FriendDTO>> getFriends(@Query("userId") long userId);
 }

@@ -46,7 +46,7 @@ public class UserDTO {
     @Expose
     private String login;
 
-    private UserDTO(long id, String email, String password, long money, Long registrationDate, String login) {
+    protected UserDTO(long id, String email, String password, long money, Long registrationDate, String login) {
         this.id = id;
         this.email = email;
         this.password = password;
