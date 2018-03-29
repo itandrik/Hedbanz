@@ -23,7 +23,6 @@ public class GameActivity extends BaseActivity implements GameContract.View{
 
         ButterKnife.bind(this, this);
 
-        //TODO refactor this, it should be inside Presenter
         if (mPresenter != null && getIntent() != null) {
             long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
             mPresenter.setModel(new RoomDTO.Builder().setId(roomId).build());
@@ -51,7 +50,6 @@ public class GameActivity extends BaseActivity implements GameContract.View{
     protected void onDestroy() {
         super.onDestroy();
         if (mPresenter != null) {
-            mPresenter.disconnectSockets();
             mPresenter.destroy();
         }
     }

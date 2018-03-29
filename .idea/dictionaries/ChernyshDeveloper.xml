@@ -2,6 +2,9 @@
   <dictionary name="ChernyshDeveloper">
     <words>
       <w>hedbanz</w>
+      <w>interactor</w>
+      <w>paginator</w>
+      <w>socketable</w>
       <w>transcendensoft</w>
     </words>
   </dictionary>

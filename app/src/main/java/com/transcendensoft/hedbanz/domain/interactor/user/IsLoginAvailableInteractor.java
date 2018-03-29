@@ -39,7 +39,6 @@ public class IsLoginAvailableInteractor extends ObservableUseCase<Boolean, Strin
     private static final String IS_LOGIN_AVAILABLE = "isLoginAvailable";
 
     private UserDataRepository mUserDataRepository;
-    private Observable<Boolean> mIsLoginAvailableObservable;
     private PublishSubject<Boolean> mSubjectLoginAvailable;
 
     @Inject
@@ -50,18 +49,17 @@ public class IsLoginAvailableInteractor extends ObservableUseCase<Boolean, Strin
         this.mUserDataRepository = userDataRepository;
         mUserDataRepository.connectIsLoginAvailable();
 
-        mIsLoginAvailableObservable =
-                mUserDataRepository.isLoginAvailableObservable()
-                        .flatMap(jsonObject -> {
-                            try {
-                                return Observable.just(jsonObject.getBoolean(IS_LOGIN_AVAILABLE));
-                            } catch (JSONException e) {
-                                throw new RuntimeException("Error parsing JSONObject" +
-                                        "while getting isLoginAvailable from server");
-                            }
-                        });
+        Observable<Boolean> isLoginAvailableObservable = mUserDataRepository.isLoginAvailableObservable()
+                .flatMap(jsonObject -> {
+                    try {
+                        return Observable.just(jsonObject.getBoolean(IS_LOGIN_AVAILABLE));
+                    } catch (JSONException e) {
+                        throw new RuntimeException("Error parsing JSONObject" +
+                                "while getting isLoginAvailable from server");
+                    }
+                });
         mSubjectLoginAvailable = PublishSubject.create();
-        mIsLoginAvailableObservable.subscribe(mSubjectLoginAvailable);
+        isLoginAvailableObservable.subscribe(mSubjectLoginAvailable);
     }
 
     @Override

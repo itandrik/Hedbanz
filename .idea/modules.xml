@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Hedbanz.iml" filepath="$PROJECT_DIR$/Hedbanz.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com-google-firebase-messaging/com-google-firebase-messaging.iml" filepath="$PROJECT_DIR$/com-google-firebase-messaging/com-google-firebase-messaging.iml" />
     </modules>
   </component>
 </project>

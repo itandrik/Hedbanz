@@ -89,7 +89,6 @@ public abstract class ObservableUseCase<T, PARAM> extends UseCase{
         addDisposable(observable.subscribe(onNext, onError, onComplete, onSubscribe));
     }
 
-
     /**
      * Executes the current use case.
      */

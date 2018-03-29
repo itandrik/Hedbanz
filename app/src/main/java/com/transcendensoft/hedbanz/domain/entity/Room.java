@@ -135,6 +135,21 @@ public class Room {
         return (int) (id ^ (id >>> 32));
     }
 
+    @Override
+    public String toString() {
+        return "Room{" +
+                "id=" + id +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", maxPlayers=" + maxPlayers +
+                ", users=" + users +
+                ", currentPlayersNumber=" + currentPlayersNumber +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", isWithPassword=" + isWithPassword +
+                '}';
+    }
+
     public static class Builder {
         private long id;
         private String password;

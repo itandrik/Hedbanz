@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.game;
+package com.transcendensoft.hedbanz.data.models;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,21 +15,11 @@ package com.transcendensoft.hedbanz.presentation.game;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.presentation.base.BaseView;
-
 /**
- * View and Presenter interfaces contract for game mode presentation
+ * //TODO add class description 
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- * Developed by <u>Transcendensoft</u>
+ *         Developed by <u>Transcendensoft</u>
  */
-public interface GameContract {
-
-    interface View extends BaseView {
-        //TODO
-    }
-
-    interface Presenter {
-        void initSockets();
-    }
+public class MessageDTO {
 }

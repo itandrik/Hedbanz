@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.game;
+package com.transcendensoft.hedbanz.domain.interactor.game.exception;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,21 +15,27 @@ package com.transcendensoft.hedbanz.presentation.game;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.presentation.base.BaseView;
-
 /**
- * View and Presenter interfaces contract for game mode presentation
+ * Exception that thrown when server API sent incorrect json
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- * Developed by <u>Transcendensoft</u>
+ *         Developed by <u>Transcendensoft</u>
  */
-public interface GameContract {
+public class IncorrectJsonException extends RuntimeException{
+    private String json;
+    private String method;
 
-    interface View extends BaseView {
-        //TODO
+    public IncorrectJsonException(String json, String method) {
+        super();
+        this.json = json;
+        this.method = method;
     }
 
-    interface Presenter {
-        void initSockets();
+    public String getJson() {
+        return json;
+    }
+
+    public String getMethod() {
+        return method;
     }
 }
