@@ -15,8 +15,6 @@ package com.transcendensoft.hedbanz.data.repository;
  * limitations under the License.
  */
 
-import android.support.annotation.NonNull;
-
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -34,7 +32,6 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
 
 import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.GAME_SOCKET_NSP;
 import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.HOST;
@@ -53,11 +50,11 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String ROOM_INFO_EVENT = "joined-room";
     private static final String JOINED_USER_EVENT = "joined-user";
     private static final String LEFT_USER_EVENT = "left-user";
-    private static final String CLIENT_TYPING_EVENT = "client-startTyping";
-    private static final String CLIENT_STOP_TYPING_EVENT = "client-stop-startTyping";
+    private static final String CLIENT_TYPING_EVENT = "client-start-typing";
+    private static final String CLIENT_STOP_TYPING_EVENT = "client-stop-typing";
     private static final String CLIENT_MESSAGE_EVENT = "client-msg";
-    private static final String SERVER_TYPING_EVENT = "server-startTyping";
-    private static final String SERVER_STOP_TYPING_EVENT = "server-stop-startTyping";
+    private static final String SERVER_TYPING_EVENT = "server-start-typing";
+    private static final String SERVER_STOP_TYPING_EVENT = "server-stop-typing";
     private static final String SERVER_MESSAGE_EVENT = "server-msg";
 
     private Socket mSocket;
@@ -77,33 +74,41 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
-    public Observable<JSONObject> connectObservable() {
+    public Observable<Boolean> connectObservable() {
         return Observable.create(emitter -> {
-            Emitter.Listener listener = getJsonObjectListener(emitter);
+            Emitter.Listener listener = args -> {
+                emitter.onNext(true);
+            };
             mSocket.on(Socket.EVENT_CONNECT, listener);
         });
     }
 
     @Override
-    public Observable<JSONObject> disconnectObservable() {
+    public Observable<Boolean> disconnectObservable() {
         return Observable.create(emitter -> {
-            Emitter.Listener listener = getJsonObjectListener(emitter);
+            Emitter.Listener listener = args -> {
+                emitter.onNext(true);
+            };
             mSocket.on(Socket.EVENT_DISCONNECT, listener);
         });
     }
 
     @Override
-    public Observable<JSONObject> connectErrorObservable() {
+    public Observable<Boolean> connectErrorObservable() {
         return Observable.create(emitter -> {
-            Emitter.Listener listener = getJsonObjectListener(emitter);
+            Emitter.Listener listener = args -> {
+                emitter.onNext(true);
+            };
             mSocket.on(Socket.EVENT_CONNECT_ERROR, listener);
         });
     }
 
     @Override
-    public Observable<JSONObject> connectTimeoutObservable() {
+    public Observable<Boolean> connectTimeoutObservable() {
         return Observable.create(emitter -> {
-            Emitter.Listener listener = getJsonObjectListener(emitter);
+            Emitter.Listener listener = args -> {
+                emitter.onNext(true);
+            };
             mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, listener);
         });
     }
@@ -111,7 +116,10 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     @Override
     public Observable<JSONObject> roomInfoObservable() {
         return Observable.create(emitter -> {
-            Emitter.Listener listener = getJsonObjectListener(emitter);
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+                emitter.onNext(data);
+            };
             mSocket.on(ROOM_INFO_EVENT, listener);
         });
     }
@@ -119,7 +127,10 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     @Override
     public Observable<JSONObject> joinedUserObservable() {
         return Observable.create(emitter -> {
-            Emitter.Listener listener = getJsonObjectListener(emitter);
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+                emitter.onNext(data);
+            };
             mSocket.on(JOINED_USER_EVENT, listener);
         });
     }
@@ -127,7 +138,10 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     @Override
     public Observable<JSONObject> leftUserObservable() {
         return Observable.create(emitter -> {
-            Emitter.Listener listener = getJsonObjectListener(emitter);
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+                emitter.onNext(data);
+            };
             mSocket.on(LEFT_USER_EVENT, listener);
         });
     }
@@ -135,7 +149,10 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     @Override
     public Observable<JSONObject> typingObservable() {
         return Observable.create(emitter -> {
-            Emitter.Listener listener = getJsonObjectListener(emitter);
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+                emitter.onNext(data);
+            };
             mSocket.on(CLIENT_TYPING_EVENT, listener);
         });
     }
@@ -143,7 +160,10 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     @Override
     public Observable<JSONObject> stopTypingObservable() {
         return Observable.create(emitter -> {
-            Emitter.Listener listener = getJsonObjectListener(emitter);
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+                emitter.onNext(data);
+            };
             mSocket.on(CLIENT_STOP_TYPING_EVENT, listener);
         });
     }
@@ -151,7 +171,10 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     @Override
     public Observable<JSONObject> messageObservable() {
         return Observable.create(emitter -> {
-            Emitter.Listener listener = getJsonObjectListener(emitter);
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+                emitter.onNext(data);
+            };
             mSocket.on(CLIENT_MESSAGE_EVENT, listener);
         });
     }
@@ -214,13 +237,5 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             mSocket.off(SERVER_STOP_TYPING_EVENT);
             mSocket.off(SERVER_MESSAGE_EVENT);
         }
-    }
-
-    @NonNull
-    private Emitter.Listener getJsonObjectListener(ObservableEmitter<JSONObject> emitter) {
-        return args -> {
-            JSONObject data = (JSONObject) args[0];
-            emitter.onNext(data);
-        };
     }
 }

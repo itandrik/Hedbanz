@@ -16,10 +16,100 @@ package com.transcendensoft.hedbanz.domain.entity;
  */
 
 /**
- * //TODO add class description 
+ * Entity that describes message in game mode from other users.
+ *
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 public class Message {
+    private long id;
+    private String message;
+    private User userFrom;
+    private MessageType messageType;
+
+    private Message(long id, String message, User userFrom, MessageType messageType) {
+        this.id = id;
+        this.message = message;
+        this.userFrom = userFrom;
+        this.messageType = messageType;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public User getUserFrom() {
+        return userFrom;
+    }
+
+    public void setUserFrom(User userFrom) {
+        this.userFrom = userFrom;
+    }
+
+    public MessageType getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(MessageType messageType) {
+        this.messageType = messageType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Message message = (Message) o;
+
+        return id == message.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
+    }
+
+    public static class Builder {
+        private long id;
+        private String message;
+        private User userFrom;
+        private MessageType messageType;
+
+        public Builder setId(long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setMessage(String message) {
+            this.message = message;
+            return this;
+        }
+
+        public Builder setUserFrom(User userFrom) {
+            this.userFrom = userFrom;
+            return this;
+        }
+
+        public Builder setMessageType(MessageType messageType) {
+            this.messageType = messageType;
+            return this;
+        }
+
+        public Message build() {
+            return new Message(id, message, userFrom, messageType);
+        }
+    }
 }

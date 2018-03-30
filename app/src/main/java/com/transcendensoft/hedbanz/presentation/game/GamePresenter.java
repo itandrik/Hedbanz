@@ -56,10 +56,10 @@ public class GamePresenter extends BasePresenter<RoomDTO, GameContract.View> imp
 
     @Override
     public void initSockets() {
-        mGameInteractor.connectSocketToServer(model.getId());
-
         initSocketSystemListeners();
         initBusinessLogicListeners();
+
+        mGameInteractor.connectSocketToServer(model.getId());
     }
 
     private void initSocketSystemListeners() {

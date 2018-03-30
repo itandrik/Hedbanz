@@ -28,10 +28,10 @@ import io.reactivex.Observable;
  *         Developed by <u>Transcendensoft</u>
  */
 public interface GameDataRepository {
-    Observable<JSONObject> connectObservable();
-    Observable<JSONObject> disconnectObservable();
-    Observable<JSONObject> connectErrorObservable();
-    Observable<JSONObject> connectTimeoutObservable();
+    Observable<Boolean> connectObservable();
+    Observable<Boolean> disconnectObservable();
+    Observable<Boolean> connectErrorObservable();
+    Observable<Boolean> connectTimeoutObservable();
     Observable<JSONObject> roomInfoObservable();
     Observable<JSONObject> joinedUserObservable();
     Observable<JSONObject> leftUserObservable();

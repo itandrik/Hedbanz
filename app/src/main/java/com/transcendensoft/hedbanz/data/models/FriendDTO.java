@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.data.models;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.domain.entity.Friend;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * DTO for friend entity.
@@ -25,6 +25,7 @@ import com.transcendensoft.hedbanz.domain.entity.Friend;
  *         Developed by <u>Transcendensoft</u>
  */
 public class FriendDTO extends UserDTO {
+    @SerializedName("isAccepted")
     private boolean isAccepted;
 
     private FriendDTO(long id, String email, String password, long money,

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:minHeight="?attr/listPreferredItemHeight">
+    <ImageView
+        android:id="@+id/ivUserImage"
+        android:layout_width="42dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_height="42dp" />
+    <LinearLayout
+        android:background="@drawable/message_other_user"
+        android:layout_toRightOf="@id/ivUserImage"
+        android:layout_toEndOf="@id/ivUserImage"
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:padding="12dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:maxWidth="300dp"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tvLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:textColor="@color/textDarkRed"/>
+        <TextView
+            android:id="@+id/tvMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textPrimary"
+            android:textSize="14sp" />
+    </LinearLayout>
+</RelativeLayout>
