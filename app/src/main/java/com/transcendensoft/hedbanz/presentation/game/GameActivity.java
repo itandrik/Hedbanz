@@ -6,12 +6,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.game.list.GameListAdapter;
+import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +21,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class GameActivity extends BaseActivity implements GameContract.View{
-    @Inject GamePresenter mPresenter;
+public class GameActivity extends BaseActivity implements GameContract.View {
+    //@Inject GamePresenter mPresenter;
     @Inject GameListAdapter mAdapter;
 
     @BindView(R.id.rvGameList) RecyclerView mRecycler;
@@ -37,10 +37,10 @@ public class GameActivity extends BaseActivity implements GameContract.View{
 
         ButterKnife.bind(this, this);
 
-        if (mPresenter != null && getIntent() != null) {
-            long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
-            mPresenter.setModel(new RoomDTO.Builder().setId(roomId).build());
-        }
+        //if (mPresenter != null && getIntent() != null) {
+        //    long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
+        //   mPresenter.setModel(new RoomDTO.Builder().setId(roomId).build());
+        //}
 
         initRecycler();
     }
@@ -48,44 +48,43 @@ public class GameActivity extends BaseActivity implements GameContract.View{
     @Override
     protected void onResume() {
         super.onResume();
-        if (mPresenter != null) {
-            mPresenter.bindView(this);
-        }
+        //  if (mPresenter != null) {
+        //      mPresenter.bindView(this);
+        //  }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (mPresenter != null) {
-            mPresenter.unbindView();
-        }
+        //  if (mPresenter != null) {
+        //      mPresenter.unbindView();
+        //   }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPresenter != null) {
-            mPresenter.destroy();
-        }
+        //   if (mPresenter != null) {
+        //      mPresenter.destroy();
+        //  }
     }
 
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
-    private void initRecycler(){
+    private void initRecycler() {
         mRecycler.setAdapter(mAdapter);
         mRecycler.setItemAnimator(new DefaultItemAnimator());
 
         LinearLayoutManager manager = new LinearLayoutManager(
                 this, LinearLayoutManager.VERTICAL, false);
-        //manager.setStackFromEnd(true);
+        manager.setStackFromEnd(true);
         mRecycler.setLayoutManager(manager);
-        //mRecycler.setItemViewCacheSize(50);
 
         addTempMessages();
     }
 
-    private void addTempMessages(){
+    private void addTempMessages() {
         List<Message> messages = new ArrayList<>();
 
         Message message1 = new Message.Builder()
@@ -121,12 +120,93 @@ public class GameActivity extends BaseActivity implements GameContract.View{
                 .setUserFrom(user2)
                 .build();
 
-        messages.add(message1);
-        messages.add(message2);
-        messages.add(message3);
-        messages.add(message4);
+        User user3 = new User.Builder()
+                .setId(3)
+                .setLogin("user3")
+                .build();
+        Message message5 = new Message.Builder()
+                .setMessage("Heeey its me, user 3.")
+                .setId(5)
+                .setMessageType(MessageType.SIMPLE_MESSAGE_OTHER_USER)
+                .setUserFrom(user3)
+                .build();
+        Message message10 = new Message.Builder()
+                .setMessage("User 3 one more message")
+                .setId(10)
+                .setMessageType(MessageType.SIMPLE_MESSAGE_OTHER_USER)
+                .setUserFrom(user3)
+                .build();
+
+        Message message6 = new Message.Builder()
+                .setId(6)
+                .setMessageType(MessageType.START_TYPING)
+                .setUserFrom(user3)
+                .build();
+
+        Message message7 = new Message.Builder()
+                .setId(7)
+                .setMessageType(MessageType.START_TYPING)
+                .setUserFrom(user2)
+                .build();
+
+        Message message8 = new Message.Builder()
+                .setId(8)
+                .setMessageType(MessageType.STOP_TYPING)
+                .setUserFrom(user2)
+                .build();
+
+        Message message9 = new Message.Builder()
+                .setId(9)
+                .setMessage("Message before typing")
+                .setMessageType(MessageType.SIMPLE_MESSAGE_THIS_USER)
+                .build();
+
+        processSimpleMessage(messages, message1);
+        processSimpleMessage(messages, message2);
+        processSimpleMessage(messages, message3);
+        processSimpleMessage(messages, message4);
+        processSimpleMessage(messages, message5);
+        processSimpleMessage(messages, message10);
+        processTypingMessage(messages, message6);
+        processTypingMessage(messages, message7);
+        processTypingMessage(messages, message8);
+        processSimpleMessage(messages, message9);
 
         mAdapter.clearAndAddAll(messages);
+    }
+
+    private void processTypingMessage(List<Message> messages, Message message) {
+        Message lastMessage = null;
+        if(!messages.isEmpty()){
+            lastMessage = messages.get(messages.size() - 1);
+        }
+        if (message.getMessageType() == MessageType.START_TYPING) {
+            if (lastMessage instanceof TypingMessage) {
+                ((TypingMessage) lastMessage).addUser(message.getUserFrom());
+            } else {
+                messages.add(new TypingMessage(message));
+            }
+        } else if (message.getMessageType() == MessageType.STOP_TYPING) {
+            if (lastMessage instanceof TypingMessage) {
+                TypingMessage typingMessage = (TypingMessage) lastMessage;
+                typingMessage.removeUser(message.getUserFrom());
+                if (typingMessage.getTypingUsers().isEmpty()) {
+                    messages.remove(messages.size() - 1);
+                }
+            }
+        }
+    }
+
+    private void processSimpleMessage(List<Message> messages, Message message) {
+        Message lastMessage = null;
+        if(!messages.isEmpty()){
+            lastMessage = messages.get(messages.size() - 1);
+        }
+        if (lastMessage instanceof TypingMessage) {
+            messages.add(messages.size() - 1, message);
+        } else {
+            messages.add(message);
+        }
     }
 
     /*------------------------------------*

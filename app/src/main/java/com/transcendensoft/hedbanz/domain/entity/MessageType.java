@@ -22,10 +22,26 @@ package com.transcendensoft.hedbanz.domain.entity;
  *         Developed by <u>Transcendensoft</u>
  */
 public enum MessageType {
-    JOINED_USER(),
-    LEFT_USER(),
-    START_TYPING(),
-    STOP_TYPING(),
-    SIMPLE_MESSAGE_OTHER_USER(),
-    SIMPLE_MESSAGE_THIS_USER();
+    JOINED_USER(1),
+    LEFT_USER(2),
+    START_TYPING(3),
+    STOP_TYPING(4),
+    SIMPLE_MESSAGE_OTHER_USER(5),
+    SIMPLE_MESSAGE_THIS_USER(6),
+    UNDEFINED(100500);
+
+    private int id;
+
+    MessageType(int id) {
+        this.id = id;
+    }
+
+    public static MessageType getMessageTypeById(int id){
+        for (MessageType messageType: MessageType.values()) {
+            if(messageType.id == id){
+                return messageType;
+            }
+        }
+        return UNDEFINED;
+    }
 }

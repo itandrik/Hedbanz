@@ -28,7 +28,7 @@ public class Message {
     private User userFrom;
     private MessageType messageType;
 
-    private Message(long id, String message, User userFrom, MessageType messageType) {
+    protected Message(long id, String message, User userFrom, MessageType messageType) {
         this.id = id;
         this.message = message;
         this.userFrom = userFrom;

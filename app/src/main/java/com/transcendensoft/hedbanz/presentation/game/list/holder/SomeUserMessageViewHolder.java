@@ -71,4 +71,14 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
             mTvLogin.setText(login);
         }
     }
+
+    public void bindShowHideLoginAndImage(boolean isHide){
+        if(isHide){
+            mTvLogin.setVisibility(View.GONE);
+            mIvUserImage.setVisibility(View.INVISIBLE);
+        } else {
+            mTvLogin.setVisibility(View.VISIBLE);
+            mIvUserImage.setVisibility(View.VISIBLE);
+        }
+    }
 }

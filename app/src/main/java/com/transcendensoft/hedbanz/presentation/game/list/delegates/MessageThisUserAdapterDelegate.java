@@ -26,7 +26,6 @@ import com.hannesdorfmann.adapterdelegates3.AdapterDelegate;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
-import com.transcendensoft.hedbanz.presentation.game.list.holder.SomeUserMessageViewHolder;
 import com.transcendensoft.hedbanz.presentation.game.list.holder.ThisUserMessageViewHolder;
 
 import java.util.List;
@@ -58,7 +57,7 @@ public class MessageThisUserAdapterDelegate extends AdapterDelegate<List<Message
         Context context = parent.getContext();
         View itemView = LayoutInflater.from(context)
                 .inflate(R.layout.item_message_this_user, parent, false);
-        return new SomeUserMessageViewHolder(context, itemView);
+        return new ThisUserMessageViewHolder(itemView);
     }
 
     @Override

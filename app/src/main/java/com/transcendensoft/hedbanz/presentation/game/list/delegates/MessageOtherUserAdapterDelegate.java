@@ -76,6 +76,13 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
                 login = userFrom.getLogin();
             }
 
+            boolean isHideLoginAndImage = false;
+            if((items.size() > 1) && (items.get(position - 1).getMessageType() ==
+                    SIMPLE_MESSAGE_OTHER_USER)){
+                isHideLoginAndImage = true;
+            }
+
+            viewHolder.bindShowHideLoginAndImage(isHideLoginAndImage);
             viewHolder.bindUserLogin(login);
             viewHolder.bindMessage(message.getMessage());
             viewHolder.bindUserImage(R.drawable.logo); //TODO change this shit

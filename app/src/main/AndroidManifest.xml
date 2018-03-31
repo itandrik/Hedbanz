@@ -51,8 +51,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/ThemeRegister"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".presentation.game.GameActivity" />
+        <activity
+            android:name=".presentation.game.GameActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ThemeMain"
+            android:windowSoftInputMode="adjustResize" />
 
+        <activity android:name=".presentation.friends.FriendsActivity" />
         <!-- Service -->
 
 
@@ -70,7 +75,7 @@
 
         <!-- Receivers -->
         <!-- Providers -->
-        <activity android:name=".presentation.friends.FriendsActivity"></activity>
+
     </application>
 
 </manifest>
