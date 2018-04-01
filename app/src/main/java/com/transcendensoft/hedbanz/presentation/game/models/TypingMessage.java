@@ -32,7 +32,8 @@ public class TypingMessage extends Message {
     private List<User> typingUsers;
 
     public TypingMessage(Message message) {
-        super(message.getId(), message.getMessage(), message.getUserFrom(), message.getMessageType());
+        super(message.getId(), message.getMessage(), message.getUserFrom(),
+                message.getMessageType(), message.getCreateDate());
         typingUsers = new ArrayList<>();
         typingUsers.add(message.getUserFrom());
     }

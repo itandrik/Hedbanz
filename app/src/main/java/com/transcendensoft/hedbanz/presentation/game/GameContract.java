@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.presentation.game;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.presentation.base.BaseView;
 
 /**
@@ -26,7 +27,9 @@ import com.transcendensoft.hedbanz.presentation.base.BaseView;
 public interface GameContract {
 
     interface View extends BaseView {
-        //TODO
+        void addMessage(Message message);
+        void addMessage(int position, Message message);
+        void removeMessage(int position);
     }
 
     interface Presenter {

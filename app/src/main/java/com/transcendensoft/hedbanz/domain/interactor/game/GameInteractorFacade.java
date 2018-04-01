@@ -32,6 +32,7 @@ import com.transcendensoft.hedbanz.domain.interactor.game.usecases.RoomInfoUseCa
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.StartTypingUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.StopTypingUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
+import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
 
 import javax.inject.Inject;
 
@@ -60,6 +61,8 @@ public class GameInteractorFacade {
     private StartTypingUseCase mStartTypingUseCase;
     private StopTypingUseCase mStopTypingUseCase;
     private RoomInfoUseCase mRoomInfoUseCase;
+
+    private Room mCurrentRoom;
 
     @Inject
     public GameInteractorFacade(PreferenceManager preferenceManager,
@@ -90,11 +93,12 @@ public class GameInteractorFacade {
         mLeftUserUseCase = new LeftUserUseCase(
                 mObservableTransformer, compositeDisposable, mRepository, gson);
         mMessageUseCase = new MessageUseCase(
-                mObservableTransformer, compositeDisposable, mRepository, gson);
+                mObservableTransformer, compositeDisposable,
+                mRepository, mPreferenceManger);
         mStartTypingUseCase = new StartTypingUseCase(
-                mObservableTransformer, compositeDisposable, mRepository, gson);
+                mObservableTransformer, compositeDisposable, mRepository);
         mStopTypingUseCase = new StopTypingUseCase(
-                mObservableTransformer, compositeDisposable, mRepository, gson);
+                mObservableTransformer, compositeDisposable, mRepository);
         mRoomInfoUseCase = new RoomInfoUseCase(
                 mObservableTransformer, compositeDisposable, mRepository, gson);
     }
@@ -121,12 +125,22 @@ public class GameInteractorFacade {
 
     public void onJoinedUserListener(Consumer<? super User> onNext,
                                      Consumer<? super Throwable> onError) {
-        mJoinedUserUseCase.execute(null, onNext, onError);
+        Consumer<? super User> doOnNext = user -> {
+            if (mCurrentRoom != null && mCurrentRoom.getUsers() != null) {
+                mCurrentRoom.getUsers().add(user);
+            }
+        };
+        mJoinedUserUseCase.execute(null, onNext, onError, doOnNext);
     }
 
     public void onLeftUserListener(Consumer<? super User> onNext,
                                    Consumer<? super Throwable> onError) {
-        mLeftUserUseCase.execute(null, onNext, onError);
+        Consumer<? super User> doOnNext = user -> {
+            if (mCurrentRoom != null && mCurrentRoom.getUsers() != null) {
+                mCurrentRoom.getUsers().remove(user);
+            }
+        };
+        mLeftUserUseCase.execute(null, onNext, onError, doOnNext);
     }
 
     public void onMessageReceivedListener(Consumer<? super Message> onNext,
@@ -134,19 +148,22 @@ public class GameInteractorFacade {
         mMessageUseCase.execute(null, onNext, onError);
     }
 
-    public void onStartTypingListener(Consumer<? super User> onNext,
+    public void onStartTypingListener(Consumer<? super TypingMessage> onNext,
                                       Consumer<? super Throwable> onError) {
-        mStartTypingUseCase.execute(null, onNext, onError);
+        mStartTypingUseCase.execute(mCurrentRoom.getUsers(), onNext, onError);
     }
 
-    public void onStopTypingListener(Consumer<? super User> onNext,
+    public void onStopTypingListener(Consumer<? super TypingMessage> onNext,
                                      Consumer<? super Throwable> onError) {
-        mStopTypingUseCase.execute(null, onNext, onError);
+        mStopTypingUseCase.execute(mCurrentRoom.getUsers(), onNext, onError);
     }
 
     public void onRoomInfoListener(Consumer<? super Room> onNext,
                                    Consumer<? super Throwable> onError) {
-        mRoomInfoUseCase.execute(null, onNext, onError);
+        Consumer<? super Room> doOnNext = room -> {
+            this.mCurrentRoom = room;
+        };
+        mRoomInfoUseCase.execute(null, onNext, onError, doOnNext);
     }
 
     public void connectSocketToServer(long roomId) {
@@ -156,15 +173,15 @@ public class GameInteractorFacade {
         mRepository.joinToRoom();
     }
 
-    public void startTyping(){
+    public void startTyping() {
         mRepository.startTyping();
     }
 
-    public void stopTyping(){
+    public void stopTyping() {
         mRepository.stopTyping();
     }
 
-    public void sendMessage(Message message){
+    public void sendMessage(Message message) {
         mRepository.sendMessage(message);
     }
 

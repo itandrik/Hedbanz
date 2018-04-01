@@ -28,12 +28,17 @@ public enum MessageType {
     STOP_TYPING(4),
     SIMPLE_MESSAGE_OTHER_USER(5),
     SIMPLE_MESSAGE_THIS_USER(6),
+    SIMPLE_MESSAGE(7),
     UNDEFINED(100500);
 
     private int id;
 
     MessageType(int id) {
         this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public static MessageType getMessageTypeById(int id){

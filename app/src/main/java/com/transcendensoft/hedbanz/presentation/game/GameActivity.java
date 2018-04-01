@@ -8,10 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
+import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.game.list.GameListAdapter;
-import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class GameActivity extends BaseActivity implements GameContract.View {
-    //@Inject GamePresenter mPresenter;
+    @Inject GamePresenter mPresenter;
     @Inject GameListAdapter mAdapter;
 
     @BindView(R.id.rvGameList) RecyclerView mRecycler;
@@ -37,10 +37,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
         ButterKnife.bind(this, this);
 
-        //if (mPresenter != null && getIntent() != null) {
-        //    long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
-        //   mPresenter.setModel(new RoomDTO.Builder().setId(roomId).build());
-        //}
+        if (mPresenter != null && getIntent() != null) {
+            long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
+           mPresenter.setModel(new Room.Builder().setId(roomId).build());
+        }
 
         initRecycler();
     }
@@ -48,25 +48,25 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @Override
     protected void onResume() {
         super.onResume();
-        //  if (mPresenter != null) {
-        //      mPresenter.bindView(this);
-        //  }
+          if (mPresenter != null) {
+              mPresenter.bindView(this);
+          }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //  if (mPresenter != null) {
-        //      mPresenter.unbindView();
-        //   }
+          if (mPresenter != null) {
+              mPresenter.unbindView();
+           }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //   if (mPresenter != null) {
-        //      mPresenter.destroy();
-        //  }
+           if (mPresenter != null) {
+              mPresenter.destroy();
+          }
     }
 
     /*------------------------------------*
@@ -81,7 +81,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         manager.setStackFromEnd(true);
         mRecycler.setLayoutManager(manager);
 
-        addTempMessages();
+        //addTempMessages();
     }
 
     private void addTempMessages() {
@@ -161,7 +161,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 .setMessageType(MessageType.SIMPLE_MESSAGE_THIS_USER)
                 .build();
 
-        processSimpleMessage(messages, message1);
+        /*processSimpleMessage(messages, message1);
         processSimpleMessage(messages, message2);
         processSimpleMessage(messages, message3);
         processSimpleMessage(messages, message4);
@@ -170,43 +170,9 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         processTypingMessage(messages, message6);
         processTypingMessage(messages, message7);
         processTypingMessage(messages, message8);
-        processSimpleMessage(messages, message9);
+        processSimpleMessage(messages, message9);*/
 
         mAdapter.clearAndAddAll(messages);
-    }
-
-    private void processTypingMessage(List<Message> messages, Message message) {
-        Message lastMessage = null;
-        if(!messages.isEmpty()){
-            lastMessage = messages.get(messages.size() - 1);
-        }
-        if (message.getMessageType() == MessageType.START_TYPING) {
-            if (lastMessage instanceof TypingMessage) {
-                ((TypingMessage) lastMessage).addUser(message.getUserFrom());
-            } else {
-                messages.add(new TypingMessage(message));
-            }
-        } else if (message.getMessageType() == MessageType.STOP_TYPING) {
-            if (lastMessage instanceof TypingMessage) {
-                TypingMessage typingMessage = (TypingMessage) lastMessage;
-                typingMessage.removeUser(message.getUserFrom());
-                if (typingMessage.getTypingUsers().isEmpty()) {
-                    messages.remove(messages.size() - 1);
-                }
-            }
-        }
-    }
-
-    private void processSimpleMessage(List<Message> messages, Message message) {
-        Message lastMessage = null;
-        if(!messages.isEmpty()){
-            lastMessage = messages.get(messages.size() - 1);
-        }
-        if (lastMessage instanceof TypingMessage) {
-            messages.add(messages.size() - 1, message);
-        } else {
-            messages.add(message);
-        }
     }
 
     /*------------------------------------*
@@ -216,6 +182,26 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     /*------------------------------------*
      *--------- Set data to view ---------*
      *------------------------------------*/
+    @Override
+    public void addMessage(Message message) {
+        if(mAdapter != null){
+            mAdapter.add(message);
+        }
+    }
+
+    @Override
+    public void addMessage(int position, Message message) {
+        if(mAdapter != null){
+            mAdapter.add(position, message);
+        }
+    }
+
+    @Override
+    public void removeMessage(int position) {
+        if(mAdapter != null){
+            mAdapter.remove(position);
+        }
+    }
 
     /*------------------------------------*
      *-------- Error and loading ---------*

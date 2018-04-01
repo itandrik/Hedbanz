@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.domain.entity;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,6 +34,7 @@ public class Room {
     private long startDate;
     private long endDate;
     private boolean isWithPassword;
+    private List<Message> messages;
 
     private Room(long id, String password, byte maxPlayers, List<User> users,
                     String name, byte currentPlayersNumber, long startDate, long endDate,
@@ -46,6 +48,7 @@ public class Room {
         this.endDate = endDate;
         this.name = name;
         this.isWithPassword = isWithPassword;
+        messages = new ArrayList<>();
     }
 
     public long getId() {
@@ -118,6 +121,14 @@ public class Room {
 
     public void setWithPassword(boolean withPassword) {
         isWithPassword = withPassword;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 
     @Override

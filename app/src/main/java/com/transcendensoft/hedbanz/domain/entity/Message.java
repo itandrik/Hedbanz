@@ -15,24 +15,27 @@ package com.transcendensoft.hedbanz.domain.entity;
  * limitations under the License.
  */
 
+import java.sql.Timestamp;
+
 /**
  * Entity that describes message in game mode from other users.
  *
- *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class Message {
     private long id;
     private String message;
     private User userFrom;
     private MessageType messageType;
+    private Timestamp createDate;
 
-    protected Message(long id, String message, User userFrom, MessageType messageType) {
+    protected Message(long id, String message, User userFrom, MessageType messageType, Timestamp timestamp) {
         this.id = id;
         this.message = message;
         this.userFrom = userFrom;
         this.messageType = messageType;
+        this.createDate = timestamp;
     }
 
     public long getId() {
@@ -67,6 +70,14 @@ public class Message {
         this.messageType = messageType;
     }
 
+    public Timestamp getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Timestamp createDate) {
+        this.createDate = createDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -87,6 +98,7 @@ public class Message {
         private String message;
         private User userFrom;
         private MessageType messageType;
+        private Timestamp createDate;
 
         public Builder setId(long id) {
             this.id = id;
@@ -108,8 +120,13 @@ public class Message {
             return this;
         }
 
+        public Builder setCreateDate(Timestamp createDate) {
+            this.createDate = createDate;
+            return this;
+        }
+
         public Message build() {
-            return new Message(id, message, userFrom, messageType);
+            return new Message(id, message, userFrom, messageType, createDate);
         }
     }
 }

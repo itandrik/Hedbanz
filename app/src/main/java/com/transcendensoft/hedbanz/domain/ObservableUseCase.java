@@ -29,14 +29,14 @@ import io.reactivex.observers.DisposableObserver;
  * Abstract class for a Use Case (Interactor in terms of Clean Architecture).
  * This interface represents a execution unit for different use cases (this means any use case
  * in the application should implement this contract).
- *
+ * <p>
  * This use case executes some command with
  * {@link io.reactivex.Observable} boundaries
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public abstract class ObservableUseCase<T, PARAM> extends UseCase{
+public abstract class ObservableUseCase<T, PARAM> extends UseCase {
     private final ObservableTransformer mSchedulersTransformer;
 
     public ObservableUseCase(ObservableTransformer schedulersTransformer,
@@ -95,6 +95,19 @@ public abstract class ObservableUseCase<T, PARAM> extends UseCase{
     public void execute(PARAM params, @NonNull Consumer<? super T> onNext,
                         @NonNull Consumer<? super Throwable> onError) {
         final Observable<T> observable = this.buildUseCaseObservable(params)
+                .compose(applySchedulers());
+
+        addDisposable(observable.subscribe(onNext, onError));
+    }
+
+    /**
+     * Executes the current use case.
+     */
+    public void execute(PARAM params, @NonNull Consumer<? super T> onNext,
+                        @NonNull Consumer<? super Throwable> onError,
+                        @NonNull Consumer<? super T> doOnNext) {
+        final Observable<T> observable = this.buildUseCaseObservable(params)
+                .doOnNext(doOnNext)
                 .compose(applySchedulers());
 
         addDisposable(observable.subscribe(onNext, onError));

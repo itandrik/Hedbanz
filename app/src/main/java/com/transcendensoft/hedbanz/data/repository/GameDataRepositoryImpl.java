@@ -19,9 +19,11 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
+import com.transcendensoft.hedbanz.data.models.MessageDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.UserDTO;
 import com.transcendensoft.hedbanz.domain.entity.Message;
+import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import org.json.JSONObject;
@@ -181,17 +183,38 @@ public class GameDataRepositoryImpl implements GameDataRepository {
 
     @Override
     public void startTyping() {
-        //TODO
+        MessageDTO messageDTO = new MessageDTO.Builder()
+                .setSenderId(mUserId)
+                .setRoomId(mRoomId)
+                .setType(MessageType.START_TYPING.getId())
+                .build();
+
+       // Gson gson = new Gson();
+       // String json = gson.toJson(messageDTO);
+        mSocket.emit(CLIENT_TYPING_EVENT, messageDTO);
     }
 
     @Override
     public void stopTyping() {
-        //TODO
+        MessageDTO messageDTO = new MessageDTO.Builder()
+                .setSenderId(mUserId)
+                .setRoomId(mRoomId)
+                .setType(MessageType.STOP_TYPING.getId())
+                .build();
+
+        mSocket.emit(CLIENT_STOP_TYPING_EVENT, messageDTO);
     }
 
     @Override
     public void sendMessage(Message message) {
-        //TODO
+        MessageDTO messageDTO = new MessageDTO.Builder()
+                .setSenderId(mUserId)
+                .setRoomId(mRoomId)
+                .setText(message.getMessage())
+                .setType(MessageType.SIMPLE_MESSAGE.getId())
+                .build();
+
+        mSocket.emit(CLIENT_MESSAGE_EVENT, messageDTO);
     }
 
     @Override

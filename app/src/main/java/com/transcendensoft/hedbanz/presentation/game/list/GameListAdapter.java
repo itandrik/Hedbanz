@@ -62,4 +62,23 @@ public class GameListAdapter extends ListDelegationAdapter<List<Message>> {
         getItems().add(message);
         notifyItemInserted(getItems().size() -1);
     }
+
+    public void add(int position, Message message){
+        getItems().add(position, message);
+        notifyItemInserted(position);
+    }
+
+    public void remove(int position){
+        getItems().remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void update(int position, Message message){
+        getItems().set(position, message);
+        notifyItemChanged(position);
+    }
+
+    public Message getItem(int position){
+        return getItems().get(position);
+    }
 }

@@ -15,14 +15,27 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
  * limitations under the License.
  */
 
-import com.google.gson.Gson;
+import android.support.annotation.NonNull;
+
 import com.google.gson.JsonSyntaxException;
 import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
+import com.transcendensoft.hedbanz.domain.entity.Message;
+import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
+import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
+import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subjects.PublishSubject;
@@ -34,39 +47,53 @@ import io.reactivex.subjects.PublishSubject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class StartTypingUseCase extends ObservableUseCase<User, Void> {
-    private PublishSubject<User> mSubject;
+public class StartTypingUseCase extends ObservableUseCase<TypingMessage, List<User>> {
+    private PublishSubject<TypingMessage> mSubject;
+    private GameDataRepository mRepository;
 
     public StartTypingUseCase(ObservableTransformer observableTransformer,
                              CompositeDisposable mCompositeDisposable,
-                             GameDataRepositoryImpl gameDataRepository,
-                             Gson gson) {
+                             GameDataRepositoryImpl gameDataRepository) {
         super(observableTransformer, mCompositeDisposable);
-
-        initSubject(gameDataRepository, gson);
-    }
-
-    private void initSubject(GameDataRepositoryImpl gameDataRepository, Gson gson) {
-        Observable<User> observable = getObservable(gameDataRepository, gson);
+        mRepository = gameDataRepository;
         mSubject = PublishSubject.create();
-        observable.subscribe(mSubject);
-    }
-
-    private Observable<User> getObservable(GameDataRepositoryImpl gameDataRepository, Gson gson) {
-        return gameDataRepository.typingObservable()
-                .flatMap(jsonObject -> {
-                    try {
-                        User user = gson.fromJson(jsonObject.toString(), User.class);
-                        return Observable.just(user);
-                    } catch (JsonSyntaxException e) {
-                        return Observable.error(new IncorrectJsonException(
-                                jsonObject.toString(), RoomInfoUseCase.class.getName()));
-                    }
-                });
     }
 
     @Override
-    protected Observable<User> buildUseCaseObservable(Void params) {
+    protected Observable<TypingMessage> buildUseCaseObservable(List<User> params) {
+        Observable<TypingMessage> observable = mRepository.typingObservable()
+                .flatMap(jsonObject -> convertUserIdToMessageObservable(params, jsonObject));
+        observable.subscribe(mSubject);
         return mSubject;
+    }
+
+    private ObservableSource<? extends TypingMessage> convertUserIdToMessageObservable(
+            List<User> params, JSONObject jsonObject) throws JSONException {
+        try {
+            return Observable.just(getTypingMessage(params, jsonObject));
+        } catch (JsonSyntaxException e) {
+            return Observable.error(new IncorrectJsonException(
+                    jsonObject.toString(), RoomInfoUseCase.class.getName()));
+        }
+    }
+
+    @NonNull
+    private TypingMessage getTypingMessage(List<User> params, JSONObject jsonObject) throws JSONException {
+        long userId = jsonObject.getInt("userId");
+        Message message = new Message.Builder()
+                .setMessageType(MessageType.STOP_TYPING)
+                .setUserFrom(getUserWithId(params, userId))
+                .build();
+        return new TypingMessage(message);
+    }
+
+    @Nullable
+    private User getUserWithId(List<User> users, long id) {
+        for (User user : users) {
+            if (user.getId() == id) {
+                return user;
+            }
+        }
+        return null;
     }
 }

@@ -15,11 +15,17 @@ package com.transcendensoft.hedbanz.presentation.game;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
+import com.transcendensoft.hedbanz.domain.entity.Message;
+import com.transcendensoft.hedbanz.domain.entity.MessageType;
+import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.game.GameInteractorFacade;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
+import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,7 +40,7 @@ import timber.log.Timber;
  *         Developed by <u>Transcendensoft</u>
  */
 @ActivityScope
-public class GamePresenter extends BasePresenter<RoomDTO, GameContract.View> implements GameContract.Presenter {
+public class GamePresenter extends BasePresenter<Room, GameContract.View> implements GameContract.Presenter {
    private GameInteractorFacade mGameInteractor;
 
     @Inject
@@ -79,23 +85,71 @@ public class GamePresenter extends BasePresenter<RoomDTO, GameContract.View> imp
 
     private void initBusinessLogicListeners() {
         mGameInteractor.onJoinedUserListener(
-                user -> Timber.i("Joined user: %s", user.toString()),
+                user -> {
+                    model.getUsers().add(user);
+                    Message message = new Message.Builder()
+                            .setUserFrom(user)
+                            .setMessageType(MessageType.JOINED_USER)
+                            .build();
+                    view().addMessage(message);
+                },
                 this::processEventListenerOnError);
         mGameInteractor.onLeftUserListener(
-                user -> Timber.i("Left user: %s", user.toString()),
+                user -> {
+                        model.getUsers().remove(user);
+                        Message message = new Message.Builder()
+                                .setUserFrom(user)
+                                .setMessageType(MessageType.LEFT_USER)
+                                .build();
+                        view().addMessage(message);
+                },
                 this::processEventListenerOnError);
         mGameInteractor.onRoomInfoListener(
-                room -> Timber.i("You connected to room: %s", room.toString()),
+                room -> model = room,
                 this::processEventListenerOnError);
         mGameInteractor.onMessageReceivedListener(
                 msg -> Timber.i("Message received: %s", msg.toString()),
                 this::processEventListenerOnError);
         mGameInteractor.onStartTypingListener(
-                user -> Timber.i("User %s is typing...", user.getLogin()),
+                userId -> Timber.i("User %s is typing...", user.getLogin()),
                 this::processEventListenerOnError);
         mGameInteractor.onStopTypingListener(
-                user -> Timber.i("User %s stopped typing...", user.getLogin()),
+                userId -> Timber.i("User %s stopped typing...", user.getLogin()),
                 this::processEventListenerOnError);
+    }
+
+    private void processTypingMessage(List<Message> messages, Message message) {
+        Message lastMessage = null;
+        if(!messages.isEmpty()){
+            lastMessage = messages.get(messages.size() - 1);
+        }
+        if (message.getMessageType() == MessageType.START_TYPING) {
+            if (lastMessage instanceof TypingMessage) {
+                ((TypingMessage) lastMessage).addUser(message.getUserFrom());
+            } else {
+                messages.add(new TypingMessage(message));
+            }
+        } else if (message.getMessageType() == MessageType.STOP_TYPING) {
+            if (lastMessage instanceof TypingMessage) {
+                TypingMessage typingMessage = (TypingMessage) lastMessage;
+                typingMessage.removeUser(message.getUserFrom());
+                if (typingMessage.getTypingUsers().isEmpty()) {
+                    messages.remove(messages.size() - 1);
+                }
+            }
+        }
+    }
+
+    private void processSimpleMessage(List<Message> messages, Message message) {
+        Message lastMessage = null;
+        if(!messages.isEmpty()){
+            lastMessage = messages.get(messages.size() - 1);
+        }
+        if (lastMessage instanceof TypingMessage) {
+            messages.add(messages.size() - 1, message);
+        } else {
+            messages.add(message);
+        }
     }
 
     private void processEventListenerOnError(Throwable err) {
