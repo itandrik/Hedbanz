@@ -38,6 +38,7 @@ public interface GameDataRepository {
     Observable<JSONObject> typingObservable();
     Observable<JSONObject> stopTypingObservable();
     Observable<JSONObject> messageObservable();
+    Observable<JSONObject> errorObservable();
 
     void startTyping();
     void stopTyping();

@@ -17,7 +17,6 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
 
 import android.support.annotation.NonNull;
 
-import com.google.gson.JsonSyntaxException;
 import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.Message;
@@ -68,18 +67,18 @@ public class StopTypingUseCase extends ObservableUseCase<TypingMessage, List<Use
     }
 
     private ObservableSource<? extends TypingMessage> convertUserIdToMessageObservable(
-            List<User> params, JSONObject jsonObject) throws JSONException {
+            List<User> params, JSONObject jsonObject) {
         try {
-            return Observable.just(getTypingMessage(params, jsonObject));
-        } catch (JsonSyntaxException e) {
+            Long userId = jsonObject.getLong("userId");
+            return Observable.just(getTypingMessage(params, userId));
+        } catch (JSONException e) {
             return Observable.error(new IncorrectJsonException(
                     jsonObject.toString(), RoomInfoUseCase.class.getName()));
         }
     }
 
     @NonNull
-    private TypingMessage getTypingMessage(List<User> params, JSONObject jsonObject) throws JSONException {
-        long userId = jsonObject.getInt("userId");
+    private TypingMessage getTypingMessage(List<User> params, Long userId) {
         Message message = new Message.Builder()
                 .setMessageType(MessageType.STOP_TYPING)
                 .setUserFrom(getUserWithId(params, userId))

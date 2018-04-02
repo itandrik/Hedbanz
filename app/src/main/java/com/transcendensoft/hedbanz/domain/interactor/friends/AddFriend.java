@@ -15,11 +15,67 @@ package com.transcendensoft.hedbanz.domain.interactor.friends;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.data.source.DataPolicy;
+import com.transcendensoft.hedbanz.domain.CompletableUseCase;
+import com.transcendensoft.hedbanz.domain.repository.FriendsDataRepository;
+
+import javax.inject.Inject;
+
+import io.reactivex.Completable;
+import io.reactivex.CompletableTransformer;
+import io.reactivex.disposables.CompositeDisposable;
+
 /**
- * //TODO add class description 
+ * //TODO add class description
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public class AddFriend {
+public class AddFriend extends CompletableUseCase<AddFriend.Param> {
+    private FriendsDataRepository mRepository;
+    private PreferenceManager mPreferenceManger;
+
+    @Inject
+    public AddFriend(CompletableTransformer schedulersTransformer,
+                     CompositeDisposable compositeDisposable,
+                     FriendsDataRepository mRepository,
+                     PreferenceManager mPreferenceManger) {
+        super(schedulersTransformer, compositeDisposable);
+        this.mRepository = mRepository;
+        this.mPreferenceManger = mPreferenceManger;
+    }
+
+    @Override
+    protected Completable buildUseCaseCompletable(Param params) {
+        return mRepository.addFriend(mPreferenceManger.getUser().getId(),
+                params.getFriendId(), params.getDataPolicy());
+
+    }
+
+    public static final class Param {
+        private DataPolicy mDataPolicy;
+        private long mFriendId;
+
+        public Param(DataPolicy mDataPolicy, long friendId) {
+            this.mDataPolicy = mDataPolicy;
+            this.mFriendId = friendId;
+        }
+
+        public DataPolicy getDataPolicy() {
+            return mDataPolicy;
+        }
+
+        public void setDataPolicy(DataPolicy mDataPolicy) {
+            this.mDataPolicy = mDataPolicy;
+        }
+
+        public long getFriendId() {
+            return mFriendId;
+        }
+
+        public void setFriendId(long friendId) {
+            this.mFriendId = friendId;
+        }
+    }
 }

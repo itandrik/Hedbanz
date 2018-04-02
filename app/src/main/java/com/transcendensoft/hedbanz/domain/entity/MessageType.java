@@ -29,6 +29,7 @@ public enum MessageType {
     SIMPLE_MESSAGE_OTHER_USER(5),
     SIMPLE_MESSAGE_THIS_USER(6),
     SIMPLE_MESSAGE(7),
+    ERROR(8),
     UNDEFINED(100500);
 
     private int id;

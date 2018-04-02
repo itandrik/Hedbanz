@@ -15,6 +15,10 @@ package com.transcendensoft.hedbanz.presentation.game;
  * limitations under the License.
  */
 
+import android.support.annotation.Nullable;
+import android.widget.EditText;
+
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
@@ -25,7 +29,9 @@ import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJso
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -37,11 +43,11 @@ import timber.log.Timber;
  * processing game algorithm.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 @ActivityScope
 public class GamePresenter extends BasePresenter<Room, GameContract.View> implements GameContract.Presenter {
-   private GameInteractorFacade mGameInteractor;
+    private GameInteractorFacade mGameInteractor;
 
     @Inject
     public GamePresenter(GameInteractorFacade gameInteractor) {
@@ -66,97 +72,163 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View> implem
         initBusinessLogicListeners();
 
         mGameInteractor.connectSocketToServer(model.getId());
+
     }
 
     private void initSocketSystemListeners() {
         mGameInteractor.onConnectListener(
-                str -> Timber.i("Socket connected. JSON: %s", str),
+                str -> Timber.i("Socket connected: %s", str),
                 this::processEventListenerOnError);
         mGameInteractor.onDisconnectListener(
-                str -> Timber.i("Socket disconnected. JSON: %s", str),
+                str -> Timber.i("Socket disconnected: %s", str),
                 this::processEventListenerOnError);
         mGameInteractor.onConnectErrorListener(
-                str -> Timber.e("Socket connect ERROR. JSON: %s", str),
+                str -> Timber.e("Socket connect ERROR: %s", str),
                 this::processEventListenerOnError);
         mGameInteractor.onConnectTimeoutListener(
-                str -> Timber.i("Socket connect TIMEOUT. JSON: %s", str),
+                str -> Timber.i("Socket connect TIMEOUT: %s", str),
                 this::processEventListenerOnError);
     }
 
     private void initBusinessLogicListeners() {
         mGameInteractor.onJoinedUserListener(
                 user -> {
-                    model.getUsers().add(user);
+                    List<User> users = model.getUsers();
+                    if(!users.contains(user)) {
+                        users.add(user);
+                    }
                     Message message = new Message.Builder()
                             .setUserFrom(user)
                             .setMessageType(MessageType.JOINED_USER)
                             .build();
+                    model.getMessages().add(message);
                     view().addMessage(message);
                 },
                 this::processEventListenerOnError);
         mGameInteractor.onLeftUserListener(
                 user -> {
-                        model.getUsers().remove(user);
-                        Message message = new Message.Builder()
-                                .setUserFrom(user)
-                                .setMessageType(MessageType.LEFT_USER)
-                                .build();
-                        view().addMessage(message);
+                    List<User> users = model.getUsers();
+                    if(!users.contains(user)) {
+                        users.remove(user);
+                    }
+                    Message message = new Message.Builder()
+                            .setUserFrom(user)
+                            .setMessageType(MessageType.LEFT_USER)
+                            .build();
+                    model.getMessages().add(message);
+                    view().addMessage(message);
                 },
                 this::processEventListenerOnError);
         mGameInteractor.onRoomInfoListener(
-                room -> model = room,
+                room -> {
+                    model = room;
+                    model.setMessages(new ArrayList<>());
+                    initTypingListeners();
+                },
                 this::processEventListenerOnError);
         mGameInteractor.onMessageReceivedListener(
-                msg -> Timber.i("Message received: %s", msg.toString()),
+                this::processSimpleMessage,
                 this::processEventListenerOnError);
+        mGameInteractor.onErrorListener(error -> {
+            Timber.e("Error from server from socket. Code : %d; Message: %s",
+                    error.getErrorCode(), error.getErrorMessage());
+        }, this::processEventListenerOnError);
+    }
+
+    private void initTypingListeners() {
         mGameInteractor.onStartTypingListener(
-                userId -> Timber.i("User %s is typing...", user.getLogin()),
+                this::processStartTyping,
                 this::processEventListenerOnError);
         mGameInteractor.onStopTypingListener(
-                userId -> Timber.i("User %s stopped typing...", user.getLogin()),
+                this::processStopTyping,
                 this::processEventListenerOnError);
     }
 
-    private void processTypingMessage(List<Message> messages, Message message) {
+    private void processSimpleMessage(Message message) {
         Message lastMessage = null;
-        if(!messages.isEmpty()){
-            lastMessage = messages.get(messages.size() - 1);
-        }
-        if (message.getMessageType() == MessageType.START_TYPING) {
-            if (lastMessage instanceof TypingMessage) {
-                ((TypingMessage) lastMessage).addUser(message.getUserFrom());
-            } else {
-                messages.add(new TypingMessage(message));
-            }
-        } else if (message.getMessageType() == MessageType.STOP_TYPING) {
-            if (lastMessage instanceof TypingMessage) {
-                TypingMessage typingMessage = (TypingMessage) lastMessage;
-                typingMessage.removeUser(message.getUserFrom());
-                if (typingMessage.getTypingUsers().isEmpty()) {
-                    messages.remove(messages.size() - 1);
-                }
-            }
-        }
-    }
+        List<Message> messages = model.getMessages();
 
-    private void processSimpleMessage(List<Message> messages, Message message) {
-        Message lastMessage = null;
-        if(!messages.isEmpty()){
+        if (!messages.isEmpty()) {
             lastMessage = messages.get(messages.size() - 1);
         }
         if (lastMessage instanceof TypingMessage) {
             messages.add(messages.size() - 1, message);
+            view().addMessage(messages.size() - 1, message);
         } else {
             messages.add(message);
+            view().addMessage(message);
         }
     }
 
+    private void processStartTyping(TypingMessage typingMessage) {
+        Message lastMessage = getLastMessage(model.getMessages());
+        List<Message> messages = model.getMessages();
+
+        if (lastMessage instanceof TypingMessage) {
+            ((TypingMessage) lastMessage).addUser(typingMessage.getUserFrom());
+            view().setMessage(messages.size() - 1, lastMessage);
+        } else {
+            messages.add(typingMessage);
+            view().addMessage(typingMessage);
+        }
+    }
+
+    private void processStopTyping(TypingMessage typingMessage) {
+        Message lastMessage = getLastMessage(model.getMessages());
+        List<Message> messages = model.getMessages();
+
+        if (lastMessage instanceof TypingMessage) {
+            TypingMessage typingLastMessage = (TypingMessage) lastMessage;
+            typingLastMessage.removeUser(typingMessage.getUserFrom());
+            if (typingLastMessage.getTypingUsers().isEmpty()) {
+                messages.remove(messages.size() - 1);
+                view().removeMessage(messages.size() - 1);
+            }
+        }
+    }
+
+    @Nullable
+    private Message getLastMessage(List<Message> messages) {
+        Message lastMessage = null;
+        if (!messages.isEmpty()) {
+            lastMessage = messages.get(messages.size() - 1);
+        }
+        return lastMessage;
+    }
+
     private void processEventListenerOnError(Throwable err) {
-        if(err instanceof IncorrectJsonException){
+        if (err instanceof IncorrectJsonException) {
             IncorrectJsonException incorrectJsonException = (IncorrectJsonException) err;
             Timber.e("Incorrect JSON from socket listener. JSON: %S; EVENT: %s",
                     incorrectJsonException.getJson(), incorrectJsonException.getMethod());
         }
+    }
+
+    @Override
+    public void messageTextChanges(EditText editText) {
+        addDisposable(
+                RxTextView.textChanges(editText)
+                        .skip(2)
+                        .doOnEach(text -> {
+                            mGameInteractor.startTyping();
+                        })
+                        .debounce(500, TimeUnit.MILLISECONDS)
+                        .subscribe(
+                                text -> {
+                                    mGameInteractor.stopTyping();
+                                },
+                                err -> {
+                                    Timber.e("Error while setting start/stop smile animation. " +
+                                            "Message : " + err.getMessage());
+                                }));
+
+    }
+
+    @Override
+    public void sendMessage(String text) {
+        Message message = new Message.Builder()
+                .setMessage(text)
+                .build();
+        mGameInteractor.sendMessage(message);
     }
 }

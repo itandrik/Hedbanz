@@ -29,9 +29,9 @@ import io.reactivex.Observable;
  * Get, delete and accept friends iin server
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public class FriendsApiDataSource extends ApiDataSource implements FriendDataSource{
+public class FriendsApiDataSource extends ApiDataSource implements FriendDataSource {
     @Inject
     public FriendsApiDataSource() {
         super();
@@ -48,7 +48,12 @@ public class FriendsApiDataSource extends ApiDataSource implements FriendDataSou
     }
 
     @Override
+    public Completable addFriend(long userId, long friendId) {
+        return mService.addFriend(userId, friendId);
+    }
+
+    @Override
     public Completable acceptFriend(long userId, long friendId) {
-        return null;
+        return mService.acceptFriend(userId, friendId);
     }
 }

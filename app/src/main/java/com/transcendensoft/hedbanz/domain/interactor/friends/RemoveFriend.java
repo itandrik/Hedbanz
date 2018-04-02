@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.data.source;
+package com.transcendensoft.hedbanz.domain.interactor.friends;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,26 +15,14 @@ package com.transcendensoft.hedbanz.data.source;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.models.FriendDTO;
-
-import java.util.List;
-
-import io.reactivex.Completable;
-import io.reactivex.Observable;
-
 /**
- * Base interface for remote and local data that
- * describes methods of getting or deleting friends
+ * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
+ * that represents a use case for deleting specfic
+ * {@link com.transcendensoft.hedbanz.domain.entity.Friend} for current
+ * {@link com.transcendensoft.hedbanz.domain.entity.User}
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface FriendDataSource {
-    Observable<List<FriendDTO>> getFriends(long userId);
-
-    Completable removeFriend(long userId, long friendId);
-
-    Completable addFriend(long userId, long friendId);
-
-    Completable acceptFriend(long userId, long friendId);
+public class RemoveFriend {
 }

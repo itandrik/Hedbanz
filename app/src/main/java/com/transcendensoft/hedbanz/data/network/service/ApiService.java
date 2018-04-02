@@ -23,6 +23,7 @@ import com.transcendensoft.hedbanz.data.models.UserDTO;
 import java.util.HashMap;
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -36,7 +37,7 @@ import retrofit2.http.Query;
  * Interface that describes all API methods with server
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public interface ApiService {
     @PUT("user")
@@ -47,6 +48,9 @@ public interface ApiService {
 
     @PATCH("user")
     Observable<UserDTO> updateUser(@Body HashMap<String, Object> userMap);
+
+    @GET("user/{userId}")
+    Observable<UserDTO> getUser(@Path("userId") long userId);
 
     @GET("rooms/{page}")
     Observable<List<RoomDTO>> getRooms(@Path("page") int page);
@@ -61,4 +65,12 @@ public interface ApiService {
 
     @GET("friends")
     Observable<List<FriendDTO>> getFriends(@Query("userId") long userId);
+
+    @POST("friends")
+    Completable acceptFriend(@Query("userId") long userId,
+                                  @Query("friendId") long friendId);
+
+    @PUT("friends")
+    Completable addFriend(@Query("userId") long userId,
+                          @Query("friendId") long friendId);
 }

@@ -16,11 +16,13 @@ package com.transcendensoft.hedbanz.domain.interactor.game;
  */
 
 import com.google.gson.Gson;
+import com.transcendensoft.hedbanz.data.models.common.ServerError;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.ErrorUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.JoinedUserUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.LeftUserUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.MessageUseCase;
@@ -33,6 +35,8 @@ import com.transcendensoft.hedbanz.domain.interactor.game.usecases.StartTypingUs
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.StopTypingUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -61,6 +65,7 @@ public class GameInteractorFacade {
     private StartTypingUseCase mStartTypingUseCase;
     private StopTypingUseCase mStopTypingUseCase;
     private RoomInfoUseCase mRoomInfoUseCase;
+    private ErrorUseCase mErrorUseCase;
 
     private Room mCurrentRoom;
 
@@ -101,6 +106,8 @@ public class GameInteractorFacade {
                 mObservableTransformer, compositeDisposable, mRepository);
         mRoomInfoUseCase = new RoomInfoUseCase(
                 mObservableTransformer, compositeDisposable, mRepository, gson);
+        mErrorUseCase = new ErrorUseCase(
+                mObservableTransformer, compositeDisposable, mRepository, gson);
     }
 
     public void onConnectListener(Consumer<? super String> onNext,
@@ -127,7 +134,10 @@ public class GameInteractorFacade {
                                      Consumer<? super Throwable> onError) {
         Consumer<? super User> doOnNext = user -> {
             if (mCurrentRoom != null && mCurrentRoom.getUsers() != null) {
-                mCurrentRoom.getUsers().add(user);
+                List<User> users = mCurrentRoom.getUsers();
+                if(!users.contains(user)) {
+                    users.add(user);
+                }
             }
         };
         mJoinedUserUseCase.execute(null, onNext, onError, doOnNext);
@@ -164,6 +174,11 @@ public class GameInteractorFacade {
             this.mCurrentRoom = room;
         };
         mRoomInfoUseCase.execute(null, onNext, onError, doOnNext);
+    }
+
+    public void onErrorListener(Consumer<? super ServerError> onNext,
+                                   Consumer<? super Throwable> onError) {
+        mErrorUseCase.execute(null, onNext, onError);
     }
 
     public void connectSocketToServer(long roomId) {

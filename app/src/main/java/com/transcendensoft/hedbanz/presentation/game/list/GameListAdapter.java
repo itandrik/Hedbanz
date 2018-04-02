@@ -22,6 +22,7 @@ import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageOther
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageThisUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.TypingAdapterDelegate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -40,6 +41,8 @@ public class GameListAdapter extends ListDelegationAdapter<List<Message>> {
                 .addDelegate(new MessageOtherUserAdapterDelegate())
                 .addDelegate(new JoinedLeftUserAdapterDelegate())
                 .addDelegate(new TypingAdapterDelegate());
+
+        setItems(new ArrayList<>());
     }
 
     public void clearAndAddAll(List<Message> messages){
@@ -60,7 +63,7 @@ public class GameListAdapter extends ListDelegationAdapter<List<Message>> {
 
     public void add(Message message){
         getItems().add(message);
-        notifyItemInserted(getItems().size() -1);
+        notifyItemInserted(getItems().size());
     }
 
     public void add(int position, Message message){

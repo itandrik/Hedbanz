@@ -58,6 +58,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String SERVER_TYPING_EVENT = "server-start-typing";
     private static final String SERVER_STOP_TYPING_EVENT = "server-stop-typing";
     private static final String SERVER_MESSAGE_EVENT = "server-msg";
+    private static final String SERVER_ERROR_EVENT = "server-error";
 
     private Socket mSocket;
     private long mUserId;
@@ -155,7 +156,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 JSONObject data = (JSONObject) args[0];
                 emitter.onNext(data);
             };
-            mSocket.on(CLIENT_TYPING_EVENT, listener);
+            mSocket.on(SERVER_TYPING_EVENT, listener);
         });
     }
 
@@ -166,7 +167,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 JSONObject data = (JSONObject) args[0];
                 emitter.onNext(data);
             };
-            mSocket.on(CLIENT_STOP_TYPING_EVENT, listener);
+            mSocket.on(SERVER_STOP_TYPING_EVENT, listener);
         });
     }
 
@@ -177,32 +178,41 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 JSONObject data = (JSONObject) args[0];
                 emitter.onNext(data);
             };
-            mSocket.on(CLIENT_MESSAGE_EVENT, listener);
+            mSocket.on(SERVER_MESSAGE_EVENT, listener);
+        });
+    }
+
+    @Override
+    public Observable<JSONObject> errorObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+                emitter.onNext(data);
+            };
+            mSocket.on(SERVER_ERROR_EVENT, listener);
         });
     }
 
     @Override
     public void startTyping() {
-        MessageDTO messageDTO = new MessageDTO.Builder()
-                .setSenderId(mUserId)
-                .setRoomId(mRoomId)
-                .setType(MessageType.START_TYPING.getId())
-                .build();
+        HashMap<String, Long> joinRoomObject = new HashMap<>();
+        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
+        joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
+        Gson gson = new Gson();
+        String json = gson.toJson(joinRoomObject);
 
-       // Gson gson = new Gson();
-       // String json = gson.toJson(messageDTO);
-        mSocket.emit(CLIENT_TYPING_EVENT, messageDTO);
+        mSocket.emit(CLIENT_TYPING_EVENT, json);
     }
 
     @Override
     public void stopTyping() {
-        MessageDTO messageDTO = new MessageDTO.Builder()
-                .setSenderId(mUserId)
-                .setRoomId(mRoomId)
-                .setType(MessageType.STOP_TYPING.getId())
-                .build();
+        HashMap<String, Long> joinRoomObject = new HashMap<>();
+        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
+        joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
+        Gson gson = new Gson();
+        String json = gson.toJson(joinRoomObject);
 
-        mSocket.emit(CLIENT_STOP_TYPING_EVENT, messageDTO);
+        mSocket.emit(CLIENT_STOP_TYPING_EVENT, json);
     }
 
     @Override
@@ -214,7 +224,10 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 .setType(MessageType.SIMPLE_MESSAGE.getId())
                 .build();
 
-        mSocket.emit(CLIENT_MESSAGE_EVENT, messageDTO);
+        Gson gson = new Gson();
+        String json = gson.toJson(messageDTO);
+
+        mSocket.emit(CLIENT_MESSAGE_EVENT, json);
     }
 
     @Override

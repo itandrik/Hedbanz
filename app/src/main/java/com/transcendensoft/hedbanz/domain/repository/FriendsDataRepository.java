@@ -38,4 +38,6 @@ public interface FriendsDataRepository {
     Completable removeFriend(long userId, long friendId, DataPolicy dataPolicy);
 
     Completable acceptFriend(long userId, long friendId, DataPolicy dataPolicy);
+
+    Completable addFriend(long userId, long friendId, DataPolicy dataPolicy);
 }

@@ -55,7 +55,7 @@
             android:name=".presentation.game.GameActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ThemeMain"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity android:name=".presentation.friends.FriendsActivity" />
         <!-- Service -->

@@ -81,8 +81,13 @@ public class MessageUseCase extends ObservableUseCase<Message, Void> {
         User user = new User.Builder()
                 .setId(jsonObject.getLong("senderId"))
                 .build();
-        MessageType messageType = MessageType
-                .getMessageTypeById(jsonObject.getInt("type"));
+
+        MessageType messageType;
+        if(mPreferenceManager.getUser().getId() == user.getId()){
+            messageType = MessageType.SIMPLE_MESSAGE_THIS_USER;
+        } else {
+            messageType = MessageType.SIMPLE_MESSAGE_OTHER_USER;
+        }
 
         return new Message.Builder()
                 .setId(jsonObject.getLong("id"))
