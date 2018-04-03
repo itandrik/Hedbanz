@@ -22,8 +22,10 @@ import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.CompletableTransformer;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.Scheduler;
+import io.reactivex.SingleTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -32,7 +34,7 @@ import io.reactivex.schedulers.Schedulers;
  * Scheduler provider module
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 @Module
 public class RxModule {
@@ -60,6 +62,24 @@ public class RxModule {
     @ApplicationScope
     @Provides
     public ObservableTransformer provideObservableTransformer(
+            @SchedulerIO Scheduler ioScheduler, @SchedulerUI Scheduler uiScheduler) {
+        return o -> o
+                .subscribeOn(ioScheduler)
+                .observeOn(uiScheduler);
+    }
+
+    @ApplicationScope
+    @Provides
+    public CompletableTransformer provideCompletableTransformer(
+            @SchedulerIO Scheduler ioScheduler, @SchedulerUI Scheduler uiScheduler) {
+        return o -> o
+                .subscribeOn(ioScheduler)
+                .observeOn(uiScheduler);
+    }
+
+    @ApplicationScope
+    @Provides
+    public SingleTransformer provideSingleTransformer(
             @SchedulerIO Scheduler ioScheduler, @SchedulerUI Scheduler uiScheduler) {
         return o -> o
                 .subscribeOn(ioScheduler)

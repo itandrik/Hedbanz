@@ -31,7 +31,7 @@ public class User {
     private Long registrationDate;
     private String login;
 
-    private User(long id, String email, String password, String confirmPassword, long money, Long registrationDate, String login) {
+    protected User(long id, String email, String password, String confirmPassword, long money, Long registrationDate, String login) {
         this.id = id;
         this.email = email;
         this.password = password;

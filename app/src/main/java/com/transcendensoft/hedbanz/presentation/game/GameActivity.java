@@ -1,17 +1,29 @@
 package com.transcendensoft.hedbanz.presentation.game;
 
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.widget.EditText;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.data.models.RoomDTO;
+import com.transcendensoft.hedbanz.domain.entity.Message;
+import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
+import com.transcendensoft.hedbanz.presentation.game.list.GameListAdapter;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class GameActivity extends BaseActivity implements GameContract.View{
+public class GameActivity extends BaseActivity implements GameContract.View {
     @Inject GamePresenter mPresenter;
+    @Inject GameListAdapter mAdapter;
+
+    @BindView(R.id.rvGameList) RecyclerView mRecycler;
+    @BindView(R.id.etChatMessage) EditText mEtChatMessage;
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -23,12 +35,13 @@ public class GameActivity extends BaseActivity implements GameContract.View{
 
         ButterKnife.bind(this, this);
 
-        //TODO refactor this, it should be inside Presenter
         if (mPresenter != null && getIntent() != null) {
             long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
-            mPresenter.setModel(new RoomDTO.Builder().setId(roomId).build());
+            mPresenter.setModel(new Room.Builder().setId(roomId).build());
         }
-        //TODO initRecycler();
+
+        initRecycler();
+        mPresenter.messageTextChanges(mEtChatMessage);
     }
 
     @Override
@@ -51,7 +64,6 @@ public class GameActivity extends BaseActivity implements GameContract.View{
     protected void onDestroy() {
         super.onDestroy();
         if (mPresenter != null) {
-            mPresenter.disconnectSockets();
             mPresenter.destroy();
         }
     }
@@ -59,14 +71,55 @@ public class GameActivity extends BaseActivity implements GameContract.View{
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
+    private void initRecycler() {
+        mRecycler.setAdapter(mAdapter);
+        mRecycler.setItemAnimator(new DefaultItemAnimator());
+
+        LinearLayoutManager manager = new LinearLayoutManager(
+                this, LinearLayoutManager.VERTICAL, false);
+        manager.setStackFromEnd(true);
+        mRecycler.setLayoutManager(manager);
+    }
 
     /*------------------------------------*
      *-------- On click listeners --------*
      *------------------------------------*/
+    @OnClick(R.id.ivSend)
+    protected void onSendMessageClicked(){
+        mPresenter.sendMessage(mEtChatMessage.getText().toString());
+        mEtChatMessage.setText("");
+    }
 
     /*------------------------------------*
      *--------- Set data to view ---------*
      *------------------------------------*/
+    @Override
+    public void addMessage(Message message) {
+        if (mAdapter != null) {
+            mAdapter.add(message);
+            mRecycler.smoothScrollToPosition(mAdapter.getItems().size()-1);
+        }
+    }
+
+    @Override
+    public void addMessage(int position, Message message) {
+        if (mAdapter != null) {
+            mAdapter.add(position, message);
+            mRecycler.smoothScrollToPosition(mAdapter.getItems().size()-1);
+        }
+    }
+
+    @Override
+    public void removeMessage(int position) {
+        if (mAdapter != null) {
+            mAdapter.remove(position);
+        }
+    }
+
+    @Override
+    public void setMessage(int position, Message message) {
+
+    }
 
     /*------------------------------------*
      *-------- Error and loading ---------*

@@ -15,9 +15,13 @@ package com.transcendensoft.hedbanz.data.network.service.firebase;
  * limitations under the License.
  */
 
+import android.app.Service;
+
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import dagger.android.AndroidInjector;
+import dagger.android.HasServiceInjector;
 import timber.log.Timber;
 
 /**
@@ -27,8 +31,9 @@ import timber.log.Timber;
  *         Developed by <u>Transcendensoft</u>
  */
 
-public class HedbanzFirebaseMessagingService extends FirebaseMessagingService {
+public class HedbanzFirebaseMessagingService extends FirebaseMessagingService implements HasServiceInjector{
     private static final String TAG = HedbanzFirebaseMessagingService.class.getName();
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Timber.tag(TAG);
@@ -40,5 +45,10 @@ public class HedbanzFirebaseMessagingService extends FirebaseMessagingService {
             Timber.i("Notification Body: " + remoteMessage.getNotification().getBody() +
                     "; Title : " + remoteMessage.getNotification().getTitle());
         }
+    }
+
+    @Override
+    public AndroidInjector<Service> serviceInjector() {
+        return null; //TODO
     }
 }

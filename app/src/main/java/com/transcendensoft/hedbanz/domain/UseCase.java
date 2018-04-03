@@ -15,15 +15,8 @@ package com.transcendensoft.hedbanz.domain;
  * limitations under the License.
  */
 
-import android.support.annotation.NonNull;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.observers.DisposableObserver;
 
 /**
  * Abstract class for a Use Case (Interactor in terms of Clean Architecture).
@@ -38,94 +31,16 @@ import io.reactivex.observers.DisposableObserver;
  * Developed by <u>Transcendensoft</u>
  */
 
-public abstract class UseCase<T, PARAM> {
-    private static final String NULL_DISPOSABLE_OBSERVER_MSG = "Disposable observer is NULL." +
+public abstract class UseCase {
+    protected static final String NULL_DISPOSABLE_OBSERVER_MSG = "Disposable observer is NULL." +
             " Check your Interactor execution within Presenter";
     private static final String NULL_COMPOSITE_DISPOSABLE_MSG = "Composite disposable is null." +
             " Check Dagger 2 dependencies.";
 
-    private final ObservableTransformer mSchedulersTransformer;
     private final CompositeDisposable mCompositeDisposable;
 
-    public UseCase(ObservableTransformer mSchedulersTransformer, CompositeDisposable mCompositeDisposable) {
-        this.mSchedulersTransformer = mSchedulersTransformer;
+    public UseCase(CompositeDisposable mCompositeDisposable) {
         this.mCompositeDisposable = mCompositeDisposable;
-    }
-
-    /**
-     * Builds an Observable which will be
-     * used when executing the current {@link UseCase}.
-     */
-    protected abstract Observable<T> buildUseCaseObservable(PARAM params);
-
-    /**
-     * Executes the current use case.
-     */
-    public void execute(DisposableObserver<T> disposableObserver, PARAM params) {
-        if (disposableObserver == null) {
-            throw new NullPointerException(NULL_DISPOSABLE_OBSERVER_MSG);
-        }
-        final Observable<T> observable = this.buildUseCaseObservable(params)
-                .compose(applySchedulers());
-
-        addDisposable(observable.subscribeWith(disposableObserver));
-    }
-
-    /**
-     * Executes the current use case.
-     */
-    public void execute(PARAM params, @NonNull Consumer<? super T> onNext,
-                        @NonNull Consumer<? super Throwable> onError,
-                        @NonNull Action onComplete) {
-        final Observable<T> observable = this.buildUseCaseObservable(params)
-                .compose(applySchedulers());
-
-        addDisposable(observable.subscribe(onNext, onError, onComplete));
-    }
-
-    /**
-     * Executes the current use case.
-     */
-    public void execute(PARAM params, @NonNull Consumer<? super T> onNext,
-                        @NonNull Consumer<? super Throwable> onError,
-                        @NonNull Action onComplete,
-                        @NonNull Consumer<? super Disposable> onSubscribe) {
-        final Observable<T> observable = this.buildUseCaseObservable(params)
-                .compose(applySchedulers());
-
-        addDisposable(observable.subscribe(onNext, onError, onComplete, onSubscribe));
-    }
-
-
-    /**
-     * Executes the current use case.
-     */
-    public void execute(PARAM params, @NonNull Consumer<? super T> onNext,
-                        @NonNull Consumer<? super Throwable> onError) {
-        final Observable<T> observable = this.buildUseCaseObservable(params)
-                .compose(applySchedulers());
-
-        addDisposable(observable.subscribe(onNext, onError));
-    }
-
-    /**
-     * Executes the current use case.
-     */
-    public void execute(PARAM params, @NonNull Consumer<? super T> onNext) {
-        final Observable<T> observable = this.buildUseCaseObservable(params)
-                .compose(applySchedulers());
-
-        addDisposable(observable.subscribe(onNext));
-    }
-
-    /**
-     * Executes the current use case without result to Presenter
-     */
-    public void execute(PARAM params) {
-        final Observable<T> observable = this.buildUseCaseObservable(params)
-                .compose(applySchedulers());
-
-        addDisposable(observable.subscribe());
     }
 
     /**
@@ -140,7 +55,7 @@ public abstract class UseCase<T, PARAM> {
     /**
      * Dispose from current {@link CompositeDisposable}.
      */
-    private void addDisposable(Disposable disposable) {
+    protected void addDisposable(Disposable disposable) {
         if (disposable == null) {
             throw new NullPointerException();
         }
@@ -148,10 +63,5 @@ public abstract class UseCase<T, PARAM> {
             throw new NullPointerException(NULL_COMPOSITE_DISPOSABLE_MSG);
         }
         mCompositeDisposable.add(disposable);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <S> ObservableTransformer<S, S> applySchedulers() {
-        return (ObservableTransformer<S, S>) mSchedulersTransformer;
     }
 }

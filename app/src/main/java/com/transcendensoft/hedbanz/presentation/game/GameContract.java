@@ -15,23 +15,29 @@ package com.transcendensoft.hedbanz.presentation.game;
  * limitations under the License.
  */
 
+import android.widget.EditText;
+
+import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.presentation.base.BaseView;
 
 /**
  * View and Presenter interfaces contract for game mode presentation
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public interface GameContract {
 
     interface View extends BaseView {
-        //TODO
+        void addMessage(Message message);
+        void addMessage(int position, Message message);
+        void removeMessage(int position);
+        void setMessage(int position, Message message);
     }
 
     interface Presenter {
         void initSockets();
-
-        void disconnectSockets();
+        void messageTextChanges(EditText editText);
+        void sendMessage(String message);
     }
 }

@@ -53,6 +53,7 @@ public class RoomModelDataMapper {
                     .setMaxPlayers(roomDTO.getMaxPlayers())
                     .setName(roomDTO.getName())
                     .setPassword(roomDTO.getPassword())
+                    .setWithPassword(roomDTO.isPrivate())
                     .setUsers(mUserModelDataMapper.convertToUsers(roomDTO.getUsers()))
                     .build();
         }
@@ -70,6 +71,7 @@ public class RoomModelDataMapper {
                     .setMaxPlayers(room.getMaxPlayers())
                     .setName(room.getName())
                     .setPassword(room.getPassword())
+                    .setIsPrivate(room.isWithPassword())
                     .setUsers(mUserModelDataMapper.convertToDtoUsers(room.getUsers()))
                     .build();
         }

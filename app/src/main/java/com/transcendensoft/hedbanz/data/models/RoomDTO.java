@@ -46,9 +46,12 @@ public class RoomDTO {
     private byte currentPlayersNumber;
     private long startDate;
     private long endDate;
+    @SerializedName("isPrivate")
+    @Expose
+    private boolean isPrivate;
 
     private RoomDTO(long id, String password, byte maxPlayers, List<UserDTO> users,
-                    String name, byte currentPlayersNumber, long startDate, long endDate) {
+                    String name, byte currentPlayersNumber, long startDate, long endDate, boolean isPrivate) {
         this.id = id;
         this.password = password;
         this.maxPlayers = maxPlayers;
@@ -57,6 +60,7 @@ public class RoomDTO {
         this.startDate = startDate;
         this.endDate = endDate;
         this.name = name;
+        this.isPrivate = isPrivate;
     }
 
     public long getId() {
@@ -123,6 +127,14 @@ public class RoomDTO {
         this.name = name;
     }
 
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -147,6 +159,7 @@ public class RoomDTO {
         private byte currentPlayersNumber;
         private long startDate;
         private long endDate;
+        private boolean isPrivate;
 
         public Builder setId(long id) {
             this.id = id;
@@ -188,8 +201,14 @@ public class RoomDTO {
             return this;
         }
 
+        public Builder setIsPrivate(boolean isPrivate){
+            this.isPrivate = isPrivate;
+            return this;
+        }
+
         public RoomDTO build() {
-            return new RoomDTO(id, password, maxPlayers, users, name, currentPlayersNumber, startDate, endDate);
+            return new RoomDTO(id, password, maxPlayers, users, name,
+                    currentPlayersNumber, startDate, endDate, isPrivate);
         }
     }
 }

@@ -15,30 +15,29 @@ package com.transcendensoft.hedbanz.presentation.game;
  * limitations under the License.
  */
 
-import android.util.Log;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.widget.EditText;
 
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.transcendensoft.hedbanz.data.models.RoomDTO;
-import com.transcendensoft.hedbanz.data.models.UserDTO;
-import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
+import com.transcendensoft.hedbanz.domain.entity.Message;
+import com.transcendensoft.hedbanz.domain.entity.MessageType;
+import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.interactor.game.GameInteractorFacade;
+import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
+import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
+import com.transcendensoft.hedbanz.utils.RxUtils;
 
-import org.json.JSONObject;
-
-import java.net.URISyntaxException;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.GAME_SOCKET_NSP;
-import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.HOST;
-import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.PORT_SOCKET;
+import timber.log.Timber;
 
 /**
  * Implementation of game mode presenter.
@@ -46,26 +45,15 @@ import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.PORT
  * processing game algorithm.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 @ActivityScope
-public class GamePresenter extends BasePresenter<RoomDTO, GameContract.View> implements GameContract.Presenter {
-    private static final String TAG = GamePresenter.class.getName();
-
-    private static final String JOIN_ROOM_EVENT = "join-room";
-    private static final String LEAVE_ROOM_EVENT = "leave-room";
-    private static final String ROOM_INFO_EVENT = "joined-room";
-    private static final String JOINED_USER_EVENT = "joined-user";
-
-    private Socket mSocket;
-    private Emitter.Listener mRoomInfoListener;
-    private Emitter.Listener mJoinedUserListener;
-
-    private PreferenceManager mPreferenceManager;
+public class GamePresenter extends BasePresenter<Room, GameContract.View> implements GameContract.Presenter {
+    private GameInteractorFacade mGameInteractor;
 
     @Inject
-    public GamePresenter(PreferenceManager mPreferenceManager) {
-        this.mPreferenceManager = mPreferenceManager;
+    public GamePresenter(GameInteractorFacade gameInteractor) {
+        this.mGameInteractor = gameInteractor;
     }
 
     @Override
@@ -77,79 +65,179 @@ public class GamePresenter extends BasePresenter<RoomDTO, GameContract.View> imp
 
     @Override
     public void destroy() {
-
+        mGameInteractor.destroy();
     }
 
     @Override
     public void initSockets() {
-        try {
-            mSocket = IO.socket(HOST + PORT_SOCKET + GAME_SOCKET_NSP);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+        initSocketSystemListeners();
+        initBusinessLogicListeners();
+
+        mGameInteractor.connectSocketToServer(model.getId());
+
+    }
+
+    private void initSocketSystemListeners() {
+        mGameInteractor.onConnectListener(
+                str -> Timber.i("Socket connected: %s", str),
+                this::processEventListenerOnError);
+        mGameInteractor.onDisconnectListener(
+                str -> Timber.i("Socket disconnected: %s", str),
+                this::processEventListenerOnError);
+        mGameInteractor.onConnectErrorListener(
+                str -> Timber.e("Socket connect ERROR: %s", str),
+                this::processEventListenerOnError);
+        mGameInteractor.onConnectTimeoutListener(
+                str -> Timber.i("Socket connect TIMEOUT: %s", str),
+                this::processEventListenerOnError);
+    }
+
+    private void initBusinessLogicListeners() {
+        initJoinedUserListener();
+        initLeftUserListener();
+        mGameInteractor.onRoomInfoListener(
+                room -> {
+                    model = room;
+                    model.setMessages(new ArrayList<>());
+                    initMessageListeners();
+                },
+                this::processEventListenerOnError);
+        mGameInteractor.onErrorListener(error -> {
+            Timber.e("Error from server from socket. Code : %d; Message: %s",
+                    error.getErrorCode(), error.getErrorMessage());
+        }, this::processEventListenerOnError);
+    }
+
+    private void initLeftUserListener() {
+        mGameInteractor.onLeftUserListener(
+                user -> {
+                    List<User> users = model.getUsers();
+                    if (!users.contains(user)) {
+                        users.remove(user);
+                    }
+                    Message message = new Message.Builder()
+                            .setUserFrom(user)
+                            .setMessageType(MessageType.LEFT_USER)
+                            .build();
+                    model.getMessages().add(message);
+                    view().addMessage(message);
+                },
+                this::processEventListenerOnError);
+    }
+
+    private void initJoinedUserListener() {
+        mGameInteractor.onJoinedUserListener(
+                user -> {
+                    List<User> users = model.getUsers();
+                    if (!users.contains(user)) {
+                        users.add(user);
+                    }
+                    Message message = new Message.Builder()
+                            .setUserFrom(user)
+                            .setMessageType(MessageType.JOINED_USER)
+                            .build();
+                    model.getMessages().add(message);
+                    view().addMessage(message);
+                },
+                this::processEventListenerOnError);
+    }
+
+    private void initMessageListeners() {
+        mGameInteractor.onStartTypingListener(
+                this::processStartTyping,
+                this::processEventListenerOnError);
+        mGameInteractor.onStopTypingListener(
+                this::processStopTyping,
+                this::processEventListenerOnError);
+        mGameInteractor.onMessageReceivedListener(
+                this::processSimpleMessage,
+                this::processEventListenerOnError);
+    }
+
+    private void processSimpleMessage(Message message) {
+        Message lastMessage = null;
+        List<Message> messages = model.getMessages();
+
+        if (!messages.isEmpty()) {
+            lastMessage = messages.get(messages.size() - 1);
         }
-
-        emitJoinToRoom();
-        initSocketListeners();
-
-        mSocket.on(ROOM_INFO_EVENT, mRoomInfoListener);
-        mSocket.on(JOINED_USER_EVENT, mJoinedUserListener);
-        mSocket.connect();
+        if (lastMessage instanceof TypingMessage) {
+            messages.add(messages.size() - 1, message);
+            view().addMessage(messages.size() - 2, message);
+        } else {
+            messages.add(message);
+            view().addMessage(message);
+        }
     }
 
-    private void emitJoinToRoom() {
-        User user = mPreferenceManager.getUser();
-        HashMap<String, Long> joinRoomObject = new HashMap<>();
-        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, model.getId());
-        joinRoomObject.put(UserDTO.USER_ID_KEY, user.getId());
-        Gson gson = new Gson();
-        String json = gson.toJson(joinRoomObject);
-        mSocket.emit(JOIN_ROOM_EVENT, json);
+    private void processStartTyping(TypingMessage typingMessage) {
+        Message lastMessage = getLastMessage(model.getMessages());
+        List<Message> messages = model.getMessages();
+
+        if (lastMessage instanceof TypingMessage) {
+            ((TypingMessage) lastMessage).addUser(typingMessage.getUserFrom());
+            view().setMessage(messages.size() - 1, lastMessage);
+        } else {
+            messages.add(typingMessage);
+            view().addMessage(typingMessage);
+        }
     }
 
-    private void initSocketListeners() {
-        Gson gson = new Gson();
-        mRoomInfoListener = args -> {
-            try {
-                JSONObject data = (JSONObject) args[0];
-                RoomDTO room = gson.fromJson(data.toString(), RoomDTO.class);
-                if (room != null) {
-                    Log.e(TAG, "RoomDTO id:" + room.getId() + "; name: " + room.getName());
-                } else {
-                    Log.e(TAG, "Received room == null");
-                }
-            } catch (JsonSyntaxException e) {
-                Log.e(TAG, e.getMessage());
-            }
-        };
+    private void processStopTyping(TypingMessage typingMessage) {
+        Message lastMessage = getLastMessage(model.getMessages());
+        List<Message> messages = model.getMessages();
 
-        mJoinedUserListener = args -> {
-            try {
-                JSONObject data = (JSONObject) args[0];
-                UserDTO user = gson.fromJson(data.toString(), UserDTO.class);
-                if (user != null) {
-                    Log.e(TAG, "UserDTO conntected! UserDTO id:" + user.getId() + "; name: " + user.getLogin());
-                } else {
-                    Log.e(TAG, "Connected user == null");
-                }
-            } catch (JsonSyntaxException e) {
-                Log.e(TAG, e.getMessage());
+        if (lastMessage instanceof TypingMessage) {
+            TypingMessage typingLastMessage = (TypingMessage) lastMessage;
+            typingLastMessage.removeUser(typingMessage.getUserFrom());
+            if (typingLastMessage.getTypingUsers().isEmpty()) {
+                messages.remove(messages.size()-1);
+                view().removeMessage(messages.size());
             }
-        };
+        }
+    }
+
+    @Nullable
+    private Message getLastMessage(List<Message> messages) {
+        Message lastMessage = null;
+        if (!messages.isEmpty()) {
+            lastMessage = messages.get(messages.size() - 1);
+        }
+        return lastMessage;
+    }
+
+    private void processEventListenerOnError(Throwable err) {
+        if (err instanceof IncorrectJsonException) {
+            IncorrectJsonException incorrectJsonException = (IncorrectJsonException) err;
+            Timber.e("Incorrect JSON from socket listener. JSON: %S; EVENT: %s",
+                    incorrectJsonException.getJson(), incorrectJsonException.getMethod());
+        }
     }
 
     @Override
-    public void disconnectSockets() {
-        emitDisconnectFromRoom();
-        mSocket.disconnect();
-        mSocket.off(JOIN_ROOM_EVENT, mRoomInfoListener);
-        mSocket.off(JOINED_USER_EVENT, mRoomInfoListener);
+    public void messageTextChanges(EditText editText) {
+        addDisposable(
+                RxTextView.textChanges(editText)
+                        .skip(1)
+                        .filter(text -> !TextUtils.isEmpty(text))
+                        .compose(RxUtils.debounceFirst(500, TimeUnit.MILLISECONDS))
+                        .doOnNext((str) -> {
+                            mGameInteractor.startTyping();
+                        })
+                        .mergeWith(RxTextView.textChanges(editText)
+                                .skip(1)
+                                .debounce(500, TimeUnit.MILLISECONDS)
+                                .doOnNext(str -> {
+                                    mGameInteractor.stopTyping();
+                                }))
+                        .subscribe());
     }
 
-    private void emitDisconnectFromRoom() {
-        User user = mPreferenceManager.getUser();
-        HashMap<String, Long> joinRoomObject = new HashMap<>();
-        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, model.getId());
-        joinRoomObject.put(UserDTO.USER_ID_KEY, user.getId());
-        mSocket.emit(LEAVE_ROOM_EVENT, joinRoomObject);
+    @Override
+    public void sendMessage(String text) {
+        Message message = new Message.Builder()
+                .setMessage(text)
+                .build();
+        mGameInteractor.sendMessage(message);
     }
 }

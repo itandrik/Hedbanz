@@ -18,7 +18,7 @@ package com.transcendensoft.hedbanz.domain.interactor.user;
 import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
 import com.transcendensoft.hedbanz.data.repository.UserDataRepositoryImpl;
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
-import com.transcendensoft.hedbanz.domain.UseCase;
+import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.user.exception.UserCredentialsException;
 import com.transcendensoft.hedbanz.domain.repository.UserDataRepository;
@@ -40,7 +40,7 @@ import io.reactivex.disposables.CompositeDisposable;
  *         Developed by <u>Transcendensoft</u>
  */
 
-public class UpdateUserInteractor extends UseCase<User, UpdateUserInteractor.Params> {
+public class UpdateUserInteractor extends ObservableUseCase<User, UpdateUserInteractor.Params> {
     private UserCredentialsException mUserException;
     private UserDataRepository mUserRepository;
 

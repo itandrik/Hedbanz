@@ -163,7 +163,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
      *------------------------------------*/
     @Override
     public void initAnimEditTextListener(EditText editText) {
-        RxTextView.textChanges(editText)
+        addDisposable(RxTextView.textChanges(editText)
                 .skip(1)
                 .doOnEach(text -> {
                     view().startSmileAnimation();
@@ -176,7 +176,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
                         err -> {
                             Timber.e("Error while setting start/stop smile animation. " +
                                     "Message : " + err.getMessage());
-                        });
+                        }));
     }
 
     /*------------------------------------*
@@ -184,7 +184,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
      *------------------------------------*/
     @Override
     public void initNameCheckingListener(EditText editText) {
-        RxTextView.textChanges(editText).debounce(400, TimeUnit.MILLISECONDS)
+        addDisposable(RxTextView.textChanges(editText).debounce(400, TimeUnit.MILLISECONDS)
                 .skip(1)
                 .filter(this::isCorrectLoginInput)
                 .subscribe(text -> {
@@ -193,7 +193,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
                             text.toString(),
                             this::processLoginAvailability,
                             this::processLoginAvailabilityError);
-                });
+                }));
     }
 
     private void processLoginAvailability(Boolean isLoginAvailable) {

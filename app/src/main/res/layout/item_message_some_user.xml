@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?attr/listPreferredItemHeight">
+
+    <TextView
+        android:id="@+id/tvLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_marginLeft="16dp"
+        android:text="Harashi dfsagsdfgsdfgsdfg"
+        android:layout_marginStart="16dp"
+        android:textSize="15sp"
+        android:textColor="@color/textDarkRed"/>
+
+    <ImageView
+        android:id="@+id/ivUserImage"
+        android:layout_width="42dp"
+        android:layout_below="@id/tvLogin"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_height="42dp" />
+
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_toRightOf="@id/ivUserImage"
+        android:layout_toEndOf="@id/ivUserImage"
+        android:layout_below="@id/tvLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/message_other_user"
+        android:textColor="@color/textPrimary"
+        android:textSize="14sp"
+        android:padding="12dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:maxWidth="300dp"/>
+</RelativeLayout>

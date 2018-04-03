@@ -50,6 +50,7 @@ public class RoomsApiDataSource extends ApiDataSource implements RoomDataSource 
         result.put("name", roomDTO.getName());
         result.put("maxPlayers", roomDTO.getMaxPlayers());
         result.put("userId", userId);
+        result.put("isPrivate", roomDTO.isPrivate());
 
         return mService.createRoom(result);
     }

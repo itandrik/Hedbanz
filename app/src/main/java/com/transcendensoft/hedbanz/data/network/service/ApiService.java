@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.data.network.service;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.models.FriendDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
 import com.transcendensoft.hedbanz.data.models.UserDTO;
@@ -22,6 +23,7 @@ import com.transcendensoft.hedbanz.data.models.UserDTO;
 import java.util.HashMap;
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -29,12 +31,13 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Interface that describes all API methods with server
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public interface ApiService {
     @PUT("user")
@@ -46,6 +49,9 @@ public interface ApiService {
     @PATCH("user")
     Observable<UserDTO> updateUser(@Body HashMap<String, Object> userMap);
 
+    @GET("user/{userId}")
+    Observable<UserDTO> getUser(@Path("userId") long userId);
+
     @GET("rooms/{page}")
     Observable<List<RoomDTO>> getRooms(@Path("page") int page);
 
@@ -56,4 +62,15 @@ public interface ApiService {
     Observable<List<RoomDTO>> filterRooms(
             @Path("page") int page,
             @Body RoomFilterDTO roomFilter);
+
+    @GET("friends")
+    Observable<List<FriendDTO>> getFriends(@Query("userId") long userId);
+
+    @POST("friends")
+    Completable acceptFriend(@Query("userId") long userId,
+                                  @Query("friendId") long friendId);
+
+    @PUT("friends")
+    Completable addFriend(@Query("userId") long userId,
+                          @Query("friendId") long friendId);
 }

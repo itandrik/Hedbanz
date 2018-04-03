@@ -19,6 +19,8 @@ import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.StartActivityModule;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
+import com.transcendensoft.hedbanz.presentation.friends.FriendsActivity;
+import com.transcendensoft.hedbanz.presentation.friends.FriendsModule;
 import com.transcendensoft.hedbanz.presentation.game.GameActivity;
 import com.transcendensoft.hedbanz.presentation.game.GameModule;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
@@ -61,4 +63,8 @@ public interface ActivityBindingModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = MainActivityModule.class)
     MainActivity mainActivity();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = FriendsModule.class)
+    FriendsActivity friendsActivity();
 }
