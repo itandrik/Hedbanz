@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.presentation.game;
  */
 
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding2.widget.RxTextView;
@@ -28,6 +29,7 @@ import com.transcendensoft.hedbanz.domain.interactor.game.GameInteractorFacade;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
+import com.transcendensoft.hedbanz.utils.RxUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,24 +93,26 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View> implem
     }
 
     private void initBusinessLogicListeners() {
-        mGameInteractor.onJoinedUserListener(
-                user -> {
-                    List<User> users = model.getUsers();
-                    if(!users.contains(user)) {
-                        users.add(user);
-                    }
-                    Message message = new Message.Builder()
-                            .setUserFrom(user)
-                            .setMessageType(MessageType.JOINED_USER)
-                            .build();
-                    model.getMessages().add(message);
-                    view().addMessage(message);
+        initJoinedUserListener();
+        initLeftUserListener();
+        mGameInteractor.onRoomInfoListener(
+                room -> {
+                    model = room;
+                    model.setMessages(new ArrayList<>());
+                    initMessageListeners();
                 },
                 this::processEventListenerOnError);
+        mGameInteractor.onErrorListener(error -> {
+            Timber.e("Error from server from socket. Code : %d; Message: %s",
+                    error.getErrorCode(), error.getErrorMessage());
+        }, this::processEventListenerOnError);
+    }
+
+    private void initLeftUserListener() {
         mGameInteractor.onLeftUserListener(
                 user -> {
                     List<User> users = model.getUsers();
-                    if(!users.contains(user)) {
+                    if (!users.contains(user)) {
                         users.remove(user);
                     }
                     Message message = new Message.Builder()
@@ -119,28 +123,34 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View> implem
                     view().addMessage(message);
                 },
                 this::processEventListenerOnError);
-        mGameInteractor.onRoomInfoListener(
-                room -> {
-                    model = room;
-                    model.setMessages(new ArrayList<>());
-                    initTypingListeners();
-                },
-                this::processEventListenerOnError);
-        mGameInteractor.onMessageReceivedListener(
-                this::processSimpleMessage,
-                this::processEventListenerOnError);
-        mGameInteractor.onErrorListener(error -> {
-            Timber.e("Error from server from socket. Code : %d; Message: %s",
-                    error.getErrorCode(), error.getErrorMessage());
-        }, this::processEventListenerOnError);
     }
 
-    private void initTypingListeners() {
+    private void initJoinedUserListener() {
+        mGameInteractor.onJoinedUserListener(
+                user -> {
+                    List<User> users = model.getUsers();
+                    if (!users.contains(user)) {
+                        users.add(user);
+                    }
+                    Message message = new Message.Builder()
+                            .setUserFrom(user)
+                            .setMessageType(MessageType.JOINED_USER)
+                            .build();
+                    model.getMessages().add(message);
+                    view().addMessage(message);
+                },
+                this::processEventListenerOnError);
+    }
+
+    private void initMessageListeners() {
         mGameInteractor.onStartTypingListener(
                 this::processStartTyping,
                 this::processEventListenerOnError);
         mGameInteractor.onStopTypingListener(
                 this::processStopTyping,
+                this::processEventListenerOnError);
+        mGameInteractor.onMessageReceivedListener(
+                this::processSimpleMessage,
                 this::processEventListenerOnError);
     }
 
@@ -153,7 +163,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View> implem
         }
         if (lastMessage instanceof TypingMessage) {
             messages.add(messages.size() - 1, message);
-            view().addMessage(messages.size() - 1, message);
+            view().addMessage(messages.size() - 2, message);
         } else {
             messages.add(message);
             view().addMessage(message);
@@ -181,8 +191,8 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View> implem
             TypingMessage typingLastMessage = (TypingMessage) lastMessage;
             typingLastMessage.removeUser(typingMessage.getUserFrom());
             if (typingLastMessage.getTypingUsers().isEmpty()) {
-                messages.remove(messages.size() - 1);
-                view().removeMessage(messages.size() - 1);
+                messages.remove(messages.size()-1);
+                view().removeMessage(messages.size());
             }
         }
     }
@@ -208,20 +218,19 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View> implem
     public void messageTextChanges(EditText editText) {
         addDisposable(
                 RxTextView.textChanges(editText)
-                        .skip(2)
-                        .doOnEach(text -> {
+                        .skip(1)
+                        .filter(text -> !TextUtils.isEmpty(text))
+                        .compose(RxUtils.debounceFirst(500, TimeUnit.MILLISECONDS))
+                        .doOnNext((str) -> {
                             mGameInteractor.startTyping();
                         })
-                        .debounce(500, TimeUnit.MILLISECONDS)
-                        .subscribe(
-                                text -> {
+                        .mergeWith(RxTextView.textChanges(editText)
+                                .skip(1)
+                                .debounce(500, TimeUnit.MILLISECONDS)
+                                .doOnNext(str -> {
                                     mGameInteractor.stopTyping();
-                                },
-                                err -> {
-                                    Timber.e("Error while setting start/stop smile animation. " +
-                                            "Message : " + err.getMessage());
-                                }));
-
+                                }))
+                        .subscribe());
     }
 
     @Override

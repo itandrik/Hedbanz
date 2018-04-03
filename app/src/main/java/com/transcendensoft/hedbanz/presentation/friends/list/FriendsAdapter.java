@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.friends;
+package com.transcendensoft.hedbanz.presentation.friends.list;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -16,30 +16,18 @@ package com.transcendensoft.hedbanz.presentation.friends;
  */
 
 import com.transcendensoft.hedbanz.domain.entity.Friend;
-import com.transcendensoft.hedbanz.presentation.base.BaseView;
-
-import java.util.List;
+import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
 
 /**
- * View and Presenter interfaces contract for friends list presentation
+ * Adapter for friends recycler view.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- * Developed by <u>Transcendensoft</u>
+ *         Developed by <u>Transcendensoft</u>
  */
-public class FriendsContract {
-    interface View extends BaseView {
-        void addFriendsToRecycler(List<Friend> friends);
+public class FriendsAdapter extends RecyclerDelegationAdapter<Friend> {
+    public FriendsAdapter() {
+        super();
 
-        void deleteFriend(Friend friend);
-
-        void clearFriends();
-
-        void showEmptyList();
-    }
-
-    interface Presenter {
-        void deleteFriendWithId(Friend friend);
-
-        void getFriends();
+        // TODO add delegates
     }
 }

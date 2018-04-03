@@ -97,6 +97,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void addMessage(Message message) {
         if (mAdapter != null) {
             mAdapter.add(message);
+            mRecycler.smoothScrollToPosition(mAdapter.getItems().size()-1);
         }
     }
 
@@ -104,6 +105,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void addMessage(int position, Message message) {
         if (mAdapter != null) {
             mAdapter.add(position, message);
+            mRecycler.smoothScrollToPosition(mAdapter.getItems().size()-1);
         }
     }
 

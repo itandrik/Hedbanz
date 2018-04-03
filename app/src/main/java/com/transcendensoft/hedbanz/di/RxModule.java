@@ -34,7 +34,7 @@ import io.reactivex.schedulers.Schedulers;
  * Scheduler provider module
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 @Module
 public class RxModule {

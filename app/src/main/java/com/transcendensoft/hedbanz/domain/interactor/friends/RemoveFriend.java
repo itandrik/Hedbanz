@@ -15,14 +15,70 @@ package com.transcendensoft.hedbanz.domain.interactor.friends;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.data.source.DataPolicy;
+import com.transcendensoft.hedbanz.domain.CompletableUseCase;
+import com.transcendensoft.hedbanz.domain.repository.FriendsDataRepository;
+
+import javax.inject.Inject;
+
+import io.reactivex.Completable;
+import io.reactivex.CompletableTransformer;
+import io.reactivex.disposables.CompositeDisposable;
+
 /**
  * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
- * that represents a use case for deleting specfic
+ * that represents a use case for deleting specific
  * {@link com.transcendensoft.hedbanz.domain.entity.Friend} for current
  * {@link com.transcendensoft.hedbanz.domain.entity.User}
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class RemoveFriend {
+public class RemoveFriend extends CompletableUseCase<RemoveFriend.Param> {
+    private FriendsDataRepository mRepository;
+    private PreferenceManager mPreferenceManger;
+
+    @Inject
+    public RemoveFriend(CompletableTransformer schedulersTransformer,
+                     CompositeDisposable compositeDisposable,
+                     FriendsDataRepository mRepository,
+                     PreferenceManager mPreferenceManger) {
+        super(schedulersTransformer, compositeDisposable);
+        this.mRepository = mRepository;
+        this.mPreferenceManger = mPreferenceManger;
+    }
+
+    @Override
+    protected Completable buildUseCaseCompletable(RemoveFriend.Param params) {
+        return mRepository.removeFriend(mPreferenceManger.getUser().getId(),
+                params.getFriendId(), params.getDataPolicy());
+
+    }
+
+    public static final class Param {
+        private DataPolicy mDataPolicy;
+        private long mFriendId;
+
+        public Param(DataPolicy mDataPolicy, long friendId) {
+            this.mDataPolicy = mDataPolicy;
+            this.mFriendId = friendId;
+        }
+
+        public DataPolicy getDataPolicy() {
+            return mDataPolicy;
+        }
+
+        public void setDataPolicy(DataPolicy mDataPolicy) {
+            this.mDataPolicy = mDataPolicy;
+        }
+
+        public long getFriendId() {
+            return mFriendId;
+        }
+
+        public void setFriendId(long friendId) {
+            this.mFriendId = friendId;
+        }
+    }
 }

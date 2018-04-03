@@ -15,30 +15,46 @@ package com.transcendensoft.hedbanz.presentation.friends;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.domain.entity.Friend;
+import com.transcendensoft.hedbanz.domain.interactor.friends.AcceptFriend;
+import com.transcendensoft.hedbanz.domain.interactor.friends.GetFriends;
+import com.transcendensoft.hedbanz.domain.interactor.friends.RemoveFriend;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 
+import java.net.ConnectException;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 /**
  * Implementation of friends presenter.
  * Getting and deleting friends from server and DB.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class FriendsPresenter extends BasePresenter<List<Friend>, FriendsContract.View>
-        implements FriendsContract.Presenter{
+        implements FriendsContract.Presenter {
+    private GetFriends mGetFriendsInteractor;
+    private AcceptFriend mAcceptFriendInteractor;
+    private RemoveFriend mRemoveFriendInteractor;
 
     @Inject
-    public FriendsPresenter() {
+    public FriendsPresenter(GetFriends getFriendsInteractor,
+                            AcceptFriend acceptFriendInteractor,
+                            RemoveFriend removeFriendInteractor) {
+        this.mGetFriendsInteractor = getFriendsInteractor;
+        this.mAcceptFriendInteractor = acceptFriendInteractor;
+        this.mRemoveFriendInteractor = removeFriendInteractor;
     }
 
     @Override
     protected void updateView() {
-        if(model == null || model.isEmpty()){
+        if (model == null || model.isEmpty()) {
             getFriends();
         } else {
             view().clearFriends();
@@ -48,16 +64,47 @@ public class FriendsPresenter extends BasePresenter<List<Friend>, FriendsContrac
 
     @Override
     public void destroy() {
-
+        mAcceptFriendInteractor.dispose();
+        mGetFriendsInteractor.dispose();
+        mRemoveFriendInteractor.dispose();
     }
 
     @Override
-    public void deleteFriendWithId(long id) {
+    public void deleteFriendWithId(Friend friend) {
+        RemoveFriend.Param params = new RemoveFriend.Param(DataPolicy.API, friend.getId());
+        mRemoveFriendInteractor.execute(params, () -> {
+            // TODO friend deleted
+        }, err -> {
+            Timber.e(err);
+            view().showShortToastMessage(R.string.error_server);
+        });
 
     }
 
     @Override
     public void getFriends() {
+        mGetFriendsInteractor.execute(DataPolicy.API,
+                this::processGetFriendsOnNext,
+                this::processGetFriendsOnError,
+                () -> view().showContent(),
+                (d) -> view().showLoading());
 
+    }
+
+    private void processGetFriendsOnNext(List<Friend> friends) {
+        if (friends == null || friends.isEmpty()) {
+            view().showEmptyList();
+        } else {
+            view().addFriendsToRecycler(friends);
+        }
+    }
+
+    private void processGetFriendsOnError(Throwable err) {
+        Timber.e(err);
+        if (err instanceof ConnectException) {
+            view().showNetworkError();
+        } else {
+            view().showServerError();
+        }
     }
 }

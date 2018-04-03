@@ -15,73 +15,29 @@ package com.transcendensoft.hedbanz.presentation.game.list;
  * limitations under the License.
  */
 
-import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter;
 import com.transcendensoft.hedbanz.domain.entity.Message;
+import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.JoinedLeftUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageOtherUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageThisUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.TypingAdapterDelegate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 /**
- * Adapter for main list view
+ * Adapter for game mode recycler.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class GameListAdapter extends ListDelegationAdapter<List<Message>> {
+public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     @Inject
     public GameListAdapter() {
+        super();
         delegatesManager
                 .addDelegate(new MessageThisUserAdapterDelegate())
                 .addDelegate(new MessageOtherUserAdapterDelegate())
                 .addDelegate(new JoinedLeftUserAdapterDelegate())
                 .addDelegate(new TypingAdapterDelegate());
-
-        setItems(new ArrayList<>());
-    }
-
-    public void clearAndAddAll(List<Message> messages){
-        setItems(messages);
-        notifyDataSetChanged();
-    }
-
-    public void addAll(List<Message> messages){
-        int startPosition = getItems().size() - 1;
-        getItems().addAll(messages);
-        notifyItemRangeChanged(startPosition, startPosition + messages.size());
-    }
-
-    public void clear(){
-        getItems().clear();
-        notifyDataSetChanged();
-    }
-
-    public void add(Message message){
-        getItems().add(message);
-        notifyItemInserted(getItems().size());
-    }
-
-    public void add(int position, Message message){
-        getItems().add(position, message);
-        notifyItemInserted(position);
-    }
-
-    public void remove(int position){
-        getItems().remove(position);
-        notifyItemRemoved(position);
-    }
-
-    public void update(int position, Message message){
-        getItems().set(position, message);
-        notifyItemChanged(position);
-    }
-
-    public Message getItem(int position){
-        return getItems().get(position);
-    }
+        }
 }

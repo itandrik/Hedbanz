@@ -23,11 +23,16 @@ import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
+import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Timestamp;
+import java.util.List;
+
+import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -42,34 +47,43 @@ import io.reactivex.subjects.PublishSubject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-public class MessageUseCase extends ObservableUseCase<Message, Void> {
+public class MessageUseCase extends ObservableUseCase<Message, List<User>> {
     private PublishSubject<Message> mSubject;
     private PreferenceManager mPreferenceManager;
+    private GameDataRepository mGameDataRepository;
 
+    @Inject
     public MessageUseCase(ObservableTransformer observableTransformer,
                           CompositeDisposable mCompositeDisposable,
                           GameDataRepositoryImpl gameDataRepository,
                           PreferenceManager preferenceManager) {
         super(observableTransformer, mCompositeDisposable);
         this.mPreferenceManager = preferenceManager;
-
-        initSubject(gameDataRepository);
+        this.mGameDataRepository = gameDataRepository;
     }
 
-    private void initSubject(GameDataRepositoryImpl gameDataRepository) {
-        Observable<Message> observable = getObservable(gameDataRepository);
+    @Override
+    protected Observable<Message> buildUseCaseObservable(List<User> users) {
+        initSubject(users);
+
+        return mSubject;
+    }
+
+    private void initSubject(List<User> users) {
+        Observable<Message> observable = getObservable(users);
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
     }
 
-    private Observable<Message> getObservable(GameDataRepositoryImpl gameDataRepository) {
-        return gameDataRepository.messageObservable()
-                .flatMap(this::convertJsonToMessage);
+    private Observable<Message> getObservable(List<User> users) {
+        return mGameDataRepository.messageObservable()
+                .flatMap(jsonObject -> convertJsonToMessage(jsonObject, users));
     }
 
-    private ObservableSource<? extends Message> convertJsonToMessage(JSONObject jsonObject) throws JSONException {
+    private ObservableSource<? extends Message> convertJsonToMessage(
+            JSONObject jsonObject, List<User> users) throws JSONException {
         try {
-            Message message = getMessage(jsonObject);
+            Message message = getMessage(jsonObject, users);
             return Observable.just(message);
         } catch (JsonSyntaxException e) {
             return Observable.error(new IncorrectJsonException(
@@ -77,13 +91,11 @@ public class MessageUseCase extends ObservableUseCase<Message, Void> {
         }
     }
 
-    private Message getMessage(JSONObject jsonObject) throws JSONException {
-        User user = new User.Builder()
-                .setId(jsonObject.getLong("senderId"))
-                .build();
+    private Message getMessage(JSONObject jsonObject, List<User> users) throws JSONException {
+        User user = getUserWithId(users, jsonObject.getLong("senderId"));
 
         MessageType messageType;
-        if(mPreferenceManager.getUser().getId() == user.getId()){
+        if (mPreferenceManager.getUser().getId() == user.getId()) {
             messageType = MessageType.SIMPLE_MESSAGE_THIS_USER;
         } else {
             messageType = MessageType.SIMPLE_MESSAGE_OTHER_USER;
@@ -98,8 +110,13 @@ public class MessageUseCase extends ObservableUseCase<Message, Void> {
                 .build();
     }
 
-    @Override
-    protected Observable<Message> buildUseCaseObservable(Void params) {
-        return mSubject;
+    @Nullable
+    private User getUserWithId(List<User> users, long id) {
+        for (User user : users) {
+            if (user.getId() == id) {
+                return user;
+            }
+        }
+        return null;
     }
 }

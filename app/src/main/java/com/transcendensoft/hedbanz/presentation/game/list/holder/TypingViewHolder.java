@@ -16,6 +16,9 @@ package com.transcendensoft.hedbanz.presentation.game.list.holder;
  */
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.graphics.drawable.Animatable2Compat;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -66,6 +69,17 @@ public class TypingViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindTypingIndicatorImage(){
-        //TODO
+        final AnimatedVectorDrawableCompat avd =
+                AnimatedVectorDrawableCompat.create(mContext, R.drawable.typing_anim);
+        mIvTyping.setImageDrawable(avd);
+
+        avd.registerAnimationCallback(new Animatable2Compat.AnimationCallback() {
+            @Override
+            public void onAnimationEnd(Drawable drawable) {
+                avd.start();
+            }
+        });
+
+        avd.start();
     }
 }

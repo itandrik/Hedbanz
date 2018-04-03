@@ -32,8 +32,6 @@ import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.transcendensoft.hedbanz.domain.entity.MessageType.START_TYPING;
-
 /**
  * This delegate is responsible for creating
  * {@link com.transcendensoft.hedbanz.presentation.game.list.holder.TypingViewHolder}
@@ -73,51 +71,7 @@ public class TypingAdapterDelegate extends AdapterDelegate<List<Message>> {
                                     @NonNull List<Object> payloads) {
         TypingViewHolder viewHolder = (TypingViewHolder) holder;
         TypingMessage message = (TypingMessage) items.get(position);
-        /*if(message != null){
-            if(message.getMessageType() == START_TYPING){
-                startTypingUsers(items, position, viewHolder);
-            } else {
-                User user = message.getUserFrom();
-                stopTypingUser(items, position, viewHolder, user);
-            }
-        }*/
         viewHolder.bindTypingText(message.getTypingUsers());
-    }
-
-    private void startTypingUsers(@NonNull List<Message> items, int position, TypingViewHolder viewHolder) {
-        int i = position;
-        while(items.get(i-1).getMessageType() == START_TYPING && i > 0){
-            Message startTypingMessage = items.get(i);
-            if(startTypingMessage != null){
-                mTypingNowUsers.add(startTypingMessage.getUserFrom());
-                items.remove(i);
-            }
-            i--;
-        }
-        Message startTypingMessage = items.get(i);
-        if(!mTypingNowUsers.contains(startTypingMessage.getUserFrom())) {
-            mTypingNowUsers.add(startTypingMessage.getUserFrom());
-        }
-        viewHolder.bindTypingText(mTypingNowUsers);
-    }
-
-    private void stopTypingUser(@NonNull List<Message> items, int position, TypingViewHolder viewHolder, User user) {
-        if(user != null) {
-            User removeUser = getUserWithLogin(user.getLogin());
-            if(removeUser != null) {
-                mTypingNowUsers.remove(removeUser);
-                items.remove(position);
-                viewHolder.bindTypingText(mTypingNowUsers);
-            }
-        }
-    }
-
-    private User getUserWithLogin(String login){
-        for (User user: mTypingNowUsers) {
-            if(user.getLogin().equals(login)){
-                return user;
-            }
-        }
-        return null;
+        viewHolder.bindTypingIndicatorImage();
     }
 }

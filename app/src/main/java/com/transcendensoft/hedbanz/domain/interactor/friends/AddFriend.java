@@ -27,7 +27,8 @@ import io.reactivex.CompletableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
- * //TODO add class description
+ * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
+ * that represents a use case for adding friends
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>

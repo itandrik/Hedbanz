@@ -17,10 +17,10 @@ package com.transcendensoft.hedbanz.domain.interactor.rooms;
 
 import com.transcendensoft.hedbanz.data.repository.RoomDataRepositoryImpl;
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
-import com.transcendensoft.hedbanz.domain.entity.Room;
-import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
 import com.transcendensoft.hedbanz.domain.PaginationState;
 import com.transcendensoft.hedbanz.domain.PaginationUseCase;
+import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
 import com.transcendensoft.hedbanz.domain.repository.RoomDataRepository;
 
 import javax.inject.Inject;
