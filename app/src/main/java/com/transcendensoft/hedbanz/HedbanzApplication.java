@@ -15,6 +15,8 @@ package com.transcendensoft.hedbanz;
  * limitations under the License.
  */
 
+import android.support.v7.app.AppCompatDelegate;
+
 import com.crashlytics.android.Crashlytics;
 import com.squareup.leakcanary.LeakCanary;
 import com.transcendensoft.hedbanz.di.component.DaggerAppComponent;
@@ -41,6 +43,7 @@ public class HedbanzApplication extends DaggerApplication{
     @Override
     public void onCreate() {
         super.onCreate();
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         initThirdParties();
     }

@@ -8,9 +8,6 @@
             android:height="50dp"
             android:viewportWidth="200"
             android:viewportHeight="50">
-            <path
-                android:name="path_3"
-                android:pathData=""/>
             <group
                 android:name="group_1"
                 android:pivotX="25"

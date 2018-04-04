@@ -107,4 +107,6 @@
     <string name="game_user_left">%1$s покинул комнату</string>
     <string name="game_et_hint">Текст сообщения</string>
 
+    <!-- Friends -->
+    <string name="friends_toolbar_title">Ваши друзяки</string>
 </resources>

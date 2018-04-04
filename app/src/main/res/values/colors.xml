@@ -34,4 +34,11 @@
     <color name="message_other_user_bg">#E1E1E1</color>
     <color name="message_this_user_bg">#E9EAEE</color>
     <color name="user_joined_left_bg">#5F000000</color>
+
+    <!-- Google -->
+    <color name="google_green">#34A854</color>
+    <color name="google_yellow">#FABC05</color>
+    <color name="google_blue">#4185F4</color>
+    <color name="google_red">#EA4235</color>
+
 </resources>

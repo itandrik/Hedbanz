@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
  * for view that represents typing indicator with animation.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class TypingViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.tvTyping) TextView mTvTyping;
@@ -52,13 +52,13 @@ public class TypingViewHolder extends RecyclerView.ViewHolder {
         this.mContext = context;
     }
 
-    public void bindTypingText(List<User> users){
+    public void bindTypingText(List<User> users) {
         String text = null;
-        if(users == null || users.isEmpty()){
+        if (users == null || users.isEmpty()) {
             throw new RuntimeException("Typing indicator. Users list is NULL or empty.");
-        } else if(users.size() == 1){
+        } else if (users.size() == 1) {
             text = mContext.getString(R.string.game_typing_one_user, users.get(0).getLogin());
-        } else if(users.size() == 2){
+        } else if (users.size() == 2) {
             text = mContext.getString(R.string.game_typing_two_user,
                     users.get(0).getLogin(),
                     users.get(1).getLogin());
@@ -68,9 +68,9 @@ public class TypingViewHolder extends RecyclerView.ViewHolder {
         mTvTyping.setText(text);
     }
 
-    public void bindTypingIndicatorImage(){
+    public void bindTypingIndicatorImage() {
         final AnimatedVectorDrawableCompat avd =
-                AnimatedVectorDrawableCompat.create(mContext, R.drawable.typing_anim);
+                AnimatedVectorDrawableCompat.create(mContext, R.drawable.typing_animation);
         mIvTyping.setImageDrawable(avd);
 
         avd.registerAnimationCallback(new Animatable2Compat.AnimationCallback() {
@@ -79,7 +79,6 @@ public class TypingViewHolder extends RecyclerView.ViewHolder {
                 avd.start();
             }
         });
-
         avd.start();
     }
 }
