@@ -18,8 +18,6 @@ package com.transcendensoft.hedbanz.data.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.sql.Timestamp;
-
 /**
  * DTO for message entity.
  * All message properties received from server described here
@@ -45,9 +43,9 @@ public class MessageDTO {
     private int type;
     @SerializedName("createDate")
     @Expose
-    private Timestamp createDate;
+    private Long createDate;
 
-    MessageDTO(long id, long senderId, long roomId, String text, int type, Timestamp createDate) {
+    MessageDTO(long id, long senderId, long roomId, String text, int type, Long createDate) {
         this.id = id;
         this.senderId = senderId;
         this.roomId = roomId;
@@ -96,11 +94,11 @@ public class MessageDTO {
         this.type = type;
     }
 
-    public Timestamp getCreateDate() {
+    public Long getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Timestamp createDate) {
+    public void setCreateDate(Long createDate) {
         this.createDate = createDate;
     }
 
@@ -125,7 +123,7 @@ public class MessageDTO {
         private long roomId;
         private String text;
         private int type;
-        private Timestamp createDate;
+        private Long createDate;
 
         public Builder setId(long id) {
             this.id = id;
@@ -152,7 +150,7 @@ public class MessageDTO {
             return this;
         }
 
-        public Builder setCreateDate(Timestamp createDate) {
+        public Builder setCreateDate(Long createDate) {
             this.createDate = createDate;
             return this;
         }

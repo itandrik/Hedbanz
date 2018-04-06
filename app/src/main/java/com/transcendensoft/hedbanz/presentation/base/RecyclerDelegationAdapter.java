@@ -15,6 +15,8 @@ package com.transcendensoft.hedbanz.presentation.base;
  * limitations under the License.
  */
 
+import android.support.v7.widget.RecyclerView;
+
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter;
 
 import java.util.ArrayList;
@@ -27,8 +29,19 @@ import java.util.List;
  * Developed by <u>Transcendensoft</u>
  */
 public abstract class RecyclerDelegationAdapter<T> extends ListDelegationAdapter<List<T>> {
+    private OnRecyclerBottomReachedListener mBottomReachedListener;
+
+    public interface OnRecyclerBottomReachedListener{
+        void onBottomReached();
+    }
+
     public RecyclerDelegationAdapter() {
         setItems(new ArrayList<>());
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
     }
 
     public void clearAndAddAll(List<T> entities) {
@@ -73,5 +86,9 @@ public abstract class RecyclerDelegationAdapter<T> extends ListDelegationAdapter
 
     public T getItem(int position) {
         return getItems().get(position);
+    }
+
+    public void setBottomReachedListener(OnRecyclerBottomReachedListener bottomReachedListener) {
+        this.mBottomReachedListener = bottomReachedListener;
     }
 }

@@ -18,26 +18,61 @@ package com.transcendensoft.hedbanz.presentation.game.list;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.JoinedLeftUserAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.LoadingAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageOtherUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageThisUserAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.NetworkErrorAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.ServerErrorAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.TypingAdapterDelegate;
 
 import javax.inject.Inject;
+
+import io.reactivex.Observable;
 
 /**
  * Adapter for game mode recycler.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
+    private LoadingAdapterDelegate mLoadingAdapterDelegate;
+    private ServerErrorAdapterDelegate mServerErrorAdapterDelegate;
+    private NetworkErrorAdapterDelegate mNetworkErrorAdapterDelegate;
+    private MessageThisUserAdapterDelegate mMessageThisUserAdapterDelegate;
+    private MessageOtherUserAdapterDelegate mMessageOtherUserAdapterDelegate;
+    private JoinedLeftUserAdapterDelegate mJoinedLeftUserAdapterDelegate;
+
     @Inject
-    public GameListAdapter() {
+    public GameListAdapter(LoadingAdapterDelegate loadingAdapterDelegate,
+                           ServerErrorAdapterDelegate serverErrorAdapterDelegate,
+                           NetworkErrorAdapterDelegate networkErrorAdapterDelegate,
+                           MessageThisUserAdapterDelegate messageThisUserAdapterDelegate,
+                           MessageOtherUserAdapterDelegate messageOtherUserAdapterDelegate,
+                           JoinedLeftUserAdapterDelegate joinedLeftUserAdapterDelegate) {
         super();
-        delegatesManager
-                .addDelegate(new MessageThisUserAdapterDelegate())
-                .addDelegate(new MessageOtherUserAdapterDelegate())
-                .addDelegate(new JoinedLeftUserAdapterDelegate())
+
+        this.mLoadingAdapterDelegate = loadingAdapterDelegate;
+        this.mServerErrorAdapterDelegate = serverErrorAdapterDelegate;
+        this.mNetworkErrorAdapterDelegate = networkErrorAdapterDelegate;
+        this.mMessageThisUserAdapterDelegate = messageThisUserAdapterDelegate;
+        this.mMessageOtherUserAdapterDelegate = messageOtherUserAdapterDelegate;
+        this.mJoinedLeftUserAdapterDelegate = joinedLeftUserAdapterDelegate;
+
+        delegatesManager.addDelegate(loadingAdapterDelegate)
+                .addDelegate(serverErrorAdapterDelegate)
+                .addDelegate(networkErrorAdapterDelegate)
+                .addDelegate(messageThisUserAdapterDelegate)
+                .addDelegate(messageOtherUserAdapterDelegate)
+                .addDelegate(joinedLeftUserAdapterDelegate)
                 .addDelegate(new TypingAdapterDelegate());
-        }
+    }
+
+    public Observable<Object> retryServerClickObservable() {
+        return mServerErrorAdapterDelegate.getRetryServerClickObservable();
+    }
+
+    public Observable<Object> retryNetworkClickObservable() {
+        return mNetworkErrorAdapterDelegate.getRetryNetworkClickObservable();
+    }
 }

@@ -22,40 +22,43 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hannesdorfmann.adapterdelegates3.AdapterDelegate;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
-import com.transcendensoft.hedbanz.domain.entity.User;
-import com.transcendensoft.hedbanz.presentation.game.list.holder.JoinedLeftUserViewHolder;
+import com.transcendensoft.hedbanz.presentation.base.RxAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.holder.NetworkErrorViewHolder;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.transcendensoft.hedbanz.domain.entity.MessageType.JOINED_USER;
+import io.reactivex.Observable;
+
+import static com.transcendensoft.hedbanz.domain.entity.MessageType.ERROR_NETWORK;
 
 /**
- * This delegate is responsible for creating {@link JoinedLeftUserViewHolder}
+ * This delegate is responsible for creating
+ * {@link com.transcendensoft.hedbanz.presentation.game.list.holder.NetworkErrorViewHolder}
  * and binding ViewHolder widgets according to model.
- *
+ * <p>
  * An AdapterDelegate get added to an AdapterDelegatesManager.
  * This manager is the man in the middle between RecyclerView.
  * Adapter and each AdapterDelegate.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public class JoinedLeftUserAdapterDelegate extends AdapterDelegate<List<Message>>{
+public class NetworkErrorAdapterDelegate extends RxAdapterDelegate<List<Message>> {
+    private Observable<Object> mRetryNetworkClickObservable;
+
     @Inject
-    public JoinedLeftUserAdapterDelegate() {
+    public NetworkErrorAdapterDelegate() {
     }
 
     @Override
     protected boolean isForViewType(@NonNull List<Message> items, int position) {
         MessageType currentMessageType = items.get(position).getMessageType();
-        return currentMessageType == JOINED_USER ||
-                currentMessageType == MessageType.LEFT_USER;
+        return currentMessageType == ERROR_NETWORK;
     }
 
     @NonNull
@@ -63,30 +66,20 @@ public class JoinedLeftUserAdapterDelegate extends AdapterDelegate<List<Message>
     protected RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent) {
         Context context = parent.getContext();
         View itemView = LayoutInflater.from(context)
-                .inflate(R.layout.item_joined_left_user, parent, false);
-        return new JoinedLeftUserViewHolder(context, itemView);
+                .inflate(R.layout.layout_item_network_error, parent, false);
+        return new NetworkErrorViewHolder(itemView);
     }
 
     @Override
     protected void onBindViewHolder(@NonNull List<Message> items, int position,
                                     @NonNull RecyclerView.ViewHolder holder,
                                     @NonNull List<Object> payloads) {
-        JoinedLeftUserViewHolder viewHolder = (JoinedLeftUserViewHolder) holder;
-        Message message = items.get(position);
+        NetworkErrorViewHolder viewHolder = (NetworkErrorViewHolder) holder;
 
-        if(message != null) {
-            User userFrom = message.getUserFrom();
-            String login = "";
-            if(userFrom != null){
-                login = userFrom.getLogin();
-            }
+        mRetryNetworkClickObservable = viewHolder.retryObservable();
+    }
 
-            boolean isJoined = false;
-            if(message.getMessageType() == JOINED_USER){
-                isJoined = true;
-            }
-
-            viewHolder.bindJoinedLeftUserMessage(login, isJoined);
-        }
+    public Observable<Object> getRetryNetworkClickObservable() {
+        return mRetryNetworkClickObservable;
     }
 }

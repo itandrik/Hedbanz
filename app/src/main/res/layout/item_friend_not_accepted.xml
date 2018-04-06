@@ -73,7 +73,7 @@
 
     <include
         android:id="@+id/llErrorContainer"
-        layout="@layout/layout_item_error"
+        layout="@layout/layout_item_server_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

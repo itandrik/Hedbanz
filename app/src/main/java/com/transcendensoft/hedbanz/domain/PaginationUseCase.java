@@ -47,7 +47,7 @@ public abstract class PaginationUseCase<T, ParamUseCase, ParamPaginator>
     }
 
     @Override
-    public PaginationUseCase<T, ParamUseCase, ParamPaginator> refresh(ParamPaginator roomFilter) {
+    public PaginationUseCase<T, ParamUseCase, ParamPaginator> refresh(ParamPaginator paramPaginator) {
         mCurrentPage = 0;
         return this;
     }

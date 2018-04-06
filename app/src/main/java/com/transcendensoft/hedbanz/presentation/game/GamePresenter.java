@@ -26,8 +26,10 @@ import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.game.GameInteractorFacade;
+import com.transcendensoft.hedbanz.domain.interactor.game.GetMessagesInteractor;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
+import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
 import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
 import com.transcendensoft.hedbanz.utils.RxUtils;
 
@@ -48,26 +50,56 @@ import timber.log.Timber;
  * Developed by <u>Transcendensoft</u>
  */
 @ActivityScope
-public class GamePresenter extends BasePresenter<Room, GameContract.View> implements GameContract.Presenter {
+public class GamePresenter extends BasePresenter<Room, GameContract.View>
+        implements GameContract.Presenter, RecyclerDelegationAdapter.OnRecyclerBottomReachedListener {
     private GameInteractorFacade mGameInteractor;
+    private GetMessagesInteractor mGetMessagesInteractor;
 
     @Inject
-    public GamePresenter(GameInteractorFacade gameInteractor) {
+    public GamePresenter(GameInteractorFacade gameInteractor,
+                         GetMessagesInteractor getMessagesInteractor) {
         this.mGameInteractor = gameInteractor;
+        this.mGetMessagesInteractor = getMessagesInteractor;
     }
 
+    /*------------------------------------*
+     *---------- Base presenter ----------*
+     *------------------------------------*/
     @Override
     protected void updateView() {
-        if (model.getName() == null) {
+        if (model.getMessages() == null || model.getMessages().isEmpty()) {
+            model.setMessages(new ArrayList<>());
             initSockets();
+            refreshMessageHistory();
+        } else {
+            view().clearMessages();
+            view().addMessages(model.getMessages());
         }
     }
 
     @Override
     public void destroy() {
+        mGetMessagesInteractor.dispose();
         mGameInteractor.destroy();
     }
 
+    /*------------------------------------*
+     *--------- Messages loading ---------*
+     *------------------------------------*/
+    @Override
+    public void onBottomReached() {
+        mGetMessagesInteractor.loadNextPage()
+                .execute(new MessageListObserver(view(), model), model.getId());
+    }
+
+    private void refreshMessageHistory(){
+        mGetMessagesInteractor.refresh(null)
+                .execute(new MessageListObserver(view(), model), model.getId());
+    }
+
+    /*------------------------------------*
+     *------ Socket initialization -------*
+     *------------------------------------*/
     @Override
     public void initSockets() {
         initSocketSystemListeners();
@@ -214,6 +246,9 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View> implem
         }
     }
 
+    /*------------------------------------*
+     *---- Send socket event messages ----*
+     *------------------------------------*/
     @Override
     public void messageTextChanges(EditText editText) {
         addDisposable(

@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.entity;
+package com.transcendensoft.hedbanz.data.network.source;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,41 +15,29 @@ package com.transcendensoft.hedbanz.domain.entity;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.models.MessageDTO;
+import com.transcendensoft.hedbanz.data.source.MessagesDataSource;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import io.reactivex.Observable;
+
 /**
- * //TODO add class description 
+ * Get messages from our server
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public enum MessageType {
-    JOINED_USER(1),
-    LEFT_USER(2),
-    START_TYPING(3),
-    STOP_TYPING(4),
-    SIMPLE_MESSAGE_OTHER_USER(5),
-    SIMPLE_MESSAGE_THIS_USER(6),
-    SIMPLE_MESSAGE(7),
-    ERROR_SERVER(8),
-    ERROR_NETWORK(9),
-    LOADING(10),
-    UNDEFINED(100500);
-
-    private int id;
-
-    MessageType(int id) {
-        this.id = id;
+public class MessagesApiDataSource extends ApiDataSource implements MessagesDataSource{
+    @Inject
+    public MessagesApiDataSource() {
+        super();
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public static MessageType getMessageTypeById(int id){
-        for (MessageType messageType: MessageType.values()) {
-            if(messageType.id == id){
-                return messageType;
-            }
-        }
-        return UNDEFINED;
+    @Override
+    public Observable<List<MessageDTO>> getMessages(long roomId, int page) {
+        return mService.getMessages(roomId, page);
     }
 }

@@ -35,7 +35,9 @@ public class FriendsAdapter extends RecyclerDelegationAdapter<Friend> {
     @Inject
     public FriendsAdapter(AcceptFriend acceptFriend, RemoveFriend removeFriend) {
         super();
-        delegatesManager.addDelegate(new AcceptedFriendAdapterDelegate(removeFriend, this))
+
+        delegatesManager
+                .addDelegate(new AcceptedFriendAdapterDelegate(removeFriend, this))
                 .addDelegate(new NotAcceptedFriendAdapterDelegate(acceptFriend, this));
     }
 }

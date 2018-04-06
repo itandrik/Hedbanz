@@ -57,7 +57,12 @@
             android:theme="@style/ThemeMain"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
-        <activity android:name=".presentation.friends.FriendsActivity" />
+        <activity
+            android:name=".presentation.friends.FriendsActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/ThemeMain"
+            android:windowSoftInputMode="adjustPan" />
         <!-- Service -->
 
 

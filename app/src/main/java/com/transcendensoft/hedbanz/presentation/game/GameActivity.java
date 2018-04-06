@@ -12,6 +12,8 @@ import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.game.list.GameListAdapter;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -72,6 +74,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
      *---------- Initialization ----------*
      *------------------------------------*/
     private void initRecycler() {
+        mAdapter.setBottomReachedListener(mPresenter);
         mRecycler.setAdapter(mAdapter);
         mRecycler.setItemAnimator(new DefaultItemAnimator());
 
@@ -106,6 +109,13 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         if (mAdapter != null) {
             mAdapter.add(position, message);
             mRecycler.smoothScrollToPosition(mAdapter.getItems().size()-1);
+        }
+    }
+
+    @Override
+    public void clearAndAddMessages(List<Message> messages) {
+        if (mAdapter != null) {
+            mAdapter.clearAndAddAll(messages);
         }
     }
 
