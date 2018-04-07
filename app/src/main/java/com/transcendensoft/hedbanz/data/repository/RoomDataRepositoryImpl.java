@@ -30,6 +30,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 /**
@@ -37,7 +38,7 @@ import io.reactivex.Observable;
  * for getting {@link com.transcendensoft.hedbanz.domain.entity.Room} related data.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 @ApplicationScope
 public class RoomDataRepositoryImpl implements RoomDataRepository {
@@ -58,7 +59,7 @@ public class RoomDataRepositoryImpl implements RoomDataRepository {
     public Observable<List<Room>> getRooms(int page, DataPolicy dataPolicy) {
         if (dataPolicy == DataPolicy.API) {
             return mRoomsApiDataSource.getRooms(page).map(mRoomModelDataMapper::convert);
-        } else if(dataPolicy == DataPolicy.DB){
+        } else if (dataPolicy == DataPolicy.DB) {
             return Observable.error(new UnsupportedOperationException());
         }
         return Observable.error(new UnsupportedOperationException());
@@ -68,18 +69,28 @@ public class RoomDataRepositoryImpl implements RoomDataRepository {
     public Observable<Room> createRoom(Room room, long userId) {
         //TODO add room to DB after adding to API.
         RoomDTO roomDTO = mRoomModelDataMapper.convert(room);
-        return mRoomsApiDataSource.createRoom(roomDTO,userId).map(mRoomModelDataMapper::convert);
+        return mRoomsApiDataSource.createRoom(roomDTO, userId).map(mRoomModelDataMapper::convert);
     }
 
     @Override
     public Observable<List<Room>> filterRooms(int page, RoomFilter roomFilter, DataPolicy dataPolicy) {
         RoomFilterDTO roomFilterDTO = mRoomFilterModelDataMapper.convert(roomFilter);
         if (dataPolicy == DataPolicy.API) {
-            return mRoomsApiDataSource.filterRooms(page,roomFilterDTO)
+            return mRoomsApiDataSource.filterRooms(page, roomFilterDTO)
                     .map(mRoomModelDataMapper::convert);
-        } else if(dataPolicy == DataPolicy.DB){
+        } else if (dataPolicy == DataPolicy.DB) {
             return Observable.error(new UnsupportedOperationException());
         }
         return Observable.error(new UnsupportedOperationException());
+    }
+
+    @Override
+    public Completable isPasswordCorrect(long roomId, String password, DataPolicy dataPolicy) {
+        if (dataPolicy == DataPolicy.API) {
+            return mRoomsApiDataSource.isPasswordCorrect(roomId, password);
+        } else if (dataPolicy == DataPolicy.DB) {
+            return Completable.error(new UnsupportedOperationException());
+        }
+        return Completable.error(new UnsupportedOperationException());
     }
 }

@@ -43,6 +43,8 @@ public interface RoomItemContract {
 
         void showErrorNetwork();
 
+        View getItemView();
+
         Context provideContext();
     }
 

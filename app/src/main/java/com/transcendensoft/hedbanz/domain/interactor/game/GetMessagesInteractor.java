@@ -50,6 +50,7 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, Long, Void
     protected Observable<PaginationState<Message>> buildUseCaseObservable(Long roomId) {
         return mDataRepository.getMessages(roomId, mCurrentPage, DataPolicy.API)
                 .flatMap(this::convertEntitiesToPagingResult)
+                .doOnError(err -> mCurrentPage--)
                 .onErrorReturn(this::mapPaginationStateBasedOnError);
     }
 }

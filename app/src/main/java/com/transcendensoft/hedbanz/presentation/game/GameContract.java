@@ -23,6 +23,8 @@ import com.transcendensoft.hedbanz.presentation.base.BaseView;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+
 /**
  * View and Presenter interfaces contract for game mode presentation
  *
@@ -39,8 +41,7 @@ public interface GameContract {
         void removeMessage(int position);
         void setMessage(int position, Message message);
 
-        void showFooterStartTyping(List<User>users);
-        void showFooterStopTypin(User user);
+        void showFooterTyping(List<User>users);
         void showFooterServerError();
         void showFooterNetworkError();
         void showEmptyList();
@@ -52,5 +53,8 @@ public interface GameContract {
         void initSockets();
         void messageTextChanges(EditText editText);
         void sendMessage(String message);
+
+        void processRetryNetworkPagination(Observable<Object> clickObservable);
+        void processRetryServerPagination(Observable<Object> clickObservable);
     }
 }

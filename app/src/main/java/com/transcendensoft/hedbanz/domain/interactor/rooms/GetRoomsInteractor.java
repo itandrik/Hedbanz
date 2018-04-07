@@ -51,6 +51,7 @@ public class GetRoomsInteractor extends PaginationUseCase<Room, Void, Void> {
     protected Observable<PaginationState<Room>> buildUseCaseObservable(Void params) {
         return mRoomRepository.getRooms(mCurrentPage, DataPolicy.API)
                 .flatMap(this::convertEntitiesToPagingResult)
+                .doOnError(err -> mCurrentPage--)
                 .onErrorReturn(this::mapPaginationStateBasedOnError);
     }
 }

@@ -34,7 +34,6 @@ import com.transcendensoft.hedbanz.domain.interactor.game.usecases.RoomInfoUseCa
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.StartTypingUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.StopTypingUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
-import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
 
 import java.util.List;
 
@@ -158,12 +157,12 @@ public class GameInteractorFacade {
         mMessageUseCase.execute(mCurrentRoom.getUsers(), onNext, onError);
     }
 
-    public void onStartTypingListener(Consumer<? super TypingMessage> onNext,
+    public void onStartTypingListener(Consumer<? super User> onNext,
                                       Consumer<? super Throwable> onError) {
         mStartTypingUseCase.execute(mCurrentRoom.getUsers(), onNext, onError);
     }
 
-    public void onStopTypingListener(Consumer<? super TypingMessage> onNext,
+    public void onStopTypingListener(Consumer<? super User> onNext,
                                      Consumer<? super Throwable> onError) {
         mStopTypingUseCase.execute(mCurrentRoom.getUsers(), onNext, onError);
     }

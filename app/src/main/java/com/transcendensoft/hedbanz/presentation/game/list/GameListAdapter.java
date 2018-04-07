@@ -23,7 +23,6 @@ import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageOther
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageThisUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.NetworkErrorAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.ServerErrorAdapterDelegate;
-import com.transcendensoft.hedbanz.presentation.game.list.delegates.TypingAdapterDelegate;
 
 import javax.inject.Inject;
 
@@ -64,8 +63,7 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                 .addDelegate(networkErrorAdapterDelegate)
                 .addDelegate(messageThisUserAdapterDelegate)
                 .addDelegate(messageOtherUserAdapterDelegate)
-                .addDelegate(joinedLeftUserAdapterDelegate)
-                .addDelegate(new TypingAdapterDelegate());
+                .addDelegate(joinedLeftUserAdapterDelegate);
     }
 
     public Observable<Object> retryServerClickObservable() {

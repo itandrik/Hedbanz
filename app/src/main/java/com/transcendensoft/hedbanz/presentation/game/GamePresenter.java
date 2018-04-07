@@ -15,7 +15,6 @@ package com.transcendensoft.hedbanz.presentation.game;
  * limitations under the License.
  */
 
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.EditText;
 
@@ -39,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import timber.log.Timber;
 
 /**
@@ -54,12 +54,14 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         implements GameContract.Presenter, RecyclerDelegationAdapter.OnRecyclerBottomReachedListener {
     private GameInteractorFacade mGameInteractor;
     private GetMessagesInteractor mGetMessagesInteractor;
+    private List<User> mTypingUsers;
 
     @Inject
     public GamePresenter(GameInteractorFacade gameInteractor,
                          GetMessagesInteractor getMessagesInteractor) {
         this.mGameInteractor = gameInteractor;
         this.mGetMessagesInteractor = getMessagesInteractor;
+        mTypingUsers = new ArrayList<>();
     }
 
     /*------------------------------------*
@@ -92,9 +94,25 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 .execute(new MessageListObserver(view(), model), model.getId());
     }
 
-    private void refreshMessageHistory(){
+    private void refreshMessageHistory() {
         mGetMessagesInteractor.refresh(null)
                 .execute(new MessageListObserver(view(), model), model.getId());
+    }
+
+    /*------------------------------------*
+     *----- Recycler click listeners -----*
+     *------------------------------------*/
+    @Override
+    public void processRetryNetworkPagination(Observable<Object> clickObservable) {
+        processRetryServerPagination(clickObservable);
+    }
+
+    @Override
+    public void processRetryServerPagination(Observable<Object> clickObservable) {
+        addDisposable(clickObservable.subscribe(
+                obj -> onBottomReached(),
+                err -> Timber.e("Retry network in pagination error")
+        ));
     }
 
     /*------------------------------------*
@@ -106,7 +124,6 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         initBusinessLogicListeners();
 
         mGameInteractor.connectSocketToServer(model.getId());
-
     }
 
     private void initSocketSystemListeners() {
@@ -202,40 +219,18 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         }
     }
 
-    private void processStartTyping(TypingMessage typingMessage) {
-        Message lastMessage = getLastMessage(model.getMessages());
-        List<Message> messages = model.getMessages();
-
-        if (lastMessage instanceof TypingMessage) {
-            ((TypingMessage) lastMessage).addUser(typingMessage.getUserFrom());
-            view().setMessage(messages.size() - 1, lastMessage);
-        } else {
-            messages.add(typingMessage);
-            view().addMessage(typingMessage);
+    private void processStartTyping(User user) {
+        if (!mTypingUsers.contains(user)) {
+            mTypingUsers.add(user);
         }
+        view().showFooterTyping(mTypingUsers);
     }
 
-    private void processStopTyping(TypingMessage typingMessage) {
-        Message lastMessage = getLastMessage(model.getMessages());
-        List<Message> messages = model.getMessages();
-
-        if (lastMessage instanceof TypingMessage) {
-            TypingMessage typingLastMessage = (TypingMessage) lastMessage;
-            typingLastMessage.removeUser(typingMessage.getUserFrom());
-            if (typingLastMessage.getTypingUsers().isEmpty()) {
-                messages.remove(messages.size()-1);
-                view().removeMessage(messages.size());
-            }
+    private void processStopTyping(User user) {
+        if (mTypingUsers.contains(user)) {
+            mTypingUsers.remove(user);
         }
-    }
-
-    @Nullable
-    private Message getLastMessage(List<Message> messages) {
-        Message lastMessage = null;
-        if (!messages.isEmpty()) {
-            lastMessage = messages.get(messages.size() - 1);
-        }
-        return lastMessage;
+        view().showFooterTyping(mTypingUsers);
     }
 
     private void processEventListenerOnError(Throwable err) {

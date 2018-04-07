@@ -151,6 +151,10 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
         mCardContainer.setVisibility(View.GONE);
     }
 
+    public View getItemView(){
+        return itemView;
+    }
+
     @Override
     public Context provideContext() {
         return mContext;

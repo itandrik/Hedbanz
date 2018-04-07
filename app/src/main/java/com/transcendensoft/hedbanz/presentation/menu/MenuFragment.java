@@ -29,6 +29,7 @@ import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
+import com.transcendensoft.hedbanz.presentation.friends.FriendsActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.CredentialsActivity;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
@@ -45,9 +46,9 @@ import dagger.android.support.DaggerFragment;
  * changing user data, friends, shop, help, settings.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public class MenuFragment extends DaggerFragment{
+public class MenuFragment extends DaggerFragment {
     @BindView(R.id.tvFriends) TextView mTvFriends;
     @BindView(R.id.tvGamesPlayed) TextView mTvGamesPlayed;
     @BindView(R.id.tvMoney) TextView mTvMoney;
@@ -73,7 +74,7 @@ public class MenuFragment extends DaggerFragment{
         return view;
     }
 
-    private void initUserData(){
+    private void initUserData() {
         User user = mPreferenceManager.getUser();
 
         mTvMoney.setText(String.valueOf(user.getMoney()));
@@ -81,43 +82,43 @@ public class MenuFragment extends DaggerFragment{
     }
 
     @OnClick(R.id.btnCredentials)
-    protected void onCredentialsClicked(){
+    protected void onCredentialsClicked() {
         startActivity(new Intent(getActivity(), CredentialsActivity.class));
     }
 
     @OnClick(R.id.tvFriends)
-    protected void onFriendsAmountClicked(){
+    protected void onFriendsAmountClicked() {
         onFriendsButtonClicked();
     }
 
     @OnClick(R.id.btnFriends)
-    protected void onFriendsButtonClicked(){
-        mActivity.showShortToastMessage(R.string.in_developing);
+    protected void onFriendsButtonClicked() {
+        startActivity(new Intent(mActivity, FriendsActivity.class));
     }
 
     @OnClick(R.id.tvMoney)
-    protected void onMoneysAmountClicked(){
+    protected void onMoneysAmountClicked() {
         mActivity.showShortToastMessage(R.string.in_developing);
         //TODO add money purchasing
     }
 
     @OnClick(R.id.btnShop)
-    protected void onShopClicked(){
+    protected void onShopClicked() {
         mActivity.showShortToastMessage(R.string.in_developing);
     }
 
     @OnClick(R.id.btnHelp)
-    protected void onHelpClicked(){
+    protected void onHelpClicked() {
         mActivity.showShortToastMessage(R.string.in_developing);
     }
 
     @OnClick(R.id.btnSettings)
-    protected void onSettingsClicked(){
+    protected void onSettingsClicked() {
         AndroidUtils.showShortToast(getActivity(), R.string.in_developing);
     }
 
     @OnClick(R.id.btnExit)
-    protected void onLogoutClicked(){
+    protected void onLogoutClicked() {
         mPreferenceManager.setIsAuthorised(false);
         mPreferenceManager.setUser(null);
 
@@ -129,8 +130,8 @@ public class MenuFragment extends DaggerFragment{
     }
 
     @OnClick(R.id.fabDown)
-    protected void onFabDownClicked(){
-        if(getActivity() != null) {
+    protected void onFabDownClicked() {
+        if (getActivity() != null) {
             mActivity.onBackPressed();
         }
     }

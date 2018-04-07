@@ -20,6 +20,7 @@ import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
 
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 /**
@@ -35,4 +36,6 @@ public interface RoomDataSource {
     Observable<RoomDTO> createRoom(RoomDTO roomDTO, long userId);
 
     Observable<List<RoomDTO>> filterRooms(int page, RoomFilterDTO roomFilter);
+
+    Completable isPasswordCorrect(long roomId, String password);
 }

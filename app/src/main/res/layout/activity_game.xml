@@ -1,63 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.transcendensoft.hedbanz.presentation.game.GameActivity">
 
-    <RelativeLayout
-        android:id="@+id/rlMessageContainer"
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_game"
         android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_height="wrap_content"
-        android:background="@drawable/message_container_border">
+        android:layout_height="wrap_content" />
 
-        <ImageView
-            android:id="@+id/ivSend"
-            android:layout_width="48dp"
-            android:paddingRight="8dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:layout_height="48dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            app:srcCompat="@drawable/ic_send"/>
+    <RelativeLayout
+        android:layout_below="@id/toolbar"
+        android:id="@+id/rlGameDataContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/etChatMessage"
+        <RelativeLayout
+            android:id="@+id/rlMessageContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/textWhite"
-            android:clickable="true"
-            android:layout_toLeftOf="@id/ivSend"
-            android:layout_toStartOf="@id/ivSend"
-            android:hint="@string/game_et_hint"
-            android:layout_marginTop="2dp"
-            android:inputType="textMultiLine|textCapSentences"
-            android:maxHeight="100dp"
-            android:minHeight="50dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="8dp"
-            android:textCursorDrawable="@null"
-            android:textSize="16sp"/>
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/message_container_border">
 
-        <View
-            android:id="@+id/separator"
-            android:layout_width="1dp"
-            android:layout_toRightOf="@id/etChatMessage"
-            android:layout_marginLeft="-8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
+            <ImageView
+                android:id="@+id/ivSend"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="8dp"
+                app:srcCompat="@drawable/ic_send" />
+
+            <EditText
+                android:id="@+id/etChatMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_toLeftOf="@id/ivSend"
+                android:layout_toStartOf="@id/ivSend"
+                android:background="@color/textWhite"
+                android:clickable="true"
+                android:hint="@string/game_et_hint"
+                android:inputType="textMultiLine|textCapSentences"
+                android:maxHeight="100dp"
+                android:minHeight="50dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="8dp"
+                android:textCursorDrawable="@null"
+                android:textSize="16sp" />
+
+            <View
+                android:id="@+id/separator"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/etChatMessage"
+                android:layout_alignTop="@id/etChatMessage"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="-8dp"
+                android:layout_marginTop="4dp"
+                android:layout_toRightOf="@id/etChatMessage"
+                android:background="@color/textSecondaryLight" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tvSystemField"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@id/etChatMessage"
-            android:layout_alignBottom="@id/etChatMessage"
-            android:background="@color/textSecondaryLight"/>
+            android:layout_above="@id/rlMessageContainer"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:textColor="@color/textSecondary"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:id="@+id/ivSystemAnimation"
+            android:layout_marginLeft="12dp"
+            android:layout_width="16dp"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/tvSystemField"
+            android:layout_alignTop="@id/tvSystemField"
+            android:layout_alignBottom="@id/tvSystemField"
+            android:layout_toRightOf="@id/tvSystemField" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvGameList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/tvSystemField" />
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvGameList"
-        android:layout_above="@id/rlMessageContainer"
+    <include
+        android:id="@+id/rlErrorNetwork"
+        layout="@layout/layout_error_network"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/rlErrorServer"
+        layout="@layout/layout_error_server"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/flLoadingContainer"
+        layout="@layout/layout_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/rlEmptyListContainer"
+        layout="@layout/layout_empty_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:visibility="gone" />
 </RelativeLayout>

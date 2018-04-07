@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 /**
@@ -58,4 +59,9 @@ public class RoomsApiDataSource extends ApiDataSource implements RoomDataSource 
     public Observable<List<RoomDTO>> filterRooms(int page, RoomFilterDTO roomFilter) {
         return mService.filterRooms(page, roomFilter);
     }
+
+    public Completable isPasswordCorrect(long roomId, String password){
+        return Completable.error(new UnsupportedOperationException()); //TODO change when API will be ready
+    }
+
 }
