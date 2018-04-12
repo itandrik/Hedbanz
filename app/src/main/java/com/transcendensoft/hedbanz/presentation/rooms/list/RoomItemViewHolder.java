@@ -23,6 +23,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -151,8 +152,14 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
         mCardContainer.setVisibility(View.GONE);
     }
 
-    public View getItemView(){
-        return itemView;
+    //public View getItemView(){
+     //   return itemView;
+   // }
+
+
+    @Override
+    public ViewGroup getItemView() {
+        return (ViewGroup) itemView;
     }
 
     @Override

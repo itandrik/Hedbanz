@@ -15,9 +15,7 @@ package com.transcendensoft.hedbanz.data.repository;
  * limitations under the License.
  */
 
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
+
 import com.google.gson.Gson;
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
@@ -34,6 +32,9 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.GAME_SOCKET_NSP;
 import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.HOST;
@@ -70,6 +71,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             IO.Options options = new IO.Options();
             options.forceNew = false;
             options.reconnection = true;
+
             mSocket = IO.socket(HOST + PORT_SOCKET + GAME_SOCKET_NSP, options);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);

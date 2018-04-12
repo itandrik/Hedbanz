@@ -25,15 +25,21 @@ import javax.inject.Inject;
  * Contains common string constants for API purposes.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public abstract class ApiDataSource {
-    public static final String HOST = "http://77.47.204.201";
+    public static final String HOST = "http://35.196.42.112"; //Google
+    //public static final String HOST = "http://77.47.204.201";//Raspberry and Laptop
 
-    private static final String PORT_API = ":8080/";
+    private static final String PORT_API = ":8080/";// Google
+    //private static final String PORT_API = ":8083/";// Laptop
+    //private static final String PORT_API = ":8083/";// Raspberry
+    //private static final String PORT_API = ":8083/";//OPENSHIFT
     public static final String BASE_URL = HOST + PORT_API;
 
-    public static final String PORT_SOCKET = ":9092";
+     public static final String PORT_SOCKET = ":9092"; // Google
+    // public static final String PORT_SOCKET = ":9092"; // Laptop
+    // public static final String PORT_SOCKET = ":9093"; // Raspberry
     public static final String LOGIN_SOCKET_NSP = "/login";
     public static final String GAME_SOCKET_NSP = "/game";
 
