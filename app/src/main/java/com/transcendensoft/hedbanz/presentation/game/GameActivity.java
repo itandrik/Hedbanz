@@ -39,7 +39,6 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @BindView(R.id.rvGameList) RecyclerView mRecycler;
     @BindView(R.id.etChatMessage) EditText mEtChatMessage;
     @BindView(R.id.rlGameDataContainer) RelativeLayout mRlDataContainer;
-    @BindView(R.id.rlEmptyListContainer) RelativeLayout mRlEmptyList;
     @BindView(R.id.rlErrorNetwork) RelativeLayout mRlErrorNetwork;
     @BindView(R.id.rlErrorServer) RelativeLayout mRlErrorServer;
     @BindView(R.id.flLoadingContainer) FrameLayout mFlLoadingContainer;
@@ -157,6 +156,13 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     }
 
     @Override
+    public void addMessages(int position, List<Message> messages) {
+        if (mAdapter != null) {
+            mAdapter.addAll(position, messages);
+        }
+    }
+
+    @Override
     public void removeMessage(int position) {
         if (mAdapter != null) {
             mAdapter.remove(position);
@@ -173,7 +179,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @Override
     public void removeLastMessage() {
         if (mAdapter != null) {
-            mAdapter.remove(mAdapter.getItems().size());
+            mAdapter.remove(0);
         }
     }
 
@@ -206,8 +212,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
     @Override
     public void showEmptyList() {
-        hideAll();
-        mRlEmptyList.setVisibility(View.VISIBLE);
+        showContent();
     }
 
     @Override
@@ -215,7 +220,6 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         mRlErrorServer.setVisibility(GONE);
         mRlErrorNetwork.setVisibility(GONE);
         mFlLoadingContainer.setVisibility(GONE);
-        mRlEmptyList.setVisibility(GONE);
         mRlDataContainer.setVisibility(GONE);
     }
 

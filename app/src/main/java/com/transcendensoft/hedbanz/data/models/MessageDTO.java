@@ -29,6 +29,9 @@ public class MessageDTO {
     @SerializedName("id")
     @Expose
     private long id;
+    @SerializedName("clientMessageId")
+    @Expose
+    private int clientMessageId;
     @SerializedName("senderId")
     @Expose
     private long senderId;
@@ -45,13 +48,14 @@ public class MessageDTO {
     @Expose
     private Long createDate;
 
-    MessageDTO(long id, long senderId, long roomId, String text, int type, Long createDate) {
+    MessageDTO(long id, long senderId, long roomId, String text, int type, Long createDate, int clientMessageId) {
         this.id = id;
         this.senderId = senderId;
         this.roomId = roomId;
         this.text = text;
         this.type = type;
         this.createDate = createDate;
+        this.clientMessageId = clientMessageId;
     }
 
     public long getId() {
@@ -102,6 +106,14 @@ public class MessageDTO {
         this.createDate = createDate;
     }
 
+    public int getClientMessageId() {
+        return clientMessageId;
+    }
+
+    public void setClientMessageId(int clientMessageId) {
+        this.clientMessageId = clientMessageId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -109,12 +121,12 @@ public class MessageDTO {
 
         MessageDTO that = (MessageDTO) o;
 
-        return id == that.id;
+        return clientMessageId == that.clientMessageId;
     }
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return (int) (clientMessageId ^ (clientMessageId >>> 32));
     }
 
     public static class Builder {
@@ -124,6 +136,7 @@ public class MessageDTO {
         private String text;
         private int type;
         private Long createDate;
+        private int clientMessageId;
 
         public Builder setId(long id) {
             this.id = id;
@@ -155,8 +168,13 @@ public class MessageDTO {
             return this;
         }
 
+        public Builder setClientMessageId(int clientMessageId) {
+            this.clientMessageId = clientMessageId;
+            return this;
+        }
+
         public MessageDTO build() {
-            return new MessageDTO(id, senderId, roomId, text, type, createDate);
+            return new MessageDTO(id, senderId, roomId, text, type, createDate, clientMessageId);
         }
     }
 }

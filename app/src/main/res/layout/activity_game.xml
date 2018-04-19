@@ -118,12 +118,4 @@
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
         android:visibility="gone" />
-
-    <include
-        android:id="@+id/rlEmptyListContainer"
-        layout="@layout/layout_empty_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:visibility="gone" />
 </RelativeLayout>

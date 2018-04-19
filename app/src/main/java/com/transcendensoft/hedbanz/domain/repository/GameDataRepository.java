@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.domain.repository;
  */
 
 import com.transcendensoft.hedbanz.domain.entity.Message;
+import com.transcendensoft.hedbanz.domain.entity.Word;
 
 import org.json.JSONObject;
 
@@ -37,14 +38,17 @@ public interface GameDataRepository {
     Observable<JSONObject> leftUserObservable();
     Observable<JSONObject> typingObservable();
     Observable<JSONObject> stopTypingObservable();
-    Observable<JSONObject> messageObservable();
+    Observable<Message> messageObservable();
     Observable<JSONObject> errorObservable();
+    Observable<JSONObject> settingWordObservable();
+    Observable<JSONObject> wordSettedToUserObservable();
 
     void startTyping();
     void stopTyping();
     void sendMessage(Message message);
     void joinToRoom();
     void disconnectFromRoom();
+    void setWord(Word word);
 
     void connect(long userId, long roomId);
     void disconnect();

@@ -17,6 +17,12 @@ package com.transcendensoft.hedbanz.presentation.rooms.list;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,6 +114,16 @@ public class RoomItemPresenterImpl extends BasePresenter<Room, RoomItemContract.
         mRoomPasswordDialog = new AlertDialog.Builder(context)
                 .setView(R.layout.dialog_room_password)
                 .show();
+        mRoomPasswordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        initPasswordIcon(context, etRoomPassword);
+    }
+
+    private void initPasswordIcon(Context context, EditText etPassword){
+        Drawable drawable = VectorDrawableCompat.create(
+                context.getResources(), R.drawable.ic_password, null);
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(context, R.color.textDarkRed));
+        etPassword.setCompoundDrawablesWithIntrinsicBounds(drawable, null,null,null);
     }
 
     private void processRoomPassword(Room room, TextView tvPasswordError) {

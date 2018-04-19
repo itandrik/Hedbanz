@@ -22,6 +22,7 @@ import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.ErrorUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.JoinedUserUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.LeftUserUseCase;
@@ -33,6 +34,8 @@ import com.transcendensoft.hedbanz.domain.interactor.game.usecases.OnDisconnectU
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.RoomInfoUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.StartTypingUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.StopTypingUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.WordSettedUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.WordSettingUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import java.util.List;
@@ -65,6 +68,8 @@ public class GameInteractorFacade {
     private StopTypingUseCase mStopTypingUseCase;
     private RoomInfoUseCase mRoomInfoUseCase;
     private ErrorUseCase mErrorUseCase;
+    private WordSettedUseCase mWordSettedUseCase;
+    private WordSettingUseCase mWordSettingUseCase;
 
     private Room mCurrentRoom;
 
@@ -107,6 +112,10 @@ public class GameInteractorFacade {
                 mObservableTransformer, compositeDisposable, mRepository, gson);
         mErrorUseCase = new ErrorUseCase(
                 mObservableTransformer, compositeDisposable, mRepository, gson);
+        mWordSettedUseCase = new WordSettedUseCase(mObservableTransformer,
+                compositeDisposable, mRepository);
+        mWordSettingUseCase = new WordSettingUseCase(mObservableTransformer,
+                compositeDisposable, mRepository);
     }
 
     public void onConnectListener(Consumer<? super String> onNext,
@@ -134,7 +143,7 @@ public class GameInteractorFacade {
         Consumer<? super User> doOnNext = user -> {
             if (mCurrentRoom != null && mCurrentRoom.getUsers() != null) {
                 List<User> users = mCurrentRoom.getUsers();
-                if(!users.contains(user)) {
+                if (!users.contains(user)) {
                     users.add(user);
                 }
             }
@@ -176,8 +185,27 @@ public class GameInteractorFacade {
     }
 
     public void onErrorListener(Consumer<? super ServerError> onNext,
-                                   Consumer<? super Throwable> onError) {
+                                Consumer<? super Throwable> onError) {
         mErrorUseCase.execute(null, onNext, onError);
+    }
+
+    public void onWordSettedListener(Consumer<? super Word> onNext,
+                                     Consumer<? super Throwable> onError) {
+        mWordSettedUseCase.execute(null, onNext, onError);
+    }
+
+    public void onWordSettingListener(Consumer<? super User> onNext,
+                                     Consumer<? super Throwable> onError) {
+        mWordSettingUseCase.execute(null, onNext, onError);
+    }
+
+    public void setWordToUser(String wordMsg, long wordReceiverId){
+        Word word = new Word.Builder()
+                .setWord(wordMsg)
+                .setWordReceiverId(wordReceiverId)
+                .build();
+
+        mRepository.setWord(word);
     }
 
     public void connectSocketToServer(long roomId) {

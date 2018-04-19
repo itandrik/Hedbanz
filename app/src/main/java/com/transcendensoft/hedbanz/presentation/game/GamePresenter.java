@@ -29,7 +29,6 @@ import com.transcendensoft.hedbanz.domain.interactor.game.GetMessagesInteractor;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
-import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
 import com.transcendensoft.hedbanz.utils.RxUtils;
 
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ import timber.log.Timber;
  */
 @ActivityScope
 public class GamePresenter extends BasePresenter<Room, GameContract.View>
-        implements GameContract.Presenter, RecyclerDelegationAdapter.OnRecyclerBottomReachedListener {
+        implements GameContract.Presenter, RecyclerDelegationAdapter.OnRecyclerBorderListener {
     private GameInteractorFacade mGameInteractor;
     private GetMessagesInteractor mGetMessagesInteractor;
     private List<User> mTypingUsers;
@@ -71,8 +70,8 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     protected void updateView() {
         if (model.getMessages() == null || model.getMessages().isEmpty()) {
             model.setMessages(new ArrayList<>());
+            view().showLoading();
             initSockets();
-            refreshMessageHistory();
         } else {
             view().clearMessages();
             view().addMessages(model.getMessages());
@@ -90,13 +89,23 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
      *------------------------------------*/
     @Override
     public void onBottomReached() {
+        Timber.i("BOTTOM reached");
+    }
+
+    @Override
+    public void onTopReached() {
+        Timber.i("TOP reached");
+        GetMessagesInteractor.Param params = new GetMessagesInteractor.Param(
+                model.getId(), model.getUsers());
         mGetMessagesInteractor.loadNextPage()
-                .execute(new MessageListObserver(view(), model), model.getId());
+                .execute(new MessageListObserver(view(), model), params);
     }
 
     private void refreshMessageHistory() {
+        GetMessagesInteractor.Param params = new GetMessagesInteractor.Param(
+                model.getId(), model.getUsers());
         mGetMessagesInteractor.refresh(null)
-                .execute(new MessageListObserver(view(), model), model.getId());
+                .execute(new MessageListObserver(view(), model), params);
     }
 
     /*------------------------------------*
@@ -109,10 +118,12 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     @Override
     public void processRetryServerPagination(Observable<Object> clickObservable) {
-        addDisposable(clickObservable.subscribe(
-                obj -> onBottomReached(),
-                err -> Timber.e("Retry network in pagination error")
-        ));
+        if(clickObservable != null) {
+            addDisposable(clickObservable.subscribe(
+                    obj -> onTopReached(),
+                    err -> Timber.e("Retry network in pagination error")
+            ));
+        }
     }
 
     /*------------------------------------*
@@ -149,6 +160,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                     model = room;
                     model.setMessages(new ArrayList<>());
                     initMessageListeners();
+                    refreshMessageHistory();
                 },
                 this::processEventListenerOnError);
         mGameInteractor.onErrorListener(error -> {
@@ -204,19 +216,19 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     }
 
     private void processSimpleMessage(Message message) {
-        Message lastMessage = null;
+        //Message lastMessage = null;
         List<Message> messages = model.getMessages();
 
-        if (!messages.isEmpty()) {
-            lastMessage = messages.get(messages.size() - 1);
-        }
-        if (lastMessage instanceof TypingMessage) {
-            messages.add(messages.size() - 1, message);
-            view().addMessage(messages.size() - 2, message);
-        } else {
+       // if (!messages.isEmpty()) {
+         //   lastMessage = messages.get(messages.size() - 1);
+       // }
+        //if (lastMessage instanceof TypingMessage) {
+        //    messages.add(messages.size() - 1, message);
+        //    view().addMessage(messages.size() - 2, message);
+       // } else {
             messages.add(message);
             view().addMessage(message);
-        }
+       // }
     }
 
     private void processStartTyping(User user) {

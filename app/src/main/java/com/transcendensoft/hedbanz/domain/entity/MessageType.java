@@ -16,7 +16,7 @@ package com.transcendensoft.hedbanz.domain.entity;
  */
 
 /**
- * //TODO add class description 
+ * Enum with message types. Id of message type must be the same as in server.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>

@@ -33,6 +33,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 
 import static com.transcendensoft.hedbanz.domain.entity.MessageType.ERROR_SERVER;
 
@@ -49,10 +50,11 @@ import static com.transcendensoft.hedbanz.domain.entity.MessageType.ERROR_SERVER
  * Developed by <u>Transcendensoft</u>
  */
 public class ServerErrorAdapterDelegate extends RxAdapterDelegate<List<Message>> {
-    private Observable<Object> mRetryServerClickObservable;
+    private PublishSubject<Object> mRetryServerClickObservable;
 
     @Inject
     public ServerErrorAdapterDelegate() {
+        mRetryServerClickObservable = PublishSubject.create();
     }
 
     @Override
@@ -76,7 +78,7 @@ public class ServerErrorAdapterDelegate extends RxAdapterDelegate<List<Message>>
                                     @NonNull List<Object> payloads) {
         NetworkErrorViewHolder viewHolder = (NetworkErrorViewHolder) holder;
 
-        mRetryServerClickObservable = viewHolder.retryObservable();
+        viewHolder.retryObservable().subscribe(mRetryServerClickObservable);
     }
 
     public Observable<Object> getRetryServerClickObservable() {

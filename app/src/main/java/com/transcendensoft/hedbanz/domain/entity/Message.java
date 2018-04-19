@@ -25,17 +25,19 @@ import java.sql.Timestamp;
  */
 public class Message {
     private long id;
+    private long clientMessageId;
     private String message;
     private User userFrom;
     private MessageType messageType;
     private Timestamp createDate;
 
-    protected Message(long id, String message, User userFrom, MessageType messageType, Timestamp timestamp) {
+    protected Message(long id, String message, User userFrom, MessageType messageType, Timestamp timestamp, long clientMessageId) {
         this.id = id;
         this.message = message;
         this.userFrom = userFrom;
         this.messageType = messageType;
         this.createDate = timestamp;
+        this.clientMessageId = clientMessageId;
     }
 
     public long getId() {
@@ -78,19 +80,12 @@ public class Message {
         this.createDate = createDate;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Message message = (Message) o;
-
-        return id == message.id;
+    public long getClientMessageId() {
+        return clientMessageId;
     }
 
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+    public void setClientMessageId(long clientMessageId) {
+        this.clientMessageId = clientMessageId;
     }
 
     public static class Builder {
@@ -99,6 +94,7 @@ public class Message {
         private User userFrom;
         private MessageType messageType;
         private Timestamp createDate;
+        private long clientMessageId;
 
         public Builder setId(long id) {
             this.id = id;
@@ -125,8 +121,13 @@ public class Message {
             return this;
         }
 
+        public Builder setClientMessageId(long clientMessageId) {
+            this.clientMessageId = clientMessageId;
+            return this;
+        }
+
         public Message build() {
-            return new Message(id, message, userFrom, messageType, createDate);
+            return new Message(id, message, userFrom, messageType, createDate, clientMessageId);
         }
     }
 }

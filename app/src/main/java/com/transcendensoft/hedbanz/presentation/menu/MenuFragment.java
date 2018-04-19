@@ -30,6 +30,7 @@ import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.friends.FriendsActivity;
+import com.transcendensoft.hedbanz.presentation.intro.IntroActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.CredentialsActivity;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
@@ -109,7 +110,7 @@ public class MenuFragment extends DaggerFragment {
 
     @OnClick(R.id.btnHelp)
     protected void onHelpClicked() {
-        mActivity.showShortToastMessage(R.string.in_developing);
+        startActivity(new Intent(getActivity(), IntroActivity.class));
     }
 
     @OnClick(R.id.btnSettings)

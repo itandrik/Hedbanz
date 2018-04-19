@@ -37,6 +37,7 @@ public interface GameContract {
         void addMessage(Message message);
         void addMessage(int position, Message message);
         void addMessages(List<Message> messages);
+        void addMessages(int position, List<Message> messages);
         void clearMessages();
         void removeMessage(int position);
         void setMessage(int position, Message message);

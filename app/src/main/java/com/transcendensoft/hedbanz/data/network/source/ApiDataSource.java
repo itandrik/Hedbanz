@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.data.network.source;
  */
 
 
+import com.transcendensoft.hedbanz.BuildConfig;
 import com.transcendensoft.hedbanz.data.network.service.ApiService;
 
 import javax.inject.Inject;
@@ -28,18 +29,10 @@ import javax.inject.Inject;
  * Developed by <u>Transcendensoft</u>
  */
 public abstract class ApiDataSource {
-    public static final String HOST = "http://35.196.42.112"; //Google
-    //public static final String HOST = "http://77.47.204.201";//Raspberry and Laptop
+    public static final String HOST = BuildConfig.HOST_LINK;
+    public static final String BASE_URL = HOST + BuildConfig.PORT_API;
 
-    private static final String PORT_API = ":8080/";// Google
-    //private static final String PORT_API = ":8083/";// Laptop
-    //private static final String PORT_API = ":8083/";// Raspberry
-    //private static final String PORT_API = ":8083/";//OPENSHIFT
-    public static final String BASE_URL = HOST + PORT_API;
-
-     public static final String PORT_SOCKET = ":9092"; // Google
-    // public static final String PORT_SOCKET = ":9092"; // Laptop
-    // public static final String PORT_SOCKET = ":9093"; // Raspberry
+    public static final String PORT_SOCKET = BuildConfig.PORT_SOCKET;
     public static final String LOGIN_SOCKET_NSP = "/login";
     public static final String GAME_SOCKET_NSP = "/game";
 

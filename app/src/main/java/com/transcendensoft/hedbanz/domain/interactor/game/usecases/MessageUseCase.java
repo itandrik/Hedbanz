@@ -15,27 +15,22 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
  * limitations under the License.
  */
 
-import com.google.gson.JsonSyntaxException;
+import android.support.annotation.NonNull;
+
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.User;
-import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.sql.Timestamp;
 import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subjects.PublishSubject;
@@ -77,37 +72,23 @@ public class MessageUseCase extends ObservableUseCase<Message, List<User>> {
 
     private Observable<Message> getObservable(List<User> users) {
         return mGameDataRepository.messageObservable()
-                .flatMap(jsonObject -> convertJsonToMessage(jsonObject, users));
+                .map((Message message) -> mapMessageFullData(users, message));
     }
 
-    private ObservableSource<? extends Message> convertJsonToMessage(
-            JSONObject jsonObject, List<User> users) throws JSONException {
-        try {
-            Message message = getMessage(jsonObject, users);
-            return Observable.just(message);
-        } catch (JsonSyntaxException e) {
-            return Observable.error(new IncorrectJsonException(
-                    jsonObject.toString(), RoomInfoUseCase.class.getName()));
+    @NonNull
+    private Message mapMessageFullData(List<User> users, Message message) {
+        User fullUser = getUserWithId(users, message.getUserFrom().getId());
+        if(fullUser != null){
+            message.setUserFrom(fullUser);
         }
-    }
 
-    private Message getMessage(JSONObject jsonObject, List<User> users) throws JSONException {
-        User user = getUserWithId(users, jsonObject.getLong("senderId"));
-
-        MessageType messageType;
-        if (mPreferenceManager.getUser().getId() == user.getId()) {
-            messageType = MessageType.SIMPLE_MESSAGE_THIS_USER;
+        if (mPreferenceManager.getUser().equals(message.getUserFrom())) {
+            message.setMessageType(MessageType.SIMPLE_MESSAGE_THIS_USER);
         } else {
-            messageType = MessageType.SIMPLE_MESSAGE_OTHER_USER;
+            message.setMessageType(MessageType.SIMPLE_MESSAGE_OTHER_USER);
         }
 
-        return new Message.Builder()
-                .setId(jsonObject.getLong("id"))
-                .setMessage(jsonObject.getString("text"))
-                .setMessageType(messageType)
-                .setUserFrom(user)
-                .setCreateDate(new Timestamp(jsonObject.getLong("createDate")))
-                .build();
+        return message;
     }
 
     @Nullable

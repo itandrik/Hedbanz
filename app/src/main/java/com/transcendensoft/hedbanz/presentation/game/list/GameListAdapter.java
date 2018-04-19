@@ -24,6 +24,7 @@ import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageThisU
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.NetworkErrorAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.ServerErrorAdapterDelegate;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
@@ -66,10 +67,12 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                 .addDelegate(joinedLeftUserAdapterDelegate);
     }
 
+    @Nullable
     public Observable<Object> retryServerClickObservable() {
         return mServerErrorAdapterDelegate.getRetryServerClickObservable();
     }
 
+    @Nullable
     public Observable<Object> retryNetworkClickObservable() {
         return mNetworkErrorAdapterDelegate.getRetryNetworkClickObservable();
     }

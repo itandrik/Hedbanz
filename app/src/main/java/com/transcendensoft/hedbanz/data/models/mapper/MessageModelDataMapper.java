@@ -45,6 +45,7 @@ public class MessageModelDataMapper {
         if(messageDTO != null){
             messageResult = new Message.Builder()
                     .setId(messageDTO.getId())
+                    .setClientMessageId(messageDTO.getClientMessageId())
                     .setMessage(messageDTO.getText())
                     .setMessageType(MessageType.getMessageTypeById(messageDTO.getType()))
                     .setCreateDate(new Timestamp(messageDTO.getCreateDate()))

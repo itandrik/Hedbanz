@@ -72,9 +72,9 @@ public class MessageListObserver extends DisposableObserver<PaginationState<Mess
         if (messagePaginationState.isRefreshed()) {
             mView.showNetworkError();
         } else {
-            Message lastMessage = mModel.getMessages().get(mModel.getMessages().size() - 1);
+            Message lastMessage = mModel.getMessages().get(0);
             lastMessage.setMessageType(MessageType.ERROR_NETWORK);
-            mView.setMessage(mModel.getMessages().size(), lastMessage);
+            mView.setMessage(0, lastMessage);
         }
     }
 
@@ -82,9 +82,9 @@ public class MessageListObserver extends DisposableObserver<PaginationState<Mess
         if (messagePaginationState.isRefreshed()) {
             mView.showServerError();
         } else {
-            Message lastMessage = mModel.getMessages().get(mModel.getMessages().size() - 1);
+            Message lastMessage = mModel.getMessages().get(0);
             lastMessage.setMessageType(MessageType.ERROR_SERVER);
-            mView.setMessage(mModel.getMessages().size(), lastMessage);
+            mView.setMessage(0, lastMessage);
         }
     }
 
@@ -92,9 +92,9 @@ public class MessageListObserver extends DisposableObserver<PaginationState<Mess
         if (messagePaginationState.isRefreshed()) {
             mView.showEmptyList();
         } else {
-            Message lastMessage = mModel.getMessages().get(mModel.getMessages().size() - 1);
+            Message lastMessage = mModel.getMessages().get(0);
             if (lastMessage.getMessageType() == MessageType.LOADING) {
-                mModel.getMessages().remove(mModel.getMessages().size() - 1);
+                mModel.getMessages().remove(0);
                 mView.removeLastMessage();
             }
         }
@@ -102,15 +102,15 @@ public class MessageListObserver extends DisposableObserver<PaginationState<Mess
 
     private void processNotEmptyMessageList(PaginationState<Message> messagePaginationState, List<Message> messages) {
         if (!messagePaginationState.isRefreshed()) {
-            mModel.getMessages().remove(mModel.getMessages().size() - 1);
+            mModel.getMessages().remove(0);
             mView.removeLastMessage();
         }
 
-        messages.add(new Message.Builder().setMessageType(MessageType.LOADING).build());
+        messages.add(0, new Message.Builder().setMessageType(MessageType.LOADING).build());
 
-        mView.addMessages(messages);
+        mView.addMessages(0, messages);
         mView.showContent();
-        mModel.getMessages().addAll(messages);
+        mModel.getMessages().addAll(0, messages);
     }
 
     @Override

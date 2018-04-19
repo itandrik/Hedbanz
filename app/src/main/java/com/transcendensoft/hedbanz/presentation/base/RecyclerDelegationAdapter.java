@@ -29,10 +29,11 @@ import java.util.List;
  * Developed by <u>Transcendensoft</u>
  */
 public abstract class RecyclerDelegationAdapter<T> extends ListDelegationAdapter<List<T>> {
-    private OnRecyclerBottomReachedListener mBottomReachedListener;
+    private OnRecyclerBorderListener mBorderListener;
 
-    public interface OnRecyclerBottomReachedListener{
+    public interface OnRecyclerBorderListener {
         void onBottomReached();
+        void onTopReached();
     }
 
     public RecyclerDelegationAdapter() {
@@ -41,7 +42,28 @@ public abstract class RecyclerDelegationAdapter<T> extends ListDelegationAdapter
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if(mBorderListener != null && position == items.size() - 1){
+            mBorderListener.onBottomReached();
+        }
+
+        if(mBorderListener != null && position <= 0){
+            mBorderListener.onTopReached();
+        }
+
         super.onBindViewHolder(holder, position);
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List payloads) {
+        if(mBorderListener != null && position == items.size() - 1){
+            mBorderListener.onBottomReached();
+        }
+
+        if(mBorderListener != null && position <= 0){
+            mBorderListener.onTopReached();
+        }
+
+        super.onBindViewHolder(holder, position, payloads);
     }
 
     public void clearAndAddAll(List<T> entities) {
@@ -53,6 +75,11 @@ public abstract class RecyclerDelegationAdapter<T> extends ListDelegationAdapter
         int startPosition = getItems().size() - 1;
         getItems().addAll(entities);
         notifyItemRangeChanged(startPosition, startPosition + entities.size());
+    }
+
+    public void addAll(int position, List<T> entities) {
+        getItems().addAll(position, entities);
+        notifyItemRangeChanged(position, position + entities.size());
     }
 
     public void clear() {
@@ -88,7 +115,7 @@ public abstract class RecyclerDelegationAdapter<T> extends ListDelegationAdapter
         return getItems().get(position);
     }
 
-    public void setBottomReachedListener(OnRecyclerBottomReachedListener bottomReachedListener) {
-        this.mBottomReachedListener = bottomReachedListener;
+    public void setBottomReachedListener(OnRecyclerBorderListener bottomReachedListener) {
+        this.mBorderListener = bottomReachedListener;
     }
 }

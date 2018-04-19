@@ -28,7 +28,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="16dp"
                 android:layout_toRightOf="@id/ivBack"
-                android:text="@string/friends_toolbar_title"
+                android:text="Описание комнаты"
                 android:fontFamily="@font/lemon_tuesday"
                 android:gravity="left|center_vertical"
                 android:textColor="#756752"

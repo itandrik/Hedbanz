@@ -33,6 +33,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 
 import static com.transcendensoft.hedbanz.domain.entity.MessageType.ERROR_NETWORK;
 
@@ -49,10 +50,11 @@ import static com.transcendensoft.hedbanz.domain.entity.MessageType.ERROR_NETWOR
  * Developed by <u>Transcendensoft</u>
  */
 public class NetworkErrorAdapterDelegate extends RxAdapterDelegate<List<Message>> {
-    private Observable<Object> mRetryNetworkClickObservable;
+    private PublishSubject<Object> mRetryNetworkClickObservable;
 
     @Inject
     public NetworkErrorAdapterDelegate() {
+        mRetryNetworkClickObservable = PublishSubject.create();
     }
 
     @Override
@@ -76,7 +78,7 @@ public class NetworkErrorAdapterDelegate extends RxAdapterDelegate<List<Message>
                                     @NonNull List<Object> payloads) {
         NetworkErrorViewHolder viewHolder = (NetworkErrorViewHolder) holder;
 
-        mRetryNetworkClickObservable = viewHolder.retryObservable();
+        viewHolder.retryObservable().subscribe(mRetryNetworkClickObservable);
     }
 
     public Observable<Object> getRetryNetworkClickObservable() {
