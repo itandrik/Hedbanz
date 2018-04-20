@@ -23,13 +23,16 @@ import java.sql.Timestamp;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-public class Message {
+public class Message{
     private long id;
     private long clientMessageId;
     private String message;
     private User userFrom;
     private MessageType messageType;
     private Timestamp createDate;
+
+    protected Message() {
+    }
 
     protected Message(long id, String message, User userFrom, MessageType messageType, Timestamp timestamp, long clientMessageId) {
         this.id = id;

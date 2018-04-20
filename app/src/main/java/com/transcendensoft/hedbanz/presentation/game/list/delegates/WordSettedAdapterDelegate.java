@@ -22,22 +22,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hannesdorfmann.adapterdelegates3.AdapterDelegate;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
-import com.transcendensoft.hedbanz.domain.entity.User;
-import com.transcendensoft.hedbanz.presentation.game.list.holder.SomeUserMessageViewHolder;
+import com.transcendensoft.hedbanz.domain.entity.Word;
+import com.transcendensoft.hedbanz.presentation.base.RxAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.holder.WordSettedViewHolder;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.transcendensoft.hedbanz.domain.entity.MessageType.SIMPLE_MESSAGE_OTHER_USER;
-
 /**
  * This delegate is responsible for creating
- * {@link com.transcendensoft.hedbanz.presentation.game.list.holder.SomeUserMessageViewHolder}
+ * {@link com.transcendensoft.hedbanz.presentation.game.list.holder.WordSettedViewHolder}
  * and binding ViewHolder widgets according to model.
  * <p>
  * An AdapterDelegate get added to an AdapterDelegatesManager.
@@ -47,15 +45,16 @@ import static com.transcendensoft.hedbanz.domain.entity.MessageType.SIMPLE_MESSA
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Message>> {
+public class WordSettedAdapterDelegate extends RxAdapterDelegate<List<Message>> {
     @Inject
-    public MessageOtherUserAdapterDelegate() {
+    public WordSettedAdapterDelegate() {
     }
 
     @Override
     protected boolean isForViewType(@NonNull List<Message> items, int position) {
-        MessageType currentMessageType = items.get(position).getMessageType();
-        return currentMessageType == SIMPLE_MESSAGE_OTHER_USER;
+        Message message = items.get(position);
+
+        return message instanceof Word && message.getMessageType() == MessageType.WORD_SETTED;
     }
 
     @NonNull
@@ -63,36 +62,18 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
     protected RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent) {
         Context context = parent.getContext();
         View itemView = LayoutInflater.from(context)
-                .inflate(R.layout.item_message_some_user, parent, false);
-        return new SomeUserMessageViewHolder(context, itemView);
+                .inflate(R.layout.item_word_setted, parent, false);
+        return new WordSettedViewHolder(context, itemView);
     }
 
     @Override
     protected void onBindViewHolder(@NonNull List<Message> items, int position,
                                     @NonNull RecyclerView.ViewHolder holder,
                                     @NonNull List<Object> payloads) {
-        SomeUserMessageViewHolder viewHolder = (SomeUserMessageViewHolder) holder;
-        Message message = items.get(position);
+        WordSettedViewHolder viewHolder = (WordSettedViewHolder) holder;
+        Word word = (Word) items.get(position);
 
-        if (message != null) {
-            User userFrom = message.getUserFrom();
-
-            String login = null;
-            if (userFrom != null) {
-                login = userFrom.getLogin();
-            }
-
-            boolean isHideLoginAndImage = false;
-            if ((items.size() > 1) && position != 0 &&
-                    (items.get(position - 1).getMessageType() == SIMPLE_MESSAGE_OTHER_USER) &&
-                    (items.get(position - 1).getUserFrom().equals(message.getUserFrom()))) {
-                isHideLoginAndImage = true;
-            }
-
-            viewHolder.bindShowHideLoginAndImage(isHideLoginAndImage);
-            viewHolder.bindUserLogin(login);
-            viewHolder.bindMessage(message.getMessage());
-            viewHolder.bindUserImage(R.drawable.logo); //TODO change this shit
-        }
+        viewHolder.bindText(word.getSenderUser().getLogin(),
+                word.getWordReceiverUser().getLogin());
     }
 }

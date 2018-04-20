@@ -62,7 +62,6 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, GetMessage
         return mDataRepository.getMessages(param.getRoomId(), mCurrentPage, DataPolicy.API)
                 .map(messages -> mapSetMessageUserAndType(param, messages))
                 .flatMap(this::convertEntitiesToPagingResult)
-                .doOnError(err -> mCurrentPage--)
                 .onErrorReturn(this::mapPaginationStateBasedOnError);
     }
 

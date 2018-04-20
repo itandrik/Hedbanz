@@ -47,13 +47,13 @@ public interface GameContract {
         void showFooterNetworkError();
         void showEmptyList();
         void removeLastMessage();
-
     }
 
     interface Presenter {
         void initSockets();
         void messageTextChanges(EditText editText);
         void sendMessage(String message);
+        void setWordToUser(String word, User user);
 
         void processRetryNetworkPagination(Observable<Object> clickObservable);
         void processRetryServerPagination(Observable<Object> clickObservable);

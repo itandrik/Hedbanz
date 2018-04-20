@@ -8,6 +8,7 @@ import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -118,8 +119,11 @@ public class GameActivity extends BaseActivity implements GameContract.View {
      *------------------------------------*/
     @OnClick(R.id.ivSend)
     protected void onSendMessageClicked() {
-        mPresenter.sendMessage(mEtChatMessage.getText().toString());
-        mEtChatMessage.setText("");
+        String message = mEtChatMessage.getText().toString();
+        if (!TextUtils.isEmpty(message)) {
+            mPresenter.sendMessage(message);
+            mEtChatMessage.setText("");
+        }
     }
 
     /*------------------------------------*

@@ -73,8 +73,10 @@ public class MessageListObserver extends DisposableObserver<PaginationState<Mess
             mView.showNetworkError();
         } else {
             Message lastMessage = mModel.getMessages().get(0);
-            lastMessage.setMessageType(MessageType.ERROR_NETWORK);
-            mView.setMessage(0, lastMessage);
+            if (lastMessage.getMessageType() != MessageType.ERROR_NETWORK) {
+                lastMessage.setMessageType(MessageType.ERROR_NETWORK);
+                mView.setMessage(0, lastMessage);
+            }
         }
     }
 
@@ -83,8 +85,10 @@ public class MessageListObserver extends DisposableObserver<PaginationState<Mess
             mView.showServerError();
         } else {
             Message lastMessage = mModel.getMessages().get(0);
-            lastMessage.setMessageType(MessageType.ERROR_SERVER);
-            mView.setMessage(0, lastMessage);
+            if (lastMessage.getMessageType() != MessageType.ERROR_SERVER) {
+                lastMessage.setMessageType(MessageType.ERROR_SERVER);
+                mView.setMessage(0, lastMessage);
+            }
         }
     }
 
@@ -123,13 +127,5 @@ public class MessageListObserver extends DisposableObserver<PaginationState<Mess
     @Override
     public void onComplete() {
         // Stub
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (mModel == null || mModel.getMessages().isEmpty()) {
-            mView.showLoading();
-        }
     }
 }

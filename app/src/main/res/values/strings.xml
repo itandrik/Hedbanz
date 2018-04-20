@@ -106,6 +106,10 @@
     <string name="game_user_joined">%1$s зашел в комнату</string>
     <string name="game_user_left">%1$s покинул комнату</string>
     <string name="game_et_hint">Текст сообщения</string>
+    <string name="game_set_word_title">Самое время загадать слово игроку %1$s</string>
+    <string name="game_set_word_title_random">Самое время загадать слово случайному игроку</string>
+    <string name="game_set_word_hint">Ваше слово&#8230;</string>
+    <string name="game_word_setted">Игрок %1$s загадал слово игроку %2$s</string>
 
     <!-- Friends -->
     <string name="friends_toolbar_title">Ваши друзяки</string>

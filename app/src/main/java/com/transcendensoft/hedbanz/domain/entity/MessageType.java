@@ -32,6 +32,8 @@ public enum MessageType {
     ERROR_SERVER(8),
     ERROR_NETWORK(9),
     LOADING(10),
+    WORD_SETTING(11),
+    WORD_SETTED(12),
     UNDEFINED(100500);
 
     private int id;

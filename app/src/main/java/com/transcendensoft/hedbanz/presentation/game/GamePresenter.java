@@ -155,6 +155,8 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     private void initBusinessLogicListeners() {
         initJoinedUserListener();
         initLeftUserListener();
+        initWordSettingListeners();
+
         mGameInteractor.onRoomInfoListener(
                 room -> {
                     model = room;
@@ -201,6 +203,11 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                     view().addMessage(message);
                 },
                 this::processEventListenerOnError);
+    }
+
+    private void initWordSettingListeners(){
+        // mGameInteractor.onWordSettedListener();//TODO
+        //mGameInteractor.onWordSettingListener();
     }
 
     private void initMessageListeners() {
@@ -281,5 +288,10 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 .setMessage(text)
                 .build();
         mGameInteractor.sendMessage(message);
+    }
+
+    @Override
+    public void setWordToUser(String word, User user) {
+
     }
 }

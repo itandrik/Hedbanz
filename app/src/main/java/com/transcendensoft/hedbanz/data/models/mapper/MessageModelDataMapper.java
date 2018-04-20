@@ -48,7 +48,8 @@ public class MessageModelDataMapper {
                     .setClientMessageId(messageDTO.getClientMessageId())
                     .setMessage(messageDTO.getText())
                     .setMessageType(MessageType.getMessageTypeById(messageDTO.getType()))
-                    .setCreateDate(new Timestamp(messageDTO.getCreateDate()))
+                    .setCreateDate(new Timestamp(messageDTO.getCreateDate() == null ?
+                            System.currentTimeMillis() : messageDTO.getCreateDate()))
                     .setUserFrom(new User.Builder().setId(messageDTO.getSenderId()).build())
                     .build();
         }
