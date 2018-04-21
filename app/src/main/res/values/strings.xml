@@ -100,6 +100,7 @@
     <string name="credentials_update_success">Ваши данные успешно обновлены!</string>
 
     <!-- Game mode -->
+    <string name="game_starts">Все игроки в сборе.\n Да начнется великая игра!</string>
     <string name="game_typing_one_user">%1$s что-то пишет</string>
     <string name="game_typing_two_user">%1$s и %2$s что-то пишут</string>
     <string name="game_typing_several_users">Несколько игроков пишут сообщения</string>

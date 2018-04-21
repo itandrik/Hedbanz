@@ -33,6 +33,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -45,10 +46,10 @@ import io.reactivex.subjects.PublishSubject;
  * Adapter and each AdapterDelegate.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class WordSettingAdapterDelegate extends RxAdapterDelegate<List<Message>> {
-    private PublishSubject<Object> mSendWordSubject;
+    private PublishSubject<Word> mSendWordSubject;
 
     @Inject
     public WordSettingAdapterDelegate() {
@@ -59,7 +60,8 @@ public class WordSettingAdapterDelegate extends RxAdapterDelegate<List<Message>>
     protected boolean isForViewType(@NonNull List<Message> items, int position) {
         Message message = items.get(position);
 
-        return message instanceof Word && message.getMessageType() == MessageType.WORD_SETTING;
+        return (message instanceof Word) &&
+                (message.getMessageType() == MessageType.WORD_SETTING);
     }
 
     @NonNull
@@ -79,9 +81,13 @@ public class WordSettingAdapterDelegate extends RxAdapterDelegate<List<Message>>
         Word word = (Word) items.get(position);
 
         viewHolder.bindTitle(word.getWordReceiverUser().getLogin());
+
+        viewHolder.setWordObservable()
+                .flatMap(obj -> Observable.just(word))
+                .subscribe(mSendWordSubject);
     }
 
-    /*public Observable<Object> getRetryServerClickObservable() {
-        return mRetryServerClickObservable;
-    }*/
+    public Observable<Word> getSetWordObservable() {
+        return mSendWordSubject;
+    }
 }

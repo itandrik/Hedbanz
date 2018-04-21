@@ -280,7 +280,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 System.currentTimeMillis(), mRoomId, mUserId});
 
         MessageDTO messageDTO = new MessageDTO.Builder()
-                .setSenderId(mUserId)
+                .setSenderUser(new UserDTO.Builder().setId(mUserId).build())
                 .setRoomId(mRoomId)
                 .setText(message.getMessage())
                 .setType(MessageType.SIMPLE_MESSAGE.getId())

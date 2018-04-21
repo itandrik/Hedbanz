@@ -16,6 +16,8 @@
         android:textSize="15sp"
         android:textStyle="bold" />
 
+
+
     <ImageView
         android:id="@+id/ivUserImage"
         android:layout_width="42dp"

@@ -98,7 +98,7 @@ public class GameInteractorFacade {
         mOnConnectTimeoutUseCase = new OnConnectTimeoutUseCase(
                 mObservableTransformer, compositeDisposable, mRepository);
         mJoinedUserUseCase = new JoinedUserUseCase(
-                mObservableTransformer, compositeDisposable, mRepository, gson);
+                mObservableTransformer, compositeDisposable, mRepository, gson, mPreferenceManger);
         mLeftUserUseCase = new LeftUserUseCase(
                 mObservableTransformer, compositeDisposable, mRepository, gson);
         mMessageUseCase = new MessageUseCase(
@@ -163,7 +163,7 @@ public class GameInteractorFacade {
 
     public void onMessageReceivedListener(Consumer<? super Message> onNext,
                                           Consumer<? super Throwable> onError) {
-        mMessageUseCase.execute(mCurrentRoom.getUsers(), onNext, onError);
+        mMessageUseCase.execute(null, onNext, onError);
     }
 
     public void onStartTypingListener(Consumer<? super User> onNext,
@@ -191,15 +191,15 @@ public class GameInteractorFacade {
 
     public void onWordSettedListener(Consumer<? super Word> onNext,
                                      Consumer<? super Throwable> onError) {
-        mWordSettedUseCase.execute(null, onNext, onError);
+        mWordSettedUseCase.execute(mCurrentRoom.getUsers(), onNext, onError);
     }
 
     public void onWordSettingListener(Consumer<? super User> onNext,
-                                     Consumer<? super Throwable> onError) {
-        mWordSettingUseCase.execute(null, onNext, onError);
+                                      Consumer<? super Throwable> onError) {
+        mWordSettingUseCase.execute(mCurrentRoom.getUsers(), onNext, onError);
     }
 
-    public void setWordToUser(String wordMsg, long wordReceiverId){
+    public void setWordToUser(String wordMsg, long wordReceiverId) {
         Word word = new Word.Builder()
                 .setWord(wordMsg)
                 .setWordReceiverId(wordReceiverId)

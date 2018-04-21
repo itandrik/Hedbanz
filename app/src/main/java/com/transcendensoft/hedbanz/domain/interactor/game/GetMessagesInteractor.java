@@ -23,12 +23,10 @@ import com.transcendensoft.hedbanz.domain.PaginationState;
 import com.transcendensoft.hedbanz.domain.PaginationUseCase;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
-import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.repository.MessagesDataRepository;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
@@ -43,7 +41,7 @@ import io.reactivex.disposables.CompositeDisposable;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class GetMessagesInteractor extends PaginationUseCase<Message, GetMessagesInteractor.Param, Void>{
+public class GetMessagesInteractor extends PaginationUseCase<Message, Long, Void>{
     private MessagesDataRepository mDataRepository;
     private PreferenceManager mPreferenceManager;
 
@@ -58,15 +56,15 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, GetMessage
     }
 
     @Override
-    protected Observable<PaginationState<Message>> buildUseCaseObservable(GetMessagesInteractor.Param param) {
-        return mDataRepository.getMessages(param.getRoomId(), mCurrentPage, DataPolicy.API)
-                .map(messages -> mapSetMessageUserAndType(param, messages))
+    protected Observable<PaginationState<Message>> buildUseCaseObservable(Long roomId) {
+        return mDataRepository.getMessages(roomId, mCurrentPage, DataPolicy.API)
+                .map(this::mapSetMessageUserAndType)
                 .flatMap(this::convertEntitiesToPagingResult)
                 .onErrorReturn(this::mapPaginationStateBasedOnError);
     }
 
     @NonNull
-    private List<Message> mapSetMessageUserAndType(Param param, List<Message> messages) {
+    private List<Message> mapSetMessageUserAndType(List<Message> messages) {
         for (Message message:messages) {
             if(message.getMessageType() == MessageType.SIMPLE_MESSAGE){
                 if(mPreferenceManager.getUser().equals(message.getUserFrom())){
@@ -75,47 +73,7 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, GetMessage
                     message.setMessageType(MessageType.SIMPLE_MESSAGE_OTHER_USER);
                 }
             }
-            User fullUser = getUserWithId(param.getUsers(), message.getUserFrom().getId());
-            if(fullUser != null){
-                message.setUserFrom(fullUser);
-            }
         }
         return messages;
-    }
-
-    @Nullable
-    private User getUserWithId(List<User> users, long id) {
-        for (User user : users) {
-            if (user.getId() == id) {
-                return user;
-            }
-        }
-        return null;
-    }
-
-    public static class Param{
-        private Long roomId;
-        private List<User> users;
-
-        public Param(Long roomId, List<User> users) {
-            this.roomId = roomId;
-            this.users = users;
-        }
-
-        public Long getRoomId() {
-            return roomId;
-        }
-
-        public void setRoomId(Long roomId) {
-            this.roomId = roomId;
-        }
-
-        public List<User> getUsers() {
-            return users;
-        }
-
-        public void setUsers(List<User> users) {
-            this.users = users;
-        }
     }
 }

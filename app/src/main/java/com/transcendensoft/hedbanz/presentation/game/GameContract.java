@@ -19,6 +19,7 @@ import android.widget.EditText;
 
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.presentation.base.BaseView;
 
 import java.util.List;
@@ -53,7 +54,7 @@ public interface GameContract {
         void initSockets();
         void messageTextChanges(EditText editText);
         void sendMessage(String message);
-        void setWordToUser(String word, User user);
+        void processSetWordToUserObservable(Observable<Word> sendWordObservable);
 
         void processRetryNetworkPagination(Observable<Object> clickObservable);
         void processRetryServerPagination(Observable<Object> clickObservable);

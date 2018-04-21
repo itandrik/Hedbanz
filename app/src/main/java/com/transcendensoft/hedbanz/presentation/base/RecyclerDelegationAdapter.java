@@ -79,7 +79,7 @@ public abstract class RecyclerDelegationAdapter<T> extends ListDelegationAdapter
 
     public void addAll(int position, List<T> entities) {
         getItems().addAll(position, entities);
-        notifyItemRangeChanged(position, position + entities.size());
+        notifyItemRangeInserted(position, entities.size());
     }
 
     public void clear() {

@@ -26,7 +26,7 @@ import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.presentation.base.RxAdapterDelegate;
-import com.transcendensoft.hedbanz.presentation.game.list.holder.NetworkErrorViewHolder;
+import com.transcendensoft.hedbanz.presentation.game.list.holder.ServerErrorViewHolder;
 
 import java.util.List;
 
@@ -69,14 +69,14 @@ public class ServerErrorAdapterDelegate extends RxAdapterDelegate<List<Message>>
         Context context = parent.getContext();
         View itemView = LayoutInflater.from(context)
                 .inflate(R.layout.layout_item_server_error, parent, false);
-        return new NetworkErrorViewHolder(itemView);
+        return new ServerErrorViewHolder(itemView);
     }
 
     @Override
     protected void onBindViewHolder(@NonNull List<Message> items, int position,
                                     @NonNull RecyclerView.ViewHolder holder,
                                     @NonNull List<Object> payloads) {
-        NetworkErrorViewHolder viewHolder = (NetworkErrorViewHolder) holder;
+        ServerErrorViewHolder viewHolder = (ServerErrorViewHolder) holder;
 
         viewHolder.retryObservable().subscribe(mRetryServerClickObservable);
     }

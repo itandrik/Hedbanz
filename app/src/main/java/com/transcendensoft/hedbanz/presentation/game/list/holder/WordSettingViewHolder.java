@@ -20,12 +20,15 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding2.view.RxView;
 import com.transcendensoft.hedbanz.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
 
 /**
  * {@link android.support.v7.widget.RecyclerView.ViewHolder}
@@ -37,6 +40,7 @@ import butterknife.ButterKnife;
 public class WordSettingViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.tvSetWordTitle) TextView mTvSetWordTitle;
     @BindView(R.id.etSetWord) EditText mEtSetWord;
+    @BindView(R.id.ivSubmitWord) ImageView mIvSetWord;
 
     private Context mContext;
 
@@ -53,5 +57,10 @@ public class WordSettingViewHolder extends RecyclerView.ViewHolder {
         } else {
             mTvSetWordTitle.setText(mContext.getString(R.string.game_set_word_title_random));
         }
+    }
+
+    public Observable<Object> setWordObservable(){
+        return RxView.clicks(mIvSetWord)
+                .takeUntil(RxView.detaches(itemView));
     }
 }

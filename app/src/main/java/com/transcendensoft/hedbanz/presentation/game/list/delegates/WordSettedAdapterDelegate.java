@@ -54,7 +54,8 @@ public class WordSettedAdapterDelegate extends RxAdapterDelegate<List<Message>> 
     protected boolean isForViewType(@NonNull List<Message> items, int position) {
         Message message = items.get(position);
 
-        return message instanceof Word && message.getMessageType() == MessageType.WORD_SETTED;
+        return (message instanceof Word) &&
+                (message.getMessageType() == MessageType.WORD_SETTED);
     }
 
     @NonNull

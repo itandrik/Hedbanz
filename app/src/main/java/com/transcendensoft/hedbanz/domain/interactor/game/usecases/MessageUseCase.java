@@ -22,12 +22,8 @@ import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
-import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
@@ -42,7 +38,7 @@ import io.reactivex.subjects.PublishSubject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-public class MessageUseCase extends ObservableUseCase<Message, List<User>> {
+public class MessageUseCase extends ObservableUseCase<Message, Void> {
     private PublishSubject<Message> mSubject;
     private PreferenceManager mPreferenceManager;
     private GameDataRepository mGameDataRepository;
@@ -58,30 +54,24 @@ public class MessageUseCase extends ObservableUseCase<Message, List<User>> {
     }
 
     @Override
-    protected Observable<Message> buildUseCaseObservable(List<User> users) {
-        initSubject(users);
+    protected Observable<Message> buildUseCaseObservable(Void param) {
+        initSubject();
 
         return mSubject;
     }
 
-    private void initSubject(List<User> users) {
-        Observable<Message> observable = getObservable(users);
+    private void initSubject() {
+        Observable<Message> observable = getObservable();
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
     }
 
-    private Observable<Message> getObservable(List<User> users) {
-        return mGameDataRepository.messageObservable()
-                .map((Message message) -> mapMessageFullData(users, message));
+    private Observable<Message> getObservable() {
+        return mGameDataRepository.messageObservable().map(this::mapMessageFullData);
     }
 
     @NonNull
-    private Message mapMessageFullData(List<User> users, Message message) {
-        User fullUser = getUserWithId(users, message.getUserFrom().getId());
-        if(fullUser != null){
-            message.setUserFrom(fullUser);
-        }
-
+    private Message mapMessageFullData(Message message) {
         if (mPreferenceManager.getUser().equals(message.getUserFrom())) {
             message.setMessageType(MessageType.SIMPLE_MESSAGE_THIS_USER);
         } else {
@@ -89,15 +79,5 @@ public class MessageUseCase extends ObservableUseCase<Message, List<User>> {
         }
 
         return message;
-    }
-
-    @Nullable
-    private User getUserWithId(List<User> users, long id) {
-        for (User user : users) {
-            if (user.getId() == id) {
-                return user;
-            }
-        }
-        return null;
     }
 }

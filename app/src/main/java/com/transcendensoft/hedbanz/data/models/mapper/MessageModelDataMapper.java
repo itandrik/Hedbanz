@@ -18,7 +18,6 @@ package com.transcendensoft.hedbanz.data.models.mapper;
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
-import com.transcendensoft.hedbanz.domain.entity.User;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -36,8 +35,11 @@ import javax.inject.Inject;
  *         Developed by <u>Transcendensoft</u>
  */
 public class MessageModelDataMapper {
+    private UserModelDataMapper mUserModelDataMapper;
+
     @Inject
     public MessageModelDataMapper() {
+        mUserModelDataMapper = new UserModelDataMapper();
     }
 
     public Message convert(MessageDTO messageDTO){
@@ -50,7 +52,7 @@ public class MessageModelDataMapper {
                     .setMessageType(MessageType.getMessageTypeById(messageDTO.getType()))
                     .setCreateDate(new Timestamp(messageDTO.getCreateDate() == null ?
                             System.currentTimeMillis() : messageDTO.getCreateDate()))
-                    .setUserFrom(new User.Builder().setId(messageDTO.getSenderId()).build())
+                    .setUserFrom(mUserModelDataMapper.convert(messageDTO.getSenderUser()))
                     .build();
         }
         return messageResult;

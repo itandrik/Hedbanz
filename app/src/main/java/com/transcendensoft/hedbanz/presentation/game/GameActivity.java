@@ -103,6 +103,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 this, LinearLayoutManager.VERTICAL, false);
         manager.setStackFromEnd(true);
         mRecycler.setLayoutManager(manager);
+        mRecycler.setItemViewCacheSize(100);
     }
 
     private void initAdapterClickListeners() {
@@ -111,6 +112,8 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     mAdapter.retryNetworkClickObservable());
             mPresenter.processRetryServerPagination(
                     mAdapter.retryServerClickObservable());
+            mPresenter.processSetWordToUserObservable(
+                    mAdapter.setWordObservable());
         }
     }
 
@@ -163,6 +166,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void addMessages(int position, List<Message> messages) {
         if (mAdapter != null) {
             mAdapter.addAll(position, messages);
+            //mRecycler.scrollToPosition(position + messages.size());
         }
     }
 
@@ -256,9 +260,12 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     }
 
     private void stopTypingAnimation() {
-        ((Animatable) mIvSystemAnimation.getDrawable()).stop();
-        mIvSystemAnimation.setVisibility(View.INVISIBLE);
-        mIvSystemAnimation.setImageDrawable(null);
+        Animatable typingAnimatable = ((Animatable) mIvSystemAnimation.getDrawable());
+        if (typingAnimatable != null) {
+            typingAnimatable.stop();
+            mIvSystemAnimation.setVisibility(View.INVISIBLE);
+            mIvSystemAnimation.setImageDrawable(null);
+        }
     }
 
     private String getTypingMessage(List<User> users) {

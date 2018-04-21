@@ -17,6 +17,7 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
@@ -37,13 +38,15 @@ import io.reactivex.subjects.PublishSubject;
  */
 public class JoinedUserUseCase extends ObservableUseCase<User, Void> {
     private PublishSubject<User> mSubject;
+    private PreferenceManager mPreferenceManager;
 
     public JoinedUserUseCase(ObservableTransformer observableTransformer,
                            CompositeDisposable mCompositeDisposable,
                            GameDataRepositoryImpl gameDataRepository,
-                           Gson gson) {
+                           Gson gson, PreferenceManager preferenceManager) {
         super(observableTransformer, mCompositeDisposable);
 
+        this.mPreferenceManager = preferenceManager;
         initSubject(gameDataRepository, gson);
     }
 
@@ -58,10 +61,14 @@ public class JoinedUserUseCase extends ObservableUseCase<User, Void> {
                 .flatMap(jsonObject -> {
                     try {
                         User user = gson.fromJson(jsonObject.toString(), User.class);
-                        return Observable.just(user);
+                        if(user.equals(mPreferenceManager.getUser())){
+                            return Observable.empty();
+                        } else {
+                            return Observable.just(user);
+                        }
                     } catch (JsonSyntaxException e) {
                         return Observable.error(new IncorrectJsonException(
-                                jsonObject.toString(), RoomInfoUseCase.class.getName()));
+                                jsonObject.toString(), JoinedUserUseCase.class.getName()));
                     }
                 });
     }

@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.presentation.game.list;
  */
 
 import com.transcendensoft.hedbanz.domain.entity.Message;
+import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.JoinedLeftUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.LoadingAdapterDelegate;
@@ -23,6 +24,8 @@ import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageOther
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageThisUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.NetworkErrorAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.ServerErrorAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.WordSettedAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.WordSettingAdapterDelegate;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -42,6 +45,8 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     private MessageThisUserAdapterDelegate mMessageThisUserAdapterDelegate;
     private MessageOtherUserAdapterDelegate mMessageOtherUserAdapterDelegate;
     private JoinedLeftUserAdapterDelegate mJoinedLeftUserAdapterDelegate;
+    private WordSettedAdapterDelegate mWordSettedAdapterDelegate;
+    private WordSettingAdapterDelegate mWordSettingAdapterDelegate;
 
     @Inject
     public GameListAdapter(LoadingAdapterDelegate loadingAdapterDelegate,
@@ -49,7 +54,9 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                            NetworkErrorAdapterDelegate networkErrorAdapterDelegate,
                            MessageThisUserAdapterDelegate messageThisUserAdapterDelegate,
                            MessageOtherUserAdapterDelegate messageOtherUserAdapterDelegate,
-                           JoinedLeftUserAdapterDelegate joinedLeftUserAdapterDelegate) {
+                           JoinedLeftUserAdapterDelegate joinedLeftUserAdapterDelegate,
+                           WordSettedAdapterDelegate wordSettedAdapterDelegate,
+                           WordSettingAdapterDelegate wordSettingAdapterDelegate) {
         super();
 
         this.mLoadingAdapterDelegate = loadingAdapterDelegate;
@@ -58,13 +65,17 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
         this.mMessageThisUserAdapterDelegate = messageThisUserAdapterDelegate;
         this.mMessageOtherUserAdapterDelegate = messageOtherUserAdapterDelegate;
         this.mJoinedLeftUserAdapterDelegate = joinedLeftUserAdapterDelegate;
+        this.mWordSettedAdapterDelegate = wordSettedAdapterDelegate;
+        this.mWordSettingAdapterDelegate = wordSettingAdapterDelegate;
 
         delegatesManager.addDelegate(loadingAdapterDelegate)
                 .addDelegate(serverErrorAdapterDelegate)
                 .addDelegate(networkErrorAdapterDelegate)
                 .addDelegate(messageThisUserAdapterDelegate)
                 .addDelegate(messageOtherUserAdapterDelegate)
-                .addDelegate(joinedLeftUserAdapterDelegate);
+                .addDelegate(joinedLeftUserAdapterDelegate)
+                .addDelegate(wordSettingAdapterDelegate)
+                .addDelegate(wordSettedAdapterDelegate);
     }
 
     @Nullable
@@ -75,5 +86,10 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     @Nullable
     public Observable<Object> retryNetworkClickObservable() {
         return mNetworkErrorAdapterDelegate.getRetryNetworkClickObservable();
+    }
+
+    @Nullable
+    public Observable<Word> setWordObservable() {
+        return mWordSettingAdapterDelegate.getSetWordObservable();
     }
 }
