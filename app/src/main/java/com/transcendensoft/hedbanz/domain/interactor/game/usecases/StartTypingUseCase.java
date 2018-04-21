@@ -15,16 +15,11 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
  * limitations under the License.
  */
 
-import android.support.annotation.NonNull;
-
 import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
-import com.transcendensoft.hedbanz.domain.entity.Message;
-import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
-import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,8 +41,8 @@ import io.reactivex.subjects.PublishSubject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-public class StartTypingUseCase extends ObservableUseCase<TypingMessage, List<User>> {
-    private PublishSubject<TypingMessage> mSubject;
+public class StartTypingUseCase extends ObservableUseCase<User, List<User>> {
+    private PublishSubject<User> mSubject;
     private GameDataRepository mRepository;
 
     public StartTypingUseCase(ObservableTransformer observableTransformer,
@@ -59,31 +54,26 @@ public class StartTypingUseCase extends ObservableUseCase<TypingMessage, List<Us
     }
 
     @Override
-    protected Observable<TypingMessage> buildUseCaseObservable(List<User> params) {
-        Observable<TypingMessage> observable = mRepository.typingObservable()
-                .flatMap(jsonObject -> convertUserIdToMessageObservable(params, jsonObject));
+    protected Observable<User> buildUseCaseObservable(List<User> params) {
+        Observable<User> observable = mRepository.typingObservable()
+                .flatMap(jsonObject -> convertUserIdToUserObservable(params, jsonObject));
         observable.subscribe(mSubject);
         return mSubject;
     }
 
-    private ObservableSource<? extends TypingMessage> convertUserIdToMessageObservable(
+    private ObservableSource<? extends User> convertUserIdToUserObservable(
             List<User> params, JSONObject jsonObject) {
         try {
             Long userId = jsonObject.getLong("userId");
-            return Observable.just(getTypingMessage(params, userId));
+            User user = getUserWithId(params, userId);
+            if(user == null){
+                user = new User.Builder().setId(userId).build();
+            }
+            return Observable.just(user);
         } catch (JSONException e) {
             return Observable.error(new IncorrectJsonException(
                     jsonObject.toString(), RoomInfoUseCase.class.getName()));
         }
-    }
-
-    @NonNull
-    private TypingMessage getTypingMessage(List<User> params, Long userId) {
-        Message message = new Message.Builder()
-                .setMessageType(MessageType.STOP_TYPING)
-                .setUserFrom(getUserWithId(params, userId))
-                .build();
-        return new TypingMessage(message);
     }
 
     @Nullable

@@ -31,6 +31,8 @@ import com.transcendensoft.hedbanz.presentation.game.list.holder.JoinedLeftUserV
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import static com.transcendensoft.hedbanz.domain.entity.MessageType.JOINED_USER;
 
 /**
@@ -45,6 +47,10 @@ import static com.transcendensoft.hedbanz.domain.entity.MessageType.JOINED_USER;
  *         Developed by <u>Transcendensoft</u>
  */
 public class JoinedLeftUserAdapterDelegate extends AdapterDelegate<List<Message>>{
+    @Inject
+    public JoinedLeftUserAdapterDelegate() {
+    }
+
     @Override
     protected boolean isForViewType(@NonNull List<Message> items, int position) {
         MessageType currentMessageType = items.get(position).getMessageType();

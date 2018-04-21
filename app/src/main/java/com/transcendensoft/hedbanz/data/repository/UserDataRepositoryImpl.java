@@ -15,9 +15,6 @@ package com.transcendensoft.hedbanz.data.repository;
  * limitations under the License.
  */
 
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
 import com.transcendensoft.hedbanz.data.models.UserDTO;
 import com.transcendensoft.hedbanz.data.models.mapper.UserModelDataMapper;
 import com.transcendensoft.hedbanz.data.network.source.UserApiDataSource;
@@ -34,6 +31,10 @@ import java.net.URISyntaxException;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+import timber.log.Timber;
 
 import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.HOST;
 import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.LOGIN_SOCKET_NSP;
@@ -100,6 +101,11 @@ public class UserDataRepositoryImpl implements UserDataRepository {
     @Override
     public void connectIsLoginAvailable() {
         try {
+            //IO.Options opts = new IO.Options();
+           // opts.transports = new String[]{ WebSocket.NAME};
+
+            //opts.forceNew = true;
+
             mSocket = IO.socket(HOST + PORT_SOCKET + LOGIN_SOCKET_NSP);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
@@ -117,6 +123,21 @@ public class UserDataRepositoryImpl implements UserDataRepository {
                 connectIsLoginAvailable();
             }
             mSocket.on(LOGIN_RESULT_LISTENER, loginResultSocketListener);
+
+            mSocket.on(Socket.EVENT_CONNECT, args -> {
+                Timber.e("Socket connected!");
+            });
+            mSocket.on(Socket.EVENT_DISCONNECT, args -> {
+                Timber.e("Socket disconnected!");
+            });
+            mSocket.on(Socket.EVENT_ERROR, args -> {
+                Timber.e("Socket error!");
+            });
+
+            mSocket.on(Socket.EVENT_CONNECT_ERROR, args ->{
+                Timber.e("Socket connect error!");
+            });
+
             mSocket.connect();
         });
     }

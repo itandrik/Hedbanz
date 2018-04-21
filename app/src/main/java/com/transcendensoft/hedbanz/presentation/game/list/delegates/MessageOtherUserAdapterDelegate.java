@@ -31,6 +31,8 @@ import com.transcendensoft.hedbanz.presentation.game.list.holder.SomeUserMessage
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import static com.transcendensoft.hedbanz.domain.entity.MessageType.SIMPLE_MESSAGE_OTHER_USER;
 
 /**
@@ -46,6 +48,10 @@ import static com.transcendensoft.hedbanz.domain.entity.MessageType.SIMPLE_MESSA
  * Developed by <u>Transcendensoft</u>
  */
 public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Message>> {
+    @Inject
+    public MessageOtherUserAdapterDelegate() {
+    }
+
     @Override
     protected boolean isForViewType(@NonNull List<Message> items, int position) {
         MessageType currentMessageType = items.get(position).getMessageType();
@@ -77,8 +83,9 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
             }
 
             boolean isHideLoginAndImage = false;
-            if((items.size() > 1) && (items.get(position - 1).getMessageType() ==
-                    SIMPLE_MESSAGE_OTHER_USER)){
+            if ((items.size() > 1) && position != 0 &&
+                    (items.get(position - 1).getMessageType() == SIMPLE_MESSAGE_OTHER_USER) &&
+                    (items.get(position - 1).getUserFrom().equals(message.getUserFrom()))) {
                 isHideLoginAndImage = true;
             }
 

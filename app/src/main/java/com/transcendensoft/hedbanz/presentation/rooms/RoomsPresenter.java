@@ -195,8 +195,11 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
             if (roomPaginationState.isRefreshed()) {
                 view().showEmptyList();
             } else {
-                model.getRooms().remove(model.getRooms().size() - 1);
-                view().removeLastRoom();
+                Room lastRoom = model.getRooms().get(model.getRooms().size() - 1);
+                if(lastRoom.getId() == -1) {
+                    model.getRooms().remove(model.getRooms().size() - 1);
+                    view().removeLastRoom();
+                }
             }
         }
 

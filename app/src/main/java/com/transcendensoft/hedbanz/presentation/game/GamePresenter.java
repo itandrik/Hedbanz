@@ -15,7 +15,6 @@ package com.transcendensoft.hedbanz.presentation.game;
  * limitations under the License.
  */
 
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.EditText;
 
@@ -25,10 +24,12 @@ import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.domain.interactor.game.GameInteractorFacade;
+import com.transcendensoft.hedbanz.domain.interactor.game.GetMessagesInteractor;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
-import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
+import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
 import com.transcendensoft.hedbanz.utils.RxUtils;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import timber.log.Timber;
 
 /**
@@ -48,33 +50,98 @@ import timber.log.Timber;
  * Developed by <u>Transcendensoft</u>
  */
 @ActivityScope
-public class GamePresenter extends BasePresenter<Room, GameContract.View> implements GameContract.Presenter {
+public class GamePresenter extends BasePresenter<Room, GameContract.View>
+        implements GameContract.Presenter, RecyclerDelegationAdapter.OnRecyclerBorderListener {
     private GameInteractorFacade mGameInteractor;
+    private GetMessagesInteractor mGetMessagesInteractor;
+    private List<User> mTypingUsers;
 
     @Inject
-    public GamePresenter(GameInteractorFacade gameInteractor) {
+    public GamePresenter(GameInteractorFacade gameInteractor,
+                         GetMessagesInteractor getMessagesInteractor) {
         this.mGameInteractor = gameInteractor;
+        this.mGetMessagesInteractor = getMessagesInteractor;
+        mTypingUsers = new ArrayList<>();
     }
 
+    /*------------------------------------*
+     *---------- Base presenter ----------*
+     *------------------------------------*/
     @Override
     protected void updateView() {
-        if (model.getName() == null) {
+        if (model.getMessages() == null || model.getMessages().isEmpty()) {
+            model.setMessages(new ArrayList<>());
+            view().showLoading();
             initSockets();
+        } else {
+            view().clearMessages();
+            view().addMessages(model.getMessages());
         }
     }
 
     @Override
     public void destroy() {
+        mGetMessagesInteractor.dispose();
         mGameInteractor.destroy();
     }
 
+    /*------------------------------------*
+     *--------- Messages loading ---------*
+     *------------------------------------*/
+    @Override
+    public void onBottomReached() {
+        Timber.i("BOTTOM reached");
+    }
+
+    @Override
+    public void onTopReached() {
+        Timber.i("TOP reached");
+        mGetMessagesInteractor.loadNextPage()
+                .execute(new MessageListObserver(view(), model), model.getId());
+    }
+
+    private void refreshMessageHistory() {
+        mGetMessagesInteractor.refresh(null)
+                .execute(new MessageListObserver(view(), model), model.getId());
+    }
+
+    /*------------------------------------*
+     *----- Recycler click listeners -----*
+     *------------------------------------*/
+    @Override
+    public void processRetryNetworkPagination(Observable<Object> clickObservable) {
+        processRetryServerPagination(clickObservable);
+    }
+
+    @Override
+    public void processRetryServerPagination(Observable<Object> clickObservable) {
+        if (clickObservable != null) {
+            addDisposable(clickObservable.subscribe(
+                    obj -> onTopReached(),
+                    err -> Timber.e("Retry network in pagination error")
+            ));
+        }
+    }
+
+    @Override
+    public void processSetWordToUserObservable(Observable<Word> sendWordObservable) {
+        if(sendWordObservable != null){
+            addDisposable(sendWordObservable.subscribe(
+                    word -> mGameInteractor.setWordToUser(word.getWord(),word.getWordReceiverId()),
+                    err -> Timber.e("Error while send word to user. MEssage : " + err.getMessage())
+            ));
+        }
+    }
+
+    /*------------------------------------*
+     *------ Socket initialization -------*
+     *------------------------------------*/
     @Override
     public void initSockets() {
         initSocketSystemListeners();
         initBusinessLogicListeners();
 
         mGameInteractor.connectSocketToServer(model.getId());
-
     }
 
     private void initSocketSystemListeners() {
@@ -95,11 +162,14 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View> implem
     private void initBusinessLogicListeners() {
         initJoinedUserListener();
         initLeftUserListener();
+
         mGameInteractor.onRoomInfoListener(
                 room -> {
                     model = room;
                     model.setMessages(new ArrayList<>());
                     initMessageListeners();
+                    initWordSettingListeners();
+                    refreshMessageHistory();
                 },
                 this::processEventListenerOnError);
         mGameInteractor.onErrorListener(error -> {
@@ -142,6 +212,22 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View> implem
                 this::processEventListenerOnError);
     }
 
+    private void initWordSettingListeners() {
+        mGameInteractor.onWordSettedListener(word -> {
+            word.setMessageType(MessageType.WORD_SETTED);
+            model.getMessages().add(word);
+            view().addMessage(word);
+        }, this::processEventListenerOnError);
+
+        mGameInteractor.onWordSettingListener(wordReceiverUser -> {
+            Word word = new Word(null, wordReceiverUser);
+
+            word.setMessageType(MessageType.WORD_SETTING);
+            model.getMessages().add(word);
+            view().addMessage(word);
+        }, this::processEventListenerOnError);
+    }
+
     private void initMessageListeners() {
         mGameInteractor.onStartTypingListener(
                 this::processStartTyping,
@@ -155,55 +241,33 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View> implem
     }
 
     private void processSimpleMessage(Message message) {
-        Message lastMessage = null;
+        //Message lastMessage = null;
         List<Message> messages = model.getMessages();
 
-        if (!messages.isEmpty()) {
-            lastMessage = messages.get(messages.size() - 1);
-        }
-        if (lastMessage instanceof TypingMessage) {
-            messages.add(messages.size() - 1, message);
-            view().addMessage(messages.size() - 2, message);
-        } else {
-            messages.add(message);
-            view().addMessage(message);
-        }
+        // if (!messages.isEmpty()) {
+        //   lastMessage = messages.get(messages.size() - 1);
+        // }
+        //if (lastMessage instanceof TypingMessage) {
+        //    messages.add(messages.size() - 1, message);
+        //    view().addMessage(messages.size() - 2, message);
+        // } else {
+        messages.add(message);
+        view().addMessage(message);
+        // }
     }
 
-    private void processStartTyping(TypingMessage typingMessage) {
-        Message lastMessage = getLastMessage(model.getMessages());
-        List<Message> messages = model.getMessages();
-
-        if (lastMessage instanceof TypingMessage) {
-            ((TypingMessage) lastMessage).addUser(typingMessage.getUserFrom());
-            view().setMessage(messages.size() - 1, lastMessage);
-        } else {
-            messages.add(typingMessage);
-            view().addMessage(typingMessage);
+    private void processStartTyping(User user) {
+        if (!mTypingUsers.contains(user)) {
+            mTypingUsers.add(user);
         }
+        view().showFooterTyping(mTypingUsers);
     }
 
-    private void processStopTyping(TypingMessage typingMessage) {
-        Message lastMessage = getLastMessage(model.getMessages());
-        List<Message> messages = model.getMessages();
-
-        if (lastMessage instanceof TypingMessage) {
-            TypingMessage typingLastMessage = (TypingMessage) lastMessage;
-            typingLastMessage.removeUser(typingMessage.getUserFrom());
-            if (typingLastMessage.getTypingUsers().isEmpty()) {
-                messages.remove(messages.size()-1);
-                view().removeMessage(messages.size());
-            }
+    private void processStopTyping(User user) {
+        if (mTypingUsers.contains(user)) {
+            mTypingUsers.remove(user);
         }
-    }
-
-    @Nullable
-    private Message getLastMessage(List<Message> messages) {
-        Message lastMessage = null;
-        if (!messages.isEmpty()) {
-            lastMessage = messages.get(messages.size() - 1);
-        }
-        return lastMessage;
+        view().showFooterTyping(mTypingUsers);
     }
 
     private void processEventListenerOnError(Throwable err) {
@@ -214,6 +278,9 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View> implem
         }
     }
 
+    /*------------------------------------*
+     *---- Send socket event messages ----*
+     *------------------------------------*/
     @Override
     public void messageTextChanges(EditText editText) {
         addDisposable(

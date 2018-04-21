@@ -27,6 +27,8 @@ import com.google.gson.annotations.SerializedName;
  */
 public class UserDTO {
     public static final String USER_ID_KEY = "userId";
+    public static final String SENDER_ID_KEY = "senderId";
+
     @SerializedName("id")
     @Expose
     private long id;

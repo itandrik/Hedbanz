@@ -18,19 +18,20 @@ package com.transcendensoft.hedbanz.data.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.sql.Timestamp;
-
 /**
  * DTO for message entity.
  * All message properties received from server described here
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class MessageDTO {
     @SerializedName("id")
     @Expose
     private long id;
+    @SerializedName("clientMessageId")
+    @Expose
+    private int clientMessageId;
     @SerializedName("senderId")
     @Expose
     private long senderId;
@@ -45,15 +46,20 @@ public class MessageDTO {
     private int type;
     @SerializedName("createDate")
     @Expose
-    private Timestamp createDate;
+    private Long createDate;
+    @SerializedName("senderUser")
+    @Expose
+    private UserDTO senderUser;
 
-    MessageDTO(long id, long senderId, long roomId, String text, int type, Timestamp createDate) {
+    MessageDTO(long id, long senderId, long roomId, String text, int type, Long createDate, int clientMessageId, UserDTO senderUser) {
         this.id = id;
         this.senderId = senderId;
         this.roomId = roomId;
         this.text = text;
         this.type = type;
         this.createDate = createDate;
+        this.clientMessageId = clientMessageId;
+        this.senderUser = senderUser;
     }
 
     public long getId() {
@@ -96,12 +102,28 @@ public class MessageDTO {
         this.type = type;
     }
 
-    public Timestamp getCreateDate() {
+    public Long getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Timestamp createDate) {
+    public void setCreateDate(Long createDate) {
         this.createDate = createDate;
+    }
+
+    public int getClientMessageId() {
+        return clientMessageId;
+    }
+
+    public void setClientMessageId(int clientMessageId) {
+        this.clientMessageId = clientMessageId;
+    }
+
+    public UserDTO getSenderUser() {
+        return senderUser;
+    }
+
+    public void setSenderUser(UserDTO senderUser) {
+        this.senderUser = senderUser;
     }
 
     @Override
@@ -111,12 +133,12 @@ public class MessageDTO {
 
         MessageDTO that = (MessageDTO) o;
 
-        return id == that.id;
+        return clientMessageId == that.clientMessageId;
     }
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return (int) (clientMessageId ^ (clientMessageId >>> 32));
     }
 
     public static class Builder {
@@ -125,7 +147,9 @@ public class MessageDTO {
         private long roomId;
         private String text;
         private int type;
-        private Timestamp createDate;
+        private Long createDate;
+        private int clientMessageId;
+        private UserDTO senderUser;
 
         public Builder setId(long id) {
             this.id = id;
@@ -152,13 +176,23 @@ public class MessageDTO {
             return this;
         }
 
-        public Builder setCreateDate(Timestamp createDate) {
+        public Builder setCreateDate(Long createDate) {
             this.createDate = createDate;
             return this;
         }
 
+        public Builder setClientMessageId(int clientMessageId) {
+            this.clientMessageId = clientMessageId;
+            return this;
+        }
+
+        public Builder setSenderUser(UserDTO senderUser) {
+            this.senderUser = senderUser;
+            return this;
+        }
+
         public MessageDTO build() {
-            return new MessageDTO(id, senderId, roomId, text, type, createDate);
+            return new MessageDTO(id, senderId, roomId, text, type, createDate, clientMessageId, senderUser);
         }
     }
 }

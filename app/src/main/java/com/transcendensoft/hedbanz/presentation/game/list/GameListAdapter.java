@@ -16,28 +16,80 @@ package com.transcendensoft.hedbanz.presentation.game.list;
  */
 
 import com.transcendensoft.hedbanz.domain.entity.Message;
+import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.JoinedLeftUserAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.LoadingAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageOtherUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageThisUserAdapterDelegate;
-import com.transcendensoft.hedbanz.presentation.game.list.delegates.TypingAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.NetworkErrorAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.ServerErrorAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.WordSettedAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.WordSettingAdapterDelegate;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
+
+import io.reactivex.Observable;
 
 /**
  * Adapter for game mode recycler.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
+    private LoadingAdapterDelegate mLoadingAdapterDelegate;
+    private ServerErrorAdapterDelegate mServerErrorAdapterDelegate;
+    private NetworkErrorAdapterDelegate mNetworkErrorAdapterDelegate;
+    private MessageThisUserAdapterDelegate mMessageThisUserAdapterDelegate;
+    private MessageOtherUserAdapterDelegate mMessageOtherUserAdapterDelegate;
+    private JoinedLeftUserAdapterDelegate mJoinedLeftUserAdapterDelegate;
+    private WordSettedAdapterDelegate mWordSettedAdapterDelegate;
+    private WordSettingAdapterDelegate mWordSettingAdapterDelegate;
+
     @Inject
-    public GameListAdapter() {
+    public GameListAdapter(LoadingAdapterDelegate loadingAdapterDelegate,
+                           ServerErrorAdapterDelegate serverErrorAdapterDelegate,
+                           NetworkErrorAdapterDelegate networkErrorAdapterDelegate,
+                           MessageThisUserAdapterDelegate messageThisUserAdapterDelegate,
+                           MessageOtherUserAdapterDelegate messageOtherUserAdapterDelegate,
+                           JoinedLeftUserAdapterDelegate joinedLeftUserAdapterDelegate,
+                           WordSettedAdapterDelegate wordSettedAdapterDelegate,
+                           WordSettingAdapterDelegate wordSettingAdapterDelegate) {
         super();
-        delegatesManager
-                .addDelegate(new MessageThisUserAdapterDelegate())
-                .addDelegate(new MessageOtherUserAdapterDelegate())
-                .addDelegate(new JoinedLeftUserAdapterDelegate())
-                .addDelegate(new TypingAdapterDelegate());
-        }
+
+        this.mLoadingAdapterDelegate = loadingAdapterDelegate;
+        this.mServerErrorAdapterDelegate = serverErrorAdapterDelegate;
+        this.mNetworkErrorAdapterDelegate = networkErrorAdapterDelegate;
+        this.mMessageThisUserAdapterDelegate = messageThisUserAdapterDelegate;
+        this.mMessageOtherUserAdapterDelegate = messageOtherUserAdapterDelegate;
+        this.mJoinedLeftUserAdapterDelegate = joinedLeftUserAdapterDelegate;
+        this.mWordSettedAdapterDelegate = wordSettedAdapterDelegate;
+        this.mWordSettingAdapterDelegate = wordSettingAdapterDelegate;
+
+        delegatesManager.addDelegate(loadingAdapterDelegate)
+                .addDelegate(serverErrorAdapterDelegate)
+                .addDelegate(networkErrorAdapterDelegate)
+                .addDelegate(messageThisUserAdapterDelegate)
+                .addDelegate(messageOtherUserAdapterDelegate)
+                .addDelegate(joinedLeftUserAdapterDelegate)
+                .addDelegate(wordSettingAdapterDelegate)
+                .addDelegate(wordSettedAdapterDelegate);
+    }
+
+    @Nullable
+    public Observable<Object> retryServerClickObservable() {
+        return mServerErrorAdapterDelegate.getRetryServerClickObservable();
+    }
+
+    @Nullable
+    public Observable<Object> retryNetworkClickObservable() {
+        return mNetworkErrorAdapterDelegate.getRetryNetworkClickObservable();
+    }
+
+    @Nullable
+    public Observable<Word> setWordObservable() {
+        return mWordSettingAdapterDelegate.getSetWordObservable();
+    }
 }

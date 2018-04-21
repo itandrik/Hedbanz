@@ -63,8 +63,8 @@
     <string name="rooms_max_players_from">от</string>
     <string name="rooms_max_players_to">до</string>
     <string name="rooms_search_hint">My_room or #100500...</string>
-
     <string name="rooms_with_password">С паролем</string>
+    <string name="rooms_password_title">Введите пароль от комнаты</string>
 
     <!-- Create room fragment -->
     <string name="room_creation_title">Создать комнату</string>
@@ -100,11 +100,18 @@
     <string name="credentials_update_success">Ваши данные успешно обновлены!</string>
 
     <!-- Game mode -->
+    <string name="game_starts">Все игроки в сборе.\n Да начнется великая игра!</string>
     <string name="game_typing_one_user">%1$s что-то пишет</string>
     <string name="game_typing_two_user">%1$s и %2$s что-то пишут</string>
     <string name="game_typing_several_users">Несколько игроков пишут сообщения</string>
     <string name="game_user_joined">%1$s зашел в комнату</string>
     <string name="game_user_left">%1$s покинул комнату</string>
     <string name="game_et_hint">Текст сообщения</string>
+    <string name="game_set_word_title">Самое время загадать слово игроку %1$s</string>
+    <string name="game_set_word_title_random">Самое время загадать слово случайному игроку</string>
+    <string name="game_set_word_hint">Ваше слово&#8230;</string>
+    <string name="game_word_setted">Игрок %1$s загадал слово игроку %2$s</string>
 
+    <!-- Friends -->
+    <string name="friends_toolbar_title">Ваши друзяки</string>
 </resources>

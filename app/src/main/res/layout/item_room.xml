@@ -59,29 +59,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent" />
     
-    <LinearLayout
-        android:id="@+id/llErrorContainer"
+    <include android:id="@+id/llErrorContainer"
+        layout="@layout/layout_item_server_error"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/tvRoomsErrorText"
-            android:layout_width="match_parent"
-            android:text="Произошла ошибка"
-            android:textColor="@color/textPrimary"
-            android:textSize="16sp"
-            android:layout_height="0dp"
-            android:gravity="center"
-            android:layout_weight="1"/>
-        <Button
-            android:id="@+id/btnReload"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:textSize="18sp"
-            android:background="?attr/selectableItemBackground"
-            android:text="@string/action_reload"
-            android:textColor="@color/textDarkRed"
-            android:gravity="center"
-            android:layout_weight="1"/>
-    </LinearLayout>
+        android:layout_height="match_parent" />
+
 </FrameLayout>

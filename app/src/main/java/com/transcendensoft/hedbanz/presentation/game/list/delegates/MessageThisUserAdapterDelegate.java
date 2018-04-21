@@ -30,6 +30,8 @@ import com.transcendensoft.hedbanz.presentation.game.list.holder.ThisUserMessage
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import static com.transcendensoft.hedbanz.domain.entity.MessageType.SIMPLE_MESSAGE_THIS_USER;
 
 /**
@@ -45,6 +47,11 @@ import static com.transcendensoft.hedbanz.domain.entity.MessageType.SIMPLE_MESSA
  *         Developed by <u>Transcendensoft</u>
  */
 public class MessageThisUserAdapterDelegate extends AdapterDelegate<List<Message>> {
+
+    @Inject
+    public MessageThisUserAdapterDelegate() {
+    }
+
     @Override
     protected boolean isForViewType(@NonNull List<Message> items, int position) {
         MessageType currentMessageType = items.get(position).getMessageType();

@@ -22,19 +22,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hannesdorfmann.adapterdelegates3.AdapterDelegate;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Message;
-import com.transcendensoft.hedbanz.domain.entity.User;
-import com.transcendensoft.hedbanz.presentation.game.list.holder.TypingViewHolder;
-import com.transcendensoft.hedbanz.presentation.game.models.TypingMessage;
+import com.transcendensoft.hedbanz.domain.entity.MessageType;
+import com.transcendensoft.hedbanz.presentation.base.RxAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.holder.NetworkErrorViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
+
+import static com.transcendensoft.hedbanz.domain.entity.MessageType.ERROR_NETWORK;
 
 /**
  * This delegate is responsible for creating
- * {@link com.transcendensoft.hedbanz.presentation.game.list.holder.TypingViewHolder}
+ * {@link com.transcendensoft.hedbanz.presentation.game.list.holder.NetworkErrorViewHolder}
  * and binding ViewHolder widgets according to model.
  * <p>
  * An AdapterDelegate get added to an AdapterDelegatesManager.
@@ -42,18 +47,20 @@ import java.util.List;
  * Adapter and each AdapterDelegate.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public class TypingAdapterDelegate extends AdapterDelegate<List<Message>> {
-    private List<User> mTypingNowUsers;
+public class NetworkErrorAdapterDelegate extends RxAdapterDelegate<List<Message>> {
+    private PublishSubject<Object> mRetryNetworkClickObservable;
 
-    public TypingAdapterDelegate() {
-        mTypingNowUsers = new ArrayList<>();
+    @Inject
+    public NetworkErrorAdapterDelegate() {
+        mRetryNetworkClickObservable = PublishSubject.create();
     }
 
     @Override
     protected boolean isForViewType(@NonNull List<Message> items, int position) {
-        return items.get(position) instanceof TypingMessage;
+        MessageType currentMessageType = items.get(position).getMessageType();
+        return currentMessageType == ERROR_NETWORK;
     }
 
     @NonNull
@@ -61,17 +68,20 @@ public class TypingAdapterDelegate extends AdapterDelegate<List<Message>> {
     protected RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent) {
         Context context = parent.getContext();
         View itemView = LayoutInflater.from(context)
-                .inflate(R.layout.item_typing_message, parent, false);
-        return new TypingViewHolder(context, itemView);
+                .inflate(R.layout.layout_item_network_error, parent, false);
+        return new NetworkErrorViewHolder(itemView);
     }
 
     @Override
     protected void onBindViewHolder(@NonNull List<Message> items, int position,
                                     @NonNull RecyclerView.ViewHolder holder,
                                     @NonNull List<Object> payloads) {
-        TypingViewHolder viewHolder = (TypingViewHolder) holder;
-        TypingMessage message = (TypingMessage) items.get(position);
-        viewHolder.bindTypingText(message.getTypingUsers());
-        viewHolder.bindTypingIndicatorImage();
+        NetworkErrorViewHolder viewHolder = (NetworkErrorViewHolder) holder;
+
+        viewHolder.retryObservable().subscribe(mRetryNetworkClickObservable);
+    }
+
+    public Observable<Object> getRetryNetworkClickObservable() {
+        return mRetryNetworkClickObservable;
     }
 }

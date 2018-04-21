@@ -15,25 +15,32 @@ package com.transcendensoft.hedbanz.data.repository;
  * limitations under the License.
  */
 
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.UserDTO;
+import com.transcendensoft.hedbanz.data.models.WordDTO;
+import com.transcendensoft.hedbanz.data.models.mapper.MessageModelDataMapper;
+import com.transcendensoft.hedbanz.data.models.mapper.WordModelDataMapper;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
+import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.GAME_SOCKET_NSP;
 import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.HOST;
@@ -60,16 +67,30 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String SERVER_MESSAGE_EVENT = "server-msg";
     private static final String SERVER_ERROR_EVENT = "server-error";
 
+    private static final String SERVER_SET_PLAYER_WORD_EVENT = "server-set-word";
+    private static final String CLIENT_SET_PLAYER_WORD_EVENT = "client-set-word";
+    private static final String SERVER_THOUGHT_PLAYER_WORD_EVENT = "server-thought-player-word";
+
     private Socket mSocket;
     private long mUserId;
     private long mRoomId;
 
+    private MessageModelDataMapper mMessageMapper;
+    private WordModelDataMapper mWordMapper;
+    private Gson mGson;
+
     @Inject
-    public GameDataRepositoryImpl() {
+    public GameDataRepositoryImpl(MessageModelDataMapper messageModelDataMapper,
+                                  WordModelDataMapper wordModelDataMapper, Gson gson) {
+        this.mMessageMapper = messageModelDataMapper;
+        this.mWordMapper = wordModelDataMapper;
+        this.mGson = gson;
+
         try {
             IO.Options options = new IO.Options();
             options.forceNew = false;
             options.reconnection = true;
+
             mSocket = IO.socket(HOST + PORT_SOCKET + GAME_SOCKET_NSP, options);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
@@ -172,11 +193,16 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
-    public Observable<JSONObject> messageObservable() {
+    public Observable<Message> messageObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
                 JSONObject data = (JSONObject) args[0];
-                emitter.onNext(data);
+                try {
+                    MessageDTO messageDTO = mGson.fromJson(data.toString(), MessageDTO.class);
+                    emitter.onNext(mMessageMapper.convert(messageDTO));
+                } catch (JsonSyntaxException e) {
+                    emitter.onError(new JsonSyntaxException("Error in json: " + data.toString()));
+                }
             };
             mSocket.on(SERVER_MESSAGE_EVENT, listener);
         });
@@ -191,6 +217,39 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             };
             mSocket.on(SERVER_ERROR_EVENT, listener);
         });
+    }
+
+    @Override
+    public Observable<JSONObject> settingWordObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+                emitter.onNext(data);
+            };
+            mSocket.on(SERVER_SET_PLAYER_WORD_EVENT, listener);
+        });
+    }
+
+    @Override
+    public Observable<JSONObject> wordSettedToUserObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+                emitter.onNext(data);
+            };
+            mSocket.on(SERVER_THOUGHT_PLAYER_WORD_EVENT, listener);
+        });
+    }
+
+    @Override
+    public void setWord(Word word) {
+        word.setSenderId(mUserId);
+        word.setRoomId(mRoomId);
+
+        WordDTO wordDTO = mWordMapper.convert(word);
+        String json = mGson.toJson(wordDTO, WordDTO.class);
+
+        mSocket.emit(CLIENT_SET_PLAYER_WORD_EVENT, json);
     }
 
     @Override
@@ -217,11 +276,15 @@ public class GameDataRepositoryImpl implements GameDataRepository {
 
     @Override
     public void sendMessage(Message message) {
+        int clientMessageId = Arrays.hashCode(new long[]{
+                System.currentTimeMillis(), mRoomId, mUserId});
+
         MessageDTO messageDTO = new MessageDTO.Builder()
-                .setSenderId(mUserId)
+                .setSenderUser(new UserDTO.Builder().setId(mUserId).build())
                 .setRoomId(mRoomId)
                 .setText(message.getMessage())
                 .setType(MessageType.SIMPLE_MESSAGE.getId())
+                .setClientMessageId(clientMessageId)
                 .build();
 
         Gson gson = new Gson();

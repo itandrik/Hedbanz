@@ -16,12 +16,15 @@ package com.transcendensoft.hedbanz.presentation.game.list.holder;
  */
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.DrawableRes;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
@@ -40,6 +43,8 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.ivUserImage) ImageView mIvUserImage;
     @BindView(R.id.tvMessage) TextView mTvMessage;
     @BindView(R.id.tvLogin) TextView mTvLogin;
+    @BindView(R.id.separator) View mSeparator;
+    @BindView(R.id.rlSomeMessageContainer) RelativeLayout mRlContainer;
 
     private Context mContext;
 
@@ -76,9 +81,23 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
         if(isHide){
             mTvLogin.setVisibility(View.GONE);
             mIvUserImage.setVisibility(View.INVISIBLE);
+            mSeparator.setVisibility(View.VISIBLE);
+            mRlContainer.setMinimumHeight(0);
         } else {
             mTvLogin.setVisibility(View.VISIBLE);
             mIvUserImage.setVisibility(View.VISIBLE);
+            mSeparator.setVisibility(View.GONE);
+            mRlContainer.setMinimumHeight(getListPreferredItemHeight());
         }
+    }
+
+    private int getListPreferredItemHeight(){
+        int[] textSizeAttr = new int[] { android.R.attr.listPreferredItemHeight };
+        int indexOfAttrTextSize = 0;
+        TypedArray a = mContext.obtainStyledAttributes(new TypedValue().data, textSizeAttr);
+        int textSize = a.getDimensionPixelSize(indexOfAttrTextSize, -1);
+        a.recycle();
+
+        return textSize;
     }
 }

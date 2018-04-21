@@ -17,6 +17,7 @@ package com.transcendensoft.hedbanz.presentation.rooms.list;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;
+import android.view.ViewGroup;
 
 /**
  * View and Presenter interfaces contract for room item presentation
@@ -42,6 +43,8 @@ public interface RoomItemContract {
         void showErrorServer();
 
         void showErrorNetwork();
+
+        ViewGroup getItemView();
 
         Context provideContext();
     }

@@ -47,17 +47,22 @@ public abstract class PaginationUseCase<T, ParamUseCase, ParamPaginator>
     }
 
     @Override
-    public PaginationUseCase<T, ParamUseCase, ParamPaginator> refresh(ParamPaginator roomFilter) {
+    public PaginationUseCase<T, ParamUseCase, ParamPaginator> refresh(ParamPaginator paramPaginator) {
         mCurrentPage = 0;
         return this;
     }
 
     protected ObservableSource<PaginationState<T>> convertEntitiesToPagingResult(List<T> entities) {
         PaginationState<T> paginationState = new PaginationState<>();
+
         paginationState.setData(entities)
-                .setRefreshed(mCurrentPage == 0)
+                .setRefreshed(mCurrentPage <= 0)
                 .setHasInternetError(false)
                 .setHasServerError(false);
+
+        if(entities == null || entities.isEmpty()){
+            decPage();
+        }
 
         return Observable.just(paginationState);
     }
@@ -65,7 +70,7 @@ public abstract class PaginationUseCase<T, ParamUseCase, ParamPaginator>
     protected PaginationState<T> mapPaginationStateBasedOnError(Throwable throwable) {
         Timber.e(throwable);
         PaginationState<T> paginationState = new PaginationState<>();
-        paginationState.setRefreshed(mCurrentPage == 0);
+        paginationState.setRefreshed(mCurrentPage <= 0);
 
         if (throwable instanceof ConnectException) {
             paginationState
@@ -76,6 +81,17 @@ public abstract class PaginationUseCase<T, ParamUseCase, ParamPaginator>
                     .setHasServerError(true)
                     .setHasInternetError(false);
         }
+
+        decPage();
+
         return paginationState;
+    }
+
+    private void decPage() {
+        if(mCurrentPage > 0){
+            mCurrentPage--;
+        } else {
+            mCurrentPage = 0;
+        }
     }
 }

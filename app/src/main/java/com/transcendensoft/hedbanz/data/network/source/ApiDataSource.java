@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.data.network.source;
  */
 
 
+import com.transcendensoft.hedbanz.BuildConfig;
 import com.transcendensoft.hedbanz.data.network.service.ApiService;
 
 import javax.inject.Inject;
@@ -25,15 +26,13 @@ import javax.inject.Inject;
  * Contains common string constants for API purposes.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public abstract class ApiDataSource {
-    public static final String HOST = "http://77.47.204.201";
+    public static final String HOST = BuildConfig.HOST_LINK;
+    public static final String BASE_URL = HOST + BuildConfig.PORT_API;
 
-    private static final String PORT_API = ":8080/";
-    public static final String BASE_URL = HOST + PORT_API;
-
-    public static final String PORT_SOCKET = ":9092";
+    public static final String PORT_SOCKET = BuildConfig.PORT_SOCKET;
     public static final String LOGIN_SOCKET_NSP = "/login";
     public static final String GAME_SOCKET_NSP = "/game";
 

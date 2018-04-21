@@ -17,6 +17,7 @@ package com.transcendensoft.hedbanz.data.source;
 
 import com.transcendensoft.hedbanz.data.network.source.ApiDataSource;
 import com.transcendensoft.hedbanz.data.network.source.FriendsApiDataSource;
+import com.transcendensoft.hedbanz.data.network.source.MessagesApiDataSource;
 import com.transcendensoft.hedbanz.data.network.source.RoomsApiDataSource;
 import com.transcendensoft.hedbanz.data.network.source.UserApiDataSource;
 
@@ -39,4 +40,7 @@ public interface DataSourceModule {
 
     @Binds
     ApiDataSource provideFriendApiDataSource(FriendsApiDataSource friendApiDataSource);
+
+    @Binds
+    ApiDataSource provideMessageApiDataSource(MessagesApiDataSource messagesApiDataSource);
 }

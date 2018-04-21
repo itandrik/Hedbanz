@@ -16,7 +16,7 @@ package com.transcendensoft.hedbanz.domain.entity;
  */
 
 /**
- * //TODO add class description 
+ * Enum with message types. Id of message type must be the same as in server.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
@@ -29,7 +29,11 @@ public enum MessageType {
     SIMPLE_MESSAGE_OTHER_USER(5),
     SIMPLE_MESSAGE_THIS_USER(6),
     SIMPLE_MESSAGE(7),
-    ERROR(8),
+    ERROR_SERVER(8),
+    ERROR_NETWORK(9),
+    LOADING(10),
+    WORD_SETTING(11),
+    WORD_SETTED(12),
     UNDEFINED(100500);
 
     private int id;

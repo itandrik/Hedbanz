@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.data.network.service;
  */
 
 import com.transcendensoft.hedbanz.data.models.FriendDTO;
+import com.transcendensoft.hedbanz.data.models.MessageDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
 import com.transcendensoft.hedbanz.data.models.UserDTO;
@@ -26,6 +27,7 @@ import java.util.List;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -40,6 +42,7 @@ import retrofit2.http.Query;
  * Developed by <u>Transcendensoft</u>
  */
 public interface ApiService {
+    /* User */
     @PUT("user")
     Observable<UserDTO> registerUser(@Body UserDTO user);
 
@@ -52,6 +55,15 @@ public interface ApiService {
     @GET("user/{userId}")
     Observable<UserDTO> getUser(@Path("userId") long userId);
 
+    /* Firebase */
+    @PUT("user/token")
+    Completable bindFirebaseToken(@Query("userId") long userId,
+                                 @Query("token") String token);
+
+    @DELETE("user/token")
+    Completable unbindFirebaseToke(@Query("userId") long userId);
+
+    /* Room */
     @GET("rooms/{page}")
     Observable<List<RoomDTO>> getRooms(@Path("page") int page);
 
@@ -63,14 +75,24 @@ public interface ApiService {
             @Path("page") int page,
             @Body RoomFilterDTO roomFilter);
 
+    /* Game mode */
+    @GET("rooms/messages")
+    Observable<List<MessageDTO>> getMessages(@Query("roomId") long roomId,
+                                             @Query("page") int page);
+
+    /* Friend */
     @GET("friends")
     Observable<List<FriendDTO>> getFriends(@Query("userId") long userId);
 
     @POST("friends")
     Completable acceptFriend(@Query("userId") long userId,
-                                  @Query("friendId") long friendId);
+                             @Query("friendId") long friendId);
 
     @PUT("friends")
     Completable addFriend(@Query("userId") long userId,
                           @Query("friendId") long friendId);
+
+    //TODO Completable dismissFriend
+    //TODO Completable removeFriend
+
 }

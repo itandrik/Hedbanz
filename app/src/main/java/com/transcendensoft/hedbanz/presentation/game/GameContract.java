@@ -18,7 +18,13 @@ package com.transcendensoft.hedbanz.presentation.game;
 import android.widget.EditText;
 
 import com.transcendensoft.hedbanz.domain.entity.Message;
+import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.presentation.base.BaseView;
+
+import java.util.List;
+
+import io.reactivex.Observable;
 
 /**
  * View and Presenter interfaces contract for game mode presentation
@@ -31,13 +37,26 @@ public interface GameContract {
     interface View extends BaseView {
         void addMessage(Message message);
         void addMessage(int position, Message message);
+        void addMessages(List<Message> messages);
+        void addMessages(int position, List<Message> messages);
+        void clearMessages();
         void removeMessage(int position);
         void setMessage(int position, Message message);
+
+        void showFooterTyping(List<User>users);
+        void showFooterServerError();
+        void showFooterNetworkError();
+        void showEmptyList();
+        void removeLastMessage();
     }
 
     interface Presenter {
         void initSockets();
         void messageTextChanges(EditText editText);
         void sendMessage(String message);
+        void processSetWordToUserObservable(Observable<Word> sendWordObservable);
+
+        void processRetryNetworkPagination(Observable<Object> clickObservable);
+        void processRetryServerPagination(Observable<Object> clickObservable);
     }
 }

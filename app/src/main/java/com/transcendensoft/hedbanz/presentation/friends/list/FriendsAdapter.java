@@ -16,18 +16,28 @@ package com.transcendensoft.hedbanz.presentation.friends.list;
  */
 
 import com.transcendensoft.hedbanz.domain.entity.Friend;
+import com.transcendensoft.hedbanz.domain.interactor.friends.AcceptFriend;
+import com.transcendensoft.hedbanz.domain.interactor.friends.RemoveFriend;
 import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
+import com.transcendensoft.hedbanz.presentation.friends.list.delegates.AcceptedFriendAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.friends.list.delegates.NotAcceptedFriendAdapterDelegate;
+
+import javax.inject.Inject;
 
 /**
  * Adapter for friends recycler view.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class FriendsAdapter extends RecyclerDelegationAdapter<Friend> {
-    public FriendsAdapter() {
+
+    @Inject
+    public FriendsAdapter(AcceptFriend acceptFriend, RemoveFriend removeFriend) {
         super();
 
-        // TODO add delegates
+        delegatesManager
+                .addDelegate(new AcceptedFriendAdapterDelegate(removeFriend, this))
+                .addDelegate(new NotAcceptedFriendAdapterDelegate(acceptFriend, this));
     }
 }

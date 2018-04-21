@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:id="@+id/rlSomeMessageContainer"
     android:layout_height="wrap_content"
     android:minHeight="?attr/listPreferredItemHeight">
 
@@ -8,35 +9,49 @@
         android:id="@+id/tvLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
         android:layout_marginLeft="16dp"
-        android:text="Harashi dfsagsdfgsdfgsdfg"
         android:layout_marginStart="16dp"
+        android:text="Harashi dfsagsdfgsdfgsdfg"
+        android:textColor="@color/textDarkRed"
         android:textSize="15sp"
-        android:textColor="@color/textDarkRed"/>
+        android:textStyle="bold" />
+
+
 
     <ImageView
         android:id="@+id/ivUserImage"
         android:layout_width="42dp"
+        android:layout_height="42dp"
         android:layout_below="@id/tvLogin"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
-        android:layout_height="42dp" />
+        android:layout_marginTop="8dp" />
 
     <TextView
         android:id="@+id/tvMessage"
-        android:layout_toRightOf="@id/ivUserImage"
-        android:layout_toEndOf="@id/ivUserImage"
-        android:layout_below="@id/tvLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/message_other_user"
-        android:textColor="@color/textPrimary"
-        android:textSize="14sp"
-        android:padding="12dp"
+        android:layout_below="@id/tvLogin"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:maxWidth="300dp"/>
+        android:layout_marginTop="8dp"
+        android:layout_toEndOf="@id/ivUserImage"
+        android:layout_toRightOf="@id/ivUserImage"
+        android:background="@drawable/message_other_user"
+        android:maxWidth="300dp"
+        android:padding="12dp"
+        android:textColor="@color/textPrimary"
+        android:textSize="14sp" />
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="2dp"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/tvMessage"
+        android:layout_alignTop="@id/tvMessage"
+        android:layout_toLeftOf="@id/tvMessage"
+        android:layout_marginRight="8dp"
+        android:background="@color/google_yellow" />
 </RelativeLayout>

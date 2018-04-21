@@ -56,8 +56,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/ThemeMain"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".presentation.friends.FriendsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ThemeMain"
+            android:windowSoftInputMode="adjustPan" />
 
-        <activity android:name=".presentation.friends.FriendsActivity" />
+        <activity android:name=".presentation.intro.IntroActivity" />
+
         <!-- Service -->
 
 
