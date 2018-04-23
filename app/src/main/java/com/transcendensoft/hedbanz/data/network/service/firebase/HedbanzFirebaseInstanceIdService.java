@@ -15,11 +15,11 @@ package com.transcendensoft.hedbanz.data.network.service.firebase;
  * limitations under the License.
  */
 
-import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
-
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+
+import javax.inject.Inject;
 
 import timber.log.Timber;
 
@@ -29,27 +29,27 @@ import timber.log.Timber;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class HedbanzFirebaseInstanceIdService extends FirebaseInstanceIdService {
-    private static final String TAG = HedbanzFirebaseInstanceIdService.class.getName();
+public class HedbanzFirebaseInstanceIdService extends FirebaseInstanceIdService{
+    @Inject PreferenceManager mPreferenceManager;
 
-    // broadcast receiver intent filters
-    public static final String REGISTRATION_COMPLETE = "registrationComplete";
-    public static final String PUSH_NOTIFICATION = "pushNotification";
+    // Якщо ще не залогінився, тоді записуємо в PreferenceManager;
+    // Інакше відразу після логіна беремо з PreferenceManager і відправляємо запит на сервер bind.
+    // Якщо залогінився і в PreferenceManager немає токена, тоді відправляємо запит на сервер bindю
+    // Не забути про unbind.
 
-    // id to handle the notification in the notification tray
-    public static final int NOTIFICATION_ID = 100;
+    @Override
+    public void onCreate() {
+//        AndroidInjection.inject(this);
+        super.onCreate();
+    }
 
     @Override
     public void onTokenRefresh() {
         super.onTokenRefresh();
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Timber.i("Firebase token %s", refreshedToken);
-        // Saving reg id to shared preferences
-        //new PreferenceManager(this).setFirebaseToken(refreshedToken);
 
-        // Notify UI that registration has completed, so the progress indicator can be hidden.
-        Intent registrationComplete = new Intent(REGISTRATION_COMPLETE);
-        registrationComplete.putExtra("token", refreshedToken);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
+        mPreferenceManager.setFirebaseToken(refreshedToken);
     }
+
 }

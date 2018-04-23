@@ -30,6 +30,8 @@ public class Message{
     private User userFrom;
     private MessageType messageType;
     private Timestamp createDate;
+    protected boolean isLoading;
+    protected boolean isFinished;
 
     protected Message() {
     }
@@ -89,6 +91,22 @@ public class Message{
 
     public void setClientMessageId(long clientMessageId) {
         this.clientMessageId = clientMessageId;
+    }
+
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+    public void setLoading(boolean loading) {
+        isLoading = loading;
+    }
+
+    public boolean isFinished() {
+        return isFinished;
+    }
+
+    public void setFinished(boolean finished) {
+        isFinished = finished;
     }
 
     public static class Builder {

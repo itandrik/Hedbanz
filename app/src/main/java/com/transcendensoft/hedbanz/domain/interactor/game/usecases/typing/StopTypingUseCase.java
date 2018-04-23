@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
+package com.transcendensoft.hedbanz.domain.interactor.game.usecases.typing;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,11 +15,11 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.models.WordDTO;
 import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.RoomInfoUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import org.json.JSONException;
@@ -27,64 +27,65 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subjects.PublishSubject;
 
 /**
  * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
- * that represents a use case listening event when needs to
- * set word to some user
+ * that represents a use case listening event when someone stops startTyping message now
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
- **/
-public class WordSettingUseCase extends ObservableUseCase<User, List<User>>{
+ */
+public class StopTypingUseCase extends ObservableUseCase<User, List<User>> {
     private PublishSubject<User> mSubject;
     private GameDataRepository mRepository;
 
     @Inject
-    public WordSettingUseCase(ObservableTransformer schedulersTransformer,
-                             CompositeDisposable compositeDisposable,
+    public StopTypingUseCase(ObservableTransformer observableTransformer,
+                             CompositeDisposable mCompositeDisposable,
                              GameDataRepositoryImpl gameDataRepository) {
-        super(schedulersTransformer, compositeDisposable);
+        super(observableTransformer, mCompositeDisposable);
         mRepository = gameDataRepository;
         mSubject = PublishSubject.create();
     }
 
     @Override
     protected Observable<User> buildUseCaseObservable(List<User> params) {
-        Observable<User> observable = mRepository.settingWordObservable()
-                .flatMap(jsonObject -> convertJsonToUserObservable(params, jsonObject));
+        Observable<User> observable = mRepository.stopTypingObservable()
+                .flatMap(jsonObject -> convertUserIdToUserObservable(params, jsonObject));
         observable.subscribe(mSubject);
         return mSubject;
     }
 
-    private Observable<User> convertJsonToUserObservable(List<User> users, JSONObject jsonObject){
+    private ObservableSource<? extends User> convertUserIdToUserObservable(
+            List<User> params, JSONObject jsonObject) {
         try {
-            Long wordReceiverId = jsonObject.getLong(WordDTO.WORD_RECEIVER_ID);
-            User wordReceiverUser = getUserWithId(users, wordReceiverId);
-
-            return Observable.just(wordReceiverUser);
+            Long userId = jsonObject.getLong("userId");
+            User user = getUserWithId(params, userId);
+            if(user == null){
+                user = new User.Builder().setId(userId).build();
+            }
+            return Observable.just(user);
         } catch (JSONException e) {
             return Observable.error(new IncorrectJsonException(
-                    jsonObject.toString(), WordSettedUseCase.class.getName()));
+                    jsonObject.toString(), RoomInfoUseCase.class.getName()));
         }
     }
 
+    @Nullable
     private User getUserWithId(List<User> users, long id) {
-        User user = null;
-        for (User innerUser : users) {
-            if (innerUser.getId() == id) {
-                user = innerUser;
+        for (User user : users) {
+            if (user.getId() == id) {
+                return user;
             }
         }
-        if(user == null){
-            user = new User.Builder().setId(id).build();
-        }
-        return user;
+        return null;
     }
 }

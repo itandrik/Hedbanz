@@ -45,4 +45,13 @@
         <attr name="isb_progress_1" format="float" />
         <attr name="isb_progress_2" format="float" />
     </declare-styleable>
+
+    <style name="WordSettingEditText" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlActivated">@color/google_blue</item>
+        <item name="colorControlHighlight">@color/google_red</item>
+    </style>
+
+    <style name="AppTheme.RedProgressBar">
+        <item name="colorAccent">@color/textDarkRed</item>
+    </style>
 </resources>

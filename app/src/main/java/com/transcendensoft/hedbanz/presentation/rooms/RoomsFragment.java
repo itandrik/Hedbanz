@@ -95,7 +95,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
 
     @Inject RoomsPresenter mPresenter;
     @Inject RoomList mPresenterModel;
-    private RoomsAdapter mAdapter;
+    @Inject RoomsAdapter mAdapter;
 
     @Inject
     public RoomsFragment() {
@@ -168,7 +168,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     }
 
     private void initRecycler() {
-        mAdapter = new RoomsAdapter(mPresenter);
+        //mAdapter = new RoomsAdapter(mPresenter);
         mAdapter.setBottomReachedListener(mPresenter);
         mRecycler.setItemAnimator(new DefaultItemAnimator());
         mRecycler.setLayoutManager(new LinearLayoutManager(

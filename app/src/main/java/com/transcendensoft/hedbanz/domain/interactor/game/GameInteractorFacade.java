@@ -20,24 +20,31 @@ import com.transcendensoft.hedbanz.data.models.common.ServerError;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.entity.Message;
+import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.ErrorUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.JoinedUserUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.LeftUserUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.RoomRestoreUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket.OnReconnectErrorUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.JoinedUserUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.LeftUserUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.MessageUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.OnConnectErrorUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.OnConnectTimeoutUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.OnConnectUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.OnDisconnectUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket.OnConnectErrorUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket.OnConnectTimeoutUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket.OnConnectUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket.OnDisconnectUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket.OnReconnectUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.RoomInfoUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.StartTypingUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.StopTypingUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.WordSettedUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.WordSettingUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.typing.StartTypingUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.typing.StopTypingUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserAfkUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserReturnedUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.word.WordSettedUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.word.WordSettingUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -57,19 +64,25 @@ public class GameInteractorFacade {
     private PreferenceManager mPreferenceManger;
 
     //Use cases
-    private OnConnectUseCase mOnConnectUseCase;
-    private OnDisconnectUseCase mOnDisconnectUseCase;
-    private OnConnectErrorUseCase mOnConnectErrorUseCase;
-    private OnConnectTimeoutUseCase mOnConnectTimeoutUseCase;
-    private JoinedUserUseCase mJoinedUserUseCase;
-    private LeftUserUseCase mLeftUserUseCase;
-    private MessageUseCase mMessageUseCase;
-    private StartTypingUseCase mStartTypingUseCase;
-    private StopTypingUseCase mStopTypingUseCase;
-    private RoomInfoUseCase mRoomInfoUseCase;
-    private ErrorUseCase mErrorUseCase;
-    private WordSettedUseCase mWordSettedUseCase;
-    private WordSettingUseCase mWordSettingUseCase;
+    @Inject OnConnectUseCase mOnConnectUseCase;
+    @Inject OnDisconnectUseCase mOnDisconnectUseCase;
+    @Inject OnConnectErrorUseCase mOnConnectErrorUseCase;
+    @Inject OnConnectTimeoutUseCase mOnConnectTimeoutUseCase;
+    @Inject OnReconnectUseCase mOnReconnectUseCase;
+    @Inject OnReconnectErrorUseCase mOnReconnectErrorUseCase;
+
+    @Inject UserAfkUseCase mUserAfkUseCase;
+    @Inject UserReturnedUseCase mUserReturnedUseCase;
+    @Inject JoinedUserUseCase mJoinedUserUseCase;
+    @Inject LeftUserUseCase mLeftUserUseCase;
+    @Inject MessageUseCase mMessageUseCase;
+    @Inject StartTypingUseCase mStartTypingUseCase;
+    @Inject StopTypingUseCase mStopTypingUseCase;
+    @Inject RoomInfoUseCase mRoomInfoUseCase;
+    @Inject RoomRestoreUseCase mRoomRestoreUseCase;
+    @Inject ErrorUseCase mErrorUseCase;
+    @Inject WordSettedUseCase mWordSettedUseCase;
+    @Inject WordSettingUseCase mWordSettingUseCase;
 
     private Room mCurrentRoom;
 
@@ -89,13 +102,15 @@ public class GameInteractorFacade {
                               CompositeDisposable compositeDisposable,
                               ObservableTransformer mObservableTransformer,
                               Gson gson) {
-        mOnConnectUseCase = new OnConnectUseCase(
+       /* mOnConnectUseCase = new OnConnectUseCase(
                 mObservableTransformer, compositeDisposable, mRepository);
         mOnDisconnectUseCase = new OnDisconnectUseCase(
                 mObservableTransformer, compositeDisposable, mRepository);
         mOnConnectErrorUseCase = new OnConnectErrorUseCase(
                 mObservableTransformer, compositeDisposable, mRepository);
         mOnConnectTimeoutUseCase = new OnConnectTimeoutUseCase(
+                mObservableTransformer, compositeDisposable, mRepository);
+        mOnReconnectUseCase = new OnReconnectUseCase(
                 mObservableTransformer, compositeDisposable, mRepository);
         mJoinedUserUseCase = new JoinedUserUseCase(
                 mObservableTransformer, compositeDisposable, mRepository, gson, mPreferenceManger);
@@ -116,6 +131,12 @@ public class GameInteractorFacade {
                 compositeDisposable, mRepository);
         mWordSettingUseCase = new WordSettingUseCase(mObservableTransformer,
                 compositeDisposable, mRepository);
+        mUserAfkUseCase = new UserAfkUseCase(
+                mObservableTransformer, compositeDisposable, mRepository);
+        mUserReturnedUseCase = new UserReturnedUseCase(
+                mObservableTransformer, compositeDisposable, mRepository);
+        mRoomRestoreUseCase = new RoomRestoreUseCase(
+                mObservableTransformer, compositeDisposable, mRepository);*/
     }
 
     public void onConnectListener(Consumer<? super String> onNext,
@@ -136,6 +157,26 @@ public class GameInteractorFacade {
     public void onConnectTimeoutListener(Consumer<? super String> onNext,
                                          Consumer<? super Throwable> onError) {
         mOnConnectTimeoutUseCase.execute(null, onNext, onError);
+    }
+
+    public void onReconnectListener(Consumer<? super String> onNext,
+                                     Consumer<? super Throwable> onError) {
+        mOnReconnectUseCase.execute(null, onNext, onError);
+    }
+
+    public void onReconnectErrorListener(Consumer<? super String> onNext,
+                                    Consumer<? super Throwable> onError) {
+        mOnReconnectErrorUseCase.execute(null, onNext, onError);
+    }
+
+    public void onUserAfkListener(Consumer<? super User> onNext,
+                                    Consumer<? super Throwable> onError) {
+        mUserAfkUseCase.execute(null, onNext, onError);
+    }
+
+    public void onUserReturnedListener(Consumer<? super User> onNext,
+                                  Consumer<? super Throwable> onError) {
+        mUserReturnedUseCase.execute(null, onNext, onError);
     }
 
     public void onJoinedUserListener(Consumer<? super User> onNext,
@@ -184,6 +225,14 @@ public class GameInteractorFacade {
         mRoomInfoUseCase.execute(null, onNext, onError, doOnNext);
     }
 
+    public void onRoomRestoredListener(Consumer<? super Room> onNext,
+                                   Consumer<? super Throwable> onError) {
+        Consumer<? super Room> doOnNext = room -> {
+            this.mCurrentRoom = room;
+        };
+        mRoomRestoreUseCase.execute(null, onNext, onError, doOnNext);
+    }
+
     public void onErrorListener(Consumer<? super ServerError> onNext,
                                 Consumer<? super Throwable> onError) {
         mErrorUseCase.execute(null, onNext, onError);
@@ -199,12 +248,7 @@ public class GameInteractorFacade {
         mWordSettingUseCase.execute(mCurrentRoom.getUsers(), onNext, onError);
     }
 
-    public void setWordToUser(String wordMsg, long wordReceiverId) {
-        Word word = new Word.Builder()
-                .setWord(wordMsg)
-                .setWordReceiverId(wordReceiverId)
-                .build();
-
+    public void setWordToUser(Word word) {
         mRepository.setWord(word);
     }
 
@@ -212,7 +256,15 @@ public class GameInteractorFacade {
         User currentUser = mPreferenceManger.getUser();
         mRepository.connect(currentUser.getId(), roomId);
 
+        joinToRoom();
+    }
+
+    public void joinToRoom() {
         mRepository.joinToRoom();
+    }
+
+    public void restoreRoom() {
+        mRepository.sendRoomRestore();
     }
 
     public void startTyping() {
@@ -223,8 +275,21 @@ public class GameInteractorFacade {
         mRepository.stopTyping();
     }
 
-    public void sendMessage(Message message) {
+    public Message sendMessage(String text) {
+        User currentUser = mPreferenceManger.getUser();
+
+        int clientMessageId = Arrays.hashCode(new long[]{
+                System.currentTimeMillis(), currentUser.getId()});
+
+        Message message = new Message.Builder()
+                .setMessageType(MessageType.SIMPLE_MESSAGE_THIS_USER)
+                .setMessage(text)
+                .setUserFrom(currentUser)
+                .setClientMessageId(clientMessageId)
+                .build();
+
         mRepository.sendMessage(message);
+        return message;
     }
 
     public void destroy() {
@@ -232,12 +297,21 @@ public class GameInteractorFacade {
         mOnDisconnectUseCase.dispose();
         mOnConnectErrorUseCase.dispose();
         mOnConnectTimeoutUseCase.dispose();
+        mOnReconnectUseCase.dispose();
+        mOnReconnectErrorUseCase.dispose();
+
+        mUserReturnedUseCase.dispose();
+        mUserAfkUseCase.dispose();
         mJoinedUserUseCase.dispose();
         mLeftUserUseCase.dispose();
         mMessageUseCase.dispose();
         mStartTypingUseCase.dispose();
         mStopTypingUseCase.dispose();
         mRoomInfoUseCase.dispose();
+        mRoomRestoreUseCase.dispose();
+        mErrorUseCase.dispose();
+        mWordSettingUseCase.dispose();
+        mWordSettedUseCase.dispose();
 
         mRepository.disconnectFromRoom();
         mRepository.disconnect();

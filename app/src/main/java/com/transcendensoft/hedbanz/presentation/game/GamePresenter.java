@@ -125,11 +125,27 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     @Override
     public void processSetWordToUserObservable(Observable<Word> sendWordObservable) {
-        if(sendWordObservable != null){
+        if (sendWordObservable != null) {
             addDisposable(sendWordObservable.subscribe(
-                    word -> mGameInteractor.setWordToUser(word.getWord(),word.getWordReceiverId()),
+                    word -> {
+                        mGameInteractor.setWordToUser(word);
+                        updateSettingWordViewParameters(false, true);
+                    },
                     err -> Timber.e("Error while send word to user. MEssage : " + err.getMessage())
             ));
+        }
+    }
+
+    private void updateSettingWordViewParameters(boolean isFinished, boolean isLoading) {
+        for (int i = model.getMessages().size() - 1; i >= 0; i--) {
+            Message message = model.getMessages().get(i);
+            if (message instanceof Word && message.getMessageType() == MessageType.WORD_SETTING) {
+                Word settingWord = (Word) message;
+                settingWord.setFinished(isFinished);
+                settingWord.setLoading(isLoading);
+                view().setMessage(i, settingWord);
+                break;
+            }
         }
     }
 
@@ -146,7 +162,11 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     private void initSocketSystemListeners() {
         mGameInteractor.onConnectListener(
-                str -> Timber.i("Socket connected: %s", str),
+                str -> {
+                    Timber.i("Socket connected: %s", str);
+                    //TODO joinToRoom if first time in this room, restoreRoom if after error
+                   // mGameInteractor.joinToRoom();
+                },
                 this::processEventListenerOnError);
         mGameInteractor.onDisconnectListener(
                 str -> Timber.i("Socket disconnected: %s", str),
@@ -157,20 +177,22 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         mGameInteractor.onConnectTimeoutListener(
                 str -> Timber.i("Socket connect TIMEOUT: %s", str),
                 this::processEventListenerOnError);
+        mGameInteractor.onReconnectListener(
+                str -> Timber.i("Socket reconnect %s", str),
+                this::processEventListenerOnError);
     }
 
     private void initBusinessLogicListeners() {
         initJoinedUserListener();
         initLeftUserListener();
+        initUserAfkListener();
+        initUserReturnedListener();
 
         mGameInteractor.onRoomInfoListener(
-                room -> {
-                    model = room;
-                    model.setMessages(new ArrayList<>());
-                    initMessageListeners();
-                    initWordSettingListeners();
-                    refreshMessageHistory();
-                },
+                this::initRoom,
+                this::processEventListenerOnError);
+        mGameInteractor.onRoomRestoredListener(
+                this::initRoom,
                 this::processEventListenerOnError);
         mGameInteractor.onErrorListener(error -> {
             Timber.e("Error from server from socket. Code : %d; Message: %s",
@@ -212,15 +234,51 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 this::processEventListenerOnError);
     }
 
+    private void initUserAfkListener(){
+        mGameInteractor.onUserAfkListener(user -> {
+            Message message = new Message.Builder()
+                    .setUserFrom(user)
+                    .setMessageType(MessageType.USER_AFK)
+                    .build();
+
+            model.getMessages().add(message);
+            view().addMessage(message);
+        }, this::processEventListenerOnError);
+    }
+
+    private void initUserReturnedListener(){
+        mGameInteractor.onUserReturnedListener(user -> {
+            Message message = new Message.Builder()
+                    .setUserFrom(user)
+                    .setMessageType(MessageType.USER_RETURNED)
+                    .build();
+
+            model.getMessages().add(message);
+            view().addMessage(message);
+        }, this::processEventListenerOnError);
+    }
+
+    private void initRoom(Room room) {
+        model = room;
+        model.setMessages(new ArrayList<>());
+        initMessageListeners();
+        initWordSettingListeners();
+        refreshMessageHistory();
+    }
+
     private void initWordSettingListeners() {
+
         mGameInteractor.onWordSettedListener(word -> {
             word.setMessageType(MessageType.WORD_SETTED);
             model.getMessages().add(word);
             view().addMessage(word);
+
+            updateSettingWordViewParameters(true, false);
         }, this::processEventListenerOnError);
 
         mGameInteractor.onWordSettingListener(wordReceiverUser -> {
             Word word = new Word(null, wordReceiverUser);
+            word.setWordReceiverId(wordReceiverUser.getId());
 
             word.setMessageType(MessageType.WORD_SETTING);
             model.getMessages().add(word);
@@ -241,19 +299,24 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     }
 
     private void processSimpleMessage(Message message) {
-        //Message lastMessage = null;
         List<Message> messages = model.getMessages();
 
-        // if (!messages.isEmpty()) {
-        //   lastMessage = messages.get(messages.size() - 1);
-        // }
-        //if (lastMessage instanceof TypingMessage) {
-        //    messages.add(messages.size() - 1, message);
-        //    view().addMessage(messages.size() - 2, message);
-        // } else {
-        messages.add(message);
-        view().addMessage(message);
-        // }
+        if (message.getMessageType() == MessageType.SIMPLE_MESSAGE_THIS_USER &&
+                !message.isLoading() && message.isFinished()) {
+            for (int i = messages.size() - 1; i >= 0; i--) {
+                Message modelMessage = messages.get(i);
+                modelMessage.setLoading(false);
+                modelMessage.setFinished(true);
+                modelMessage.setCreateDate(message.getCreateDate());
+                if (modelMessage.getClientMessageId() == message.getClientMessageId()) {
+                    view().setMessage(i, modelMessage);
+                    break;
+                }
+            }
+        } else {
+            messages.add(message);
+            view().addMessage(message);
+        }
     }
 
     private void processStartTyping(User user) {
@@ -302,9 +365,9 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     @Override
     public void sendMessage(String text) {
-        Message message = new Message.Builder()
-                .setMessage(text)
-                .build();
-        mGameInteractor.sendMessage(message);
+        Message message = mGameInteractor.sendMessage(text);
+
+        model.getMessages().add(message);
+        view().addMessage(message);
     }
 }

@@ -34,6 +34,8 @@ public enum MessageType {
     LOADING(10),
     WORD_SETTING(11),
     WORD_SETTED(12),
+    USER_AFK(13),
+    USER_RETURNED(14),
     UNDEFINED(100500);
 
     private int id;

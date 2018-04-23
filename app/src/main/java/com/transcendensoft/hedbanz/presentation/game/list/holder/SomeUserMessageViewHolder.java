@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.utils.DateUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,6 +44,7 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.ivUserImage) ImageView mIvUserImage;
     @BindView(R.id.tvMessage) TextView mTvMessage;
     @BindView(R.id.tvLogin) TextView mTvLogin;
+    @BindView(R.id.tvTime) TextView mTvTime;
     @BindView(R.id.separator) View mSeparator;
     @BindView(R.id.rlSomeMessageContainer) RelativeLayout mRlContainer;
 
@@ -99,5 +101,14 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
         a.recycle();
 
         return textSize;
+    }
+
+    public void bindTime(Long time){
+        String humanReadableTime = DateUtils.convertDateToHoursMinutes(time);
+        if(!TextUtils.isEmpty(humanReadableTime)){
+            mTvTime.setText(humanReadableTime);
+        } else {
+            mTvTime.setText("");
+        }
     }
 }

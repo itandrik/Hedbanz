@@ -22,15 +22,15 @@ import com.google.gson.annotations.SerializedName;
  * All friend properties received from server described here
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class FriendDTO extends UserDTO {
     @SerializedName("isAccepted")
     private boolean isAccepted;
 
     private FriendDTO(long id, String email, String password, long money,
-                      Long registrationDate, String login, boolean isAccepted) {
-        super(id, email, password, money, registrationDate, login);
+                      Long registrationDate, String login, boolean isAfk, boolean isAccepted) {
+        super(id, email, password, money, registrationDate, login, isAfk);
         this.isAccepted = isAccepted;
     }
 
@@ -50,6 +50,7 @@ public class FriendDTO extends UserDTO {
         private Long registrationDate;
         private String login;
         private boolean isAccepted;
+        private boolean isAfk;
 
         public FriendDTO.Builder setId(long id) {
             this.id = id;
@@ -86,8 +87,14 @@ public class FriendDTO extends UserDTO {
             return this;
         }
 
+        public FriendDTO.Builder setIsAfk(boolean isAfk) {
+            this.isAfk = isAfk;
+            return this;
+        }
+
         public FriendDTO build() {
-            return new FriendDTO(id, email, password, money, registrationDate, login, isAccepted);
+            return new FriendDTO(id, email, password, money, registrationDate,
+                    login, isAfk, isAccepted);
         }
     }
 }

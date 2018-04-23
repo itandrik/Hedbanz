@@ -15,12 +15,10 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
  * limitations under the License.
  */
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.Room;
-import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
+import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import javax.inject.Inject;
 
@@ -32,45 +30,28 @@ import io.reactivex.subjects.PublishSubject;
 /**
  * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
  * that represents a use case listening {@link Room}
- * information after connecting to socket.
+ * information after reconnecting to room after error.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- * Developed by <u>Transcendensoft</u>
+ *         Developed by <u>Transcendensoft</u>
  */
-public class RoomInfoUseCase extends ObservableUseCase<Room, Void> {
+public class RoomRestoreUseCase extends ObservableUseCase<Room, Void> {
     private PublishSubject<Room> mSubject;
+    private GameDataRepository mRepository;
 
     @Inject
-    public RoomInfoUseCase(ObservableTransformer observableTransformer,
-                           CompositeDisposable mCompositeDisposable,
-                           GameDataRepositoryImpl gameDataRepository,
-                           Gson gson) {
+    public RoomRestoreUseCase(ObservableTransformer observableTransformer,
+                               CompositeDisposable mCompositeDisposable,
+                               GameDataRepositoryImpl gameDataRepository) {
         super(observableTransformer, mCompositeDisposable);
-
-        initSubject(gameDataRepository, gson);
-    }
-
-    private void initSubject(GameDataRepositoryImpl gameDataRepository, Gson gson) {
-        Observable<Room> observable = getObservable(gameDataRepository, gson);
+        mRepository = gameDataRepository;
         mSubject = PublishSubject.create();
-        observable.subscribe(mSubject);
-    }
-
-    private Observable<Room> getObservable(GameDataRepositoryImpl gameDataRepository, Gson gson) {
-        return gameDataRepository.roomInfoObservable()
-                .flatMap(jsonObject -> {
-                    try {
-                        Room room = gson.fromJson(jsonObject.toString(), Room.class);
-                        return Observable.just(room);
-                    } catch (JsonSyntaxException e) {
-                        return Observable.error(new IncorrectJsonException(
-                                jsonObject.toString(), RoomInfoUseCase.class.getName()));
-                    }
-                });
     }
 
     @Override
     protected Observable<Room> buildUseCaseObservable(Void params) {
+        Observable<Room> observable = mRepository.restoreRoomObservable();
+        observable.subscribe(mSubject);
         return mSubject;
     }
 }

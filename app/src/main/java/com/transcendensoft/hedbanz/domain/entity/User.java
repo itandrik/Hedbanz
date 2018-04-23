@@ -30,8 +30,10 @@ public class User {
     private long money;
     private Long registrationDate;
     private String login;
+    private boolean isAfk;
 
-    protected User(long id, String email, String password, String confirmPassword, long money, Long registrationDate, String login) {
+    protected User(long id, String email, String password, String confirmPassword,
+                   long money, Long registrationDate, String login, boolean isAfk) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -39,6 +41,7 @@ public class User {
         this.money = money;
         this.registrationDate = registrationDate;
         this.login = login;
+        this.isAfk = isAfk;
     }
 
     public User() {
@@ -100,6 +103,14 @@ public class User {
         this.login = login;
     }
 
+    public boolean isAfk() {
+        return isAfk;
+    }
+
+    public void setAfk(boolean afk) {
+        isAfk = afk;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -136,6 +147,7 @@ public class User {
         private long money;
         private Long registrationDate;
         private String login;
+        private boolean isAfk;
 
         public User.Builder setId(long id) {
             this.id = id;
@@ -172,8 +184,14 @@ public class User {
             return this;
         }
 
+        public User.Builder setIsAfk(boolean isAfk) {
+            this.isAfk = isAfk;
+            return this;
+        }
+
         public User build() {
-            return new User(id, email, password, confirmPassword, money, registrationDate, login);
+            return new User(id, email, password, confirmPassword, money,
+                    registrationDate, login, isAfk);
         }
     }
 }

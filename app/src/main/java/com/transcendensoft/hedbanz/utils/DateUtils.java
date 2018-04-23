@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.data.source;
+package com.transcendensoft.hedbanz.utils;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,27 +15,25 @@ package com.transcendensoft.hedbanz.data.source;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.models.RoomDTO;
-import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
-
-import java.util.List;
-
-import io.reactivex.Completable;
-import io.reactivex.Observable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
- * Base interface for remote and local data that
- * describes methods of getting or updating data
+ * Utility class that converts ro calculates date
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public interface RoomDataSource {
-    Observable<List<RoomDTO>> getRooms(int page);
+public class DateUtils {
+    private static final String HOURS_MINUTES_MASK = "HH:mm";
 
-    Observable<RoomDTO> createRoom(RoomDTO roomDTO, long userId);
+    public static String convertDateToHoursMinutes(Long date){
+        DateFormat sdf = new SimpleDateFormat(HOURS_MINUTES_MASK, Locale.getDefault());
+        TimeZone tz = TimeZone.getDefault();
+        sdf.setTimeZone(tz);
 
-    Observable<List<RoomDTO>> filterRooms(int page, RoomFilterDTO roomFilter);
-
-    Completable isPasswordCorrect(long userId, long roomId, String password);
+        return sdf.format(date);
+    }
 }

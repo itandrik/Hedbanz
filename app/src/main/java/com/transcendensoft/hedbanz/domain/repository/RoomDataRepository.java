@@ -37,5 +37,5 @@ public interface RoomDataRepository {
 
     Observable<List<Room>> filterRooms(int page, RoomFilter roomFilter, DataPolicy dataPolicy);
 
-    Completable isPasswordCorrect(long roomId, String password, DataPolicy dataPolicy);
+    Completable isPasswordCorrect(long userId, long roomId, String password, DataPolicy dataPolicy);
 }

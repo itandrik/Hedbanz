@@ -36,7 +36,7 @@ import timber.log.Timber;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class HedbanzApplication extends DaggerApplication{
+public class HedbanzApplication extends DaggerApplication {
     @Inject Timber.DebugTree mDebugTimberTree;
     @Inject CrashReportingTree mReleaseTimberTree;
 

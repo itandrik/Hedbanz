@@ -75,6 +75,11 @@ public interface ApiService {
             @Path("page") int page,
             @Body RoomFilterDTO roomFilter);
 
+    @POST("rooms/password")
+    Completable checkRoomPasswordCorrect(@Query("userId") long userId,
+                                         @Query("roomId") long roomId,
+                                         @Query("password") String password);
+
     /* Game mode */
     @GET("rooms/messages")
     Observable<List<MessageDTO>> getMessages(@Query("roomId") long roomId,

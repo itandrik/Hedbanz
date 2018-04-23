@@ -37,12 +37,14 @@
         android:textColor="@color/google_green"
         android:textSize="15sp" />
 
-    <EditText
+    <android.support.v7.widget.AppCompatEditText
         android:id="@+id/etSetWord"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvSetWordTitle"
         android:layout_marginLeft="16dp"
+        android:textColorHighlight="@color/textSecondaryLight"
+        android:theme="@style/WordSettingEditText"
         android:layout_marginRight="48dp"
         android:layout_marginTop="16dp"
         android:hint="@string/game_set_word_hint"
@@ -50,15 +52,25 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/ivSubmitWord"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignBottom="@+id/etSetWord"
         android:layout_alignParentRight="true"
-        android:background="?attr/selectableItemBackground"
-        android:paddingBottom="10dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_marginBottom="10dp"
         android:paddingTop="2dp"
         app:srcCompat="@drawable/ic_accept"
         app:tint="@color/textPrimary" />
+
+    <ProgressBar
+        android:id="@+id/pbWordLoading"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/etSetWord"
+        android:visibility="gone"
+        android:theme="@style/AppTheme.RedProgressBar"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"/>
 
     <View
         android:layout_width="3dp"

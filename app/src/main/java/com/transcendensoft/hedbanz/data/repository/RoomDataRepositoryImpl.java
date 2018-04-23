@@ -85,9 +85,9 @@ public class RoomDataRepositoryImpl implements RoomDataRepository {
     }
 
     @Override
-    public Completable isPasswordCorrect(long roomId, String password, DataPolicy dataPolicy) {
+    public Completable isPasswordCorrect(long userId, long roomId, String password, DataPolicy dataPolicy) {
         if (dataPolicy == DataPolicy.API) {
-            return mRoomsApiDataSource.isPasswordCorrect(roomId, password);
+            return mRoomsApiDataSource.isPasswordCorrect(userId, roomId, password);
         } else if (dataPolicy == DataPolicy.DB) {
             return Completable.error(new UnsupportedOperationException());
         }

@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
+package com.transcendensoft.hedbanz.domain.interactor.game.usecases.user;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,12 +15,11 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.models.WordDTO;
 import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
-import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.RoomInfoUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import org.json.JSONException;
@@ -28,66 +27,66 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subjects.PublishSubject;
 
 /**
  * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
- * that represents a use case listening event when some word has been setted to user
+ * that represents a use case listening {@link com.transcendensoft.hedbanz.domain.entity.User}
+ * information when some user becomes away from keyboard (AFK).
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- * Developed by <u>Transcendensoft</u>
- **/
-public class WordSettedUseCase extends ObservableUseCase<Word, List<User>> {
-    private PublishSubject<Word> mSubject;
+ *         Developed by <u>Transcendensoft</u>
+ */
+public class UserAfkUseCase extends ObservableUseCase<User, List<User>> {
+    private PublishSubject<User> mSubject;
     private GameDataRepository mRepository;
 
     @Inject
-    public WordSettedUseCase(ObservableTransformer schedulersTransformer,
-                             CompositeDisposable compositeDisposable,
+    public UserAfkUseCase(ObservableTransformer observableTransformer,
+                             CompositeDisposable mCompositeDisposable,
                              GameDataRepositoryImpl gameDataRepository) {
-        super(schedulersTransformer, compositeDisposable);
+        super(observableTransformer, mCompositeDisposable);
         mRepository = gameDataRepository;
         mSubject = PublishSubject.create();
     }
 
     @Override
-    protected Observable<Word> buildUseCaseObservable(List<User> params) {
-        Observable<Word> observable = mRepository.wordSettedToUserObservable()
-                .flatMap(jsonObject -> convertJsonToWord(params, jsonObject));
+    protected Observable<User> buildUseCaseObservable(List<User> params) {
+        Observable<User> observable = mRepository.userAfkObservable()
+                .flatMap(jsonObject -> convertUserIdToUserObservable(params, jsonObject));
         observable.subscribe(mSubject);
         return mSubject;
     }
 
-    private Observable<Word> convertJsonToWord(List<User> users, JSONObject jsonObject){
+    private ObservableSource<? extends User> convertUserIdToUserObservable(
+            List<User> params, JSONObject jsonObject) {
         try {
-            Long senderId = jsonObject.getLong(WordDTO.SENDER_ID);
-            User senderUser = getUserWithId(users, senderId);
-
-            Long wordReceiverId = jsonObject.getLong(WordDTO.WORD_RECEIVER_ID);
-            User wordReceiverUser = getUserWithId(users, wordReceiverId);
-
-            return Observable.just(new Word(senderUser, wordReceiverUser));
+            Long userId = jsonObject.getLong("userId");
+            User user = getUserWithId(params, userId);
+            if(user == null){
+                user = new User.Builder().setId(userId).build();
+            }
+            return Observable.just(user);
         } catch (JSONException e) {
             return Observable.error(new IncorrectJsonException(
-                    jsonObject.toString(), WordSettedUseCase.class.getName()));
+                    jsonObject.toString(), RoomInfoUseCase.class.getName()));
         }
     }
 
+    @Nullable
     private User getUserWithId(List<User> users, long id) {
-        User user = null;
-        for (User innerUser : users) {
-            if (innerUser.getId() == id) {
-                user = innerUser;
+        for (User user : users) {
+            if (user.getId() == id) {
+                return user;
             }
         }
-        if(user == null){
-            user = new User.Builder().setId(id).build();
-        }
-        return user;
+        return null;
     }
 }

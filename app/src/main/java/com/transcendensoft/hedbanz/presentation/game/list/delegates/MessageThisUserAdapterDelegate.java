@@ -76,6 +76,8 @@ public class MessageThisUserAdapterDelegate extends AdapterDelegate<List<Message
 
         if (message != null) {
             viewHolder.bindMessage(message.getMessage());
+            viewHolder.bindLoading(message.isLoading(), message.isFinished());
+            viewHolder.bindTime(message.getCreateDate());
         }
     }
 }

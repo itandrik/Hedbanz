@@ -93,6 +93,7 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
             viewHolder.bindUserLogin(login);
             viewHolder.bindMessage(message.getMessage());
             viewHolder.bindUserImage(R.drawable.logo); //TODO change this shit
+            viewHolder.bindTime(message.getCreateDate().getTime());
         }
     }
 }

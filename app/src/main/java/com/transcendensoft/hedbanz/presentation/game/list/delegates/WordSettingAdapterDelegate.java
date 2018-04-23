@@ -81,9 +81,12 @@ public class WordSettingAdapterDelegate extends RxAdapterDelegate<List<Message>>
         Word word = (Word) items.get(position);
 
         viewHolder.bindTitle(word.getWordReceiverUser().getLogin());
-
+        viewHolder.bindLoading(word.isLoading(), word.isFinished());
         viewHolder.setWordObservable()
-                .flatMap(obj -> Observable.just(word))
+                .flatMap(wordMessage -> {
+                    word.setWord(wordMessage);
+                    return Observable.just(word);
+                })
                 .subscribe(mSendWordSubject);
     }
 

@@ -31,7 +31,7 @@ public class MessageDTO {
     private long id;
     @SerializedName("clientMessageId")
     @Expose
-    private int clientMessageId;
+    private long clientMessageId;
     @SerializedName("senderId")
     @Expose
     private long senderId;
@@ -51,7 +51,7 @@ public class MessageDTO {
     @Expose
     private UserDTO senderUser;
 
-    MessageDTO(long id, long senderId, long roomId, String text, int type, Long createDate, int clientMessageId, UserDTO senderUser) {
+    MessageDTO(long id, long senderId, long roomId, String text, int type, Long createDate, long clientMessageId, UserDTO senderUser) {
         this.id = id;
         this.senderId = senderId;
         this.roomId = roomId;
@@ -110,11 +110,11 @@ public class MessageDTO {
         this.createDate = createDate;
     }
 
-    public int getClientMessageId() {
+    public long getClientMessageId() {
         return clientMessageId;
     }
 
-    public void setClientMessageId(int clientMessageId) {
+    public void setClientMessageId(long clientMessageId) {
         this.clientMessageId = clientMessageId;
     }
 
@@ -148,7 +148,7 @@ public class MessageDTO {
         private String text;
         private int type;
         private Long createDate;
-        private int clientMessageId;
+        private long clientMessageId;
         private UserDTO senderUser;
 
         public Builder setId(long id) {
@@ -181,7 +181,7 @@ public class MessageDTO {
             return this;
         }
 
-        public Builder setClientMessageId(int clientMessageId) {
+        public Builder setClientMessageId(long clientMessageId) {
             this.clientMessageId = clientMessageId;
             return this;
         }
