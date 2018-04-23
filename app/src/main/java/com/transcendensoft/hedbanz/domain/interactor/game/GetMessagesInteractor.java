@@ -73,6 +73,8 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, Long, Void
                     message.setMessageType(MessageType.SIMPLE_MESSAGE_OTHER_USER);
                 }
             }
+            message.setFinished(true);
+            message.setLoading(false);
         }
         return messages;
     }

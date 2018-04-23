@@ -74,6 +74,8 @@ public class MessageUseCase extends ObservableUseCase<Message, Void> {
     private Message mapMessageFullData(Message message) {
         if (mPreferenceManager.getUser().equals(message.getUserFrom())) {
             message.setMessageType(MessageType.SIMPLE_MESSAGE_THIS_USER);
+            message.setFinished(true);
+            message.setLoading(false);
         } else {
             message.setMessageType(MessageType.SIMPLE_MESSAGE_OTHER_USER);
         }

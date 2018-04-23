@@ -18,9 +18,13 @@ package com.transcendensoft.hedbanz.presentation.game.list.holder;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.utils.DateUtils;
+
+import java.sql.Timestamp;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +38,8 @@ import butterknife.ButterKnife;
  */
 public class ThisUserMessageViewHolder extends RecyclerView.ViewHolder{
     @BindView(R.id.tvMessage) TextView mTvMessage;
+    @BindView(R.id.tvTime) TextView mTvTime;
+    @BindView(R.id.pbMessageLoading) ProgressBar mPbLoading;
 
     public ThisUserMessageViewHolder(View itemView) {
         super(itemView);
@@ -45,6 +51,28 @@ public class ThisUserMessageViewHolder extends RecyclerView.ViewHolder{
             mTvMessage.setText(message);
         } else {
             mTvMessage.setText("");
+        }
+    }
+
+    public void bindTime(Timestamp time){
+        if(time != null) {
+            String humanReadableTime = DateUtils.convertDateToHoursMinutes(time.getTime());
+            if (!TextUtils.isEmpty(humanReadableTime)) {
+                mTvTime.setText(humanReadableTime);
+            } else {
+                mTvTime.setText("");
+            }
+        } else {
+            mTvTime.setText("");
+        }
+    }
+
+    public void bindLoading(boolean isLoading, boolean isFinished){
+        if(isLoading && !isFinished){
+            mPbLoading.setVisibility(View.VISIBLE);
+            mTvTime.setText("");
+        } else if(isFinished && !isLoading) {
+            mPbLoading.setVisibility(View.GONE);
         }
     }
 }

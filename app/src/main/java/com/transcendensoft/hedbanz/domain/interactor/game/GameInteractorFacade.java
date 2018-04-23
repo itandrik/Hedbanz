@@ -20,6 +20,7 @@ import com.transcendensoft.hedbanz.data.models.common.ServerError;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.entity.Message;
+import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.entity.Word;
@@ -38,6 +39,7 @@ import com.transcendensoft.hedbanz.domain.interactor.game.usecases.WordSettedUse
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.WordSettingUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -199,12 +201,7 @@ public class GameInteractorFacade {
         mWordSettingUseCase.execute(mCurrentRoom.getUsers(), onNext, onError);
     }
 
-    public void setWordToUser(String wordMsg, long wordReceiverId) {
-        Word word = new Word.Builder()
-                .setWord(wordMsg)
-                .setWordReceiverId(wordReceiverId)
-                .build();
-
+    public void setWordToUser(Word word) {
         mRepository.setWord(word);
     }
 
@@ -223,8 +220,21 @@ public class GameInteractorFacade {
         mRepository.stopTyping();
     }
 
-    public void sendMessage(Message message) {
+    public Message sendMessage(String text) {
+        User currentUser = mPreferenceManger.getUser();
+
+        int clientMessageId = Arrays.hashCode(new long[]{
+                System.currentTimeMillis(), currentUser.getId()});
+
+        Message message = new Message.Builder()
+                .setMessageType(MessageType.SIMPLE_MESSAGE_THIS_USER)
+                .setMessage(text)
+                .setUserFrom(currentUser)
+                .setClientMessageId(clientMessageId)
+                .build();
+
         mRepository.sendMessage(message);
+        return message;
     }
 
     public void destroy() {

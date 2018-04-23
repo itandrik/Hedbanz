@@ -23,7 +23,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding2.view.RxView;
 import com.transcendensoft.hedbanz.R;
 
 import butterknife.BindView;
@@ -52,15 +51,18 @@ public class WordSettingViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindTitle(String userLogin) {
-        if(!TextUtils.isEmpty(userLogin)){
+        if (!TextUtils.isEmpty(userLogin)) {
             mTvSetWordTitle.setText(mContext.getString(R.string.game_set_word_title, userLogin));
         } else {
             mTvSetWordTitle.setText(mContext.getString(R.string.game_set_word_title_random));
         }
     }
 
-    public Observable<Object> setWordObservable(){
-        return RxView.clicks(mIvSetWord)
-                .takeUntil(RxView.detaches(itemView));
+    public Observable<String> setWordObservable() {
+        return Observable.create(emitter -> {
+            mIvSetWord.setOnClickListener(view -> {
+                emitter.onNext(mEtSetWord.getText().toString().trim());
+            });
+        });
     }
 }

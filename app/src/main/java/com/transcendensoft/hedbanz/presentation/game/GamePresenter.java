@@ -125,9 +125,9 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     @Override
     public void processSetWordToUserObservable(Observable<Word> sendWordObservable) {
-        if(sendWordObservable != null){
+        if (sendWordObservable != null) {
             addDisposable(sendWordObservable.subscribe(
-                    word -> mGameInteractor.setWordToUser(word.getWord(),word.getWordReceiverId()),
+                    word -> mGameInteractor.setWordToUser(word),
                     err -> Timber.e("Error while send word to user. MEssage : " + err.getMessage())
             ));
         }
@@ -213,14 +213,26 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     }
 
     private void initWordSettingListeners() {
+
         mGameInteractor.onWordSettedListener(word -> {
             word.setMessageType(MessageType.WORD_SETTED);
             model.getMessages().add(word);
             view().addMessage(word);
+
+            for (int i = model.getMessages().size() - 1; i >= 0; i--) {
+                Message message = model.getMessages().get(i);
+                if (message instanceof Word && message.getMessageType() == MessageType.WORD_SETTING) {
+                    Word settingWord = (Word) message;
+                    settingWord.setFinished(true);
+                    view().setMessage(i, settingWord);
+                    break;
+                }
+            }
         }, this::processEventListenerOnError);
 
         mGameInteractor.onWordSettingListener(wordReceiverUser -> {
             Word word = new Word(null, wordReceiverUser);
+            word.setWordReceiverId(wordReceiverUser.getId());
 
             word.setMessageType(MessageType.WORD_SETTING);
             model.getMessages().add(word);
@@ -241,19 +253,21 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     }
 
     private void processSimpleMessage(Message message) {
-        //Message lastMessage = null;
         List<Message> messages = model.getMessages();
 
-        // if (!messages.isEmpty()) {
-        //   lastMessage = messages.get(messages.size() - 1);
-        // }
-        //if (lastMessage instanceof TypingMessage) {
-        //    messages.add(messages.size() - 1, message);
-        //    view().addMessage(messages.size() - 2, message);
-        // } else {
-        messages.add(message);
-        view().addMessage(message);
-        // }
+        if (message.getMessageType() == MessageType.SIMPLE_MESSAGE_THIS_USER &&
+                !message.isLoading() && message.isFinished()) {
+            for (int i = messages.size() - 1; i >= 0; i--) {
+                Message modelMessage = messages.get(i);
+                if (modelMessage.getClientMessageId() == message.getClientMessageId()) {
+                    view().setMessage(i, modelMessage);
+                    break;
+                }
+            }
+        } else {
+            messages.add(message);
+            view().addMessage(message);
+        }
     }
 
     private void processStartTyping(User user) {
@@ -302,9 +316,9 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     @Override
     public void sendMessage(String text) {
-        Message message = new Message.Builder()
-                .setMessage(text)
-                .build();
-        mGameInteractor.sendMessage(message);
+        Message message = mGameInteractor.sendMessage(text);
+
+        model.getMessages().add(message);
+        view().addMessage(message);
     }
 }
