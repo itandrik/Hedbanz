@@ -47,6 +47,10 @@ public interface RoomItemContract {
         ViewGroup getItemView();
 
         Context provideContext();
+
+        void showLoadingDialog();
+
+        void hideLoadingDialog();
     }
 
     interface Presenter {

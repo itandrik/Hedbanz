@@ -19,17 +19,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.support.graphics.drawable.VectorDrawableCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding2.view.RxView;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.IsRoomPasswordCorrectInteractor;
@@ -53,8 +48,13 @@ import timber.log.Timber;
 
 public class RoomItemPresenterImpl extends BasePresenter<Room, RoomItemContract.View>
         implements RoomItemContract.Presenter {
-    @Inject IsRoomPasswordCorrectInteractor mIsRoomPasswordCorrectInteractor;
+    private IsRoomPasswordCorrectInteractor mIsRoomPasswordCorrectInteractor;
     private AlertDialog mRoomPasswordDialog;
+
+    @Inject
+    public RoomItemPresenterImpl(IsRoomPasswordCorrectInteractor isRoomPasswordCorrectInteractor) {
+        this.mIsRoomPasswordCorrectInteractor = isRoomPasswordCorrectInteractor;
+    }
 
     @Override
     protected void updateView() {
@@ -97,42 +97,35 @@ public class RoomItemPresenterImpl extends BasePresenter<Room, RoomItemContract.
     private void showRoomPasswordAlertDialog(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_room_password,
                 view().getItemView(), false);
-        EditText etRoomPassword = view.findViewById(R.id.etRoomPassword);
+        EditText etRoomPassword = view.findViewById(R.id.etPassword);
         TextView tvPasswordError = view.findViewById(R.id.tvErrorPassword);
 
-        addDisposable(RxView.clicks(view.findViewById(R.id.btnSubmitRoom))
-                .subscribe(obj -> {
-                    Room room = new Room.Builder()
-                            .setPassword(etRoomPassword.getText().toString().trim())
-                            .setId(model.getId())
-                            .build();
-                    processRoomPassword(room, tvPasswordError);
-                }, err -> Timber.e("Error while click on room password submit. Message %s",
-                        err.getMessage()))
-        );
+        view.findViewById(R.id.btnSubmitRoom).setOnClickListener(v -> {
+            Room room = new Room.Builder()
+                    .setPassword(etRoomPassword.getText().toString().trim())
+                    .setWithPassword(true)
+                    .setId(model.getId())
+                    .build();
+            processRoomPassword(room, tvPasswordError);
+        });
 
-        mRoomPasswordDialog = new AlertDialog.Builder(context)
-                .setView(R.layout.dialog_room_password)
-                .show();
+        mRoomPasswordDialog = new AlertDialog.Builder(context).setView(view).show();
         mRoomPasswordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        initPasswordIcon(context, etRoomPassword);
-    }
-
-    private void initPasswordIcon(Context context, EditText etPassword){
-        Drawable drawable = VectorDrawableCompat.create(
-                context.getResources(), R.drawable.ic_password, null);
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, ContextCompat.getColor(context, R.color.textDarkRed));
-        etPassword.setCompoundDrawablesWithIntrinsicBounds(drawable, null,null,null);
     }
 
     private void processRoomPassword(Room room, TextView tvPasswordError) {
+        view().showLoadingDialog();
+        tvPasswordError.setVisibility(View.GONE);
         mIsRoomPasswordCorrectInteractor.execute(room,
                 () -> {
                     startGameActivity(view().provideContext());
                     mRoomPasswordDialog.dismiss();
+                    view().hideLoadingDialog();
                 },
-                err -> processRoomPasswordOnError(err, tvPasswordError));
+                err -> {
+                    processRoomPasswordOnError(err, tvPasswordError);
+                    view().hideLoadingDialog();
+                });
     }
 
     private void processRoomPasswordOnError(Throwable err, TextView tvPasswordError) {
@@ -157,6 +150,7 @@ public class RoomItemPresenterImpl extends BasePresenter<Room, RoomItemContract.
                 case EMPTY_PASSWORD:
                 case INVALID_PASSWORD:
                     tvPasswordError.setText(context.getString(roomError.getErrorMessage()));
+                    tvPasswordError.setVisibility(View.VISIBLE);
                     break;
                 case UNDEFINED_ERROR:
                 default:

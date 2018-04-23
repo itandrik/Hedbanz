@@ -16,11 +16,13 @@ package com.transcendensoft.hedbanz.presentation.game.list.holder;
  */
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
@@ -40,6 +42,7 @@ public class WordSettingViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.tvSetWordTitle) TextView mTvSetWordTitle;
     @BindView(R.id.etSetWord) EditText mEtSetWord;
     @BindView(R.id.ivSubmitWord) ImageView mIvSetWord;
+    @BindView(R.id.pbWordLoading) ProgressBar mPbWordLoading;
 
     private Context mContext;
 
@@ -55,6 +58,26 @@ public class WordSettingViewHolder extends RecyclerView.ViewHolder {
             mTvSetWordTitle.setText(mContext.getString(R.string.game_set_word_title, userLogin));
         } else {
             mTvSetWordTitle.setText(mContext.getString(R.string.game_set_word_title_random));
+        }
+    }
+
+    public void bindLoading(boolean isLoading, boolean isFinished){
+        if(isLoading && !isFinished){
+            mIvSetWord.setVisibility(View.GONE);
+            mPbWordLoading.setVisibility(View.VISIBLE);
+            mIvSetWord.setColorFilter(ContextCompat.getColor(mContext, R.color.textPrimary),
+                    android.graphics.PorterDuff.Mode.SRC_IN);
+            mEtSetWord.setEnabled(false);
+        } else if(!isLoading && isFinished){
+            mIvSetWord.setVisibility(View.VISIBLE);
+            mIvSetWord.setColorFilter(ContextCompat.getColor(mContext, R.color.google_green),
+                    android.graphics.PorterDuff.Mode.SRC_IN);
+            mPbWordLoading.setVisibility(View.GONE);
+            mEtSetWord.setEnabled(true);
+        } else {
+            mIvSetWord.setVisibility(View.VISIBLE);
+            mPbWordLoading.setVisibility(View.GONE);
+            mEtSetWord.setEnabled(true);
         }
     }
 

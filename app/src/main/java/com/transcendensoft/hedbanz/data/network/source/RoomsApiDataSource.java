@@ -60,8 +60,8 @@ public class RoomsApiDataSource extends ApiDataSource implements RoomDataSource 
         return mService.filterRooms(page, roomFilter);
     }
 
-    public Completable isPasswordCorrect(long roomId, String password){
-        return Completable.error(new UnsupportedOperationException()); //TODO change when API will be ready
+    public Completable isPasswordCorrect(long userId, long roomId, String password){
+        return mService.checkRoomPasswordCorrect(userId, roomId, password);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
+package com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -18,6 +18,8 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
 import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
@@ -25,20 +27,21 @@ import io.reactivex.subjects.PublishSubject;
 
 /**
  * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
- * that represents a use case listening socket connection timeout.
+ * that represents a use case listening socket disconnection.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class OnConnectTimeoutUseCase extends ObservableUseCase<String, Void> {
+public class OnDisconnectUseCase extends ObservableUseCase<String, Void> {
     private PublishSubject<String> mSubject;
 
-    public OnConnectTimeoutUseCase(ObservableTransformer observableTransformer,
-                                 CompositeDisposable mCompositeDisposable,
-                                 GameDataRepositoryImpl gameDataRepository) {
+    @Inject
+    public OnDisconnectUseCase(ObservableTransformer observableTransformer,
+                            CompositeDisposable mCompositeDisposable,
+                            GameDataRepositoryImpl gameDataRepository) {
         super(observableTransformer, mCompositeDisposable);
 
-        Observable<String> observable = gameDataRepository.connectTimeoutObservable()
+        Observable<String> observable = gameDataRepository.disconnectObservable()
                 .flatMap(jsonObject -> Observable.just(jsonObject.toString()));
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);

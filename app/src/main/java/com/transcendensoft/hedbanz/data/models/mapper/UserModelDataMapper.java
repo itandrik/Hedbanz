@@ -49,6 +49,7 @@ public class UserModelDataMapper {
                     .setMoney(userDTO.getMoney())
                     .setPassword(userDTO.getPassword())
                     .setRegistrationDate(userDTO.getRegistrationDate())
+                    .setIsAfk(userDTO.isAfk())
                     .build();
         }
         return userResult;
@@ -64,11 +65,11 @@ public class UserModelDataMapper {
                     .setMoney(user.getMoney())
                     .setPassword(user.getPassword())
                     .setRegistrationDate(user.getRegistrationDate())
+                    .setIsAfk(user.isAfk())
                     .build();
         }
         return userResult;
     }
-
 
     public List<User> convertToUsers(Collection<UserDTO> userDTOCollection) {
         if(userDTOCollection == null){

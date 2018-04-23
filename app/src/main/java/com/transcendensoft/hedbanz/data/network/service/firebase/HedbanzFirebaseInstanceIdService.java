@@ -21,7 +21,6 @@ import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 
 import javax.inject.Inject;
 
-import dagger.android.AndroidInjection;
 import timber.log.Timber;
 
 /**
@@ -40,7 +39,7 @@ public class HedbanzFirebaseInstanceIdService extends FirebaseInstanceIdService{
 
     @Override
     public void onCreate() {
-        AndroidInjection.inject(this);
+//        AndroidInjection.inject(this);
         super.onCreate();
     }
 

@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.presentation.rooms.list;
  * limitations under the License.
  */
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.graphics.drawable.VectorDrawableCompat;
@@ -51,8 +52,10 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
     private TextView mTvErrorText;
     private Button mBtnRetryError;
     private ProgressBar mPbLoading;
+    private ProgressDialog mProgressDialog;
 
     private Context mContext;
+    private RoomsPresenter mCallbackPresenter;
 
     public RoomItemViewHolder(Context context, View itemView, RoomsPresenter callbackPresenter) {
         super(itemView);
@@ -68,7 +71,17 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
         mBtnRetryError = itemView.findViewById(R.id.btnReload);
 
         mContext = context;
+        this.mCallbackPresenter = callbackPresenter;
+
         setOnClickListeners(callbackPresenter);
+        initProgressDialog();
+    }
+
+    private void initProgressDialog() {
+        mProgressDialog = new ProgressDialog(mContext);
+        mProgressDialog.setMessage(mContext.getString(R.string.action_loading));
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setIndeterminate(true);
     }
 
     private void setOnClickListeners(RoomsPresenter callbackPresenter) {
@@ -152,11 +165,6 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
         mCardContainer.setVisibility(View.GONE);
     }
 
-    //public View getItemView(){
-     //   return itemView;
-   // }
-
-
     @Override
     public ViewGroup getItemView() {
         return (ViewGroup) itemView;
@@ -165,5 +173,19 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
     @Override
     public Context provideContext() {
         return mContext;
+    }
+
+    @Override
+    public void showLoadingDialog() {
+        if(mProgressDialog != null){
+            mProgressDialog.show();
+        }
+    }
+
+    @Override
+    public void hideLoadingDialog() {
+        if(mProgressDialog != null){
+            mProgressDialog.hide();
+        }
     }
 }

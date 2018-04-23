@@ -22,6 +22,8 @@ import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
@@ -38,6 +40,7 @@ import io.reactivex.subjects.PublishSubject;
 public class ErrorUseCase extends ObservableUseCase<ServerError, Void> {
     private PublishSubject<ServerError> mSubject;
 
+    @Inject
     public ErrorUseCase(ObservableTransformer observableTransformer,
                              CompositeDisposable mCompositeDisposable,
                              GameDataRepositoryImpl gameDataRepository,

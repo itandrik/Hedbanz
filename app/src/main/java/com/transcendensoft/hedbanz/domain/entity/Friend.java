@@ -19,14 +19,14 @@ package com.transcendensoft.hedbanz.domain.entity;
  * Entity that describes Friend of some User
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class Friend extends User {
     private boolean isAccepted;
 
     private Friend(long id, String email, String password, String confirmPassword,
-                  long money, Long registrationDate, String login, boolean isAccepted) {
-        super(id, email, password, confirmPassword, money, registrationDate, login);
+                   long money, Long registrationDate, String login, boolean isAfk, boolean isAccepted) {
+        super(id, email, password, confirmPassword, money, registrationDate, login, isAfk);
         this.isAccepted = isAccepted;
     }
 
@@ -47,6 +47,7 @@ public class Friend extends User {
         private Long registrationDate;
         private String login;
         private boolean isAccepted;
+        private boolean isAfk;
 
         public Builder setId(long id) {
             this.id = id;
@@ -88,8 +89,14 @@ public class Friend extends User {
             return this;
         }
 
+        public Builder setIsAfk(boolean isAfk) {
+            this.isAfk = isAfk;
+            return this;
+        }
+
         public Friend build() {
-            return new Friend(id, email, password, confirmPassword, money, registrationDate, login, isAccepted);
+            return new Friend(id, email, password, confirmPassword, money,
+                    registrationDate, login, isAfk, isAccepted);
         }
     }
 }

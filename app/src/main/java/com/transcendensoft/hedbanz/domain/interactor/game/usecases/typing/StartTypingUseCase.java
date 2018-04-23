@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
+package com.transcendensoft.hedbanz.domain.interactor.game.usecases.typing;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -19,6 +19,7 @@ import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.RoomInfoUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import org.json.JSONException;
@@ -27,6 +28,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -45,6 +47,7 @@ public class StartTypingUseCase extends ObservableUseCase<User, List<User>> {
     private PublishSubject<User> mSubject;
     private GameDataRepository mRepository;
 
+    @Inject
     public StartTypingUseCase(ObservableTransformer observableTransformer,
                               CompositeDisposable mCompositeDisposable,
                               GameDataRepositoryImpl gameDataRepository) {

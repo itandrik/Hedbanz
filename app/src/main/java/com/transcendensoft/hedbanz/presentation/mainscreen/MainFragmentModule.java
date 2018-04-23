@@ -22,6 +22,8 @@ import com.transcendensoft.hedbanz.presentation.roomcreation.CreateRoomPresenter
 import com.transcendensoft.hedbanz.presentation.rooms.RoomsContract;
 import com.transcendensoft.hedbanz.presentation.rooms.RoomsFragment;
 import com.transcendensoft.hedbanz.presentation.rooms.RoomsPresenter;
+import com.transcendensoft.hedbanz.presentation.rooms.list.RoomItemContract;
+import com.transcendensoft.hedbanz.presentation.rooms.list.RoomItemPresenterImpl;
 
 import dagger.Binds;
 import dagger.Module;
@@ -50,4 +52,7 @@ public interface MainFragmentModule {
 
     @Binds
     RoomsContract.Presenter roomsPresenter(RoomsPresenter roomsPresenter);
+
+    @Binds
+    RoomItemContract.Presenter roomItemPresenter(RoomItemPresenterImpl roomItemPresenter);
 }

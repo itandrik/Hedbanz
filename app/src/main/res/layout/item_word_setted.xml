@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tvWordSetted"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:layout_marginTop="8dp"
-    android:gravity="center"
-    android:layout_marginLeft="32dp"
-    android:layout_marginRight="32dp"
-    android:background="@drawable/word_setted_background"
-    android:paddingTop="6dp"
-    android:paddingBottom="6dp"
-    android:paddingLeft="12dp"
-    android:textColor="@color/textPrimary"
-    android:paddingRight="12dp" />
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_marginTop="16dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tvWordSetted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:background="@drawable/word_setted_background"
+        android:gravity="center"
+        android:paddingBottom="6dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="6dp"
+        android:textColor="@color/textSecondaryDark" />
+</FrameLayout>

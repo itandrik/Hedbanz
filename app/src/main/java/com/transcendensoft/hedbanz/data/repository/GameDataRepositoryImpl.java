@@ -23,16 +23,17 @@ import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.UserDTO;
 import com.transcendensoft.hedbanz.data.models.WordDTO;
 import com.transcendensoft.hedbanz.data.models.mapper.MessageModelDataMapper;
+import com.transcendensoft.hedbanz.data.models.mapper.RoomModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.WordModelDataMapper;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
+import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.inject.Inject;
@@ -57,6 +58,11 @@ import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.PORT
  */
 public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String CLIENT_CONNECT_INFO = "client-connect-info";
+    private static final String CLIENT_RESTORE_ROOM = "client-restore-room";
+    private static final String SERVER_RESTORE_ROOM = "client-restore-room";
+    private static final String SERVER_USER_AFK = "server-user-afk";
+    private static final String SERVER_USER_RETURNED = "server-user-returned";
+
     private static final String JOIN_ROOM_EVENT = "join-room";
     private static final String LEAVE_ROOM_EVENT = "leave-room";
     private static final String ROOM_INFO_EVENT = "joined-room";
@@ -79,20 +85,24 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private long mRoomId;
 
     private MessageModelDataMapper mMessageMapper;
+    private RoomModelDataMapper mRoomMapper;
     private WordModelDataMapper mWordMapper;
     private Gson mGson;
 
     @Inject
     public GameDataRepositoryImpl(MessageModelDataMapper messageModelDataMapper,
-                                  WordModelDataMapper wordModelDataMapper, Gson gson) {
+                                  WordModelDataMapper wordModelDataMapper,
+                                  RoomModelDataMapper roomMapper, Gson gson) {
         this.mMessageMapper = messageModelDataMapper;
         this.mWordMapper = wordModelDataMapper;
+        this.mRoomMapper = roomMapper;
         this.mGson = gson;
 
         try {
             IO.Options options = new IO.Options();
-            options.forceNew = false;
+            options.forceNew = true;
             options.reconnection = true;
+            options.reconnectionDelay = 1000;
             mSocket = IO.socket(HOST + PORT_SOCKET + GAME_SOCKET_NSP, options);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
@@ -104,9 +114,8 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
                 emitter.onNext(true);
-                sendConnectInfo();
             };
-            mSocket.on(Socket.EVENT_CONNECT, listener);
+            mSocket.once(Socket.EVENT_CONNECT, listener);
         });
     }
 
@@ -137,6 +146,27 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 emitter.onNext(true);
             };
             mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, listener);
+        });
+    }
+
+    @Override
+    public Observable<Boolean> reconnectObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                emitter.onNext(true);
+                sendConnectInfo();
+            };
+            mSocket.on(Socket.EVENT_RECONNECT, listener);
+        });
+    }
+
+    @Override
+    public Observable<Boolean> reconnectErrorObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                emitter.onNext(true);
+            };
+            mSocket.on(Socket.EVENT_RECONNECT_ERROR, listener);
         });
     }
 
@@ -173,6 +203,46 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 emitter.onNext(data);
             };
             mSocket.on(LEFT_USER_EVENT, listener);
+        });
+    }
+
+    @Override
+    public Observable<Room> restoreRoomObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+                RoomDTO roomDTO = mGson.fromJson(data.toString(), RoomDTO.class);
+
+                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_RESTORE_ROOM, data.toString());
+                emitter.onNext(mRoomMapper.convert(roomDTO));
+            };
+            mSocket.on(SERVER_RESTORE_ROOM, listener);
+        });
+    }
+
+    @Override
+    public Observable<JSONObject> userAfkObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+
+                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_AFK, data.toString());
+                emitter.onNext(data);
+            };
+            mSocket.on(SERVER_USER_AFK, listener);
+        });
+    }
+
+    @Override
+    public Observable<JSONObject> userReturnedObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+
+                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_RETURNED, data.toString());
+                emitter.onNext(data);
+            };
+            mSocket.on(SERVER_USER_RETURNED, listener);
         });
     }
 
@@ -237,8 +307,14 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_SET_PLAYER_WORD_EVENT, data.toString());
                 emitter.onNext(data);
 
-                Ack ack = (Ack) args[args.length - 1];
-                ack.call(true);
+                if (args.length > 1) {
+                    try {
+                        Ack ack = (Ack) args[args.length - 1];
+                        ack.call(true);
+                    } catch (ClassCastException | ArrayIndexOutOfBoundsException e) {
+                        Timber.e(e.getMessage());
+                    }
+                }
             };
             mSocket.on(SERVER_SET_PLAYER_WORD_EVENT, listener);
         });
@@ -312,7 +388,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     @Override
     public void joinToRoom() {
         HashMap<String, Long> joinRoomObject = new HashMap<>();
-        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
+        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, null);
         joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
         Gson gson = new Gson();
         String json = gson.toJson(joinRoomObject);
@@ -338,38 +414,58 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         mSocket.connect();
     }
 
-    private void sendConnectInfo(){
+    private void sendConnectInfo() {
+        String json = getUserRoomInfoObject();
+
+        Timber.i("SOCKET --> SEND(%1$s). Data : %2$s",
+                CLIENT_CONNECT_INFO, json);
+        mSocket.emit(CLIENT_CONNECT_INFO, json);
+    }
+
+    private String getUserRoomInfoObject() {
         HashMap<String, Long> connectInfoObject = new HashMap<>();
         connectInfoObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
         connectInfoObject.put(UserDTO.USER_ID_KEY, mUserId);
 
         Gson gson = new Gson();
-        String json = gson.toJson(connectInfoObject);
+        return gson.toJson(connectInfoObject);
+    }
+
+    @Override
+    public void sendRoomRestore() {
+        String json = getUserRoomInfoObject();
+
         Timber.i("SOCKET --> SEND(%1$s). Data : %2$s",
-                CLIENT_CONNECT_INFO, json);
-        mSocket.emit(LEAVE_ROOM_EVENT, connectInfoObject);
+                CLIENT_RESTORE_ROOM, json);
+        mSocket.emit(CLIENT_RESTORE_ROOM, json);
     }
 
     @Override
     public void disconnect() {
         if (mSocket.connected()) {
             mSocket.disconnect();
-            mSocket.off(JOIN_ROOM_EVENT);
-            mSocket.off(JOINED_USER_EVENT);
+
+            mSocket.off(Socket.EVENT_CONNECT);
+            mSocket.off(Socket.EVENT_DISCONNECT);
+            mSocket.off(Socket.EVENT_ERROR);
+            mSocket.off(Socket.EVENT_CONNECT_ERROR);
+            mSocket.off(Socket.EVENT_RECONNECT);
+            mSocket.off(Socket.EVENT_RECONNECT_ERROR);
+
             mSocket.off(JOIN_ROOM_EVENT);
             mSocket.off(LEAVE_ROOM_EVENT);
-            mSocket.off(ROOM_INFO_EVENT);
             mSocket.off(JOINED_USER_EVENT);
             mSocket.off(LEFT_USER_EVENT);
-            mSocket.off(CLIENT_TYPING_EVENT);
-            mSocket.off(CLIENT_STOP_TYPING_EVENT);
-            mSocket.off(CLIENT_MESSAGE_EVENT);
+            mSocket.off(ROOM_INFO_EVENT);
+            mSocket.off(SERVER_RESTORE_ROOM);
+            mSocket.off(SERVER_USER_AFK);
+            mSocket.off(SERVER_USER_RETURNED);
+
             mSocket.off(SERVER_TYPING_EVENT);
             mSocket.off(SERVER_STOP_TYPING_EVENT);
             mSocket.off(SERVER_MESSAGE_EVENT);
             mSocket.off(SERVER_ERROR_EVENT);
             mSocket.off(SERVER_SET_PLAYER_WORD_EVENT);
-            mSocket.off(CLIENT_SET_PLAYER_WORD_EVENT);
             mSocket.off(SERVER_THOUGHT_PLAYER_WORD_EVENT);
         }
     }

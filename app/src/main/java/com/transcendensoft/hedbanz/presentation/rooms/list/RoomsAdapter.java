@@ -22,8 +22,11 @@ import android.view.ViewGroup;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.interactor.rooms.IsRoomPasswordCorrectInteractor;
 import com.transcendensoft.hedbanz.presentation.base.MvpRecyclerListAdapter;
 import com.transcendensoft.hedbanz.presentation.rooms.RoomsPresenter;
+
+import javax.inject.Inject;
 
 /**
  * Recycler view adapter, that shows all rooms.
@@ -33,15 +36,18 @@ import com.transcendensoft.hedbanz.presentation.rooms.RoomsPresenter;
  */
 public class RoomsAdapter extends MvpRecyclerListAdapter<Room,RoomItemPresenterImpl,RoomItemViewHolder> {
     private RoomsPresenter mCallbackPresenter;
+    private IsRoomPasswordCorrectInteractor mIsRoomPasswordCorrectInteractor;
 
-    public RoomsAdapter(RoomsPresenter mCallbackPresenter) {
+    @Inject
+    public RoomsAdapter(RoomsPresenter mCallbackPresenter, IsRoomPasswordCorrectInteractor isRoomPasswordCorrectInteractor) {
         this.mCallbackPresenter = mCallbackPresenter;
+        this.mIsRoomPasswordCorrectInteractor = isRoomPasswordCorrectInteractor;
     }
 
     @NonNull
     @Override
     protected RoomItemPresenterImpl createPresenter(@NonNull Room model) {
-        RoomItemPresenterImpl presenter = new RoomItemPresenterImpl();
+        RoomItemPresenterImpl presenter = new RoomItemPresenterImpl(mIsRoomPasswordCorrectInteractor);
         presenter.setModel(model);
         return presenter;
     }

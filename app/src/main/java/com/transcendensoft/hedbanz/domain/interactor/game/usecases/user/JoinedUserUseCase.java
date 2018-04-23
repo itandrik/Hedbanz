@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
+package com.transcendensoft.hedbanz.domain.interactor.game.usecases.user;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -17,10 +17,13 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
+
+import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
@@ -29,21 +32,24 @@ import io.reactivex.subjects.PublishSubject;
 
 /**
  * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
- * that represents a use case listening {@link com.transcendensoft.hedbanz.domain.entity.User}
- * information when some user left room.
+ * that represents a use case listening {@link User}
+ * information when some user connects to the room
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class LeftUserUseCase extends ObservableUseCase<User, Void> {
+public class JoinedUserUseCase extends ObservableUseCase<User, Void> {
     private PublishSubject<User> mSubject;
+    private PreferenceManager mPreferenceManager;
 
-    public LeftUserUseCase(ObservableTransformer observableTransformer,
-                             CompositeDisposable mCompositeDisposable,
-                             GameDataRepositoryImpl gameDataRepository,
-                             Gson gson) {
+    @Inject
+    public JoinedUserUseCase(ObservableTransformer observableTransformer,
+                           CompositeDisposable mCompositeDisposable,
+                           GameDataRepositoryImpl gameDataRepository,
+                           Gson gson, PreferenceManager preferenceManager) {
         super(observableTransformer, mCompositeDisposable);
 
+        this.mPreferenceManager = preferenceManager;
         initSubject(gameDataRepository, gson);
     }
 
@@ -54,14 +60,18 @@ public class LeftUserUseCase extends ObservableUseCase<User, Void> {
     }
 
     private Observable<User> getObservable(GameDataRepositoryImpl gameDataRepository, Gson gson) {
-        return gameDataRepository.leftUserObservable()
+        return gameDataRepository.joinedUserObservable()
                 .flatMap(jsonObject -> {
                     try {
                         User user = gson.fromJson(jsonObject.toString(), User.class);
-                        return Observable.just(user);
+                        if(user.equals(mPreferenceManager.getUser())){
+                            return Observable.empty();
+                        } else {
+                            return Observable.just(user);
+                        }
                     } catch (JsonSyntaxException e) {
                         return Observable.error(new IncorrectJsonException(
-                                jsonObject.toString(), RoomInfoUseCase.class.getName()));
+                                jsonObject.toString(), JoinedUserUseCase.class.getName()));
                     }
                 });
     }
@@ -71,4 +81,3 @@ public class LeftUserUseCase extends ObservableUseCase<User, Void> {
         return mSubject;
     }
 }
-

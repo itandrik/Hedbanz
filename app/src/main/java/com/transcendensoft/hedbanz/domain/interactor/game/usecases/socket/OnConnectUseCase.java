@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
+package com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -18,6 +18,8 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
 import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
@@ -33,6 +35,7 @@ import io.reactivex.subjects.PublishSubject;
 public class OnConnectUseCase extends ObservableUseCase<String, Void> {
     private PublishSubject<String> mSubject;
 
+    @Inject
     public OnConnectUseCase(ObservableTransformer observableTransformer,
                             CompositeDisposable mCompositeDisposable,
                             GameDataRepositoryImpl gameDataRepository) {

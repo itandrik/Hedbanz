@@ -47,14 +47,18 @@ public class UserDTO {
     @SerializedName("login")
     @Expose
     private String login;
+    @SerializedName("isAfk")
+    @Expose
+    private boolean isAfk;
 
-    protected UserDTO(long id, String email, String password, long money, Long registrationDate, String login) {
+    protected UserDTO(long id, String email, String password, long money, Long registrationDate, String login, boolean isAfk) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.money = money;
         this.registrationDate = registrationDate;
         this.login = login;
+        this.isAfk = isAfk;
     }
 
     public UserDTO() {
@@ -108,6 +112,14 @@ public class UserDTO {
         this.registrationDate = registrationDate;
     }
 
+    public boolean isAfk() {
+        return isAfk;
+    }
+
+    public void setAfk(boolean afk) {
+        isAfk = afk;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -130,6 +142,7 @@ public class UserDTO {
         private long money;
         private Long registrationDate;
         private String login;
+        private boolean isAfk;
 
         public Builder setId(long id) {
             this.id = id;
@@ -161,8 +174,13 @@ public class UserDTO {
             return this;
         }
 
+        public Builder setIsAfk(boolean isAfk) {
+            this.isAfk = isAfk;
+            return this;
+        }
+
         public UserDTO build() {
-            return new UserDTO(id, email, password, money, registrationDate, login);
+            return new UserDTO(id, email, password, money, registrationDate, login, isAfk);
         }
     }
 }

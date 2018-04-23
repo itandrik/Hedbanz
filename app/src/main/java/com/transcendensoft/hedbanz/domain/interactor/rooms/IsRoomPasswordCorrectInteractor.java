@@ -40,18 +40,18 @@ import io.reactivex.disposables.CompositeDisposable;
  * {@link com.transcendensoft.hedbanz.domain.entity.Room}.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public class IsRoomPasswordCorrectInteractor extends CompletableUseCase<Room>{
+public class IsRoomPasswordCorrectInteractor extends CompletableUseCase<Room> {
     private RoomDataRepository mRoomRepository;
     private PreferenceManager mPreferenceManager;
     private RoomCreationException mRoomException;
 
     @Inject
     public IsRoomPasswordCorrectInteractor(CompletableTransformer mSchedulersTransformer,
-                                CompositeDisposable mCompositeDisposable,
-                                RoomDataRepository mRoomRepository,
-                                PreferenceManager mPreferenceManager) {
+                                           CompositeDisposable mCompositeDisposable,
+                                           RoomDataRepository mRoomRepository,
+                                           PreferenceManager mPreferenceManager) {
         super(mSchedulersTransformer, mCompositeDisposable);
         this.mRoomRepository = mRoomRepository;
         this.mPreferenceManager = mPreferenceManager;
@@ -60,18 +60,19 @@ public class IsRoomPasswordCorrectInteractor extends CompletableUseCase<Room>{
     @Override
     protected Completable buildUseCaseCompletable(Room params) {
         mRoomException = new RoomCreationException();
-        if(isValidRoom(params)){
-            if(!TextUtils.isEmpty(params.getPassword())) {
+        if (isValidRoom(params)) {
+            if (!TextUtils.isEmpty(params.getPassword())) {
                 params.setPassword(SecurityUtils.hash(params.getPassword()));
             }
 
-            return mRoomRepository.isPasswordCorrect(params.getId(), params.getPassword(), DataPolicy.API)
+            return mRoomRepository.isPasswordCorrect(mPreferenceManager.getUser().getId(),
+                    params.getId(), params.getPassword(), DataPolicy.API)
                     .onErrorResumeNext(this::processCreateRoomOnError);
         }
         return Completable.error(mRoomException);
     }
 
-    private boolean isValidRoom(Room room){
+    private boolean isValidRoom(Room room) {
         RoomValidator validator = new RoomValidator(room);
         boolean result = true;
         if (!validator.isPasswordValid()) {
@@ -82,7 +83,7 @@ public class IsRoomPasswordCorrectInteractor extends CompletableUseCase<Room>{
     }
 
     private Completable processCreateRoomOnError(Throwable throwable) {
-        if(throwable instanceof HedbanzApiException){
+        if (throwable instanceof HedbanzApiException) {
             HedbanzApiException exception = (HedbanzApiException) throwable;
             mRoomException.addRoomError(
                     RoomError.getRoomErrorByCode(exception.getServerErrorCode()));
