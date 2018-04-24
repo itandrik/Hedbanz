@@ -18,9 +18,9 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.transcendensoft.hedbanz.data.models.common.ServerError;
-import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
+import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import javax.inject.Inject;
 
@@ -43,20 +43,20 @@ public class ErrorUseCase extends ObservableUseCase<ServerError, Void> {
     @Inject
     public ErrorUseCase(ObservableTransformer observableTransformer,
                              CompositeDisposable mCompositeDisposable,
-                             GameDataRepositoryImpl gameDataRepository,
+                             GameDataRepository gameDataRepository,
                              Gson gson) {
         super(observableTransformer, mCompositeDisposable);
 
         initSubject(gameDataRepository, gson);
     }
 
-    private void initSubject(GameDataRepositoryImpl gameDataRepository, Gson gson) {
+    private void initSubject(GameDataRepository gameDataRepository, Gson gson) {
         Observable<ServerError> observable = getObservable(gameDataRepository, gson);
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
     }
 
-    private Observable<ServerError> getObservable(GameDataRepositoryImpl gameDataRepository, Gson gson) {
+    private Observable<ServerError> getObservable(GameDataRepository gameDataRepository, Gson gson) {
         return gameDataRepository.errorObservable()
                 .flatMap(jsonObject -> {
                     try {

@@ -19,6 +19,7 @@ import android.text.TextUtils;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
@@ -54,13 +55,16 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         implements GameContract.Presenter, RecyclerDelegationAdapter.OnRecyclerBorderListener {
     private GameInteractorFacade mGameInteractor;
     private GetMessagesInteractor mGetMessagesInteractor;
+    private PreferenceManager mPreferenceManger;
     private List<User> mTypingUsers;
 
     @Inject
     public GamePresenter(GameInteractorFacade gameInteractor,
-                         GetMessagesInteractor getMessagesInteractor) {
+                         GetMessagesInteractor getMessagesInteractor,
+                         PreferenceManager preferenceManager) {
         this.mGameInteractor = gameInteractor;
         this.mGetMessagesInteractor = getMessagesInteractor;
+        this.mPreferenceManger = preferenceManager;
         mTypingUsers = new ArrayList<>();
     }
 
@@ -128,18 +132,20 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         if (sendWordObservable != null) {
             addDisposable(sendWordObservable.subscribe(
                     word -> {
+                        word.setSenderUser(mPreferenceManger.getUser());
+                        updateSettingWordViewParameters(word.getSenderUser(), false, true);
                         mGameInteractor.setWordToUser(word);
-                        updateSettingWordViewParameters(false, true);
                     },
                     err -> Timber.e("Error while send word to user. MEssage : " + err.getMessage())
             ));
         }
     }
 
-    private void updateSettingWordViewParameters(boolean isFinished, boolean isLoading) {
+    private void updateSettingWordViewParameters(User senderUser, boolean isFinished, boolean isLoading) {
         for (int i = model.getMessages().size() - 1; i >= 0; i--) {
             Message message = model.getMessages().get(i);
-            if (message instanceof Word && message.getMessageType() == MessageType.WORD_SETTING) {
+            if (message instanceof Word && message.getMessageType() == MessageType.WORD_SETTING &&
+                    mPreferenceManger.getUser().equals(senderUser)) {
                 Word settingWord = (Word) message;
                 settingWord.setFinished(isFinished);
                 settingWord.setLoading(isLoading);
@@ -165,20 +171,42 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 str -> {
                     Timber.i("Socket connected: %s", str);
                     //TODO joinToRoom if first time in this room, restoreRoom if after error
-                   // mGameInteractor.joinToRoom();
+                    mGameInteractor.joinToRoom();
                 },
                 this::processEventListenerOnError);
         mGameInteractor.onDisconnectListener(
-                str -> Timber.i("Socket disconnected: %s", str),
+                str -> {
+                    Timber.i("Socket disconnected!");
+                    view().showFooterDisconnected();
+                },
                 this::processEventListenerOnError);
         mGameInteractor.onConnectErrorListener(
-                str -> Timber.e("Socket connect ERROR: %s", str),
+                str -> {
+                    Timber.e("Socket connect ERROR: %s", str);
+                    view().showFooterDisconnected();
+                },
                 this::processEventListenerOnError);
         mGameInteractor.onConnectTimeoutListener(
-                str -> Timber.i("Socket connect TIMEOUT: %s", str),
+                str -> {
+                    Timber.e("Socket connect TIMEOUT: %s", str);
+                    view().showFooterDisconnected();
+                },
                 this::processEventListenerOnError);
         mGameInteractor.onReconnectListener(
-                str -> Timber.i("Socket reconnect %s", str),
+                str -> {
+                    Timber.i("Socket reconnected!");
+                    view().showFooterReconnected();
+                },
+                this::processEventListenerOnError);
+        mGameInteractor.onReconnectErrorListener(str -> {
+                    Timber.e("Socket reconnect error %s", str);
+                    view().showFooterDisconnected();
+                },
+                this::processEventListenerOnError);
+        mGameInteractor.onReconnectingListener(str -> {
+                    Timber.i("Socket reconnecting... %s", str);
+                    view().showFooterReconnecting();
+                },
                 this::processEventListenerOnError);
     }
 
@@ -234,7 +262,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 this::processEventListenerOnError);
     }
 
-    private void initUserAfkListener(){
+    private void initUserAfkListener() {
         mGameInteractor.onUserAfkListener(user -> {
             Message message = new Message.Builder()
                     .setUserFrom(user)
@@ -246,7 +274,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         }, this::processEventListenerOnError);
     }
 
-    private void initUserReturnedListener(){
+    private void initUserReturnedListener() {
         mGameInteractor.onUserReturnedListener(user -> {
             Message message = new Message.Builder()
                     .setUserFrom(user)
@@ -273,7 +301,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             model.getMessages().add(word);
             view().addMessage(word);
 
-            updateSettingWordViewParameters(true, false);
+            updateSettingWordViewParameters(word.getSenderUser(),true, false);
         }, this::processEventListenerOnError);
 
         mGameInteractor.onWordSettingListener(wordReceiverUser -> {

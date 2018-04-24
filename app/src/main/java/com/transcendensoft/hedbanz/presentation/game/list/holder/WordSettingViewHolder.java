@@ -68,16 +68,19 @@ public class WordSettingViewHolder extends RecyclerView.ViewHolder {
             mIvSetWord.setColorFilter(ContextCompat.getColor(mContext, R.color.textPrimary),
                     android.graphics.PorterDuff.Mode.SRC_IN);
             mEtSetWord.setEnabled(false);
+            mIvSetWord.setEnabled(false);
         } else if(!isLoading && isFinished){
             mIvSetWord.setVisibility(View.VISIBLE);
             mIvSetWord.setColorFilter(ContextCompat.getColor(mContext, R.color.google_green),
                     android.graphics.PorterDuff.Mode.SRC_IN);
             mPbWordLoading.setVisibility(View.GONE);
-            mEtSetWord.setEnabled(true);
+            mEtSetWord.setEnabled(false);
+            mIvSetWord.setEnabled(false);
         } else {
             mIvSetWord.setVisibility(View.VISIBLE);
             mPbWordLoading.setVisibility(View.GONE);
             mEtSetWord.setEnabled(true);
+            mIvSetWord.setEnabled(true);
         }
     }
 

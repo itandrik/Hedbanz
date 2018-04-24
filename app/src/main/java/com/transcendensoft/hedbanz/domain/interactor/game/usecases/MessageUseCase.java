@@ -18,7 +18,6 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
 import android.support.annotation.NonNull;
 
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
-import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
@@ -46,7 +45,7 @@ public class MessageUseCase extends ObservableUseCase<Message, Void> {
     @Inject
     public MessageUseCase(ObservableTransformer observableTransformer,
                           CompositeDisposable mCompositeDisposable,
-                          GameDataRepositoryImpl gameDataRepository,
+                          GameDataRepository gameDataRepository,
                           PreferenceManager preferenceManager) {
         super(observableTransformer, mCompositeDisposable);
         this.mPreferenceManager = preferenceManager;

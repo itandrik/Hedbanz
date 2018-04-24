@@ -36,6 +36,7 @@ public interface GameDataRepository {
     Observable<Boolean> connectTimeoutObservable();
     Observable<Boolean> reconnectObservable();
     Observable<Boolean> reconnectErrorObservable();
+    Observable<Boolean> reconnectingObservable();
 
     Observable<JSONObject> roomInfoObservable();
     Observable<JSONObject> joinedUserObservable();

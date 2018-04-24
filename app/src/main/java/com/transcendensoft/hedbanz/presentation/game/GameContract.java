@@ -45,7 +45,10 @@ public interface GameContract {
 
         void showFooterTyping(List<User>users);
         void showFooterServerError();
-        void showFooterNetworkError();
+        void showFooterDisconnected();
+        void showFooterReconnecting();
+        void showFooterReconnected();
+
         void showEmptyList();
         void removeLastMessage();
     }

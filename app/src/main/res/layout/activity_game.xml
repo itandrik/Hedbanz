@@ -14,10 +14,10 @@
         android:layout_height="wrap_content" />
 
     <RelativeLayout
-        android:layout_below="@id/toolbar"
         android:id="@+id/rlGameDataContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar">
 
         <RelativeLayout
             android:id="@+id/rlMessageContainer"
@@ -81,13 +81,35 @@
 
         <ImageView
             android:id="@+id/ivSystemAnimation"
-            android:layout_marginLeft="12dp"
             android:layout_width="16dp"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/tvSystemField"
-            android:layout_alignTop="@id/tvSystemField"
             android:layout_alignBottom="@id/tvSystemField"
+            android:layout_alignTop="@id/tvSystemField"
+            android:layout_marginLeft="12dp"
+            android:layout_toEndOf="@id/tvSystemField"
             android:layout_toRightOf="@id/tvSystemField" />
+
+        <ImageView
+            android:id="@+id/ivSystemSadIcon"
+            android:layout_width="16dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tvSystemField"
+            android:layout_alignParentRight="true"
+            android:visibility="gone"
+            android:layout_alignTop="@id/tvSystemField"
+            android:layout_marginRight="16dp"
+            app:srcCompat="@drawable/ic_sad" />
+
+        <ImageView
+            android:id="@+id/ivSystemHappyIcon"
+            android:layout_width="16dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tvSystemField"
+            android:visibility="gone"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/tvSystemField"
+            android:layout_marginRight="16dp"
+            app:srcCompat="@drawable/ic_happy" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvGameList"

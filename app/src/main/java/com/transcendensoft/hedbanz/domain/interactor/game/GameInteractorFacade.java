@@ -15,29 +15,28 @@ package com.transcendensoft.hedbanz.domain.interactor.game;
  * limitations under the License.
  */
 
-import com.google.gson.Gson;
 import com.transcendensoft.hedbanz.data.models.common.ServerError;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
-import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.ErrorUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.RoomRestoreUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket.OnReconnectErrorUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.JoinedUserUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.LeftUserUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.MessageUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket.OnConnectErrorUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket.OnConnectTimeoutUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket.OnConnectUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket.OnDisconnectUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket.OnReconnectUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.RoomInfoUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.RoomRestoreUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnConnectErrorUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnConnectTimeoutUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnConnectUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnDisconnectUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnReconnectErrorUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnReconnectUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnReconnectingUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.typing.StartTypingUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.typing.StopTypingUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.JoinedUserUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.LeftUserUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserAfkUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserReturnedUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.word.WordSettedUseCase;
@@ -49,8 +48,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.ObservableTransformer;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -70,6 +67,7 @@ public class GameInteractorFacade {
     @Inject OnConnectTimeoutUseCase mOnConnectTimeoutUseCase;
     @Inject OnReconnectUseCase mOnReconnectUseCase;
     @Inject OnReconnectErrorUseCase mOnReconnectErrorUseCase;
+    @Inject OnReconnectingUseCase mOnReconnectingUseCase;
 
     @Inject UserAfkUseCase mUserAfkUseCase;
     @Inject UserReturnedUseCase mUserReturnedUseCase;
@@ -88,55 +86,9 @@ public class GameInteractorFacade {
 
     @Inject
     public GameInteractorFacade(PreferenceManager preferenceManager,
-                                GameDataRepositoryImpl mRepository,
-                                CompositeDisposable compositeDisposable,
-                                ObservableTransformer mObservableTransformer,
-                                Gson gson) {
+                                GameDataRepository mRepository) {
         this.mRepository = mRepository;
         this.mPreferenceManger = preferenceManager;
-
-        initUseCases(mRepository, compositeDisposable, mObservableTransformer, gson);
-    }
-
-    private void initUseCases(GameDataRepositoryImpl mRepository,
-                              CompositeDisposable compositeDisposable,
-                              ObservableTransformer mObservableTransformer,
-                              Gson gson) {
-       /* mOnConnectUseCase = new OnConnectUseCase(
-                mObservableTransformer, compositeDisposable, mRepository);
-        mOnDisconnectUseCase = new OnDisconnectUseCase(
-                mObservableTransformer, compositeDisposable, mRepository);
-        mOnConnectErrorUseCase = new OnConnectErrorUseCase(
-                mObservableTransformer, compositeDisposable, mRepository);
-        mOnConnectTimeoutUseCase = new OnConnectTimeoutUseCase(
-                mObservableTransformer, compositeDisposable, mRepository);
-        mOnReconnectUseCase = new OnReconnectUseCase(
-                mObservableTransformer, compositeDisposable, mRepository);
-        mJoinedUserUseCase = new JoinedUserUseCase(
-                mObservableTransformer, compositeDisposable, mRepository, gson, mPreferenceManger);
-        mLeftUserUseCase = new LeftUserUseCase(
-                mObservableTransformer, compositeDisposable, mRepository, gson);
-        mMessageUseCase = new MessageUseCase(
-                mObservableTransformer, compositeDisposable,
-                mRepository, mPreferenceManger);
-        mStartTypingUseCase = new StartTypingUseCase(
-                mObservableTransformer, compositeDisposable, mRepository);
-        mStopTypingUseCase = new StopTypingUseCase(
-                mObservableTransformer, compositeDisposable, mRepository);
-        mRoomInfoUseCase = new RoomInfoUseCase(
-                mObservableTransformer, compositeDisposable, mRepository, gson);
-        mErrorUseCase = new ErrorUseCase(
-                mObservableTransformer, compositeDisposable, mRepository, gson);
-        mWordSettedUseCase = new WordSettedUseCase(mObservableTransformer,
-                compositeDisposable, mRepository);
-        mWordSettingUseCase = new WordSettingUseCase(mObservableTransformer,
-                compositeDisposable, mRepository);
-        mUserAfkUseCase = new UserAfkUseCase(
-                mObservableTransformer, compositeDisposable, mRepository);
-        mUserReturnedUseCase = new UserReturnedUseCase(
-                mObservableTransformer, compositeDisposable, mRepository);
-        mRoomRestoreUseCase = new RoomRestoreUseCase(
-                mObservableTransformer, compositeDisposable, mRepository);*/
     }
 
     public void onConnectListener(Consumer<? super String> onNext,
@@ -167,6 +119,11 @@ public class GameInteractorFacade {
     public void onReconnectErrorListener(Consumer<? super String> onNext,
                                     Consumer<? super Throwable> onError) {
         mOnReconnectErrorUseCase.execute(null, onNext, onError);
+    }
+
+    public void onReconnectingListener(Consumer<? super String> onNext,
+                                         Consumer<? super Throwable> onError) {
+        mOnReconnectingUseCase.execute(null, onNext, onError);
     }
 
     public void onUserAfkListener(Consumer<? super User> onNext,
@@ -255,8 +212,6 @@ public class GameInteractorFacade {
     public void connectSocketToServer(long roomId) {
         User currentUser = mPreferenceManger.getUser();
         mRepository.connect(currentUser.getId(), roomId);
-
-        joinToRoom();
     }
 
     public void joinToRoom() {
@@ -299,6 +254,7 @@ public class GameInteractorFacade {
         mOnConnectTimeoutUseCase.dispose();
         mOnReconnectUseCase.dispose();
         mOnReconnectErrorUseCase.dispose();
+        mOnReconnectingUseCase.dispose();
 
         mUserReturnedUseCase.dispose();
         mUserAfkUseCase.dispose();

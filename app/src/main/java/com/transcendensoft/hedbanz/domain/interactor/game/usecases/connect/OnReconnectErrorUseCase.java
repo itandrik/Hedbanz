@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
+package com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -16,7 +16,6 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
  */
 
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
-import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import javax.inject.Inject;
@@ -28,29 +27,29 @@ import io.reactivex.subjects.PublishSubject;
 
 /**
  * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
- * that represents a use case listening {@link Room}
- * information after reconnecting to room after error.
+ * that represents a use case listening socket reconnection error.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class RoomRestoreUseCase extends ObservableUseCase<Room, Void> {
-    private PublishSubject<Room> mSubject;
-    private GameDataRepository mRepository;
+public class OnReconnectErrorUseCase extends ObservableUseCase<String, Void> {
+    private PublishSubject<String> mSubject;
 
     @Inject
-    public RoomRestoreUseCase(ObservableTransformer observableTransformer,
-                               CompositeDisposable mCompositeDisposable,
-                               GameDataRepository gameDataRepository) {
+    public OnReconnectErrorUseCase(ObservableTransformer observableTransformer,
+                              CompositeDisposable mCompositeDisposable,
+                              GameDataRepository gameDataRepository) {
         super(observableTransformer, mCompositeDisposable);
-        mRepository = gameDataRepository;
+
+        Observable<String> observable = gameDataRepository.reconnectErrorObservable()
+                .flatMap(jsonObject -> Observable.just(jsonObject.toString()));
         mSubject = PublishSubject.create();
+        observable.subscribe(mSubject);
     }
 
     @Override
-    protected Observable<Room> buildUseCaseObservable(Void params) {
-        Observable<Room> observable = mRepository.restoreRoomObservable();
-        observable.subscribe(mSubject);
+    protected Observable<String> buildUseCaseObservable(Void params) {
         return mSubject;
     }
 }
+

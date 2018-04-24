@@ -26,7 +26,6 @@ public class FirebaseMessaging {
         if(zzmjw == null) {
             zzmjw = new FirebaseMessaging(FirebaseInstanceId.getInstance());
         }
-
         return zzmjw;
     }
 

@@ -16,7 +16,6 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.word;
  */
 
 import com.transcendensoft.hedbanz.data.models.WordDTO;
-import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
@@ -49,7 +48,7 @@ public class WordSettingUseCase extends ObservableUseCase<User, List<User>>{
     @Inject
     public WordSettingUseCase(ObservableTransformer schedulersTransformer,
                              CompositeDisposable compositeDisposable,
-                             GameDataRepositoryImpl gameDataRepository) {
+                             GameDataRepository gameDataRepository) {
         super(schedulersTransformer, compositeDisposable);
         mRepository = gameDataRepository;
         mSubject = PublishSubject.create();

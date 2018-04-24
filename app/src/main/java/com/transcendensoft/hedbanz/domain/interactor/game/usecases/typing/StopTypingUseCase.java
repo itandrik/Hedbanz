@@ -15,7 +15,6 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.typing;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
@@ -50,7 +49,7 @@ public class StopTypingUseCase extends ObservableUseCase<User, List<User>> {
     @Inject
     public StopTypingUseCase(ObservableTransformer observableTransformer,
                              CompositeDisposable mCompositeDisposable,
-                             GameDataRepositoryImpl gameDataRepository) {
+                             GameDataRepository gameDataRepository) {
         super(observableTransformer, mCompositeDisposable);
         mRepository = gameDataRepository;
         mSubject = PublishSubject.create();

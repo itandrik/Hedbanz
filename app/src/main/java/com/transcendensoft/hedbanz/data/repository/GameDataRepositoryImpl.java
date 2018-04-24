@@ -59,7 +59,7 @@ import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.PORT
 public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String CLIENT_CONNECT_INFO = "client-connect-info";
     private static final String CLIENT_RESTORE_ROOM = "client-restore-room";
-    private static final String SERVER_RESTORE_ROOM = "client-restore-room";
+    private static final String SERVER_RESTORE_ROOM = "server-restore-room";
     private static final String SERVER_USER_AFK = "server-user-afk";
     private static final String SERVER_USER_RETURNED = "server-user-returned";
 
@@ -167,6 +167,16 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 emitter.onNext(true);
             };
             mSocket.on(Socket.EVENT_RECONNECT_ERROR, listener);
+        });
+    }
+
+    @Override
+    public Observable<Boolean> reconnectingObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                emitter.onNext(true);
+            };
+            mSocket.on(Socket.EVENT_RECONNECTING, listener);
         });
     }
 
@@ -291,9 +301,13 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     public Observable<JSONObject> errorObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
-                JSONObject data = (JSONObject) args[0];
-                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_ERROR_EVENT, data.toString());
-                emitter.onNext(data);
+                try {
+                    JSONObject data = (JSONObject) args[0];
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_ERROR_EVENT, data.toString());
+                    emitter.onNext(data);
+                } catch (ClassCastException e){
+                    Timber.e(args[0].toString());
+                }
             };
             mSocket.on(SERVER_ERROR_EVENT, listener);
         });
@@ -388,7 +402,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     @Override
     public void joinToRoom() {
         HashMap<String, Long> joinRoomObject = new HashMap<>();
-        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, null);
+        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
         joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
         Gson gson = new Gson();
         String json = gson.toJson(joinRoomObject);
@@ -417,9 +431,13 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private void sendConnectInfo() {
         String json = getUserRoomInfoObject();
 
+        HashMap<String, Long> connectInfoObject = new HashMap<>();
+        connectInfoObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
+        connectInfoObject.put(UserDTO.USER_ID_KEY, mUserId);
+
         Timber.i("SOCKET --> SEND(%1$s). Data : %2$s",
                 CLIENT_CONNECT_INFO, json);
-        mSocket.emit(CLIENT_CONNECT_INFO, json);
+        mSocket.emit(CLIENT_CONNECT_INFO, connectInfoObject);
     }
 
     private String getUserRoomInfoObject() {
@@ -428,7 +446,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         connectInfoObject.put(UserDTO.USER_ID_KEY, mUserId);
 
         Gson gson = new Gson();
-        return gson.toJson(connectInfoObject);
+        return gson.toJson(connectInfoObject, HashMap.class);
     }
 
     @Override
@@ -451,6 +469,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             mSocket.off(Socket.EVENT_CONNECT_ERROR);
             mSocket.off(Socket.EVENT_RECONNECT);
             mSocket.off(Socket.EVENT_RECONNECT_ERROR);
+            mSocket.off(Socket.EVENT_RECONNECTING);
 
             mSocket.off(JOIN_ROOM_EVENT);
             mSocket.off(LEAVE_ROOM_EVENT);

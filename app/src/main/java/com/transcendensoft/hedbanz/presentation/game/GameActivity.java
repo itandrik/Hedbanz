@@ -1,10 +1,12 @@
 package com.transcendensoft.hedbanz.presentation.game;
 
+import android.animation.Animator;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.graphics.drawable.Animatable2Compat;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,6 +47,8 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @BindView(R.id.flLoadingContainer) FrameLayout mFlLoadingContainer;
     @BindView(R.id.tvSystemField) TextView mTvSystemField;
     @BindView(R.id.ivSystemAnimation) ImageView mIvSystemAnimation;
+    @BindView(R.id.ivSystemSadIcon) ImageView mIvSystemSad;
+    @BindView(R.id.ivSystemHappyIcon) ImageView mIvSystemHappy;
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -233,13 +237,15 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
     @Override
     public void showFooterTyping(List<User> users) {
+        mIvSystemSad.setVisibility(View.GONE);
+        mIvSystemHappy.setVisibility(View.GONE);
         if (users == null || users.isEmpty()) {
             mTvSystemField.setText("");
             stopTypingAnimation();
         } else {
             String typingText = getTypingMessage(users);
             mTvSystemField.setText(typingText);
-
+            mTvSystemField.setTextColor(ContextCompat.getColor(this, R.color.textSecondary));
             startTypingAnimation();
         }
     }
@@ -285,10 +291,85 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @Override
     public void showFooterServerError() {
         mTvSystemField.setText(getString(R.string.error_server));
+        mTvSystemField.setTextColor(ContextCompat.getColor(this, R.color.google_red));
+        mIvSystemSad.setVisibility(View.VISIBLE);
+        mIvSystemHappy.setVisibility(View.GONE);
     }
 
     @Override
-    public void showFooterNetworkError() {
-        mTvSystemField.setText(getString(R.string.error_network));
+    public void showFooterDisconnected() {
+        mTvSystemField.setText(getString(R.string.game_error_disconnected));
+        mTvSystemField.setTextColor(ContextCompat.getColor(this, R.color.google_red));
+        mIvSystemSad.setVisibility(View.VISIBLE);
+        mIvSystemHappy.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showFooterReconnected() {
+        mTvSystemField.setText(getString(R.string.game_error_reconnected));
+        mTvSystemField.setTextColor(ContextCompat.getColor(this, R.color.google_green));
+        mIvSystemSad.setVisibility(View.GONE);
+        mIvSystemHappy.setVisibility(View.VISIBLE);
+        mTvSystemField.animate()
+                .alpha(0.f)
+                .setStartDelay(2000)
+                .setDuration(1000)
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mTvSystemField.setText("");
+                        mTvSystemField.setAlpha(1.f);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+        mIvSystemHappy.animate()
+                .alpha(0.f)
+                .setStartDelay(2000)
+                .setDuration(1000)
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mIvSystemHappy.setAlpha(1.f);
+                        mIvSystemHappy.setVisibility(GONE);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+
+    }
+
+    @Override
+    public void showFooterReconnecting() {
+        mTvSystemField.setText(getString(R.string.game_error_reconnecting));
+        mTvSystemField.setTextColor(ContextCompat.getColor(this, R.color.google_red));
+        mIvSystemSad.setVisibility(View.VISIBLE);
+        mIvSystemHappy.setVisibility(View.GONE);
     }
 }

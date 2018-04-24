@@ -47,7 +47,7 @@ public class UserDTO {
     @SerializedName("login")
     @Expose
     private String login;
-    @SerializedName("isAfk")
+    @SerializedName("isAFK")
     @Expose
     private boolean isAfk;
 

@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket;
+package com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,8 +15,8 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
+import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import javax.inject.Inject;
 
@@ -38,7 +38,7 @@ public class OnConnectTimeoutUseCase extends ObservableUseCase<String, Void> {
     @Inject
     public OnConnectTimeoutUseCase(ObservableTransformer observableTransformer,
                                  CompositeDisposable mCompositeDisposable,
-                                 GameDataRepositoryImpl gameDataRepository) {
+                                 GameDataRepository gameDataRepository) {
         super(observableTransformer, mCompositeDisposable);
 
         Observable<String> observable = gameDataRepository.connectTimeoutObservable()
