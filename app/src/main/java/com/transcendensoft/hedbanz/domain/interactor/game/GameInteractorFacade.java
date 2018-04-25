@@ -15,8 +15,11 @@ package com.transcendensoft.hedbanz.domain.interactor.game;
  * limitations under the License.
  */
 
+import android.annotation.SuppressLint;
+
 import com.transcendensoft.hedbanz.data.models.common.ServerError;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.di.qualifier.SchedulerIO;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.Room;
@@ -48,6 +51,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Scheduler;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -81,6 +85,8 @@ public class GameInteractorFacade {
     @Inject ErrorUseCase mErrorUseCase;
     @Inject WordSettedUseCase mWordSettedUseCase;
     @Inject WordSettingUseCase mWordSettingUseCase;
+
+    @Inject @SchedulerIO Scheduler mIoScheduler;
 
     private Room mCurrentRoom;
 
@@ -139,8 +145,8 @@ public class GameInteractorFacade {
     public void onJoinedUserListener(Consumer<? super User> onNext,
                                      Consumer<? super Throwable> onError) {
         Consumer<? super User> doOnNext = user -> {
-            if (mCurrentRoom != null && mCurrentRoom.getUsers() != null) {
-                List<User> users = mCurrentRoom.getUsers();
+            if (mCurrentRoom != null && mCurrentRoom.getPlayers() != null) {
+                List<User> users = mCurrentRoom.getPlayers();
                 if (!users.contains(user)) {
                     users.add(user);
                 }
@@ -152,8 +158,8 @@ public class GameInteractorFacade {
     public void onLeftUserListener(Consumer<? super User> onNext,
                                    Consumer<? super Throwable> onError) {
         Consumer<? super User> doOnNext = user -> {
-            if (mCurrentRoom != null && mCurrentRoom.getUsers() != null) {
-                mCurrentRoom.getUsers().remove(user);
+            if (mCurrentRoom != null && mCurrentRoom.getPlayers() != null) {
+                mCurrentRoom.getPlayers().remove(user);
             }
         };
         mLeftUserUseCase.execute(null, onNext, onError, doOnNext);
@@ -166,12 +172,12 @@ public class GameInteractorFacade {
 
     public void onStartTypingListener(Consumer<? super User> onNext,
                                       Consumer<? super Throwable> onError) {
-        mStartTypingUseCase.execute(mCurrentRoom.getUsers(), onNext, onError);
+        mStartTypingUseCase.execute(mCurrentRoom.getPlayers(), onNext, onError);
     }
 
     public void onStopTypingListener(Consumer<? super User> onNext,
                                      Consumer<? super Throwable> onError) {
-        mStopTypingUseCase.execute(mCurrentRoom.getUsers(), onNext, onError);
+        mStopTypingUseCase.execute(mCurrentRoom.getPlayers(), onNext, onError);
     }
 
     public void onRoomInfoListener(Consumer<? super Room> onNext,
@@ -197,12 +203,12 @@ public class GameInteractorFacade {
 
     public void onWordSettedListener(Consumer<? super Word> onNext,
                                      Consumer<? super Throwable> onError) {
-        mWordSettedUseCase.execute(mCurrentRoom.getUsers(), onNext, onError);
+        mWordSettedUseCase.execute(mCurrentRoom.getPlayers(), onNext, onError);
     }
 
     public void onWordSettingListener(Consumer<? super User> onNext,
                                       Consumer<? super Throwable> onError) {
-        mWordSettingUseCase.execute(mCurrentRoom.getUsers(), onNext, onError);
+        mWordSettingUseCase.execute(mCurrentRoom.getPlayers(), onNext, onError);
     }
 
     public void setWordToUser(Word word) {
@@ -247,6 +253,7 @@ public class GameInteractorFacade {
         return message;
     }
 
+    @SuppressLint("CheckResult")
     public void destroy() {
         mOnConnectUseCase.dispose();
         mOnDisconnectUseCase.dispose();
@@ -270,6 +277,16 @@ public class GameInteractorFacade {
         mWordSettedUseCase.dispose();
 
         mRepository.disconnectFromRoom();
-        mRepository.disconnect();
+
+
+       /* Completable.complete()
+                .subscribeOn(mIoScheduler)
+                .delay(5, TimeUnit.SECONDS)
+                .doOnDispose(() -> {
+                    Timber.i("SOCKET : disconnection with delay has been successfully disposed");
+                })
+                .subscribe(() -> {*/
+                    mRepository.disconnect();
+     //           });
     }
 }

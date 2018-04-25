@@ -68,9 +68,7 @@ public class StartTypingUseCase extends ObservableUseCase<User, List<User>> {
         try {
             Long userId = jsonObject.getLong("userId");
             User user = getUserWithId(params, userId);
-            if(user == null){
-                user = new User.Builder().setId(userId).build();
-            }
+
             return Observable.just(user);
         } catch (JSONException e) {
             return Observable.error(new IncorrectJsonException(
@@ -80,11 +78,18 @@ public class StartTypingUseCase extends ObservableUseCase<User, List<User>> {
 
     @Nullable
     private User getUserWithId(List<User> users, long id) {
-        for (User user : users) {
-            if (user.getId() == id) {
-                return user;
+        User result = null;
+        if(users != null){
+            for (User user : users) {
+                if (user.getId() == id) {
+                    result = user;
+                    break;
+                }
             }
         }
-        return null;
+        if(result == null){
+            result = new User.Builder().setId(id).build();
+        }
+        return result;
     }
 }

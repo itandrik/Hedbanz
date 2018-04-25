@@ -29,20 +29,20 @@ public class Room {
     private String password;
     private String name;
     private byte maxPlayers;
-    private List<User> users;
+    private List<User> players;
     private byte currentPlayersNumber;
     private long startDate;
     private long endDate;
     private boolean isWithPassword;
     private List<Message> messages;
 
-    private Room(long id, String password, byte maxPlayers, List<User> users,
+    private Room(long id, String password, byte maxPlayers, List<User> players,
                     String name, byte currentPlayersNumber, long startDate, long endDate,
                  boolean isWithPassword) {
         this.id = id;
         this.password = password;
         this.maxPlayers = maxPlayers;
-        this.users = users;
+        this.players = players;
         this.currentPlayersNumber = currentPlayersNumber;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -75,12 +75,12 @@ public class Room {
         this.maxPlayers = maxPlayers;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<User> getPlayers() {
+        return players;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setPlayers(List<User> players) {
+        this.players = players;
     }
 
     public byte getCurrentPlayersNumber() {
@@ -153,7 +153,7 @@ public class Room {
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", maxPlayers=" + maxPlayers +
-                ", users=" + users +
+                ", players=" + players +
                 ", currentPlayersNumber=" + currentPlayersNumber +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
@@ -166,7 +166,7 @@ public class Room {
         private String password;
         private String name;
         private byte maxPlayers;
-        private List<User> users;
+        private List<User> players;
         private byte currentPlayersNumber;
         private long startDate;
         private long endDate;
@@ -187,8 +187,8 @@ public class Room {
             return this;
         }
 
-        public Room.Builder setUsers(List<User> users) {
-            this.users = users;
+        public Room.Builder setPlayers(List<User> players) {
+            this.players = players;
             return this;
         }
 
@@ -218,7 +218,7 @@ public class Room {
         }
 
         public Room build() {
-            return new Room(id, password, maxPlayers, users, name, currentPlayersNumber, startDate, endDate, isWithPassword);
+            return new Room(id, password, maxPlayers, players, name, currentPlayersNumber, startDate, endDate, isWithPassword);
         }
     }
 }

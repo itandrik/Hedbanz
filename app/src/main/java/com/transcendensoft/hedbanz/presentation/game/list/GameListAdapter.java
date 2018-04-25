@@ -24,6 +24,7 @@ import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageOther
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageThisUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.NetworkErrorAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.ServerErrorAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.UserAfkReturnedAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.WordSettedAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.WordSettingAdapterDelegate;
 
@@ -47,6 +48,7 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     private JoinedLeftUserAdapterDelegate mJoinedLeftUserAdapterDelegate;
     private WordSettedAdapterDelegate mWordSettedAdapterDelegate;
     private WordSettingAdapterDelegate mWordSettingAdapterDelegate;
+    private UserAfkReturnedAdapterDelegate mUserAfkReturnedAdapterDelegate;
 
     @Inject
     public GameListAdapter(LoadingAdapterDelegate loadingAdapterDelegate,
@@ -56,7 +58,8 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                            MessageOtherUserAdapterDelegate messageOtherUserAdapterDelegate,
                            JoinedLeftUserAdapterDelegate joinedLeftUserAdapterDelegate,
                            WordSettedAdapterDelegate wordSettedAdapterDelegate,
-                           WordSettingAdapterDelegate wordSettingAdapterDelegate) {
+                           WordSettingAdapterDelegate wordSettingAdapterDelegate,
+                           UserAfkReturnedAdapterDelegate userAfkReturnedAdapterDelegate) {
         super();
 
         this.mLoadingAdapterDelegate = loadingAdapterDelegate;
@@ -67,6 +70,7 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
         this.mJoinedLeftUserAdapterDelegate = joinedLeftUserAdapterDelegate;
         this.mWordSettedAdapterDelegate = wordSettedAdapterDelegate;
         this.mWordSettingAdapterDelegate = wordSettingAdapterDelegate;
+        this.mUserAfkReturnedAdapterDelegate = userAfkReturnedAdapterDelegate;
 
         delegatesManager.addDelegate(loadingAdapterDelegate)
                 .addDelegate(serverErrorAdapterDelegate)
@@ -75,7 +79,8 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                 .addDelegate(messageOtherUserAdapterDelegate)
                 .addDelegate(joinedLeftUserAdapterDelegate)
                 .addDelegate(wordSettingAdapterDelegate)
-                .addDelegate(wordSettedAdapterDelegate);
+                .addDelegate(wordSettedAdapterDelegate)
+                .addDelegate(userAfkReturnedAdapterDelegate);
     }
 
     @Nullable

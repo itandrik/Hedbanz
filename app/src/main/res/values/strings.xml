@@ -114,6 +114,10 @@
     <string name="game_error_disconnected">Ожидание подключения&#8230;</string>
     <string name="game_error_reconnecting">Подключаем&#8230;</string>
     <string name="game_error_reconnected">Соединение восстановлено!</string>
+    <string name="game_user_afk">Игрок %1$s ненадолго отлучился</string>
+    <string name="game_user_returned">Игрок %1$s снова в игре</string>
+    <string name="game_some_user_afk">Какой-то игрок ненадолго отлучился</string>
+    <string name="game_some_user_returned">Какой-то игрок снова в игре</string>
 
     <!-- Friends -->
     <string name="friends_toolbar_title">Ваши друзяки</string>

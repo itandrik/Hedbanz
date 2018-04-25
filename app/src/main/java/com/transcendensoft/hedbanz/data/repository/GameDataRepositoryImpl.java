@@ -412,16 +412,6 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
-    public void disconnectFromRoom() {
-        HashMap<String, Long> joinRoomObject = new HashMap<>();
-        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
-        joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
-
-        Timber.i("SOCKET --> SEND(%1$s)", LEAVE_ROOM_EVENT);
-        mSocket.emit(LEAVE_ROOM_EVENT, joinRoomObject);
-    }
-
-    @Override
     public void connect(long userId, long roomId) {
         this.mUserId = userId;
         this.mRoomId = roomId;
@@ -456,6 +446,16 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         Timber.i("SOCKET --> SEND(%1$s). Data : %2$s",
                 CLIENT_RESTORE_ROOM, json);
         mSocket.emit(CLIENT_RESTORE_ROOM, json);
+    }
+
+    @Override
+    public void disconnectFromRoom() {
+        HashMap<String, Long> joinRoomObject = new HashMap<>();
+        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
+        joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
+
+        Timber.i("SOCKET --> SEND(%1$s)", LEAVE_ROOM_EVENT);
+        mSocket.emit(LEAVE_ROOM_EVENT, joinRoomObject);
     }
 
     @Override

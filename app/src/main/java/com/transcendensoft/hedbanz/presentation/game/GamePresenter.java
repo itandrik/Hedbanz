@@ -211,11 +211,6 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     }
 
     private void initBusinessLogicListeners() {
-        initJoinedUserListener();
-        initLeftUserListener();
-        initUserAfkListener();
-        initUserReturnedListener();
-
         mGameInteractor.onRoomInfoListener(
                 this::initRoom,
                 this::processEventListenerOnError);
@@ -231,7 +226,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     private void initLeftUserListener() {
         mGameInteractor.onLeftUserListener(
                 user -> {
-                    List<User> users = model.getUsers();
+                    List<User> users = model.getPlayers();
                     if (!users.contains(user)) {
                         users.remove(user);
                     }
@@ -248,7 +243,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     private void initJoinedUserListener() {
         mGameInteractor.onJoinedUserListener(
                 user -> {
-                    List<User> users = model.getUsers();
+                    List<User> users = model.getPlayers();
                     if (!users.contains(user)) {
                         users.add(user);
                     }
@@ -289,8 +284,14 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     private void initRoom(Room room) {
         model = room;
         model.setMessages(new ArrayList<>());
+
+        initJoinedUserListener();
+        initLeftUserListener();
+        initUserAfkListener();
+        initUserReturnedListener();
         initMessageListeners();
         initWordSettingListeners();
+
         refreshMessageHistory();
     }
 

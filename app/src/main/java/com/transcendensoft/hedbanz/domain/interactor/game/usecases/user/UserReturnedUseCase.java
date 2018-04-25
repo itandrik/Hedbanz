@@ -15,18 +15,15 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.user;
  * limitations under the License.
  */
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.RoomInfoUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
@@ -42,51 +39,39 @@ import io.reactivex.subjects.PublishSubject;
  * (not AFK, or when returns to play).
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public class UserReturnedUseCase extends ObservableUseCase<User, List<User>> {
+public class UserReturnedUseCase extends ObservableUseCase<User, Void> {
     private PublishSubject<User> mSubject;
     private GameDataRepository mRepository;
+    private Gson mGson;
 
     @Inject
     public UserReturnedUseCase(ObservableTransformer observableTransformer,
-                          CompositeDisposable mCompositeDisposable,
-                          GameDataRepository gameDataRepository) {
+                               CompositeDisposable mCompositeDisposable,
+                               GameDataRepository gameDataRepository,
+                               Gson gson) {
         super(observableTransformer, mCompositeDisposable);
         mRepository = gameDataRepository;
         mSubject = PublishSubject.create();
+        mGson = gson;
     }
 
     @Override
-    protected Observable<User> buildUseCaseObservable(List<User> params) {
+    protected Observable<User> buildUseCaseObservable(Void params) {
         Observable<User> observable = mRepository.userReturnedObservable()
-                .flatMap(jsonObject -> convertUserIdToUserObservable(params, jsonObject));
+                .flatMap(this::convertUserIdToUserObservable);
         observable.subscribe(mSubject);
         return mSubject;
     }
 
-    private ObservableSource<? extends User> convertUserIdToUserObservable(
-            List<User> params, JSONObject jsonObject) {
+    private ObservableSource<? extends User> convertUserIdToUserObservable(JSONObject jsonObject) {
         try {
-            Long userId = jsonObject.getLong("userId");
-            User user = getUserWithId(params, userId);
-            if(user == null){
-                user = new User.Builder().setId(userId).build();
-            }
+            User user = mGson.fromJson(jsonObject.toString(), User.class);
             return Observable.just(user);
-        } catch (JSONException e) {
+        } catch (JsonSyntaxException e) {
             return Observable.error(new IncorrectJsonException(
-                    jsonObject.toString(), RoomInfoUseCase.class.getName()));
+                    jsonObject.toString(), UserReturnedUseCase.class.getName()));
         }
-    }
-
-    @Nullable
-    private User getUserWithId(List<User> users, long id) {
-        for (User user : users) {
-            if (user.getId() == id) {
-                return user;
-            }
-        }
-        return null;
     }
 }

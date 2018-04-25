@@ -65,7 +65,7 @@ public class UserModelDataMapper {
                     .setMoney(user.getMoney())
                     .setPassword(user.getPassword())
                     .setRegistrationDate(user.getRegistrationDate())
-                    .setIsAfk(user.isAfk())
+                    .setIsAfk(user.isAFK())
                     .build();
         }
         return userResult;
