@@ -170,8 +170,11 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         mGameInteractor.onConnectListener(
                 str -> {
                     Timber.i("Socket connected: %s", str);
-                    //TODO joinToRoom if first time in this room, restoreRoom if after error
-                    mGameInteractor.joinToRoom();
+                    if (mPreferenceManger.getCurrentRoomId() == -1) {
+                        mGameInteractor.joinToRoom(model.getPassword());
+                    } else {
+                        view().showRestoreRoom();
+                    }
                 },
                 this::processEventListenerOnError);
         mGameInteractor.onDisconnectListener(
@@ -271,13 +274,15 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     private void initUserReturnedListener() {
         mGameInteractor.onUserReturnedListener(user -> {
-            Message message = new Message.Builder()
-                    .setUserFrom(user)
-                    .setMessageType(MessageType.USER_RETURNED)
-                    .build();
+            if(!mPreferenceManger.getUser().equals(user)) {
+                Message message = new Message.Builder()
+                        .setUserFrom(user)
+                        .setMessageType(MessageType.USER_RETURNED)
+                        .build();
 
-            model.getMessages().add(message);
-            view().addMessage(message);
+                model.getMessages().add(message);
+                view().addMessage(message);
+            }
         }, this::processEventListenerOnError);
     }
 
@@ -302,7 +307,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             model.getMessages().add(word);
             view().addMessage(word);
 
-            updateSettingWordViewParameters(word.getSenderUser(),true, false);
+            updateSettingWordViewParameters(word.getSenderUser(), true, false);
         }, this::processEventListenerOnError);
 
         mGameInteractor.onWordSettingListener(wordReceiverUser -> {
@@ -398,5 +403,10 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
         model.getMessages().add(message);
         view().addMessage(message);
+    }
+
+    @Override
+    public void restoreRoom() {
+        mGameInteractor.restoreRoom();
     }
 }

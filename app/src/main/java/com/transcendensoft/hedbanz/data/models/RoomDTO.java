@@ -28,6 +28,8 @@ import java.util.List;
  */
 public class RoomDTO {
     public static final String ROOM_ID_KEY = "roomId";
+    public static final String PASSWORD_KEY = "password";
+
     @SerializedName("id")
     @Expose
     private long id;

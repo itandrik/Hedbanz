@@ -184,6 +184,7 @@ public class GameInteractorFacade {
                                    Consumer<? super Throwable> onError) {
         Consumer<? super Room> doOnNext = room -> {
             this.mCurrentRoom = room;
+            mPreferenceManger.setCurrentRoomId(room.getId()); // We set that we play in this room
         };
         mRoomInfoUseCase.execute(null, onNext, onError, doOnNext);
     }
@@ -220,8 +221,8 @@ public class GameInteractorFacade {
         mRepository.connect(currentUser.getId(), roomId);
     }
 
-    public void joinToRoom() {
-        mRepository.joinToRoom();
+    public void joinToRoom(String password) {
+        mRepository.joinToRoom(password);
     }
 
     public void restoreRoom() {
@@ -277,16 +278,7 @@ public class GameInteractorFacade {
         mWordSettedUseCase.dispose();
 
         mRepository.disconnectFromRoom();
-
-
-       /* Completable.complete()
-                .subscribeOn(mIoScheduler)
-                .delay(5, TimeUnit.SECONDS)
-                .doOnDispose(() -> {
-                    Timber.i("SOCKET : disconnection with delay has been successfully disposed");
-                })
-                .subscribe(() -> {*/
-                    mRepository.disconnect();
-     //           });
+        mPreferenceManger.setCurrentRoomId(-1); //We leave from current game
+        mRepository.disconnect();
     }
 }

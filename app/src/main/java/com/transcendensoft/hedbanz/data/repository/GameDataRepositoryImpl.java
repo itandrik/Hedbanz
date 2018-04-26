@@ -34,7 +34,7 @@ import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import javax.inject.Inject;
 
@@ -79,6 +79,8 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String SERVER_SET_PLAYER_WORD_EVENT = "server-set-word";
     private static final String CLIENT_SET_PLAYER_WORD_EVENT = "client-set-word";
     private static final String SERVER_THOUGHT_PLAYER_WORD_EVENT = "server-thought-player-word";
+    private static final String CLIENT_USER_GUESSING = "client-user-guessing";
+    private static final String SERVER_USER_GUESSING = "server-user-guessing";
 
     private Socket mSocket;
     private long mUserId;
@@ -88,6 +90,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private RoomModelDataMapper mRoomMapper;
     private WordModelDataMapper mWordMapper;
     private Gson mGson;
+    private String mRoomToUserJson;
 
     @Inject
     public GameDataRepositoryImpl(MessageModelDataMapper messageModelDataMapper,
@@ -360,26 +363,14 @@ public class GameDataRepositoryImpl implements GameDataRepository {
 
     @Override
     public void startTyping() {
-        HashMap<String, Long> joinRoomObject = new HashMap<>();
-        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
-        joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
-        Gson gson = new Gson();
-        String json = gson.toJson(joinRoomObject);
-
-        Timber.i("SOCKET --> SEND(%1$s) : %2$s", CLIENT_TYPING_EVENT, json);
-        mSocket.emit(CLIENT_TYPING_EVENT, json);
+        Timber.i("SOCKET --> SEND(%1$s) : %2$s", CLIENT_TYPING_EVENT, mRoomToUserJson);
+        mSocket.emit(CLIENT_TYPING_EVENT, mRoomToUserJson);
     }
 
     @Override
     public void stopTyping() {
-        HashMap<String, Long> joinRoomObject = new HashMap<>();
-        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
-        joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
-        Gson gson = new Gson();
-        String json = gson.toJson(joinRoomObject);
-
-        Timber.i("SOCKET --> SEND(%1$s) : %2$s", CLIENT_STOP_TYPING_EVENT, json);
-        mSocket.emit(CLIENT_STOP_TYPING_EVENT, json);
+        Timber.i("SOCKET --> SEND(%1$s) : %2$s", CLIENT_STOP_TYPING_EVENT, mRoomToUserJson);
+        mSocket.emit(CLIENT_STOP_TYPING_EVENT, mRoomToUserJson);
     }
 
     @Override
@@ -392,20 +383,20 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 .setClientMessageId(message.getClientMessageId())
                 .build();
 
-        Gson gson = new Gson();
-        String json = gson.toJson(messageDTO);
+        String json = mGson.toJson(messageDTO);
 
         Timber.i("SOCKET --> SEND(%1$s) : %2$s", CLIENT_MESSAGE_EVENT, json);
         mSocket.emit(CLIENT_MESSAGE_EVENT, json);
     }
 
     @Override
-    public void joinToRoom() {
-        HashMap<String, Long> joinRoomObject = new HashMap<>();
-        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
+    public void joinToRoom(String password) {
+        LinkedHashMap<String, Object> joinRoomObject = new LinkedHashMap<>();
         joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
-        Gson gson = new Gson();
-        String json = gson.toJson(joinRoomObject);
+        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
+        joinRoomObject.put(RoomDTO.PASSWORD_KEY, password);
+
+        String json = mGson.toJson(joinRoomObject);
 
         Timber.i("SOCKET --> SEND(%1$s) : %2$s", JOIN_ROOM_EVENT, json);
         mSocket.emit(JOIN_ROOM_EVENT, json);
@@ -416,46 +407,31 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         this.mUserId = userId;
         this.mRoomId = roomId;
         mSocket.connect();
+
+        LinkedHashMap<String, Long> joinRoomObject = new LinkedHashMap<>();
+        joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
+        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
+
+        mRoomToUserJson = mGson.toJson(joinRoomObject);
     }
 
     private void sendConnectInfo() {
-        String json = getUserRoomInfoObject();
-
-        HashMap<String, Long> connectInfoObject = new HashMap<>();
-        connectInfoObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
-        connectInfoObject.put(UserDTO.USER_ID_KEY, mUserId);
-
         Timber.i("SOCKET --> SEND(%1$s). Data : %2$s",
-                CLIENT_CONNECT_INFO, json);
-        mSocket.emit(CLIENT_CONNECT_INFO, connectInfoObject);
-    }
-
-    private String getUserRoomInfoObject() {
-        HashMap<String, Long> connectInfoObject = new HashMap<>();
-        connectInfoObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
-        connectInfoObject.put(UserDTO.USER_ID_KEY, mUserId);
-
-        Gson gson = new Gson();
-        return gson.toJson(connectInfoObject, HashMap.class);
+                CLIENT_CONNECT_INFO, mRoomToUserJson);
+        mSocket.emit(CLIENT_CONNECT_INFO, mRoomToUserJson);
     }
 
     @Override
     public void sendRoomRestore() {
-        String json = getUserRoomInfoObject();
-
         Timber.i("SOCKET --> SEND(%1$s). Data : %2$s",
-                CLIENT_RESTORE_ROOM, json);
-        mSocket.emit(CLIENT_RESTORE_ROOM, json);
+                CLIENT_RESTORE_ROOM, mRoomToUserJson);
+        mSocket.emit(CLIENT_RESTORE_ROOM, mRoomToUserJson);
     }
 
     @Override
     public void disconnectFromRoom() {
-        HashMap<String, Long> joinRoomObject = new HashMap<>();
-        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
-        joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
-
         Timber.i("SOCKET --> SEND(%1$s)", LEAVE_ROOM_EVENT);
-        mSocket.emit(LEAVE_ROOM_EVENT, joinRoomObject);
+        mSocket.emit(LEAVE_ROOM_EVENT, mRoomToUserJson);
     }
 
     @Override

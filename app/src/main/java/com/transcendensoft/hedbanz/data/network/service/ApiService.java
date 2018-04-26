@@ -76,9 +76,7 @@ public interface ApiService {
             @Body RoomFilterDTO roomFilter);
 
     @POST("rooms/password")
-    Completable checkRoomPasswordCorrect(@Query("userId") long userId,
-                                         @Query("roomId") long roomId,
-                                         @Query("password") String password);
+    Completable checkRoomPasswordCorrect(@Body HashMap<String, Object> checkPasswordDataMap);
 
     /* Game mode */
     @GET("rooms/messages")

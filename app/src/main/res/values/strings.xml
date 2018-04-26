@@ -8,6 +8,7 @@
     <!-- API keys -->
     <!-- Bundle -->
     <string name="bundle_room_id">bundle_room_id</string>
+    <string name="bundle_room_password">bundle_room_password</string>
     <string name="salt">$2a$10$3L8fxrPhH3/qLYhjmsuEku</string>
 
     <!-- Actions -->
@@ -118,6 +119,11 @@
     <string name="game_user_returned">Игрок %1$s снова в игре</string>
     <string name="game_some_user_afk">Какой-то игрок ненадолго отлучился</string>
     <string name="game_some_user_returned">Какой-то игрок снова в игре</string>
+
+    <string name="game_action_restore_room">Продолжить</string>
+    <string name="game_action_leave_room">Кидануть ребят</string>
+    <string name="game_restore_room_title">У вас активная игра!</string>
+    <string name="game_restore_room_message">Что-то пошло не так и вы вышли с этой комнаты. Вы хотите вернуться к игре?</string>
 
     <!-- Friends -->
     <string name="friends_toolbar_title">Ваши друзяки</string>

@@ -48,6 +48,7 @@ public interface GameContract {
         void showFooterDisconnected();
         void showFooterReconnecting();
         void showFooterReconnected();
+        void showRestoreRoom();
 
         void showEmptyList();
         void removeLastMessage();
@@ -59,6 +60,7 @@ public interface GameContract {
         void sendMessage(String message);
         void processSetWordToUserObservable(Observable<Word> sendWordObservable);
 
+        void restoreRoom();
         void processRetryNetworkPagination(Observable<Object> clickObservable);
         void processRetryServerPagination(Observable<Object> clickObservable);
     }

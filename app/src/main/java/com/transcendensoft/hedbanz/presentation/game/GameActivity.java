@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.graphics.drawable.Animatable2Compat;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -62,7 +63,14 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
         if (mPresenter != null && getIntent() != null) {
             long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
-            mPresenter.setModel(new Room.Builder().setId(roomId).build());
+            String password = getIntent().getStringExtra(getString(R.string.bundle_room_password));
+            Room room = new Room.Builder()
+                    .setId(roomId)
+                    .setWithPassword(true)
+                    .setPassword(password)
+                    .build();
+
+            mPresenter.setModel(room);
         }
 
         initRecycler();
@@ -371,5 +379,19 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         mTvSystemField.setTextColor(ContextCompat.getColor(this, R.color.google_red));
         mIvSystemSad.setVisibility(View.VISIBLE);
         mIvSystemHappy.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showRestoreRoom() {
+        new AlertDialog.Builder(this)
+                .setPositiveButton(getString(R.string.game_action_restore_room), (dialog, which) -> {
+                    mPresenter.restoreRoom();
+                })
+                .setNegativeButton(getString(R.string.game_action_leave_room), (dialog, which) -> {
+                    finish();
+                })
+                .setTitle(getString(R.string.game_restore_room_title))
+                .setMessage(getString(R.string.game_restore_room_message))
+                .show();
     }
 }
