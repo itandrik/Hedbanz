@@ -50,6 +50,8 @@ public class UserModelDataMapper {
                     .setPassword(userDTO.getPassword())
                     .setRegistrationDate(userDTO.getRegistrationDate())
                     .setIsAfk(userDTO.isAfk())
+                    .setIsFriend(userDTO.isFriend())
+                    .setWord(userDTO.getWord())
                     .build();
         }
         return userResult;
@@ -65,7 +67,9 @@ public class UserModelDataMapper {
                     .setMoney(user.getMoney())
                     .setPassword(user.getPassword())
                     .setRegistrationDate(user.getRegistrationDate())
-                    .setIsAfk(user.isAfk())
+                    .setIsAfk(user.isAFK())
+                    .setIsFriend(user.isFriend())
+                    .setWord(user.getWord())
                     .build();
         }
         return userResult;

@@ -20,6 +20,16 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        prodType {
+            buildConfigField("String", 'HOST_LINK', '\"http://35.196.42.112\"')
+            buildConfigField("String", 'PORT_API', '\":8080/\"')
+            buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
+        }
+        devType {
+            buildConfigField("String", 'HOST_LINK', '\"http://77.47.204.201\"')
+            buildConfigField("String", 'PORT_API', '\":8082/\"')
+            buildConfigField("String", 'PORT_SOCKET', '\":9090\"')
+        }
     }
 }
 

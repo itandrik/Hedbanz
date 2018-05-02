@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket;
+package com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,8 +15,8 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
+import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import javax.inject.Inject;
 
@@ -27,21 +27,21 @@ import io.reactivex.subjects.PublishSubject;
 
 /**
  * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
- * that represents a use case listening socket connection error.
+ * that represents a use case listening socket reconnected.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class OnConnectErrorUseCase extends ObservableUseCase<String, Void> {
+public class OnReconnectUseCase extends ObservableUseCase<String, Void> {
     private PublishSubject<String> mSubject;
 
     @Inject
-    public OnConnectErrorUseCase(ObservableTransformer observableTransformer,
-                               CompositeDisposable mCompositeDisposable,
-                               GameDataRepositoryImpl gameDataRepository) {
+    public OnReconnectUseCase(ObservableTransformer observableTransformer,
+                            CompositeDisposable mCompositeDisposable,
+                            GameDataRepository gameDataRepository) {
         super(observableTransformer, mCompositeDisposable);
 
-        Observable<String> observable = gameDataRepository.connectErrorObservable()
+        Observable<String> observable = gameDataRepository.reconnectObservable()
                 .flatMap(jsonObject -> Observable.just(jsonObject.toString()));
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);

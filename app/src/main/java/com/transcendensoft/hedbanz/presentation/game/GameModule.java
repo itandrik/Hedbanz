@@ -19,9 +19,17 @@ import android.content.Context;
 
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
+import com.transcendensoft.hedbanz.di.scope.FragmentScope;
+import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.RxRoom;
+import com.transcendensoft.hedbanz.presentation.game.menu.GameMenuContract;
+import com.transcendensoft.hedbanz.presentation.game.menu.GameMenuFragment;
+import com.transcendensoft.hedbanz.presentation.game.menu.GameMenuPresenter;
 
 import dagger.Binds;
 import dagger.Module;
+import dagger.Provides;
+import dagger.android.ContributesAndroidInjector;
 
 /**
  * Module that provides fragments, presenter
@@ -35,6 +43,19 @@ public interface GameModule {
     @ActivityScope
     @Binds GameContract.Presenter bindGamePresenter(GamePresenter gamePresenter);
 
+    @ActivityScope
+    @Binds GameMenuContract.Presenter bindGameMenuPresenter(GameMenuPresenter gameMenuPresenter);
+
+    @FragmentScope
+    @ContributesAndroidInjector
+    GameMenuFragment gameMenuFragment();
+
     @ActivityContext
     @Binds Context bindActivityContext(GameActivity gameActivity);
+
+    @Provides
+    @ActivityScope
+    static RxRoom provideRxRoom(){
+        return new RxRoom(new Room());
+    }
 }

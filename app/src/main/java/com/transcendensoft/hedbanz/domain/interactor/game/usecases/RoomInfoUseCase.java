@@ -17,10 +17,10 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
+import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import javax.inject.Inject;
 
@@ -43,20 +43,20 @@ public class RoomInfoUseCase extends ObservableUseCase<Room, Void> {
     @Inject
     public RoomInfoUseCase(ObservableTransformer observableTransformer,
                            CompositeDisposable mCompositeDisposable,
-                           GameDataRepositoryImpl gameDataRepository,
+                           GameDataRepository gameDataRepository,
                            Gson gson) {
         super(observableTransformer, mCompositeDisposable);
 
         initSubject(gameDataRepository, gson);
     }
 
-    private void initSubject(GameDataRepositoryImpl gameDataRepository, Gson gson) {
+    private void initSubject(GameDataRepository gameDataRepository, Gson gson) {
         Observable<Room> observable = getObservable(gameDataRepository, gson);
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
     }
 
-    private Observable<Room> getObservable(GameDataRepositoryImpl gameDataRepository, Gson gson) {
+    private Observable<Room> getObservable(GameDataRepository gameDataRepository, Gson gson) {
         return gameDataRepository.roomInfoObservable()
                 .flatMap(jsonObject -> {
                     try {

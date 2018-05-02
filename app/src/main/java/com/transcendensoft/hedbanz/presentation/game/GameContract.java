@@ -41,11 +41,16 @@ public interface GameContract {
         void addMessages(int position, List<Message> messages);
         void clearMessages();
         void removeMessage(int position);
+        void invalidateMessageWithPosition(int position);
         void setMessage(int position, Message message);
 
         void showFooterTyping(List<User>users);
         void showFooterServerError();
-        void showFooterNetworkError();
+        void showFooterDisconnected();
+        void showFooterReconnecting();
+        void showFooterReconnected();
+        void showRestoreRoom();
+
         void showEmptyList();
         void removeLastMessage();
     }
@@ -56,6 +61,7 @@ public interface GameContract {
         void sendMessage(String message);
         void processSetWordToUserObservable(Observable<Word> sendWordObservable);
 
+        void restoreRoom();
         void processRetryNetworkPagination(Observable<Object> clickObservable);
         void processRetryServerPagination(Observable<Object> clickObservable);
     }

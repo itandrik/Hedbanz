@@ -113,6 +113,9 @@ public class MessageListObserver extends DisposableObserver<PaginationState<Mess
         messages.add(0, new Message.Builder().setMessageType(MessageType.LOADING).build());
 
         mView.addMessages(0, messages);
+        if (!messagePaginationState.isRefreshed()) {
+            mView.invalidateMessageWithPosition(messages.size());
+        }
         mView.showContent();
         mModel.getMessages().addAll(0, messages);
     }

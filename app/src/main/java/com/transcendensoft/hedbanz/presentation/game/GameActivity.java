@@ -1,13 +1,20 @@
 package com.transcendensoft.hedbanz.presentation.game;
 
+import android.animation.Animator;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.graphics.drawable.Animatable2Compat;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -45,6 +52,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @BindView(R.id.flLoadingContainer) FrameLayout mFlLoadingContainer;
     @BindView(R.id.tvSystemField) TextView mTvSystemField;
     @BindView(R.id.ivSystemAnimation) ImageView mIvSystemAnimation;
+    @BindView(R.id.ivSystemSadIcon) ImageView mIvSystemSad;
+    @BindView(R.id.ivSystemHappyIcon) ImageView mIvSystemHappy;
+    @BindView(R.id.drawerLayout) DrawerLayout mDrawerLayout;
+    @BindView(R.id.toolbarMain) Toolbar mToolbar;
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -58,10 +69,19 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
         if (mPresenter != null && getIntent() != null) {
             long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
-            mPresenter.setModel(new Room.Builder().setId(roomId).build());
+            String password = getIntent().getStringExtra(getString(R.string.bundle_room_password));
+            Room room = new Room.Builder()
+                    .setId(roomId)
+                    .setWithPassword(true)
+                    .setPassword(password)
+                    .build();
+
+            mPresenter.setModel(room);
         }
 
+        initNavDrawer();
         initRecycler();
+
         mPresenter.messageTextChanges(mEtChatMessage);
     }
 
@@ -92,6 +112,17 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
+    private void initNavDrawer(){
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, mToolbar,
+                R.string.game_toolbar_open_menu_content_description,
+                R.string.game_toolbar_close_menu_content_description);
+        toggle.setDrawerIndicatorEnabled(false);
+
+        mDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
     private void initRecycler() {
         mAdapter.setBottomReachedListener(mPresenter);
         initAdapterClickListeners();
@@ -127,6 +158,31 @@ public class GameActivity extends BaseActivity implements GameContract.View {
             mPresenter.sendMessage(message);
             mEtChatMessage.setText("");
         }
+    }
+
+    @OnClick(R.id.ivExit)
+    protected void onExitFromRoom(){
+        onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setCancelable(true)
+                .setMessage(getString(R.string.game_exit_room_message))
+                .setTitle(getString(R.string.game_exit_room_title))
+                .setPositiveButton(getString(R.string.game_action_exit_game), (dialog, which) -> {
+                    super.onBackPressed();
+                })
+                .setNegativeButton(getString(R.string.game_action_resume_game), (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .show();
+    }
+
+    @OnClick(R.id.ivMenu)
+    protected void onMenuClicked(){
+        mDrawerLayout.openDrawer(GravityCompat.END);
     }
 
     /*------------------------------------*
@@ -191,6 +247,13 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         }
     }
 
+    @Override
+    public void invalidateMessageWithPosition(int position) {
+        if (mAdapter != null) {
+            mAdapter.notifyItemChanged(position);
+        }
+    }
+
     /*------------------------------------*
      *-------- Error and loading ---------*
      *------------------------------------*/
@@ -233,13 +296,15 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
     @Override
     public void showFooterTyping(List<User> users) {
+        mIvSystemSad.setVisibility(View.GONE);
+        mIvSystemHappy.setVisibility(View.GONE);
         if (users == null || users.isEmpty()) {
             mTvSystemField.setText("");
             stopTypingAnimation();
         } else {
             String typingText = getTypingMessage(users);
             mTvSystemField.setText(typingText);
-
+            mTvSystemField.setTextColor(ContextCompat.getColor(this, R.color.textSecondary));
             startTypingAnimation();
         }
     }
@@ -285,10 +350,99 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @Override
     public void showFooterServerError() {
         mTvSystemField.setText(getString(R.string.error_server));
+        mTvSystemField.setTextColor(ContextCompat.getColor(this, R.color.google_red));
+        mIvSystemSad.setVisibility(View.VISIBLE);
+        mIvSystemHappy.setVisibility(View.GONE);
     }
 
     @Override
-    public void showFooterNetworkError() {
-        mTvSystemField.setText(getString(R.string.error_network));
+    public void showFooterDisconnected() {
+        mTvSystemField.setText(getString(R.string.game_error_disconnected));
+        mTvSystemField.setTextColor(ContextCompat.getColor(this, R.color.google_red));
+        mIvSystemSad.setVisibility(View.VISIBLE);
+        mIvSystemHappy.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showFooterReconnected() {
+        mTvSystemField.setText(getString(R.string.game_error_reconnected));
+        mTvSystemField.setTextColor(ContextCompat.getColor(this, R.color.google_green));
+        mIvSystemSad.setVisibility(View.GONE);
+        mIvSystemHappy.setVisibility(View.VISIBLE);
+        mTvSystemField.animate()
+                .alpha(0.f)
+                .setStartDelay(2000)
+                .setDuration(1000)
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mTvSystemField.setText("");
+                        mTvSystemField.setAlpha(1.f);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+        mIvSystemHappy.animate()
+                .alpha(0.f)
+                .setStartDelay(2000)
+                .setDuration(1000)
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mIvSystemHappy.setAlpha(1.f);
+                        mIvSystemHappy.setVisibility(GONE);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+
+    }
+
+    @Override
+    public void showFooterReconnecting() {
+        mTvSystemField.setText(getString(R.string.game_error_reconnecting));
+        mTvSystemField.setTextColor(ContextCompat.getColor(this, R.color.google_red));
+        mIvSystemSad.setVisibility(View.VISIBLE);
+        mIvSystemHappy.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showRestoreRoom() {
+        new AlertDialog.Builder(this)
+                .setPositiveButton(getString(R.string.game_action_restore_room), (dialog, which) -> {
+                    mPresenter.restoreRoom();
+                })
+                .setNegativeButton(getString(R.string.game_action_leave_room), (dialog, which) -> {
+                    finish();
+                })
+                .setTitle(getString(R.string.game_restore_room_title))
+                .setMessage(getString(R.string.game_restore_room_message))
+                .show();
     }
 }

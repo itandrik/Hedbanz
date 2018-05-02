@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket;
+package com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,8 +15,8 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.socket;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
+import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import javax.inject.Inject;
 
@@ -27,21 +27,21 @@ import io.reactivex.subjects.PublishSubject;
 
 /**
  * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
- * that represents a use case listening socket disconnection.
+ * that represents a use case listening socket connection.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class OnDisconnectUseCase extends ObservableUseCase<String, Void> {
+public class OnConnectUseCase extends ObservableUseCase<String, Void> {
     private PublishSubject<String> mSubject;
 
     @Inject
-    public OnDisconnectUseCase(ObservableTransformer observableTransformer,
+    public OnConnectUseCase(ObservableTransformer observableTransformer,
                             CompositeDisposable mCompositeDisposable,
-                            GameDataRepositoryImpl gameDataRepository) {
+                            GameDataRepository gameDataRepository) {
         super(observableTransformer, mCompositeDisposable);
 
-        Observable<String> observable = gameDataRepository.disconnectObservable()
+        Observable<String> observable = gameDataRepository.connectObservable()
                 .flatMap(jsonObject -> Observable.just(jsonObject.toString()));
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);

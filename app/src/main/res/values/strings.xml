@@ -8,6 +8,7 @@
     <!-- API keys -->
     <!-- Bundle -->
     <string name="bundle_room_id">bundle_room_id</string>
+    <string name="bundle_room_password">bundle_room_password</string>
     <string name="salt">$2a$10$3L8fxrPhH3/qLYhjmsuEku</string>
 
     <!-- Actions -->
@@ -111,6 +112,26 @@
     <string name="game_set_word_title_random">Самое время загадать слово случайному игроку</string>
     <string name="game_set_word_hint">Ваше слово&#8230;</string>
     <string name="game_word_setted">Игрок %1$s загадал слово игроку %2$s</string>
+    <string name="game_error_disconnected">Ожидание подключения&#8230;</string>
+    <string name="game_error_reconnecting">Подключаем&#8230;</string>
+    <string name="game_error_reconnected">Соединение восстановлено!</string>
+    <string name="game_user_afk">Игрок %1$s ненадолго отлучился</string>
+    <string name="game_user_returned">Игрок %1$s снова в игре</string>
+    <string name="game_some_user_afk">Какой-то игрок ненадолго отлучился</string>
+    <string name="game_some_user_returned">Какой-то игрок снова в игре</string>
+
+    <string name="game_action_restore_room">Продолжить</string>
+    <string name="game_action_leave_room">Кидануть ребят</string>
+    <string name="game_restore_room_title">У вас активная игра!</string>
+    <string name="game_restore_room_message">Что-то пошло не так и вы вышли с этой комнаты. Вы хотите вернуться к игре?</string>
+
+    <string name="game_exit_room_message">Вы уверены что хотите покинуть эту игру? Ваши друзья могут вас неправильно понять&#8230;</string>
+    <string name="game_exit_room_title">Выйти или не выйти, вот в чем вопрос&#8230;</string>
+    <string name="game_action_resume_game">Продолжить</string>
+    <string name="game_action_exit_game">Кидануть ребят</string>
+
+    <string name="game_toolbar_open_menu_content_description">Открыть меню</string>
+    <string name="game_toolbar_close_menu_content_description">Закрыть меню</string>
 
     <!-- Friends -->
     <string name="friends_toolbar_title">Ваши друзяки</string>

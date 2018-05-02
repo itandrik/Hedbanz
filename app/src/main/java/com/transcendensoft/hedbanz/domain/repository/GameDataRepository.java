@@ -36,6 +36,7 @@ public interface GameDataRepository {
     Observable<Boolean> connectTimeoutObservable();
     Observable<Boolean> reconnectObservable();
     Observable<Boolean> reconnectErrorObservable();
+    Observable<Boolean> reconnectingObservable();
 
     Observable<JSONObject> roomInfoObservable();
     Observable<JSONObject> joinedUserObservable();
@@ -54,7 +55,7 @@ public interface GameDataRepository {
     void startTyping();
     void stopTyping();
     void sendMessage(Message message);
-    void joinToRoom();
+    void joinToRoom(String password);
     void disconnectFromRoom();
     void setWord(Word word);
     void sendRoomRestore();

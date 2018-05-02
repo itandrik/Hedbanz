@@ -81,16 +81,18 @@ public class RoomItemPresenterImpl extends BasePresenter<Room, RoomItemContract.
         Context context = view().provideContext();
         if (context != null) {
             if (!model.isWithPassword()) {
-                startGameActivity(context);
+                startGameActivity(context, null);
             } else {
                 showRoomPasswordAlertDialog(context);
             }
         }
     }
 
-    private void startGameActivity(Context context) {
+    private void startGameActivity(Context context, String password) {
         Intent intent = new Intent(context, GameActivity.class);
-        intent.putExtra(context.getString(R.string.bundle_room_id), model.getId());
+
+        intent.putExtra(context.getString(R.string.bundle_room_id),(Long) model.getId());
+        intent.putExtra(context.getString(R.string.bundle_room_password), password);
         context.startActivity(intent);
     }
 
@@ -118,7 +120,7 @@ public class RoomItemPresenterImpl extends BasePresenter<Room, RoomItemContract.
         tvPasswordError.setVisibility(View.GONE);
         mIsRoomPasswordCorrectInteractor.execute(room,
                 () -> {
-                    startGameActivity(view().provideContext());
+                    startGameActivity(view().provideContext(), room.getPassword());
                     mRoomPasswordDialog.dismiss();
                     view().hideLoadingDialog();
                 },

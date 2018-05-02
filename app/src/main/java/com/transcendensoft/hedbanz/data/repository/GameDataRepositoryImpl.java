@@ -34,7 +34,7 @@ import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import javax.inject.Inject;
 
@@ -59,7 +59,7 @@ import static com.transcendensoft.hedbanz.data.network.source.ApiDataSource.PORT
 public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String CLIENT_CONNECT_INFO = "client-connect-info";
     private static final String CLIENT_RESTORE_ROOM = "client-restore-room";
-    private static final String SERVER_RESTORE_ROOM = "client-restore-room";
+    private static final String SERVER_RESTORE_ROOM = "server-restore-room";
     private static final String SERVER_USER_AFK = "server-user-afk";
     private static final String SERVER_USER_RETURNED = "server-user-returned";
 
@@ -79,6 +79,8 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String SERVER_SET_PLAYER_WORD_EVENT = "server-set-word";
     private static final String CLIENT_SET_PLAYER_WORD_EVENT = "client-set-word";
     private static final String SERVER_THOUGHT_PLAYER_WORD_EVENT = "server-thought-player-word";
+    private static final String CLIENT_USER_GUESSING = "client-user-guessing";
+    private static final String SERVER_USER_GUESSING = "server-user-guessing";
 
     private Socket mSocket;
     private long mUserId;
@@ -88,6 +90,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private RoomModelDataMapper mRoomMapper;
     private WordModelDataMapper mWordMapper;
     private Gson mGson;
+    private String mRoomToUserJson;
 
     @Inject
     public GameDataRepositoryImpl(MessageModelDataMapper messageModelDataMapper,
@@ -167,6 +170,16 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 emitter.onNext(true);
             };
             mSocket.on(Socket.EVENT_RECONNECT_ERROR, listener);
+        });
+    }
+
+    @Override
+    public Observable<Boolean> reconnectingObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                emitter.onNext(true);
+            };
+            mSocket.on(Socket.EVENT_RECONNECTING, listener);
         });
     }
 
@@ -291,9 +304,13 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     public Observable<JSONObject> errorObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
-                JSONObject data = (JSONObject) args[0];
-                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_ERROR_EVENT, data.toString());
-                emitter.onNext(data);
+                try {
+                    JSONObject data = (JSONObject) args[0];
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_ERROR_EVENT, data.toString());
+                    emitter.onNext(data);
+                } catch (ClassCastException e){
+                    Timber.e(args[0].toString());
+                }
             };
             mSocket.on(SERVER_ERROR_EVENT, listener);
         });
@@ -346,26 +363,14 @@ public class GameDataRepositoryImpl implements GameDataRepository {
 
     @Override
     public void startTyping() {
-        HashMap<String, Long> joinRoomObject = new HashMap<>();
-        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
-        joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
-        Gson gson = new Gson();
-        String json = gson.toJson(joinRoomObject);
-
-        Timber.i("SOCKET --> SEND(%1$s) : %2$s", CLIENT_TYPING_EVENT, json);
-        mSocket.emit(CLIENT_TYPING_EVENT, json);
+        Timber.i("SOCKET --> SEND(%1$s) : %2$s", CLIENT_TYPING_EVENT, mRoomToUserJson);
+        mSocket.emit(CLIENT_TYPING_EVENT, mRoomToUserJson);
     }
 
     @Override
     public void stopTyping() {
-        HashMap<String, Long> joinRoomObject = new HashMap<>();
-        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
-        joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
-        Gson gson = new Gson();
-        String json = gson.toJson(joinRoomObject);
-
-        Timber.i("SOCKET --> SEND(%1$s) : %2$s", CLIENT_STOP_TYPING_EVENT, json);
-        mSocket.emit(CLIENT_STOP_TYPING_EVENT, json);
+        Timber.i("SOCKET --> SEND(%1$s) : %2$s", CLIENT_STOP_TYPING_EVENT, mRoomToUserJson);
+        mSocket.emit(CLIENT_STOP_TYPING_EVENT, mRoomToUserJson);
     }
 
     @Override
@@ -378,33 +383,23 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 .setClientMessageId(message.getClientMessageId())
                 .build();
 
-        Gson gson = new Gson();
-        String json = gson.toJson(messageDTO);
+        String json = mGson.toJson(messageDTO);
 
         Timber.i("SOCKET --> SEND(%1$s) : %2$s", CLIENT_MESSAGE_EVENT, json);
         mSocket.emit(CLIENT_MESSAGE_EVENT, json);
     }
 
     @Override
-    public void joinToRoom() {
-        HashMap<String, Long> joinRoomObject = new HashMap<>();
-        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, null);
+    public void joinToRoom(String password) {
+        LinkedHashMap<String, Object> joinRoomObject = new LinkedHashMap<>();
         joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
-        Gson gson = new Gson();
-        String json = gson.toJson(joinRoomObject);
+        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
+        joinRoomObject.put(RoomDTO.PASSWORD_KEY, password);
+
+        String json = mGson.toJson(joinRoomObject);
 
         Timber.i("SOCKET --> SEND(%1$s) : %2$s", JOIN_ROOM_EVENT, json);
         mSocket.emit(JOIN_ROOM_EVENT, json);
-    }
-
-    @Override
-    public void disconnectFromRoom() {
-        HashMap<String, Long> joinRoomObject = new HashMap<>();
-        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
-        joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
-
-        Timber.i("SOCKET --> SEND(%1$s)", LEAVE_ROOM_EVENT);
-        mSocket.emit(LEAVE_ROOM_EVENT, joinRoomObject);
     }
 
     @Override
@@ -412,32 +407,31 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         this.mUserId = userId;
         this.mRoomId = roomId;
         mSocket.connect();
+
+        LinkedHashMap<String, Long> joinRoomObject = new LinkedHashMap<>();
+        joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
+        joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
+
+        mRoomToUserJson = mGson.toJson(joinRoomObject);
     }
 
     private void sendConnectInfo() {
-        String json = getUserRoomInfoObject();
-
         Timber.i("SOCKET --> SEND(%1$s). Data : %2$s",
-                CLIENT_CONNECT_INFO, json);
-        mSocket.emit(CLIENT_CONNECT_INFO, json);
-    }
-
-    private String getUserRoomInfoObject() {
-        HashMap<String, Long> connectInfoObject = new HashMap<>();
-        connectInfoObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
-        connectInfoObject.put(UserDTO.USER_ID_KEY, mUserId);
-
-        Gson gson = new Gson();
-        return gson.toJson(connectInfoObject);
+                CLIENT_CONNECT_INFO, mRoomToUserJson);
+        mSocket.emit(CLIENT_CONNECT_INFO, mRoomToUserJson);
     }
 
     @Override
     public void sendRoomRestore() {
-        String json = getUserRoomInfoObject();
-
         Timber.i("SOCKET --> SEND(%1$s). Data : %2$s",
-                CLIENT_RESTORE_ROOM, json);
-        mSocket.emit(CLIENT_RESTORE_ROOM, json);
+                CLIENT_RESTORE_ROOM, mRoomToUserJson);
+        mSocket.emit(CLIENT_RESTORE_ROOM, mRoomToUserJson);
+    }
+
+    @Override
+    public void disconnectFromRoom() {
+        Timber.i("SOCKET --> SEND(%1$s)", LEAVE_ROOM_EVENT);
+        mSocket.emit(LEAVE_ROOM_EVENT, mRoomToUserJson);
     }
 
     @Override
@@ -451,6 +445,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             mSocket.off(Socket.EVENT_CONNECT_ERROR);
             mSocket.off(Socket.EVENT_RECONNECT);
             mSocket.off(Socket.EVENT_RECONNECT_ERROR);
+            mSocket.off(Socket.EVENT_RECONNECTING);
 
             mSocket.off(JOIN_ROOM_EVENT);
             mSocket.off(LEAVE_ROOM_EVENT);

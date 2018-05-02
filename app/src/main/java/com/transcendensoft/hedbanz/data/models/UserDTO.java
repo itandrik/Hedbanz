@@ -23,7 +23,7 @@ import com.google.gson.annotations.SerializedName;
  * All user properties received from server described here
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class UserDTO {
     public static final String USER_ID_KEY = "userId";
@@ -47,11 +47,19 @@ public class UserDTO {
     @SerializedName("login")
     @Expose
     private String login;
-    @SerializedName("isAfk")
+    @SerializedName("isAFK")
     @Expose
     private boolean isAfk;
+    @SerializedName("isFriend")
+    @Expose
+    private boolean isFriend;
+    @SerializedName("word")
+    @Expose
+    private String word;
 
-    protected UserDTO(long id, String email, String password, long money, Long registrationDate, String login, boolean isAfk) {
+    protected UserDTO(long id, String email, String password, long money,
+                      Long registrationDate, String login, boolean isAfk,
+                      boolean isFriend, String word) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -59,6 +67,8 @@ public class UserDTO {
         this.registrationDate = registrationDate;
         this.login = login;
         this.isAfk = isAfk;
+        this.isFriend = isFriend;
+        this.word = word;
     }
 
     public UserDTO() {
@@ -120,6 +130,22 @@ public class UserDTO {
         isAfk = afk;
     }
 
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public String getWord() {
+        return word;
+    }
+
+    public void setFriend(boolean friend) {
+        isFriend = friend;
+    }
+
+    public void setWord(String word) {
+        this.word = word;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -143,6 +169,8 @@ public class UserDTO {
         private Long registrationDate;
         private String login;
         private boolean isAfk;
+        private boolean isFriend;
+        private String word;
 
         public Builder setId(long id) {
             this.id = id;
@@ -179,8 +207,19 @@ public class UserDTO {
             return this;
         }
 
+        public Builder setIsFriend(boolean isFriend) {
+            this.isFriend = isFriend;
+            return this;
+        }
+
+        public Builder setWord(String word) {
+            this.word = word;
+            return this;
+        }
+
         public UserDTO build() {
-            return new UserDTO(id, email, password, money, registrationDate, login, isAfk);
+            return new UserDTO(id, email, password, money, registrationDate, login,
+                    isAfk, isFriend, word);
         }
     }
 }

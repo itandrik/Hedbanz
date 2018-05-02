@@ -21,6 +21,7 @@ import com.transcendensoft.hedbanz.data.source.RoomDataSource;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -61,7 +62,11 @@ public class RoomsApiDataSource extends ApiDataSource implements RoomDataSource 
     }
 
     public Completable isPasswordCorrect(long userId, long roomId, String password){
-        return mService.checkRoomPasswordCorrect(userId, roomId, password);
-    }
+        LinkedHashMap<String, Object> result = new LinkedHashMap<>();
+        result.put("userId", userId);
+        result.put("roomId", roomId);
+        result.put("password", password);
 
+        return mService.checkRoomPasswordCorrect(result);
+    }
 }

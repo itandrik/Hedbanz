@@ -54,7 +54,7 @@ public class RoomModelDataMapper {
                     .setName(roomDTO.getName())
                     .setPassword(roomDTO.getPassword())
                     .setWithPassword(roomDTO.isPrivate())
-                    .setUsers(mUserModelDataMapper.convertToUsers(roomDTO.getUsers()))
+                    .setPlayers(mUserModelDataMapper.convertToUsers(roomDTO.getUsers()))
                     .build();
         }
         return roomResult;
@@ -72,7 +72,7 @@ public class RoomModelDataMapper {
                     .setName(room.getName())
                     .setPassword(room.getPassword())
                     .setIsPrivate(room.isWithPassword())
-                    .setUsers(mUserModelDataMapper.convertToDtoUsers(room.getUsers()))
+                    .setUsers(mUserModelDataMapper.convertToDtoUsers(room.getPlayers()))
                     .build();
         }
         return roomResult;

@@ -47,6 +47,8 @@ public class FriendModelDataMapper {
                     .setMoney(friendDTO.getMoney())
                     .setRegistrationDate(friendDTO.getRegistrationDate())
                     .setIsAccepted(friendDTO.isAccepted())
+                    .setIsFriend(friendDTO.isFriend())
+                    .setWord(friendDTO.getWord())
                     .build();
         }
         return friendResult;

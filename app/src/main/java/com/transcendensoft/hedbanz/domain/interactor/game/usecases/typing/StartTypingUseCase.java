@@ -15,7 +15,6 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.typing;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.repository.GameDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
@@ -50,7 +49,7 @@ public class StartTypingUseCase extends ObservableUseCase<User, List<User>> {
     @Inject
     public StartTypingUseCase(ObservableTransformer observableTransformer,
                               CompositeDisposable mCompositeDisposable,
-                              GameDataRepositoryImpl gameDataRepository) {
+                              GameDataRepository gameDataRepository) {
         super(observableTransformer, mCompositeDisposable);
         mRepository = gameDataRepository;
         mSubject = PublishSubject.create();
@@ -69,9 +68,7 @@ public class StartTypingUseCase extends ObservableUseCase<User, List<User>> {
         try {
             Long userId = jsonObject.getLong("userId");
             User user = getUserWithId(params, userId);
-            if(user == null){
-                user = new User.Builder().setId(userId).build();
-            }
+
             return Observable.just(user);
         } catch (JSONException e) {
             return Observable.error(new IncorrectJsonException(
@@ -81,11 +78,18 @@ public class StartTypingUseCase extends ObservableUseCase<User, List<User>> {
 
     @Nullable
     private User getUserWithId(List<User> users, long id) {
-        for (User user : users) {
-            if (user.getId() == id) {
-                return user;
+        User result = null;
+        if(users != null){
+            for (User user : users) {
+                if (user.getId() == id) {
+                    result = user;
+                    break;
+                }
             }
         }
-        return null;
+        if(result == null){
+            result = new User.Builder().setId(id).build();
+        }
+        return result;
     }
 }

@@ -35,6 +35,7 @@ public class PreferenceManager {
     private static final String IS_AUTHORISED = "isAuthorised";
     private static final String USER_ENTITY = "user";
     private static final String FIREBASE_TOKEN = "firebaseToken";
+    private static final String CURRENT_ROOM_ID = "currentRoomId";
 
     public PreferenceManager(Context context) {
         mPreferences = context.getSharedPreferences(PREF_NAME, 0);
@@ -71,5 +72,13 @@ public class PreferenceManager {
 
     public String getFirebaseToken(){
         return  mPreferences.getString(FIREBASE_TOKEN, "");
+    }
+
+    public void setCurrentRoomId(long currentRoomId){
+        getEditor().putLong(CURRENT_ROOM_ID, currentRoomId).apply();
+    }
+
+    public long getCurrentRoomId(){
+        return mPreferences.getLong(CURRENT_ROOM_ID, -1);
     }
 }

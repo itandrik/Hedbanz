@@ -29,8 +29,9 @@ public class FriendDTO extends UserDTO {
     private boolean isAccepted;
 
     private FriendDTO(long id, String email, String password, long money,
-                      Long registrationDate, String login, boolean isAfk, boolean isAccepted) {
-        super(id, email, password, money, registrationDate, login, isAfk);
+                      Long registrationDate, String login, boolean isAfk, boolean isAccepted,
+                      boolean isFriend, String word) {
+        super(id, email, password, money, registrationDate, login, isAfk, isFriend, word);
         this.isAccepted = isAccepted;
     }
 
@@ -51,6 +52,8 @@ public class FriendDTO extends UserDTO {
         private String login;
         private boolean isAccepted;
         private boolean isAfk;
+        private boolean isFriend;
+        private String word;
 
         public FriendDTO.Builder setId(long id) {
             this.id = id;
@@ -92,9 +95,20 @@ public class FriendDTO extends UserDTO {
             return this;
         }
 
+        public FriendDTO.Builder setIsFriend(boolean isFriend) {
+            this.isFriend = isFriend;
+            return this;
+        }
+
+        public FriendDTO.Builder setWord(String word) {
+            this.word = word;
+            return this;
+        }
+
+
         public FriendDTO build() {
             return new FriendDTO(id, email, password, money, registrationDate,
-                    login, isAfk, isAccepted);
+                    login, isAfk, isAccepted, isFriend, word);
         }
     }
 }
