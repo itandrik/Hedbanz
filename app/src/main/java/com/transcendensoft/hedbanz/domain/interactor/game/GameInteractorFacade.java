@@ -23,6 +23,8 @@ import com.transcendensoft.hedbanz.di.qualifier.SchedulerIO;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.RxRoom;
+import com.transcendensoft.hedbanz.domain.entity.RxUser;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.ErrorUseCase;
@@ -49,6 +51,7 @@ import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import io.reactivex.Scheduler;
@@ -87,8 +90,7 @@ public class GameInteractorFacade {
     @Inject WordSettingUseCase mWordSettingUseCase;
 
     @Inject @SchedulerIO Scheduler mIoScheduler;
-
-    private Room mCurrentRoom;
+    @Inject RxRoom mCurrentRoom;
 
     @Inject
     public GameInteractorFacade(PreferenceManager preferenceManager,
@@ -118,37 +120,63 @@ public class GameInteractorFacade {
     }
 
     public void onReconnectListener(Consumer<? super String> onNext,
-                                     Consumer<? super Throwable> onError) {
+                                    Consumer<? super Throwable> onError) {
         mOnReconnectUseCase.execute(null, onNext, onError);
     }
 
     public void onReconnectErrorListener(Consumer<? super String> onNext,
-                                    Consumer<? super Throwable> onError) {
+                                         Consumer<? super Throwable> onError) {
         mOnReconnectErrorUseCase.execute(null, onNext, onError);
     }
 
     public void onReconnectingListener(Consumer<? super String> onNext,
-                                         Consumer<? super Throwable> onError) {
+                                       Consumer<? super Throwable> onError) {
         mOnReconnectingUseCase.execute(null, onNext, onError);
     }
 
     public void onUserAfkListener(Consumer<? super User> onNext,
-                                    Consumer<? super Throwable> onError) {
-        mUserAfkUseCase.execute(null, onNext, onError);
+                                  Consumer<? super Throwable> onError) {
+        Consumer<? super User> doOnNext = user -> {
+            if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
+                List<User> users = mCurrentRoom.getRoom().getPlayers();
+                if (users.contains(user)) {
+                    RxUser rxUser = getRxUser(user);
+                    if (rxUser != null) {
+                        rxUser.setAFK(true);
+                    }
+                    user.setAFK(true);
+                }
+            }
+        };
+        mUserAfkUseCase.execute(null, onNext, onError, doOnNext);
     }
 
     public void onUserReturnedListener(Consumer<? super User> onNext,
-                                  Consumer<? super Throwable> onError) {
-        mUserReturnedUseCase.execute(null, onNext, onError);
+                                       Consumer<? super Throwable> onError) {
+        Consumer<? super User> doOnNext = user -> {
+            if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
+                List<User> users = mCurrentRoom.getRoom().getPlayers();
+                if (users.contains(user)) {
+                    RxUser rxUser = getRxUser(user);
+                    if (rxUser != null) {
+                        rxUser.setAFK(false);
+                    }
+                    user.setAFK(false);
+                }
+            }
+        };
+        mUserReturnedUseCase.execute(null, onNext, onError, doOnNext);
     }
 
     public void onJoinedUserListener(Consumer<? super User> onNext,
                                      Consumer<? super Throwable> onError) {
         Consumer<? super User> doOnNext = user -> {
-            if (mCurrentRoom != null && mCurrentRoom.getPlayers() != null) {
-                List<User> users = mCurrentRoom.getPlayers();
+            if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
+                List<User> users = mCurrentRoom.getRoom().getPlayers();
                 if (!users.contains(user)) {
-                    users.add(user);
+                    mCurrentRoom.addPlayer(user);
+                    mCurrentRoom.setCurrentPlayersNumber(
+                            (byte) (mCurrentRoom.getRoom().getCurrentPlayersNumber() + 1));
                 }
             }
         };
@@ -158,8 +186,10 @@ public class GameInteractorFacade {
     public void onLeftUserListener(Consumer<? super User> onNext,
                                    Consumer<? super Throwable> onError) {
         Consumer<? super User> doOnNext = user -> {
-            if (mCurrentRoom != null && mCurrentRoom.getPlayers() != null) {
-                mCurrentRoom.getPlayers().remove(user);
+            if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
+                mCurrentRoom.removePlayer(user);
+                mCurrentRoom.setCurrentPlayersNumber(
+                        (byte) (mCurrentRoom.getRoom().getCurrentPlayersNumber() - 1));
             }
         };
         mLeftUserUseCase.execute(null, onNext, onError, doOnNext);
@@ -172,27 +202,27 @@ public class GameInteractorFacade {
 
     public void onStartTypingListener(Consumer<? super User> onNext,
                                       Consumer<? super Throwable> onError) {
-        mStartTypingUseCase.execute(mCurrentRoom.getPlayers(), onNext, onError);
+        mStartTypingUseCase.execute(mCurrentRoom.getRoom().getPlayers(), onNext, onError);
     }
 
     public void onStopTypingListener(Consumer<? super User> onNext,
                                      Consumer<? super Throwable> onError) {
-        mStopTypingUseCase.execute(mCurrentRoom.getPlayers(), onNext, onError);
+        mStopTypingUseCase.execute(mCurrentRoom.getRoom().getPlayers(), onNext, onError);
     }
 
     public void onRoomInfoListener(Consumer<? super Room> onNext,
                                    Consumer<? super Throwable> onError) {
         Consumer<? super Room> doOnNext = room -> {
-            this.mCurrentRoom = room;
+            this.mCurrentRoom.setRoom(room);
             mPreferenceManger.setCurrentRoomId(room.getId()); // We set that we play in this room
         };
         mRoomInfoUseCase.execute(null, onNext, onError, doOnNext);
     }
 
     public void onRoomRestoredListener(Consumer<? super Room> onNext,
-                                   Consumer<? super Throwable> onError) {
+                                       Consumer<? super Throwable> onError) {
         Consumer<? super Room> doOnNext = room -> {
-            this.mCurrentRoom = room;
+            this.mCurrentRoom.setRoom(room);
         };
         mRoomRestoreUseCase.execute(null, onNext, onError, doOnNext);
     }
@@ -204,12 +234,20 @@ public class GameInteractorFacade {
 
     public void onWordSettedListener(Consumer<? super Word> onNext,
                                      Consumer<? super Throwable> onError) {
-        mWordSettedUseCase.execute(mCurrentRoom.getPlayers(), onNext, onError);
+        Consumer<? super Word> doOnNext = word -> {
+            if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
+                RxUser rxUser = getRxUser(word.getWordReceiverUser());
+                if(rxUser != null) {
+                    rxUser.setWord(word.getWord());
+                }
+            }
+        };
+        mWordSettedUseCase.execute(mCurrentRoom.getRoom().getPlayers(), onNext, onError, doOnNext);
     }
 
     public void onWordSettingListener(Consumer<? super User> onNext,
                                       Consumer<? super Throwable> onError) {
-        mWordSettingUseCase.execute(mCurrentRoom.getPlayers(), onNext, onError);
+        mWordSettingUseCase.execute(mCurrentRoom.getRoom().getPlayers(), onNext, onError);
     }
 
     public void setWordToUser(Word word) {
@@ -280,5 +318,15 @@ public class GameInteractorFacade {
         mRepository.disconnectFromRoom();
         mPreferenceManger.setCurrentRoomId(-1); //We leave from current game
         mRepository.disconnect();
+    }
+
+    @Nullable
+    private RxUser getRxUser(User user) {
+        for (RxUser rxUser : mCurrentRoom.getRxPlayers()) {
+            if (rxUser.getUser().equals(user)) {
+                return rxUser;
+            }
+        }
+        return null;
     }
 }

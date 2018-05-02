@@ -41,6 +41,7 @@ public interface GameContract {
         void addMessages(int position, List<Message> messages);
         void clearMessages();
         void removeMessage(int position);
+        void invalidateMessageWithPosition(int position);
         void setMessage(int position, Message message);
 
         void showFooterTyping(List<User>users);

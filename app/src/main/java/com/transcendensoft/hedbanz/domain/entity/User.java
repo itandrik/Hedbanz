@@ -30,10 +30,13 @@ public class User {
     private long money;
     private Long registrationDate;
     private String login;
+    private boolean isFriend;
     private boolean isAFK;
+    private String word;
 
     protected User(long id, String email, String password, String confirmPassword,
-                   long money, Long registrationDate, String login, boolean isAFK) {
+                   long money, Long registrationDate, String login, boolean isAFK,
+                   boolean isFriend, String word) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -42,6 +45,7 @@ public class User {
         this.registrationDate = registrationDate;
         this.login = login;
         this.isAFK = isAFK;
+        this.isFriend = isFriend;
     }
 
     public User() {
@@ -111,6 +115,22 @@ public class User {
         isAFK = AFK;
     }
 
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public void setFriend(boolean friend) {
+        isFriend = friend;
+    }
+
+    public String getWord() {
+        return word;
+    }
+
+    public void setWord(String word) {
+        this.word = word;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -136,6 +156,8 @@ public class User {
                 ", money=" + money +
                 ", registrationDate=" + registrationDate +
                 ", login='" + login + '\'' +
+                ", isFriend=" + isFriend +
+                ", isAFK=" + isAFK +
                 '}';
     }
 
@@ -148,6 +170,8 @@ public class User {
         private Long registrationDate;
         private String login;
         private boolean isAFK;
+        private boolean isFriend;
+        private String word;
 
         public User.Builder setId(long id) {
             this.id = id;
@@ -189,9 +213,19 @@ public class User {
             return this;
         }
 
+        public User.Builder setIsFriend(boolean isFriend){
+            this.isFriend = isFriend;
+            return this;
+        }
+
+        public User.Builder setWord(String word){
+            this.word = word;
+            return this;
+        }
+
         public User build() {
             return new User(id, email, password, confirmPassword, money,
-                    registrationDate, login, isAFK);
+                    registrationDate, login, isAFK, isFriend, word);
         }
     }
 }

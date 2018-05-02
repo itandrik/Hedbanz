@@ -16,18 +16,28 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/ivBack"
+                android:id="@+id/ivExit"
                 android:layout_width="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_height="match_parent"
-                app:srcCompat="@drawable/ic_back" />
+                app:srcCompat="@drawable/ic_exit_from_room" />
 
+            <ImageView
+                android:id="@+id/ivMenu"
+                android:layout_width="24dp"
+                android:layout_marginRight="16dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                app:srcCompat="@drawable/ic_menu"/>
             <TextView
                 android:id="@+id/tvToolbarTitle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="16dp"
-                android:layout_toRightOf="@id/ivBack"
+                android:layout_toRightOf="@id/ivExit"
+                android:layout_toLeftOf="@id/ivMenu"
+                android:layout_marginRight="8dp"
                 android:text="Описание комнаты"
                 android:fontFamily="@font/lemon_tuesday"
                 android:gravity="left|center_vertical"

@@ -58,8 +58,8 @@
         android:layout_width="2dp"
         android:visibility="gone"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_alignBottom="@id/tvMessage"
-        android:layout_alignTop="@id/tvMessage"
         android:layout_toLeftOf="@id/tvMessage"
         android:layout_marginRight="8dp"
         android:background="@color/google_yellow" />

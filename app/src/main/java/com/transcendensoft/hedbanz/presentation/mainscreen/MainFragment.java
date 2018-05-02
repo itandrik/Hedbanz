@@ -93,9 +93,6 @@ public class MainFragment extends DaggerFragment implements ViewPager.OnPageChan
     private void initViewPager(){
         RoomsFragment roomsFragment = mRoomsFragmentLazy.get();
         CreateRoomFragment createRoomFragment = mCreateRoomFragmentLazy.get();
-        //RoomList model = new RoomList(new ArrayList<>());
-        //roomsFragment.setPresenterModel(model);
-        //createRoomFragment.setPresenterModel(model);
 
         mAdapter = new MainScreenFragmentAdapter.Holder(getChildFragmentManager())
                 .add(roomsFragment)

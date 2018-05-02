@@ -125,6 +125,14 @@
     <string name="game_restore_room_title">У вас активная игра!</string>
     <string name="game_restore_room_message">Что-то пошло не так и вы вышли с этой комнаты. Вы хотите вернуться к игре?</string>
 
+    <string name="game_exit_room_message">Вы уверены что хотите покинуть эту игру? Ваши друзья могут вас неправильно понять&#8230;</string>
+    <string name="game_exit_room_title">Выйти или не выйти, вот в чем вопрос&#8230;</string>
+    <string name="game_action_resume_game">Продолжить</string>
+    <string name="game_action_exit_game">Кидануть ребят</string>
+
+    <string name="game_toolbar_open_menu_content_description">Открыть меню</string>
+    <string name="game_toolbar_close_menu_content_description">Закрыть меню</string>
+
     <!-- Friends -->
     <string name="friends_toolbar_title">Ваши друзяки</string>
 </resources>

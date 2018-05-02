@@ -51,6 +51,9 @@ public class Room {
         messages = new ArrayList<>();
     }
 
+    public Room() {
+    }
+
     public long getId() {
         return id;
     }

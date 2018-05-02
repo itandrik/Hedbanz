@@ -282,6 +282,11 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
                 model.getMessages().add(message);
                 view().addMessage(message);
+            } else {
+                model.setMessages(new ArrayList<>());
+                view().clearMessages();
+                view().showLoading();
+                refreshMessageHistory();
             }
         }, this::processEventListenerOnError);
     }
