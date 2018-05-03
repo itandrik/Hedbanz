@@ -35,6 +35,7 @@
     <color name="message_this_user_bg">#E9EAEE</color>
     <color name="user_joined_left_bg">#5F000000</color>
     <color name="user_afk_returned_bg">#1F000000</color>
+    <color name="pen_color">#3355aa</color>
 
     <!-- Google -->
     <color name="google_green">#34A854</color>

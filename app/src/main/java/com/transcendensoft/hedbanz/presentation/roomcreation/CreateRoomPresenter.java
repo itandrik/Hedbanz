@@ -19,7 +19,7 @@ import android.content.Context;
 
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.domain.entity.Room;
-import com.transcendensoft.hedbanz.domain.entity.RoomList;
+import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.CreateRoomInteractor;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.exception.RoomCreationException;
 import com.transcendensoft.hedbanz.domain.validation.RoomError;

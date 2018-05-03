@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.entity;
+package com.transcendensoft.hedbanz.presentation.game.models;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -16,6 +16,8 @@ package com.transcendensoft.hedbanz.domain.entity;
  */
 
 import android.support.annotation.NonNull;
+
+import com.transcendensoft.hedbanz.domain.entity.User;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -64,6 +66,10 @@ public class RxUser {
     public void setWord(String word){
         mUser.setWord(word);
         mSubject.onNext(mUser);
+    }
+
+    public void setUser(User user){
+        mUser = user;
     }
 
     public Disposable subscribe(@NonNull Consumer<User> onNext){

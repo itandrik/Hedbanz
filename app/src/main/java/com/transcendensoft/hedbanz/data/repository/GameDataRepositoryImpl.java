@@ -252,8 +252,10 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             Emitter.Listener listener = args -> {
                 JSONObject data = (JSONObject) args[0];
 
-                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_RETURNED, data.toString());
+                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_RETURNED,
+                        data != null ? data.toString() : "null");
                 emitter.onNext(data);
+
             };
             mSocket.on(SERVER_USER_RETURNED, listener);
         });
@@ -264,7 +266,8 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
                 JSONObject data = (JSONObject) args[0];
-                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_TYPING_EVENT, data.toString());
+                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_TYPING_EVENT,
+                        data != null ? data.toString() : "null");
                 emitter.onNext(data);
             };
             mSocket.on(SERVER_TYPING_EVENT, listener);
@@ -276,7 +279,8 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
                 JSONObject data = (JSONObject) args[0];
-                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_STOP_TYPING_EVENT, data.toString());
+                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_STOP_TYPING_EVENT,
+                        data != null ? data.toString() : "null");
                 emitter.onNext(data);
             };
             mSocket.on(SERVER_STOP_TYPING_EVENT, listener);
@@ -293,7 +297,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                     Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_MESSAGE_EVENT, data.toString());
                     emitter.onNext(mMessageMapper.convert(messageDTO));
                 } catch (JsonSyntaxException e) {
-                    emitter.onError(new JsonSyntaxException("Error in json: " + data.toString()));
+                    emitter.onError(new JsonSyntaxException("Error in json: " + (data != null ? data.toString() : "null")));
                 }
             };
             mSocket.on(SERVER_MESSAGE_EVENT, listener);
@@ -306,7 +310,8 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             Emitter.Listener listener = args -> {
                 try {
                     JSONObject data = (JSONObject) args[0];
-                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_ERROR_EVENT, data.toString());
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_ERROR_EVENT,
+                            data != null ? data.toString() : "null");
                     emitter.onNext(data);
                 } catch (ClassCastException e){
                     Timber.e(args[0].toString());
@@ -321,7 +326,8 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
                 JSONObject data = (JSONObject) args[0];
-                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_SET_PLAYER_WORD_EVENT, data.toString());
+                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_SET_PLAYER_WORD_EVENT,
+                        data != null ? data.toString() : "null");
                 emitter.onNext(data);
 
                 if (args.length > 1) {
@@ -342,7 +348,8 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
                 JSONObject data = (JSONObject) args[0];
-                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_THOUGHT_PLAYER_WORD_EVENT, data.toString());
+                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_THOUGHT_PLAYER_WORD_EVENT,
+                        data != null ? data.toString() : "null");
                 emitter.onNext(data);
             };
             mSocket.on(SERVER_THOUGHT_PLAYER_WORD_EVENT, listener);

@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.game.menu;
+package com.transcendensoft.hedbanz.presentation.game.menu.list;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,27 +15,28 @@ package com.transcendensoft.hedbanz.presentation.game.menu;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
-import com.transcendensoft.hedbanz.presentation.base.BaseView;
-
-import java.util.List;
+import android.support.annotation.DrawableRes;
 
 /**
- * View and Presenter interfaces contract for game menu presentation
+ * View and Presenter interfaces contract for room item presentation
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public interface GameMenuContract {
-    interface View extends BaseView {
-        void setRoomName(String roomName);
-        void clearAndAddPlayers(List<RxUser> rxUsers);
-        void addPlayer(RxUser rxUser);
-        void removePlayer(RxUser rxUser);
-        void setPlayersCount(int maxPlayersCount, int currentPlayersCount);
+public interface UserMenuItemContract {
+    interface View {
+        void setIcon(@DrawableRes int icon);
+
+        void setName(String name);
+
+        void setIsAfk(boolean isAfk);
+
+        void setIsFriend(boolean isFriend);
+
+        void setWord(String word);
     }
 
     interface Presenter {
-
+        void onClickUser();
     }
 }

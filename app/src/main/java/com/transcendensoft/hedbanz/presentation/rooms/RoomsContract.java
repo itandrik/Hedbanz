@@ -17,7 +17,7 @@ package com.transcendensoft.hedbanz.presentation.rooms;
 
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
-import com.transcendensoft.hedbanz.domain.entity.RoomList;
+import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.presentation.base.BaseView;
 
 import java.util.List;

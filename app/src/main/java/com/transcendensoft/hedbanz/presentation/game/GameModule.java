@@ -21,7 +21,7 @@ import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.di.scope.FragmentScope;
 import com.transcendensoft.hedbanz.domain.entity.Room;
-import com.transcendensoft.hedbanz.domain.entity.RxRoom;
+import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
 import com.transcendensoft.hedbanz.presentation.game.menu.GameMenuContract;
 import com.transcendensoft.hedbanz.presentation.game.menu.GameMenuFragment;
 import com.transcendensoft.hedbanz.presentation.game.menu.GameMenuPresenter;
@@ -43,7 +43,7 @@ public interface GameModule {
     @ActivityScope
     @Binds GameContract.Presenter bindGamePresenter(GamePresenter gamePresenter);
 
-    @ActivityScope
+    @FragmentScope
     @Binds GameMenuContract.Presenter bindGameMenuPresenter(GameMenuPresenter gameMenuPresenter);
 
     @FragmentScope

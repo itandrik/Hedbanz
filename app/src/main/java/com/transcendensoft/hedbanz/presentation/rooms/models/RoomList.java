@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.entity;
+package com.transcendensoft.hedbanz.presentation.rooms.models;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -16,6 +16,8 @@ package com.transcendensoft.hedbanz.domain.entity;
  */
 
 import android.support.annotation.NonNull;
+
+import com.transcendensoft.hedbanz.domain.entity.Room;
 
 import java.util.List;
 

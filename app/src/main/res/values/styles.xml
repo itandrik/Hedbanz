@@ -26,6 +26,7 @@
         <item name="colorAccent">@color/textDarkRed</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="coordinatorLayoutStyle">@style/Widget.Design.CoordinatorLayout</item>
     </style>
 
     <style name="ThemeRegister" parent="Theme.AppCompat.Light">
@@ -60,6 +61,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">16dp</item>
         <item name="android:src">@drawable/ic_invite</item>
+        <item name="backgroundTint">@color/google_green</item>
         <item name="borderWidth">0dp</item>
         <item name="elevation">6dp</item>
         <item name="pressedTranslationZ">12dp</item>

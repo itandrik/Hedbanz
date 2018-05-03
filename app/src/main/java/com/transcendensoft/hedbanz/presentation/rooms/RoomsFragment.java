@@ -43,7 +43,7 @@ import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
-import com.transcendensoft.hedbanz.domain.entity.RoomList;
+import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.custom.widget.rangeseekbar.RangeSeekBar;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainFragment;
