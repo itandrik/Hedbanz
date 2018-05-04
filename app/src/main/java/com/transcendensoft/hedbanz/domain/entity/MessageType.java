@@ -36,6 +36,9 @@ public enum MessageType {
     WORD_SETTED(12),
     USER_AFK(13),
     USER_RETURNED(14),
+    GUESS_WORD(15),
+    ASKING_QUESTION(16),
+    VOTING_FOR_QUESTION(17),
     UNDEFINED(100500);
 
     private int id;
