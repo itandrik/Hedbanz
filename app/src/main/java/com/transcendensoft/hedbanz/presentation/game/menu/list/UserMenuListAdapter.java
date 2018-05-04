@@ -21,10 +21,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
 import com.transcendensoft.hedbanz.presentation.base.MvpRecyclerListAdapter;
+import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
 
 import javax.inject.Inject;
+
+import io.reactivex.ObservableTransformer;
 
 /**
  * List adapter for users in menu side bar
@@ -34,15 +36,17 @@ import javax.inject.Inject;
  */
 public class UserMenuListAdapter extends MvpRecyclerListAdapter
         <RxUser, UserMenuItemPresenter, UserMenuItemViewHolder> {
+    private ObservableTransformer mSchedulersTransformer;
 
     @Inject
-    public UserMenuListAdapter() {
+    public UserMenuListAdapter(ObservableTransformer schedulersTransformer) {
+        this.mSchedulersTransformer = schedulersTransformer;
     }
 
     @NonNull
     @Override
     protected UserMenuItemPresenter createPresenter(@NonNull RxUser model) {
-        UserMenuItemPresenter presenter = new UserMenuItemPresenter();
+        UserMenuItemPresenter presenter = new UserMenuItemPresenter(mSchedulersTransformer);
         presenter.setModel(model);
         return presenter;
     }

@@ -67,4 +67,9 @@
         <item name="pressedTranslationZ">12dp</item>
         <item name="rippleColor">@android:color/white</item>
     </style>
+
+    <style name="playersMenuCollapsingToolbarTitle">
+        <item name="android:textSize">28sp</item>
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
 </resources>

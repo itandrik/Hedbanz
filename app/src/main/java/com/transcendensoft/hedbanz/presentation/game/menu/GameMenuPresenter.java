@@ -44,21 +44,24 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
     protected void updateView() {
         if (model != null) {
 
-            view().clearAndAddPlayers(model.getRxPlayers());
-            view().setRoomName(model.getRoom().getName());
-            view().setPlayersCount(model.getRoom().getMaxPlayers(),
-                    model.getRoom().getCurrentPlayersNumber());
+            updateRoomInfo();
 
             subscribeToRoomObservables();
         }
     }
 
+    private void updateRoomInfo() {
+        view().clearAndAddPlayers(model.getRxPlayers());
+        view().setRoomName(model.getRoom().getName());
+        view().setMaxPlayersCount(model.getRoom().getMaxPlayers());
+        view().setCurrentPlayersCount(model.getRxPlayers().size());
+    }
+
     private void subscribeToRoomObservables() {
         addDisposable(model.roomInfoObservable()
                 .compose(applySchedulers())
-                .subscribe(room -> {
-                    view().setRoomName(room.getName());
-                    view().setPlayersCount(room.getMaxPlayers(), room.getCurrentPlayersNumber());
+                .subscribe(rxRoom -> {
+                    updateRoomInfo();
                 }, Timber::e));
 
         addDisposable(model.addUserObservable()

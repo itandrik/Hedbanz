@@ -16,32 +16,38 @@ package com.transcendensoft.hedbanz.presentation.game.menu.list;
  */
 
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
+import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
 
-import javax.inject.Inject;
+import io.reactivex.ObservableTransformer;
+import timber.log.Timber;
 
 /**
  * Presenter from MVP pattern that processes concrete
  * user from game mode side bar menu.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemContract.View>
-        implements UserMenuItemContract.Presenter{
-    @Inject
-    public UserMenuItemPresenter() {
+        implements UserMenuItemContract.Presenter {
+    private ObservableTransformer mSchedulersTransformer;
+
+    public UserMenuItemPresenter(ObservableTransformer schedulersTransformer) {
+        this.mSchedulersTransformer = schedulersTransformer;
     }
 
     @Override
     protected void updateView() {
-        if(model != null){
+        if (model != null) {
             updateUserView();
-            addDisposable(model.subscribe(user -> {
-                model.setUser(user);
-                updateUserView();
-            }));
+
+            addDisposable(model.userObservable()
+                    .compose(applySchedulers())
+                    .subscribe(user -> {
+                        model.setUser(user);
+                        updateUserView();
+                    }, Timber::e));
         }
     }
 
@@ -62,5 +68,10 @@ public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemCon
     @Override
     public void onClickUser() {
 
+    }
+
+    @SuppressWarnings("unchecked")
+    private <S> ObservableTransformer<S, S> applySchedulers() {
+        return (ObservableTransformer<S, S>) mSchedulersTransformer;
     }
 }

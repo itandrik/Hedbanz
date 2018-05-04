@@ -37,7 +37,7 @@ import io.reactivex.subjects.PublishSubject;
 public class RxRoom {
     private Room mRoom;
     private List<RxUser> mPlayers;
-    private PublishSubject<Room> mRoomInfoSubject;
+    private PublishSubject<RxRoom> mRoomInfoSubject;
     private PublishSubject<RxUser> mRemoveUserSubject;
     private PublishSubject<RxUser> mAddUserSubject;
 
@@ -63,7 +63,10 @@ public class RxRoom {
 
     public void setRoom(Room mRoom) {
         this.mRoom = mRoom;
-        mRoomInfoSubject.onNext(mRoom);
+        for (User user : mRoom.getPlayers()) {
+            addPlayer(user);
+        }
+        mRoomInfoSubject.onNext(this);
     }
 
     public List<RxUser> getRxPlayers() {
@@ -72,53 +75,55 @@ public class RxRoom {
 
     public void setId(long id) {
         mRoom.setId(id);
-        mRoomInfoSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setPassword(String password) {
         mRoom.setPassword(password);
-        mRoomInfoSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setMaxPlayers(byte maxPlayers) {
         mRoom.setMaxPlayers(maxPlayers);
-        mRoomInfoSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setPlayers(List<RxUser> players) {
         mPlayers = players;
-        mRoomInfoSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setCurrentPlayersNumber(byte currentPlayersNumber) {
         mRoom.setCurrentPlayersNumber(currentPlayersNumber);
-        mRoomInfoSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setStartDate(long startDate) {
         mRoom.setStartDate(startDate);
-        mRoomInfoSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setEndDate(long endDate) {
         mRoom.setEndDate(endDate);
-        mRoomInfoSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setName(String name) {
         mRoom.setName(name);
-        mRoomInfoSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setWithPassword(boolean withPassword) {
         mRoom.setWithPassword(withPassword);
-        mRoomInfoSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void addPlayer(User user) {
         RxUser rxUser = new RxUser(user);
         mPlayers.add(rxUser);
-        mRoom.getPlayers().add(user);
+        if(!mRoom.getPlayers().contains(user)) {
+            mRoom.getPlayers().add(user);
+        }
         mAddUserSubject.onNext(rxUser);
     }
 
@@ -137,7 +142,7 @@ public class RxRoom {
         }
     }
 
-    public Observable<Room> roomInfoObservable() {
+    public Observable<RxRoom> roomInfoObservable() {
         return mRoomInfoSubject;
     }
 

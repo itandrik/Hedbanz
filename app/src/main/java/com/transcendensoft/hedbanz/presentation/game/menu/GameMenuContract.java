@@ -32,7 +32,8 @@ public interface GameMenuContract {
         void clearAndAddPlayers(List<RxUser> rxUsers);
         void addPlayer(RxUser rxUser);
         void removePlayer(RxUser rxUser);
-        void setPlayersCount(int maxPlayersCount, int currentPlayersCount);
+        void setCurrentPlayersCount(int currentPlayersCount);
+        void setMaxPlayersCount(int maxPlayersCount);
     }
 
     interface Presenter {

@@ -16,10 +16,15 @@ package com.transcendensoft.hedbanz.presentation.game.menu;
  */
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,14 +34,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
-import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
-import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.game.menu.list.UserMenuListAdapter;
+import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
+import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
+import com.transcendensoft.hedbanz.utils.ViewUtils;
 
 import java.util.List;
 
@@ -53,10 +60,13 @@ import butterknife.OnClick;
  *         Developed by <u>Transcendensoft</u>
  */
 public class GameMenuFragment extends BaseFragment implements GameMenuContract.View{
+    public static final float NOT_EXIST_USER_ALPHA = 0.3f;
+    public static final float EXIST_USER_ALPHA = 1.f;
     @BindView(R.id.rvPlayers) RecyclerView mRecycler;
     @BindView(R.id.fabInvite) FloatingActionButton mFabInvite;
     @BindView(R.id.flLoadingContainer) FrameLayout mFlLoadingContainer;
-    @BindView(R.id.tvRoomName) TextView mTvRoomName;
+    @BindView(R.id.collapsingToolbarGameMenu) CollapsingToolbarLayout mCollapsingToolbar;
+    @BindView(R.id.llUsers) LinearLayout mLlUsersIndicator;
 
     @Inject RxRoom mModel;
     @Inject GameMenuPresenter mPresenter;
@@ -78,6 +88,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
 
         mPresenter.setModel(mModel);
         initRecycler();
+        initCollapsingToolbar();
 
         return view;
     }
@@ -120,15 +131,21 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
         mRecycler.setLayoutManager(manager);
     }
 
+    private void initCollapsingToolbar(){
+        Typeface typeface = ResourcesCompat.getFont(mContext, R.font.open_sans_light);
+        mCollapsingToolbar.setCollapsedTitleTypeface(typeface);
+        mCollapsingToolbar.setExpandedTitleTypeface(typeface);
+    }
+
     /*------------------------------------*
      *--------- Set data to view ---------*
      *------------------------------------*/
     @Override
     public void setRoomName(String roomName) {
         if(!TextUtils.isEmpty(roomName)){
-            mTvRoomName.setText(roomName);
+            mCollapsingToolbar.setTitle(roomName);
         } else {
-            mTvRoomName.setText("");
+            mCollapsingToolbar.setTitle("");
         }
     }
 
@@ -155,8 +172,34 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     }
 
     @Override
-    public void setPlayersCount(int maxPlayersCount, int currentPlayersCount) {
-        //TODO
+    public void setMaxPlayersCount(int maxPlayersCount) {
+        mLlUsersIndicator.removeAllViews();
+        for (int i = 0; i < maxPlayersCount; i++) {
+            ImageView ivPlayer = new ImageView(mContext);
+            ivPlayer.setAlpha(NOT_EXIST_USER_ALPHA);
+
+            Drawable drawable = VectorDrawableCompat.create(
+                    mContext.getResources(),R.drawable.ic_user, null);
+            ivPlayer.setImageDrawable(drawable);
+
+            int size = ViewUtils.dpToPx(mContext,24);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(size, size);
+            ivPlayer.setLayoutParams(params);
+
+            mLlUsersIndicator.addView(ivPlayer);
+        }
+    }
+
+    @Override
+    public void setCurrentPlayersCount(int currentPlayersCount) {
+        for (int i = 0; i < mLlUsersIndicator.getChildCount(); i++) {
+            ImageView ivPlayer = (ImageView) mLlUsersIndicator.getChildAt(i);
+            if(i < currentPlayersCount){
+                ivPlayer.setAlpha(EXIST_USER_ALPHA);
+            } else {
+                ivPlayer.setAlpha(NOT_EXIST_USER_ALPHA);
+            }
+        }
     }
 
     /*------------------------------------*

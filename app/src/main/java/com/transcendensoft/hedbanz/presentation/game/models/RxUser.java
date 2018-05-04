@@ -15,14 +15,10 @@ package com.transcendensoft.hedbanz.presentation.game.models;
  * limitations under the License.
  */
 
-import android.support.annotation.NonNull;
-
 import com.transcendensoft.hedbanz.domain.entity.User;
 
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
+import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
-import timber.log.Timber;
 
 /**
  * Common entity for game activity and menu fragment to show
@@ -72,7 +68,7 @@ public class RxUser {
         mUser = user;
     }
 
-    public Disposable subscribe(@NonNull Consumer<User> onNext){
-        return mSubject.subscribe(onNext, Timber::e);
+    public Observable<User> userObservable(){
+        return mSubject;
     }
 }
