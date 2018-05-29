@@ -284,7 +284,7 @@ public class GameInteractorFacade {
                 System.currentTimeMillis(), currentUser.getId()});
 
         Question question = new Question.Builder()
-                .setMessageType(MessageType.GUESS_WORD)
+                .setMessageType(MessageType.GUESS_WORD_THIS_USER)
                 .setMessage(word)
                 .setUserFrom(currentUser)
                 .setClientMessageId(clientMessageId)

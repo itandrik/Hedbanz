@@ -10,6 +10,9 @@ buildscript {
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 
 repositories {
@@ -92,6 +95,9 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
     //Fabric
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
@@ -128,6 +134,8 @@ dependencies {
     implementation 'com.google.dagger:dagger-android-support:2.11'
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.11'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
+    kapt 'com.google.dagger:dagger-android-processor:2.11'
+    kapt 'com.google.dagger:dagger-compiler:2.11'
 
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.6.1'

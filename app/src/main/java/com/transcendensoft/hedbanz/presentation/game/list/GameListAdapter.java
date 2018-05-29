@@ -15,9 +15,13 @@ package com.transcendensoft.hedbanz.presentation.game.list;
  * limitations under the License.
  */
 
+import android.support.annotation.NonNull;
+
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.GuessWordOtherUserAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.GuessWordThisUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.JoinedLeftUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.LoadingAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageOtherUserAdapterDelegate;
@@ -40,15 +44,10 @@ import io.reactivex.Observable;
  * Developed by <u>Transcendensoft</u>
  */
 public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
-    private LoadingAdapterDelegate mLoadingAdapterDelegate;
     private ServerErrorAdapterDelegate mServerErrorAdapterDelegate;
     private NetworkErrorAdapterDelegate mNetworkErrorAdapterDelegate;
-    private MessageThisUserAdapterDelegate mMessageThisUserAdapterDelegate;
-    private MessageOtherUserAdapterDelegate mMessageOtherUserAdapterDelegate;
-    private JoinedLeftUserAdapterDelegate mJoinedLeftUserAdapterDelegate;
-    private WordSettedAdapterDelegate mWordSettedAdapterDelegate;
     private WordSettingAdapterDelegate mWordSettingAdapterDelegate;
-    private UserAfkReturnedAdapterDelegate mUserAfkReturnedAdapterDelegate;
+    private GuessWordThisUserAdapterDelegate mGuessWordThisUserAdapterDelegate;
 
     @Inject
     public GameListAdapter(LoadingAdapterDelegate loadingAdapterDelegate,
@@ -59,18 +58,15 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                            JoinedLeftUserAdapterDelegate joinedLeftUserAdapterDelegate,
                            WordSettedAdapterDelegate wordSettedAdapterDelegate,
                            WordSettingAdapterDelegate wordSettingAdapterDelegate,
-                           UserAfkReturnedAdapterDelegate userAfkReturnedAdapterDelegate) {
+                           UserAfkReturnedAdapterDelegate userAfkReturnedAdapterDelegate,
+                           GuessWordThisUserAdapterDelegate guessWordThisUserAdapterDelegate,
+                           GuessWordOtherUserAdapterDelegate guessWordOtherUserAdapterDelegate) {
         super();
 
-        this.mLoadingAdapterDelegate = loadingAdapterDelegate;
         this.mServerErrorAdapterDelegate = serverErrorAdapterDelegate;
         this.mNetworkErrorAdapterDelegate = networkErrorAdapterDelegate;
-        this.mMessageThisUserAdapterDelegate = messageThisUserAdapterDelegate;
-        this.mMessageOtherUserAdapterDelegate = messageOtherUserAdapterDelegate;
-        this.mJoinedLeftUserAdapterDelegate = joinedLeftUserAdapterDelegate;
-        this.mWordSettedAdapterDelegate = wordSettedAdapterDelegate;
         this.mWordSettingAdapterDelegate = wordSettingAdapterDelegate;
-        this.mUserAfkReturnedAdapterDelegate = userAfkReturnedAdapterDelegate;
+        this.mGuessWordThisUserAdapterDelegate = guessWordThisUserAdapterDelegate;
 
         delegatesManager.addDelegate(loadingAdapterDelegate)
                 .addDelegate(serverErrorAdapterDelegate)
@@ -80,6 +76,8 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                 .addDelegate(joinedLeftUserAdapterDelegate)
                 .addDelegate(wordSettingAdapterDelegate)
                 .addDelegate(wordSettedAdapterDelegate)
+                .addDelegate(guessWordThisUserAdapterDelegate)
+                .addDelegate(guessWordOtherUserAdapterDelegate)
                 .addDelegate(userAfkReturnedAdapterDelegate);
     }
 
@@ -96,5 +94,15 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     @Nullable
     public Observable<Word> setWordObservable() {
         return mWordSettingAdapterDelegate.getSetWordObservable();
+    }
+
+    @NonNull
+    public Observable<String> guessWordSubmitObservable(){
+        return mGuessWordThisUserAdapterDelegate.guessWordObservable();
+    }
+
+    @NonNull
+    public Observable<String> guessWordHelperStringObservable(){
+        return mGuessWordThisUserAdapterDelegate.guessWordHelperStringsObservable();
     }
 }

@@ -5,9 +5,9 @@
     android:minHeight="?attr/listPreferredItemHeightSmall">
 
     <TextView
-        android:id="@+id/tvAfkReturned"
+        android:id="@+id/tvGuessWord"
         android:layout_width="wrap_content"
-        android:background="@drawable/user_afk_returned_bg"
+        android:background="@drawable/some_user_think_word_background"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:paddingLeft="16dp"

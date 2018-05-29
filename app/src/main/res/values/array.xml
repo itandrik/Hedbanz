@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="guess_helpers">
+        <item>Я живое?</item>
+        <item>Я ?</item>
+        <item>Я ?</item>
+        <item>Я ?</item>
+        <item>Я ?</item>
+        <item>Я ?</item>
+        <item>Я ?</item>
+        <item>Я ?</item>
+    </string-array>
+</resources>

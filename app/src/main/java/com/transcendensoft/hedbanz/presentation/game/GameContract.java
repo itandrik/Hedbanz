@@ -64,5 +64,7 @@ public interface GameContract {
         void restoreRoom();
         void processRetryNetworkPagination(Observable<Object> clickObservable);
         void processRetryServerPagination(Observable<Object> clickObservable);
+        void processGuessWordSubmit(Observable<String> clickObservable);
+        void processGuessWordHelperText(Observable<String> clickObservable);
     }
 }

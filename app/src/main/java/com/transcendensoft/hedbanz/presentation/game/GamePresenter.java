@@ -155,6 +155,16 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         }
     }
 
+    @Override
+    public void processGuessWordHelperText(Observable<String> clickObservable) {
+
+    }
+
+    @Override
+    public void processGuessWordSubmit(Observable<String> clickObservable) {
+
+    }
+
     /*------------------------------------*
      *------ Socket initialization -------*
      *------------------------------------*/
@@ -226,6 +236,21 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         }, this::processEventListenerOnError);
     }
 
+    private void initRoom(Room room) {
+        model = room;
+        model.setMessages(new ArrayList<>());
+
+        initJoinedUserListener();
+        initLeftUserListener();
+        initUserAfkListener();
+        initUserReturnedListener();
+        initMessageListeners();
+        initWordSettingListeners();
+        initWordGuessingListeners();
+
+        refreshMessageHistory();
+    }
+
     private void initLeftUserListener() {
         mGameInteractor.onLeftUserListener(
                 user -> {
@@ -291,20 +316,6 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         }, this::processEventListenerOnError);
     }
 
-    private void initRoom(Room room) {
-        model = room;
-        model.setMessages(new ArrayList<>());
-
-        initJoinedUserListener();
-        initLeftUserListener();
-        initUserAfkListener();
-        initUserReturnedListener();
-        initMessageListeners();
-        initWordSettingListeners();
-
-        refreshMessageHistory();
-    }
-
     private void initWordSettingListeners() {
 
         mGameInteractor.onWordSettedListener(word -> {
@@ -335,6 +346,13 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         mGameInteractor.onMessageReceivedListener(
                 this::processSimpleMessage,
                 this::processEventListenerOnError);
+    }
+
+    private void initWordGuessingListeners(){
+        mGameInteractor.onWordGuessingListener(
+                this::processGuessWord,
+                this::processEventListenerOnError
+        );
     }
 
     private void processSimpleMessage(Message message) {
@@ -378,6 +396,21 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             Timber.e("Incorrect JSON from socket listener. JSON: %S; EVENT: %s",
                     incorrectJsonException.getJson(), incorrectJsonException.getMethod());
         }
+    }
+
+    private void processGuessWord(User user){
+        User currentUser = mPreferenceManger.getUser();
+        Message.Builder messageBuilder = new Message.Builder()
+                .setUserFrom(user)
+                .setClientMessageId(user.getId());
+        if(currentUser.equals(user)){
+            messageBuilder.setMessageType(MessageType.GUESS_WORD_THIS_USER);
+        } else {
+            messageBuilder.setMessageType(MessageType.GUESS_WORD_OTHER_USER);
+        }
+
+        model.getMessages().add(messageBuilder.build());
+        view().addMessage(messageBuilder.build());
     }
 
     /*------------------------------------*
