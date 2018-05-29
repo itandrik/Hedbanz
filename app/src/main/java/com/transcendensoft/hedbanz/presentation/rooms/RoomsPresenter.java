@@ -18,7 +18,7 @@ package com.transcendensoft.hedbanz.presentation.rooms;
 import com.transcendensoft.hedbanz.domain.PaginationState;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
-import com.transcendensoft.hedbanz.domain.entity.RoomList;
+import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.FilterRoomsInteractor;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.GetRoomsInteractor;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;

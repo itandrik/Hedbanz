@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.entity;
+package com.transcendensoft.hedbanz.presentation.game.models;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -15,35 +15,46 @@ package com.transcendensoft.hedbanz.domain.entity;
  * limitations under the License.
  */
 
-import android.support.annotation.NonNull;
+import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
+import javax.inject.Inject;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableTransformer;
 import io.reactivex.subjects.PublishSubject;
-import timber.log.Timber;
 
 /**
  * Common entity for game activity and menu fragment to show
  * room info reactively
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class RxRoom {
     private Room mRoom;
     private List<RxUser> mPlayers;
-    private PublishSubject<Room> mSubject;
+    private PublishSubject<RxRoom> mRoomInfoSubject;
+    private PublishSubject<RxUser> mRemoveUserSubject;
+    private PublishSubject<RxUser> mAddUserSubject;
+
+    @Inject ObservableTransformer mSchedulersTransformer;
 
     public RxRoom(Room room) {
         this.mRoom = room;
-        if(mRoom != null && mRoom.getPlayers() != null) {
+
+        mPlayers = new ArrayList<>();
+        if (mRoom != null && mRoom.getPlayers() != null) {
             for (User user : mRoom.getPlayers()) {
                 mPlayers.add(new RxUser(user));
             }
         }
-        mSubject = PublishSubject.create();
+        mRoomInfoSubject = PublishSubject.create();
+        mRemoveUserSubject = PublishSubject.create();
+        mAddUserSubject = PublishSubject.create();
     }
 
     public Room getRoom() {
@@ -52,7 +63,10 @@ public class RxRoom {
 
     public void setRoom(Room mRoom) {
         this.mRoom = mRoom;
-        mSubject.onNext(mRoom);
+        for (User user : mRoom.getPlayers()) {
+            addPlayer(user);
+        }
+        mRoomInfoSubject.onNext(this);
     }
 
     public List<RxUser> getRxPlayers() {
@@ -61,71 +75,82 @@ public class RxRoom {
 
     public void setId(long id) {
         mRoom.setId(id);
-        mSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setPassword(String password) {
         mRoom.setPassword(password);
-        mSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setMaxPlayers(byte maxPlayers) {
         mRoom.setMaxPlayers(maxPlayers);
-        mSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setPlayers(List<RxUser> players) {
         mPlayers = players;
-        mSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setCurrentPlayersNumber(byte currentPlayersNumber) {
         mRoom.setCurrentPlayersNumber(currentPlayersNumber);
-        mSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setStartDate(long startDate) {
         mRoom.setStartDate(startDate);
-        mSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setEndDate(long endDate) {
         mRoom.setEndDate(endDate);
-        mSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setName(String name) {
         mRoom.setName(name);
-        mSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
     public void setWithPassword(boolean withPassword) {
         mRoom.setWithPassword(withPassword);
-        mSubject.onNext(mRoom);
+        mRoomInfoSubject.onNext(this);
     }
 
-    public void addPlayer(User user){
-        mPlayers.add(new RxUser(user));
-        mRoom.getPlayers().add(user);
-        mSubject.onNext(mRoom);
+    public void addPlayer(User user) {
+        RxUser rxUser = new RxUser(user);
+        mPlayers.add(rxUser);
+        if(!mRoom.getPlayers().contains(user)) {
+            mRoom.getPlayers().add(user);
+        }
+        mAddUserSubject.onNext(rxUser);
     }
 
-    public void removePlayer(User user){
+    public void removePlayer(User user) {
         RxUser rxUserResult = null;
-        for (RxUser rxUser:mPlayers) {
-            if(rxUser.getUser().equals(user)){
+        for (RxUser rxUser : mPlayers) {
+            if (rxUser.getUser().equals(user)) {
                 rxUserResult = rxUser;
                 break;
             }
         }
-        if(rxUserResult != null){
+        if (rxUserResult != null) {
             mPlayers.remove(rxUserResult);
             mRoom.getPlayers().remove(user);
-            mSubject.onNext(mRoom);
+            mRemoveUserSubject.onNext(rxUserResult);
         }
     }
 
-    public Disposable subscribe(@NonNull Consumer<Room> onNext){
-        return mSubject.subscribe(onNext, Timber::e);
+    public Observable<RxRoom> roomInfoObservable() {
+        return mRoomInfoSubject;
+    }
+
+    public Observable<RxUser> addUserObservable() {
+        return mAddUserSubject;
+    }
+
+    public Observable<RxUser> removeUserObservable() {
+        return mRemoveUserSubject;
     }
 }

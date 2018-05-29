@@ -15,10 +15,13 @@ package com.transcendensoft.hedbanz.presentation.game.menu;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.domain.entity.RxRoom;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
+import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
 
 import javax.inject.Inject;
+
+import io.reactivex.ObservableTransformer;
+import timber.log.Timber;
 
 /**
  * Implementation of game menu presenter.
@@ -26,22 +29,61 @@ import javax.inject.Inject;
  * and general information about room.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.View>
-        implements GameMenuContract.Presenter{
+        implements GameMenuContract.Presenter {
+    private ObservableTransformer mSchedulersTransformer;
 
     @Inject
-    public GameMenuPresenter() {
+    public GameMenuPresenter(ObservableTransformer schedulersTransformer) {
+        this.mSchedulersTransformer = schedulersTransformer;
     }
 
     @Override
     protected void updateView() {
+        if (model != null) {
 
+            updateRoomInfo();
+
+            subscribeToRoomObservables();
+        }
+    }
+
+    private void updateRoomInfo() {
+        view().clearAndAddPlayers(model.getRxPlayers());
+        view().setRoomName(model.getRoom().getName());
+        view().setMaxPlayersCount(model.getRoom().getMaxPlayers());
+        view().setCurrentPlayersCount(model.getRxPlayers().size());
+    }
+
+    private void subscribeToRoomObservables() {
+        addDisposable(model.roomInfoObservable()
+                .compose(applySchedulers())
+                .subscribe(rxRoom -> {
+                    updateRoomInfo();
+                }, Timber::e));
+
+        addDisposable(model.addUserObservable()
+                .compose(applySchedulers())
+                .subscribe(rxUser -> {
+                    view().addPlayer(rxUser);
+                }, Timber::e));
+
+        addDisposable(model.removeUserObservable()
+                .compose(applySchedulers())
+                .subscribe(rxUser -> {
+                    view().removePlayer(rxUser);
+                }, Timber::e));
+    }
+
+    @SuppressWarnings("unchecked")
+    private <S> ObservableTransformer<S, S> applySchedulers() {
+        return (ObservableTransformer<S, S>) mSchedulersTransformer;
     }
 
     @Override
     public void destroy() {
-
+        // STUB
     }
 }

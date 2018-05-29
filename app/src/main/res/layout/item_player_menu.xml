@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="100dp">
+
+    <TextView
+        android:id="@+id/tvUserWord"
+        android:layout_width="wrap_content"
+        android:layout_height="49dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="-16dp"
+        android:background="@drawable/button_background"
+        android:ellipsize="end"
+        android:fontFamily="@font/lemon_tuesday_font_family"
+        android:gravity="left|center_vertical"
+        android:maxLines="1"
+        android:paddingLeft="40dp"
+        android:singleLine="true"
+        android:textColor="@color/pen_color"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivUserIcon"
+        android:layout_width="58dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvUserWord"
+        app:srcCompat="@drawable/logo" />
+
+    <ImageView
+        android:id="@+id/ivFriend"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/ivUserIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ivUserIcon"
+        app:srcCompat="@drawable/ic_star" />
+
+    <TextView
+        android:id="@+id/tvUserLogin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/textPrimary"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/ivUserIcon"
+        app:layout_constraintEnd_toStartOf="@id/ivFriend"
+        app:layout_constraintStart_toEndOf="@id/ivUserIcon"
+        app:layout_constraintTop_toTopOf="@id/ivUserIcon" />
+
+    <TextView
+        android:id="@+id/tvAfkShadow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/afk_background"
+        android:gravity="center"
+        android:text="@string/game_afk"
+        android:textColor="@color/textWhite"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/ivUserIcon"
+        app:layout_constraintEnd_toEndOf="@id/ivUserIcon"
+        app:layout_constraintStart_toStartOf="@id/ivUserIcon"
+        app:layout_constraintTop_toTopOf="@id/ivUserIcon" />
+</android.support.constraint.ConstraintLayout>

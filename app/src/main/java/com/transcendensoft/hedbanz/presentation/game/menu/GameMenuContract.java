@@ -15,7 +15,10 @@ package com.transcendensoft.hedbanz.presentation.game.menu;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
 import com.transcendensoft.hedbanz.presentation.base.BaseView;
+
+import java.util.List;
 
 /**
  * View and Presenter interfaces contract for game menu presentation
@@ -25,7 +28,12 @@ import com.transcendensoft.hedbanz.presentation.base.BaseView;
  */
 public interface GameMenuContract {
     interface View extends BaseView {
-
+        void setRoomName(String roomName);
+        void clearAndAddPlayers(List<RxUser> rxUsers);
+        void addPlayer(RxUser rxUser);
+        void removePlayer(RxUser rxUser);
+        void setCurrentPlayersCount(int currentPlayersCount);
+        void setMaxPlayersCount(int maxPlayersCount);
     }
 
     interface Presenter {

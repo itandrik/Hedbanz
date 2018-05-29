@@ -109,6 +109,7 @@ public class Message{
         isFinished = finished;
     }
 
+
     public static class Builder {
         private long id;
         private String message;

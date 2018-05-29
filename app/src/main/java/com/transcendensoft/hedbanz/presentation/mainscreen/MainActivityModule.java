@@ -20,7 +20,7 @@ import android.content.Context;
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.di.scope.FragmentScope;
-import com.transcendensoft.hedbanz.domain.entity.RoomList;
+import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.presentation.menu.MenuFragment;
 
 import java.util.ArrayList;

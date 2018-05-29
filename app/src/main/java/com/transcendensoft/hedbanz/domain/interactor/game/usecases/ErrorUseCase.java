@@ -20,6 +20,7 @@ import com.google.gson.JsonSyntaxException;
 import com.transcendensoft.hedbanz.data.models.common.ServerError;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.room.RoomInfoUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import javax.inject.Inject;

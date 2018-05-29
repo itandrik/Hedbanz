@@ -49,7 +49,7 @@ public class HedbanzFirebaseInstanceIdService extends FirebaseInstanceIdService{
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Timber.i("Firebase token %s", refreshedToken);
 
-        mPreferenceManager.setFirebaseToken(refreshedToken);
+        //mPreferenceManager.setFirebaseToken(refreshedToken);
     }
 
 }

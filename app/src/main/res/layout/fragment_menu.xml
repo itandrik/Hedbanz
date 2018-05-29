@@ -110,7 +110,7 @@
             app:layout_constraintEnd_toStartOf="@+id/tvFriends"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tvGamesPlayedTitle"
-            app:layout_constraintTop_toTopOf="@+id/imageView" />
+            app:layout_constraintTop_toTopOf="@+id/ivUserIcon" />
 
         <TextView
             android:id="@+id/tvFriends"

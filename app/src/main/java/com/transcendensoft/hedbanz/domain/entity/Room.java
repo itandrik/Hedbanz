@@ -49,6 +49,9 @@ public class Room {
         this.name = name;
         this.isWithPassword = isWithPassword;
         messages = new ArrayList<>();
+        if(this.players == null){
+            this.players = new ArrayList<>();
+        }
     }
 
     public Room() {

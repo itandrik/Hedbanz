@@ -145,6 +145,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     mAdapter.retryServerClickObservable());
             mPresenter.processSetWordToUserObservable(
                     mAdapter.setWordObservable());
+            mPresenter.processGuessWordHelperText(
+                    mAdapter.guessWordHelperStringObservable());
+            mPresenter.processGuessWordSubmit(
+                    mAdapter.guessWordSubmitObservable());
         }
     }
 

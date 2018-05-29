@@ -18,7 +18,7 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.typing;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.RoomInfoUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.room.RoomInfoUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import org.json.JSONException;
