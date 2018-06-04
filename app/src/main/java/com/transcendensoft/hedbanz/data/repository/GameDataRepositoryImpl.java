@@ -478,6 +478,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     public void sendMessage(Message message) {
         MessageDTO messageDTO = new MessageDTO.Builder()
                 .setSenderUser(new UserDTO.Builder().setId(mUserId).build())
+                .setSenderId(mUserId)
                 .setRoomId(mRoomId)
                 .setText(message.getMessage())
                 .setType(MessageType.SIMPLE_MESSAGE.getId())

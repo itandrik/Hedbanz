@@ -20,6 +20,8 @@ import android.support.annotation.NonNull;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.AskingQuestionOtherUserAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.AskingQuestionThisUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.GuessWordOtherUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.GuessWordThisUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.JoinedLeftUserAdapterDelegate;
@@ -48,6 +50,7 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     private NetworkErrorAdapterDelegate mNetworkErrorAdapterDelegate;
     private WordSettingAdapterDelegate mWordSettingAdapterDelegate;
     private GuessWordThisUserAdapterDelegate mGuessWordThisUserAdapterDelegate;
+    private AskingQuestionOtherUserAdapterDelegate mAskingQuestionOtherUserAdapterDelegate;
 
     @Inject
     public GameListAdapter(LoadingAdapterDelegate loadingAdapterDelegate,
@@ -60,13 +63,16 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                            WordSettingAdapterDelegate wordSettingAdapterDelegate,
                            UserAfkReturnedAdapterDelegate userAfkReturnedAdapterDelegate,
                            GuessWordThisUserAdapterDelegate guessWordThisUserAdapterDelegate,
-                           GuessWordOtherUserAdapterDelegate guessWordOtherUserAdapterDelegate) {
+                           GuessWordOtherUserAdapterDelegate guessWordOtherUserAdapterDelegate,
+                           AskingQuestionThisUserAdapterDelegate askingQuestionThisUserAdapterDelegate,
+                           AskingQuestionOtherUserAdapterDelegate askingQuestionOtherUserAdapterDelegate) {
         super();
 
         this.mServerErrorAdapterDelegate = serverErrorAdapterDelegate;
         this.mNetworkErrorAdapterDelegate = networkErrorAdapterDelegate;
         this.mWordSettingAdapterDelegate = wordSettingAdapterDelegate;
         this.mGuessWordThisUserAdapterDelegate = guessWordThisUserAdapterDelegate;
+        this.mAskingQuestionOtherUserAdapterDelegate = askingQuestionOtherUserAdapterDelegate;
 
         delegatesManager.addDelegate(loadingAdapterDelegate)
                 .addDelegate(serverErrorAdapterDelegate)
@@ -78,7 +84,9 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                 .addDelegate(wordSettedAdapterDelegate)
                 .addDelegate(guessWordThisUserAdapterDelegate)
                 .addDelegate(guessWordOtherUserAdapterDelegate)
-                .addDelegate(userAfkReturnedAdapterDelegate);
+                .addDelegate(userAfkReturnedAdapterDelegate)
+                .addDelegate(askingQuestionOtherUserAdapterDelegate)
+                .addDelegate(askingQuestionThisUserAdapterDelegate);
     }
 
     @Nullable
@@ -97,12 +105,22 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     }
 
     @NonNull
-    public Observable<String> guessWordSubmitObservable(){
+    public Observable<String> guessWordSubmitObservable() {
         return mGuessWordThisUserAdapterDelegate.guessWordObservable();
     }
 
     @NonNull
-    public Observable<String> guessWordHelperStringObservable(){
+    public Observable<String> guessWordHelperStringObservable() {
         return mGuessWordThisUserAdapterDelegate.guessWordHelperStringsObservable();
+    }
+
+    @NonNull
+    public Observable<Object> askingQuestionThumbsUpObservable(){
+        return mAskingQuestionOtherUserAdapterDelegate.thumbsUpClickObservable();
+    }
+
+    @NonNull
+    public Observable<Object> askingQuestionThumbsDownObservable(){
+        return mAskingQuestionOtherUserAdapterDelegate.thumbsDownClickObservable();
     }
 }

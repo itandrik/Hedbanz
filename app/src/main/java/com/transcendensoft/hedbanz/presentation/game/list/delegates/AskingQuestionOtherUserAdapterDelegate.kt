@@ -7,7 +7,7 @@ import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.domain.entity.Message
 import com.transcendensoft.hedbanz.domain.entity.MessageType
-import com.transcendensoft.hedbanz.presentation.game.list.holder.GuessWordThisUserViewHolder
+import com.transcendensoft.hedbanz.presentation.game.list.holder.AskingQuestionOtherUserViewHolder
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
@@ -28,7 +28,7 @@ import javax.inject.Inject
  *
  */
 /**
- * This delegate is responsible for creating {@link GuessWordThisUserViewHolder}
+ * This delegate is responsible for creating {@link AskingQuestionOtherUserViewHolder}
  * and binding ViewHolder widgets according to model.
  *
  * An AdapterDelegate get added to an AdapterDelegatesManager.
@@ -38,35 +38,34 @@ import javax.inject.Inject
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class GuessWordThisUserAdapterDelegate @Inject constructor() :
+class AskingQuestionOtherUserAdapterDelegate @Inject constructor() :
         AdapterDelegate<List<@JvmSuppressWildcards Message>>() {
-    private val guessWordSubject: PublishSubject<String> = PublishSubject.create()
-    private var helperStringSubject: PublishSubject<String> = PublishSubject.create()
+    private val thumbsUpSubject: PublishSubject<Any> = PublishSubject.create()
+    private val thumbsDownSubject: PublishSubject<Any> = PublishSubject.create()
 
     override fun onCreateViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder {
         val context = parent?.context
         val itemView = LayoutInflater.from(context)
-                .inflate(R.layout.item_guess_word_this_user, parent, false)
-        return GuessWordThisUserViewHolder(context, itemView)
+                .inflate(R.layout.item_asking_question_other_user, parent, false)
+        return AskingQuestionOtherUserViewHolder(context!!, itemView)
     }
 
     override fun isForViewType(items: List<Message>, position: Int): Boolean {
         val message = items[position]
-        return message.messageType == MessageType.GUESS_WORD_THIS_USER
+        return message.messageType == MessageType.ASKING_QUESTION_OTHER_USER
     }
 
     override fun onBindViewHolder(items: List<Message>, position: Int,
                                   holder: RecyclerView.ViewHolder, payloads: MutableList<Any>) {
-        if (holder is GuessWordThisUserViewHolder) {
-            val helperStringsArray = holder.context.resources
-                    .getStringArray(R.array.guess_helpers)
-            holder.bindRecyclerViewGuessHelpers(helperStringsArray.toList())
-            holder.submitWordObservable().subscribe(guessWordSubject)
-            helperStringSubject = holder.helperStringsObservable()
+        val message = items[position]
+        if (holder is AskingQuestionOtherUserViewHolder) {
+            //TODO
+            //holder.bindProgress(message.userFrom?.login ?: "")
+            holder.thumbsDownClickObservable().subscribe(thumbsDownSubject)
+            holder.thumbsUpClickObservable().subscribe(thumbsUpSubject);
         }
     }
 
-    fun guessWordObservable() = guessWordSubject
-
-    fun guessWordHelperStringsObservable() = helperStringSubject
+    fun thumbsDownClickObservable() = thumbsDownSubject
+    fun thumbsUpClickObservable() = thumbsUpSubject
 }

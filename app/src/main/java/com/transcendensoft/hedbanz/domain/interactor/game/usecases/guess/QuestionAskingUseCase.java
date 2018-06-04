@@ -16,7 +16,6 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.guess;
  */
 
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
-import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
@@ -48,11 +47,7 @@ public class QuestionAskingUseCase extends ObservableUseCase<Question, Void> {
     }
 
     private void initSubject(GameDataRepository gameDataRepository) {
-        Observable<Question> observable = gameDataRepository.questionAskingObservable()
-                .map(question -> {
-                    question.setMessageType(MessageType.ASKING_QUESTION);
-                    return question;
-                });
+        Observable<Question> observable = gameDataRepository.questionAskingObservable();
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
     }

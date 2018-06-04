@@ -347,6 +347,7 @@ public class GameInteractorFacade {
                 .setMessage(text)
                 .setUserFrom(currentUser)
                 .setClientMessageId(clientMessageId)
+
                 .build();
 
         mRepository.sendMessage(message);

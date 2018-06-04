@@ -23,6 +23,7 @@ import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
+import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.entity.Word;
@@ -136,7 +137,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                         updateSettingWordViewParameters(word.getSenderUser(), false, true);
                         mGameInteractor.setWordToUser(word);
                     },
-                    err -> Timber.e("Error while send word to user. MEssage : " + err.getMessage())
+                    err -> Timber.e("Error while send word to user. Message : " + err.getMessage())
             ));
         }
     }
@@ -162,7 +163,20 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     @Override
     public void processGuessWordSubmit(Observable<String> clickObservable) {
+        addDisposable(clickObservable.subscribe(
+                text -> mGameInteractor.guessWord(text),
+                err -> Timber.e("Error while guess word. MEssage : " + err.getMessage())
+        ));
+    }
 
+    @Override
+    public void processThumbsDownClick(Observable<Object> clickObservable) {
+        view().showShortToastMessage("Thumbs down clicked");
+    }
+
+    @Override
+    public void processThumbsUpClick(Observable<Object> clickObservable) {
+        view().showShortToastMessage("Thumbs up clicked");
     }
 
     /*------------------------------------*
@@ -247,6 +261,8 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         initMessageListeners();
         initWordSettingListeners();
         initWordGuessingListeners();
+        initAskingQuestionListener();
+        initWordVotingListeners();
 
         refreshMessageHistory();
     }
@@ -354,6 +370,16 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 this::processEventListenerOnError
         );
     }
+    private void initAskingQuestionListener(){
+        mGameInteractor.onQuestionAskingListener(
+                this::processAskingQuestion,
+                this::processEventListenerOnError
+        );
+    }
+
+    private void initWordVotingListeners(){
+
+    }
 
     private void processSimpleMessage(Message message) {
         List<Message> messages = model.getMessages();
@@ -411,6 +437,18 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
         model.getMessages().add(messageBuilder.build());
         view().addMessage(messageBuilder.build());
+    }
+
+    private void processAskingQuestion(Question question){
+        User currentUser = mPreferenceManger.getUser();
+        if(currentUser.equals(question.getUserFrom())){
+            question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
+        } else {
+            question.setMessageType(MessageType.GUESS_WORD_OTHER_USER);
+        }
+
+        model.getMessages().add(question);
+        view().addMessage(question);
     }
 
     /*------------------------------------*

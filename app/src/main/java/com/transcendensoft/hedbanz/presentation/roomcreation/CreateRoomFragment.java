@@ -33,15 +33,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.domain.entity.Room;
-import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
+import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
+import com.transcendensoft.hedbanz.utils.KeyboardUtils;
 import com.warkiz.widget.IndicatorSeekBar;
 
 import javax.inject.Inject;
@@ -67,6 +69,7 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
     @BindView(R.id.etRoomName) EditText mEtRoomName;
     @BindView(R.id.etRoomPassword) AppCompatEditText mEtRoomPassword;
     @BindView(R.id.isbPlayersQuantity) IndicatorSeekBar mIsbMaxPlayersQuantity;
+    @BindView(R.id.svCreateRoom) ScrollView mSvContainer;
 
     @Inject CreateRoomPresenter mPresenter;
     @Inject @ActivityContext Context mContext;
@@ -89,6 +92,7 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
 
         mPresenter.setModel(mPresenterModel);
         initPasswordCheckBox();
+        initScrollContainer();
 
         return view;
     }
@@ -160,6 +164,14 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
         if(mPresenter != null){
             mPresenter.setModel(model);
         }
+    }
+
+    private void initScrollContainer(){
+        mSvContainer.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            if(getActivity() != null) {
+                KeyboardUtils.hideSoftInput(getActivity());
+            }
+        });
     }
 
     /*------------------------------------*
