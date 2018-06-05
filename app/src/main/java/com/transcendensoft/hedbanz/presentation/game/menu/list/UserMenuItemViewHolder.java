@@ -15,23 +15,26 @@ package com.transcendensoft.hedbanz.presentation.game.menu.list;
  * limitations under the License.
  */
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.MvpViewHolder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- *  View holder realization for concrete user in game mode
- *  side bar menu.
+ * View holder realization for concrete user in game mode
+ * side bar menu.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
         implements UserMenuItemContract.View {
@@ -40,14 +43,20 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
     @BindView(R.id.ivFriend) ImageView mIvIsFriend;
     @BindView(R.id.ivUserIcon) ImageView mIvUserIcon;
     @BindView(R.id.tvAfkShadow) TextView mTvAfk;
+    @BindView(R.id.tvThisUser) TextView mTvThisUser;
+    @BindView(R.id.ivThisUserStar) ImageView mIvThisUserStar;
 
-    public UserMenuItemViewHolder(View itemView) {
+    private Context mContext;
+
+    public UserMenuItemViewHolder(Context context, View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
 
         itemView.setOnClickListener(v -> {
-           presenter.onClickUser();
+            presenter.onClickUser();
         });
+
+        mContext = context;
     }
 
     @Override
@@ -57,7 +66,7 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
 
     @Override
     public void setName(String name) {
-        if(!TextUtils.isEmpty(name)){
+        if (!TextUtils.isEmpty(name)) {
             mTvLogin.setText(name);
         } else {
             mTvLogin.setText("");
@@ -66,7 +75,7 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
 
     @Override
     public void setIsAfk(boolean isAfk) {
-        if(isAfk){
+        if (isAfk) {
             mTvAfk.setVisibility(View.VISIBLE);
         } else {
             mTvAfk.setVisibility(View.GONE);
@@ -75,7 +84,7 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
 
     @Override
     public void setIsFriend(boolean isFriend) {
-        if(isFriend){
+        if (isFriend) {
             mIvIsFriend.setVisibility(View.VISIBLE);
         } else {
             mIvIsFriend.setVisibility(View.GONE);
@@ -83,13 +92,21 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
     }
 
     @Override
-    public void setWord(String word) {
-        if(!TextUtils.isEmpty(word)){
-            mTvWord.setText(word);
-            mTvWord.setVisibility(View.VISIBLE);
-        } else {
-            mTvWord.setText("");
+    public void setWord(User user) {
+        if (new PreferenceManager(mContext).getUser().equals(user)) {
+            mTvThisUser.setVisibility(View.VISIBLE);
+            mIvThisUserStar.setVisibility(View.VISIBLE);
             mTvWord.setVisibility(View.GONE);
+        } else {
+            mTvThisUser.setVisibility(View.GONE);
+            mIvThisUserStar.setVisibility(View.GONE);
+
+            if (!TextUtils.isEmpty(user.getWord())) {
+                mTvWord.setText(user.getWord());
+                mTvWord.setVisibility(View.VISIBLE);
+            } else {
+                mTvWord.setVisibility(View.GONE);
+            }
         }
     }
 }

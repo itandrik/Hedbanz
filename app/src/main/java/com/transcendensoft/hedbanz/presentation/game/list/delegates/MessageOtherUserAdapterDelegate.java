@@ -78,8 +78,10 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
             User userFrom = message.getUserFrom();
 
             String login = null;
+            String word = null;
             if (userFrom != null) {
                 login = userFrom.getLogin();
+                word = userFrom.getWord();
             }
 
             boolean isHideLoginAndImage = false;
@@ -89,6 +91,7 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
                 isHideLoginAndImage = true;
             }
 
+            viewHolder.bindUserWord(word);
             viewHolder.bindShowHideLoginAndImage(isHideLoginAndImage);
             viewHolder.bindUserLogin(login);
             viewHolder.bindMessage(message.getMessage());

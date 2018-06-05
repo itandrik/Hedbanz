@@ -112,6 +112,8 @@
     <string name="game_set_word_title_random">Самое время загадать слово случайному игроку</string>
     <string name="game_set_word_hint">Ваше слово&#8230;</string>
     <string name="game_word_setted">Игрок %1$s загадал слово игроку %2$s</string>
+    <string name="game_word_setted_to_current_user">Игрок %1$s загадал вам слово</string>
+    <string name="game_word_current_user_setted">Вы загадали слово игроку %1$s</string>
     <string name="game_error_disconnected">Ожидание подключения&#8230;</string>
     <string name="game_error_reconnecting">Подключаем&#8230;</string>
     <string name="game_error_reconnected">Соединение восстановлено!</string>
@@ -129,6 +131,7 @@
     <string name="game_exit_room_title">Выйти или не выйти, вот в чем вопрос&#8230;</string>
     <string name="game_action_resume_game">Продолжить</string>
     <string name="game_action_exit_game">Кидануть ребят</string>
+    <string name="game_menu_this_user">Это вы</string>
 
     <string name="game_toolbar_open_menu_content_description">Открыть меню</string>
     <string name="game_toolbar_close_menu_content_description">Закрыть меню</string>
@@ -138,7 +141,7 @@
     <string name="game_some_user_think_word_to_user_error">Сейчас свое слово будет отгадывать какой-то игрок</string>
     <string name="game_this_user_think_word_to_user">Попробуйте отгадать кто вы</string>
     <string name="game_guess_word_hint">Введите слово</string>
-
+    <string name="game_asking_total_votes">Всего:</string>
     <!-- Friends -->
     <string name="friends_toolbar_title">Ваши друзяки</string>
 </resources>

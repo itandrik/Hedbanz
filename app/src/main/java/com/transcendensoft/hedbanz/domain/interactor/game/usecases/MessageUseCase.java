@@ -22,7 +22,11 @@ import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
+import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
@@ -37,7 +41,7 @@ import io.reactivex.subjects.PublishSubject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-public class MessageUseCase extends ObservableUseCase<Message, Void> {
+public class MessageUseCase extends ObservableUseCase<Message, List<RxUser>> {
     private PublishSubject<Message> mSubject;
     private PreferenceManager mPreferenceManager;
     private GameDataRepository mGameDataRepository;
@@ -53,32 +57,50 @@ public class MessageUseCase extends ObservableUseCase<Message, Void> {
     }
 
     @Override
-    protected Observable<Message> buildUseCaseObservable(Void param) {
-        initSubject();
+    protected Observable<Message> buildUseCaseObservable(List<RxUser> rxPlayers) {
+        initSubject(rxPlayers);
 
         return mSubject;
     }
 
-    private void initSubject() {
-        Observable<Message> observable = getObservable();
+    private void initSubject(List<RxUser> rxPlayers) {
+        Observable<Message> observable = getObservable(rxPlayers);
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
     }
 
-    private Observable<Message> getObservable() {
-        return mGameDataRepository.messageObservable().map(this::mapMessageFullData);
+    private Observable<Message> getObservable(List<RxUser> rxPlayers) {
+        return mGameDataRepository.messageObservable()
+                .map(message -> mapMessageFullData(message, rxPlayers));
     }
 
     @NonNull
-    private Message mapMessageFullData(Message message) {
+    private Message mapMessageFullData(Message message, List<RxUser> rxPlayers) {
         if (mPreferenceManager.getUser().equals(message.getUserFrom())) {
             message.setMessageType(MessageType.SIMPLE_MESSAGE_THIS_USER);
             message.setFinished(true);
             message.setLoading(false);
         } else {
             message.setMessageType(MessageType.SIMPLE_MESSAGE_OTHER_USER);
+
+            if (message.getUserFrom() != null) {
+                RxUser rxUser = getRxUser(rxPlayers, message.getUserFrom().getId());
+                if (rxUser != null) {
+                    message.getUserFrom().setWord(rxUser.getUser().getWord());
+                }
+            }
         }
 
         return message;
+    }
+
+    @Nullable
+    private RxUser getRxUser(List<RxUser> rxPlayers, long userId) {
+        for (RxUser rxUser : rxPlayers) {
+            if (rxUser.getUser().getId() == userId) {
+                return rxUser;
+            }
+        }
+        return null;
     }
 }

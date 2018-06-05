@@ -23,8 +23,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.presentation.base.RxAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.holder.WordSettedViewHolder;
@@ -46,8 +48,11 @@ import javax.inject.Inject;
  * Developed by <u>Transcendensoft</u>
  */
 public class WordSettedAdapterDelegate extends RxAdapterDelegate<List<Message>> {
+    private PreferenceManager mPreferenceManger;
+
     @Inject
-    public WordSettedAdapterDelegate() {
+    public WordSettedAdapterDelegate(PreferenceManager preferenceManager) {
+        this.mPreferenceManger = preferenceManager;
     }
 
     @Override
@@ -74,7 +79,14 @@ public class WordSettedAdapterDelegate extends RxAdapterDelegate<List<Message>> 
         WordSettedViewHolder viewHolder = (WordSettedViewHolder) holder;
         Word word = (Word) items.get(position);
 
-        viewHolder.bindText(word.getSenderUser().getLogin(),
-                word.getWordReceiverUser().getLogin());
+        User currentUser = mPreferenceManger.getUser();
+        if(currentUser.equals(word.getSenderUser())){
+            viewHolder.bindCurrentUserSettedText(word.getWordReceiverUser().getLogin().trim());
+        } else if(currentUser.equals(word.getWordReceiverUser())){
+            viewHolder.bindTextSettedToCurrentUser(word.getSenderUser().getLogin().trim());
+        } else {
+            viewHolder.bindText(word.getSenderUser().getLogin(),
+                    word.getWordReceiverUser().getLogin());
+        }
     }
 }

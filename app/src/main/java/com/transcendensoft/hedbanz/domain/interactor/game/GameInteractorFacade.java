@@ -209,7 +209,7 @@ public class GameInteractorFacade {
 
     public void onMessageReceivedListener(Consumer<? super Message> onNext,
                                           Consumer<? super Throwable> onError) {
-        mMessageUseCase.execute(null, onNext, onError);
+        mMessageUseCase.execute(mCurrentRoom.getRxPlayers(), onNext, onError);
     }
 
     public void onStartTypingListener(Consumer<? super User> onNext,

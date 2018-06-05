@@ -17,6 +17,8 @@ package com.transcendensoft.hedbanz.presentation.game.menu.list;
 
 import android.support.annotation.DrawableRes;
 
+import com.transcendensoft.hedbanz.domain.entity.User;
+
 /**
  * View and Presenter interfaces contract for room item presentation
  *
@@ -33,7 +35,7 @@ public interface UserMenuItemContract {
 
         void setIsFriend(boolean isFriend);
 
-        void setWord(String word);
+        void setWord(User user);
     }
 
     interface Presenter {

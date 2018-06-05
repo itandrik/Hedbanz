@@ -29,6 +29,7 @@ public class WordDTO {
     public static final String SENDER_ID = "senderId";
     public static final String ROOM_ID = "roomId";
     public static final String WORD_RECEIVER_ID = "wordReceiverId";
+    public static final String WORD = "word";
 
     @SerializedName(SENDER_ID)
     @Expose
@@ -39,7 +40,7 @@ public class WordDTO {
     @SerializedName(WORD_RECEIVER_ID)
     @Expose
     private long wordReceiverId;
-    @SerializedName("word")
+    @SerializedName(WORD)
     @Expose
     private String word;
 

@@ -150,7 +150,9 @@ public class GameActivity extends BaseActivity implements GameContract.View {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 showOrHideFab(mFabLogout, dy);
                 showOrHideFab(mFabMenu, dy);
-                KeyboardUtils.hideSoftInput(GameActivity.this);
+                if (dy < -50) {
+                    KeyboardUtils.hideSoftInput(GameActivity.this);
+                }
             }
 
             @Override
@@ -202,22 +204,27 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setCancelable(true)
-                .setMessage(getString(R.string.game_exit_room_message))
-                .setTitle(getString(R.string.game_exit_room_title))
-                .setPositiveButton(getString(R.string.game_action_exit_game), (dialog, which) -> {
-                    super.onBackPressed();
-                })
-                .setNegativeButton(getString(R.string.game_action_resume_game), (dialog, which) -> {
-                    dialog.dismiss();
-                })
-                .show();
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+            mDrawerLayout.closeDrawer(GravityCompat.END);
+        } else {
+            new AlertDialog.Builder(this)
+                    .setCancelable(true)
+                    .setMessage(getString(R.string.game_exit_room_message))
+                    .setTitle(getString(R.string.game_exit_room_title))
+                    .setPositiveButton(getString(R.string.game_action_exit_game), (dialog, which) -> {
+                        super.onBackPressed();
+                    })
+                    .setNegativeButton(getString(R.string.game_action_resume_game), (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .show();
+        }
     }
 
     @OnClick(R.id.fabMenu)
     protected void onMenuClicked() {
         mDrawerLayout.openDrawer(GravityCompat.END);
+        KeyboardUtils.hideSoftInput(this);
     }
 
     /*------------------------------------*

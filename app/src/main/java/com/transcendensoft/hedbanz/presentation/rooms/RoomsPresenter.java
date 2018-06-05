@@ -211,9 +211,11 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
 
             rooms.add(new Room.Builder().setId(-1).build()); //ProgressBar view
 
-            view().addRoomsToRecycler(rooms);
-            view().showContent();
-            model.addAllRooms(rooms);
+            if(view() != null) {
+                view().addRoomsToRecycler(rooms);
+                view().showContent();
+                model.addAllRooms(rooms);
+            }
         }
 
         @Override

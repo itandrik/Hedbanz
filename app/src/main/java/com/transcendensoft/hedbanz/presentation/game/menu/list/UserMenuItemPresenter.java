@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.presentation.game.menu.list;
  */
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
 
@@ -32,9 +33,11 @@ import timber.log.Timber;
 public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemContract.View>
         implements UserMenuItemContract.Presenter {
     private ObservableTransformer mSchedulersTransformer;
+    private PreferenceManager mPreferenceManager;
 
     public UserMenuItemPresenter(ObservableTransformer schedulersTransformer) {
         this.mSchedulersTransformer = schedulersTransformer;
+
     }
 
     @Override
@@ -57,7 +60,7 @@ public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemCon
         view().setIsAfk(model.getUser().isAFK());
         view().setIsFriend(model.getUser().isFriend());
         view().setName(model.getUser().getLogin());
-        view().setWord(model.getUser().getWord());
+        view().setWord(model.getUser());
     }
 
     @Override
