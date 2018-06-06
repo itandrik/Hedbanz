@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:custom="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <include
@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="76dp"
         android:layout_marginRight="32dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:background="@color/textWhite"
         app:cardBackgroundColor="@color/textWhite"
@@ -91,7 +92,7 @@
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="16dp"
                 app:cardBackgroundColor="@color/message_this_user_bg"
                 app:cardCornerRadius="18dp"
                 app:cardElevation="6dp"

@@ -49,6 +49,7 @@ public interface GameContract {
         void showFooterDisconnected();
         void showFooterReconnecting();
         void showFooterReconnected();
+        void showUserAfk(boolean isAfk, String login);
         void showRestoreRoom();
 
         void showEmptyList();

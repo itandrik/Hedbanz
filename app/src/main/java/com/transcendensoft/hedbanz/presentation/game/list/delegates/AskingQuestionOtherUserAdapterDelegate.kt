@@ -7,6 +7,7 @@ import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.domain.entity.Message
 import com.transcendensoft.hedbanz.domain.entity.MessageType
+import com.transcendensoft.hedbanz.domain.entity.Question
 import com.transcendensoft.hedbanz.presentation.game.list.holder.AskingQuestionOtherUserViewHolder
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
@@ -52,15 +53,31 @@ class AskingQuestionOtherUserAdapterDelegate @Inject constructor() :
 
     override fun isForViewType(items: List<Message>, position: Int): Boolean {
         val message = items[position]
-        return message.messageType == MessageType.ASKING_QUESTION_OTHER_USER
+        return message.messageType == MessageType.ASKING_QUESTION_OTHER_USER &&
+                message is Question
     }
 
     override fun onBindViewHolder(items: List<Message>, position: Int,
                                   holder: RecyclerView.ViewHolder, payloads: MutableList<Any>) {
-        val message = items[position]
+        val message = items[position] as Question
         if (holder is AskingQuestionOtherUserViewHolder) {
-            //TODO
-            //holder.bindProgress(message.userFrom?.login ?: "")
+            val userFrom = message.userFrom
+
+            var login: String? = null
+            var word: String? = null
+            if (userFrom != null) {
+                login = userFrom.login
+                word = userFrom.word
+            }
+
+            holder.bindUserWord(word)
+            holder.bindShowHideLoginAndImage(false)
+            holder.bindUserLogin(login)
+            holder.bindMessage(message.message)
+            holder.bindUserImage(R.drawable.logo) //TODO change this shit
+            holder.bindTime(message.createDate.time)
+
+            //holder.bindProgress()
             holder.thumbsDownClickObservable().subscribe(thumbsDownSubject)
             holder.thumbsUpClickObservable().subscribe(thumbsUpSubject);
         }

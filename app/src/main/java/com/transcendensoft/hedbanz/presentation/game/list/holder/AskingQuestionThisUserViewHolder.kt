@@ -3,11 +3,15 @@ package com.transcendensoft.hedbanz.presentation.game.list.holder
 import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.View
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.domain.entity.User
+import com.transcendensoft.hedbanz.utils.DateUtils
 import kotlinx.android.synthetic.main.item_asking_question_this_user.view.*
+import kotlinx.android.synthetic.main.item_message_this_user.view.*
 import timber.log.Timber
+import java.sql.Timestamp
 
 /**
  * Copyright 2017. Andrii Chernysh
@@ -39,9 +43,45 @@ class AskingQuestionThisUserViewHolder(context: Context, itemView: View?) : Recy
     private val mTvPlayersThumbsDown = itemView?.tvPlayersThumbsDown
     private val mThumbsUpPlayersDivider = itemView?.dividerThumbsUpPlayers
     private val mThumbsDownPlayersDivider = itemView?.dividerThumbsDownPlayers
+    private val mTvMessage = itemView?.tvMessage
+    private val mTvTime = itemView?.tvTime
+    private val mPbLoading = itemView?.pbMessageLoading
     private val mTvTotal = itemView?.tvTotal
     private val mContext = context
 
+    fun bindMessage(message: String) {
+        if (!TextUtils.isEmpty(message)) {
+            mTvMessage?.text = message
+        } else {
+            mTvMessage?.text = ""
+        }
+    }
+
+    fun bindTime(time: Timestamp?) {
+        if (time != null) {
+            val humanReadableTime = DateUtils.convertDateToHoursMinutes(time.time)
+            if (!TextUtils.isEmpty(humanReadableTime)) {
+                mTvTime?.text = humanReadableTime
+            } else {
+                mTvTime?.text = ""
+            }
+        } else {
+            mTvTime?.text = ""
+        }
+    }
+
+    fun bindLoading(isLoading: Boolean, isFinished: Boolean) {
+        if (isLoading && !isFinished) {
+            mPbLoading?.visibility = View.VISIBLE
+            mTvTime?.text = ""
+        } else if (isFinished && !isLoading) {
+            mPbLoading?.visibility = View.GONE
+        }
+    }
+
+    /*------------------------------------*
+     *-------- Card view binding ---------*
+     *------------------------------------*/
     fun bindProgress(usersThumbsUp: List<User>, usersThumbsDown: List<User>, allUsersCount: Int){
         setProgressBarsMax(allUsersCount)
 

@@ -271,8 +271,9 @@ public class GameDataRepositoryImpl implements GameDataRepository {
 
                 Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_RETURNED,
                         data != null ? data.toString() : "null");
-                emitter.onNext(data);
-
+                if(data != null) {
+                    emitter.onNext(data);
+                }
             };
             mSocket.on(SERVER_USER_RETURNED, listener);
         });

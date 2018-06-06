@@ -487,4 +487,21 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 .setMessage(getString(R.string.game_restore_room_message))
                 .show();
     }
+
+    @Override
+    public void showUserAfk(boolean isAfk, String login) {
+        if (TextUtils.isEmpty(login)) {
+            if (isAfk) {
+                showShortToastMessage(R.string.game_some_user_afk);
+            } else {
+                showShortToastMessage(R.string.game_some_user_returned);
+            }
+        } else {
+            if (isAfk) {
+                showShortToastMessage(getString(R.string.game_user_afk, login));
+            } else {
+                showShortToastMessage(getString(R.string.game_user_returned, login));
+            }
+        }
+    }
 }

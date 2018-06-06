@@ -7,6 +7,7 @@ import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.domain.entity.Message
 import com.transcendensoft.hedbanz.domain.entity.MessageType
+import com.transcendensoft.hedbanz.domain.entity.Question
 import com.transcendensoft.hedbanz.presentation.game.list.holder.AskingQuestionThisUserViewHolder
 import javax.inject.Inject
 
@@ -47,15 +48,17 @@ class AskingQuestionThisUserAdapterDelegate @Inject constructor() : AdapterDeleg
 
     override fun isForViewType(items: List<Message>, position: Int): Boolean {
         val message = items[position]
-        return message.messageType == MessageType.ASKING_QUESTION_THIS_USER
+        return message.messageType == MessageType.ASKING_QUESTION_THIS_USER &&
+                message is Question
     }
 
     override fun onBindViewHolder(items: List<Message>, position: Int,
                                   holder: RecyclerView.ViewHolder, payloads: MutableList<Any>) {
-        val message = items[position]
+        val message = items[position] as Question
         if (holder is AskingQuestionThisUserViewHolder) {
-            //TODO
-            //holder.bindProgress(message.userFrom?.login ?: "")
+            holder.bindMessage(message.message)
+            holder.bindLoading(message.isLoading, message.isFinished)
+            holder.bindTime(message.createDate)
         }
     }
 }

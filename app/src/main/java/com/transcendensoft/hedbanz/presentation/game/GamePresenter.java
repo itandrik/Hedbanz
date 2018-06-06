@@ -303,26 +303,28 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     private void initUserAfkListener() {
         mGameInteractor.onUserAfkListener(user -> {
-            Message message = new Message.Builder()
+            /*Message message = new Message.Builder()
                     .setUserFrom(user)
                     .setMessageType(MessageType.USER_AFK)
                     .build();
 
             model.getMessages().add(message);
-            view().addMessage(message);
+            view().addMessage(message);*/
+            view().showUserAfk(true, user.getLogin());
         }, this::processEventListenerOnError);
     }
 
     private void initUserReturnedListener() {
         mGameInteractor.onUserReturnedListener(user -> {
             if(!mPreferenceManger.getUser().equals(user)) {
-                Message message = new Message.Builder()
+                /*Message message = new Message.Builder()
                         .setUserFrom(user)
                         .setMessageType(MessageType.USER_RETURNED)
                         .build();
 
                 model.getMessages().add(message);
-                view().addMessage(message);
+                view().addMessage(message);*/
+                view().showUserAfk(false, user.getLogin());
             } else {
                 model.setMessages(new ArrayList<>());
                 view().clearMessages();
@@ -444,7 +446,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         if(currentUser.equals(question.getUserFrom())){
             question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
         } else {
-            question.setMessageType(MessageType.GUESS_WORD_OTHER_USER);
+            question.setMessageType(MessageType.ASKING_QUESTION_OTHER_USER);
         }
 
         model.getMessages().add(question);
