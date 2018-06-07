@@ -447,6 +447,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     public void voteForQuestion(Question question) {
         QuestionDTO questionDTO = mQuestionMapper.convert(question);
         questionDTO.setSenderId(mUserId);
+        questionDTO.setRoomId(mRoomId);
         String json = mGson.toJson(questionDTO);
 
         Timber.i("SOCKET --> SEND(%1$s) : %2$s", CLIENT_USER_ANSWERING_EVENT, json);

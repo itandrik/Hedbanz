@@ -165,18 +165,24 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     public void processGuessWordSubmit(Observable<String> clickObservable) {
         addDisposable(clickObservable.subscribe(
                 text -> mGameInteractor.guessWord(text),
-                err -> Timber.e("Error while guess word. MEssage : " + err.getMessage())
+                err -> Timber.e("Error while guess word. Message : " + err.getMessage())
         ));
     }
 
     @Override
-    public void processThumbsDownClick(Observable<Object> clickObservable) {
-        view().showShortToastMessage("Thumbs down clicked");
+    public void processThumbsDownClick(Observable<Long> clickObservable) {
+        addDisposable(clickObservable.subscribe(
+                questionId -> mGameInteractor.voteForQuestion(false, questionId),
+                err -> Timber.e("Error while vote \'no\'. Message : " + err.getMessage())
+        ));
     }
 
     @Override
-    public void processThumbsUpClick(Observable<Object> clickObservable) {
-        view().showShortToastMessage("Thumbs up clicked");
+    public void processThumbsUpClick(Observable<Long> clickObservable) {
+        addDisposable(clickObservable.subscribe(
+                questionId -> mGameInteractor.voteForQuestion(true, questionId),
+                err -> Timber.e("Error while vote \'yes\'. Message : " + err.getMessage())
+        ));
     }
 
     /*------------------------------------*
@@ -303,27 +309,13 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     private void initUserAfkListener() {
         mGameInteractor.onUserAfkListener(user -> {
-            /*Message message = new Message.Builder()
-                    .setUserFrom(user)
-                    .setMessageType(MessageType.USER_AFK)
-                    .build();
-
-            model.getMessages().add(message);
-            view().addMessage(message);*/
             view().showUserAfk(true, user.getLogin());
         }, this::processEventListenerOnError);
     }
 
     private void initUserReturnedListener() {
         mGameInteractor.onUserReturnedListener(user -> {
-            if(!mPreferenceManger.getUser().equals(user)) {
-                /*Message message = new Message.Builder()
-                        .setUserFrom(user)
-                        .setMessageType(MessageType.USER_RETURNED)
-                        .build();
-
-                model.getMessages().add(message);
-                view().addMessage(message);*/
+            if (!mPreferenceManger.getUser().equals(user)) {
                 view().showUserAfk(false, user.getLogin());
             } else {
                 model.setMessages(new ArrayList<>());
@@ -366,21 +358,25 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 this::processEventListenerOnError);
     }
 
-    private void initWordGuessingListeners(){
+    private void initWordGuessingListeners() {
         mGameInteractor.onWordGuessingListener(
                 this::processGuessWord,
                 this::processEventListenerOnError
         );
     }
-    private void initAskingQuestionListener(){
+
+    private void initAskingQuestionListener() {
         mGameInteractor.onQuestionAskingListener(
                 this::processAskingQuestion,
                 this::processEventListenerOnError
         );
     }
 
-    private void initWordVotingListeners(){
-
+    private void initWordVotingListeners() {
+        mGameInteractor.onQuestionVotingListener(
+                this::processVoting,
+                this::processEventListenerOnError
+        );
     }
 
     private void processSimpleMessage(Message message) {
@@ -426,12 +422,12 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         }
     }
 
-    private void processGuessWord(User user){
+    private void processGuessWord(User user) {
         User currentUser = mPreferenceManger.getUser();
         Message.Builder messageBuilder = new Message.Builder()
                 .setUserFrom(user)
                 .setClientMessageId(user.getId());
-        if(currentUser.equals(user)){
+        if (currentUser.equals(user)) {
             messageBuilder.setMessageType(MessageType.GUESS_WORD_THIS_USER);
         } else {
             messageBuilder.setMessageType(MessageType.GUESS_WORD_OTHER_USER);
@@ -441,16 +437,31 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         view().addMessage(messageBuilder.build());
     }
 
-    private void processAskingQuestion(Question question){
+    private void processAskingQuestion(Question question) {
         User currentUser = mPreferenceManger.getUser();
-        if(currentUser.equals(question.getUserFrom())){
+        if (currentUser.equals(question.getUserFrom())) {
             question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
         } else {
             question.setMessageType(MessageType.ASKING_QUESTION_OTHER_USER);
         }
-
+        question.setAllUsersCount((byte) model.getPlayers().size() - 1);
         model.getMessages().add(question);
         view().addMessage(question);
+    }
+
+    private void processVoting(Question question) {
+        for (int i = model.getMessages().size() - 1; i >= 0; i--) {
+            Message modelMessage = model.getMessages().get(i);
+            if(modelMessage instanceof Question &&
+                    ((Question) modelMessage).getQuestionId() == question.getQuestionId()){
+                Question modelQuestion = (Question) modelMessage;
+                modelQuestion.setYesVoters(question.getYesVoters());
+                modelQuestion.setNoVoters(question.getNoVoters());
+
+                view().setMessage(i, modelQuestion);
+                return;
+            }
+        }
     }
 
     /*------------------------------------*

@@ -182,6 +182,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     mAdapter.guessWordHelperStringObservable());
             mPresenter.processGuessWordSubmit(
                     mAdapter.guessWordSubmitObservable());
+            mPresenter.processThumbsUpClick(
+                    mAdapter.askingQuestionThumbsUpObservable());
+            mPresenter.processThumbsDownClick(
+                    mAdapter.askingQuestionThumbsDownObservable());
         }
     }
 

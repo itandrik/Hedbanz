@@ -54,11 +54,12 @@ class AskingQuestionThisUserAdapterDelegate @Inject constructor() : AdapterDeleg
 
     override fun onBindViewHolder(items: List<Message>, position: Int,
                                   holder: RecyclerView.ViewHolder, payloads: MutableList<Any>) {
-        val message = items[position] as Question
+        val question = items[position] as Question
         if (holder is AskingQuestionThisUserViewHolder) {
-            holder.bindMessage(message.message)
-            holder.bindLoading(message.isLoading, message.isFinished)
-            holder.bindTime(message.createDate)
+            holder.bindMessage(question.message)
+            holder.bindLoading(question.isLoading, question.isFinished)
+            holder.bindTime(question.createDate)
+            holder.bindProgress(question.yesVoters, question.noVoters, question.allUsersCount)
         }
     }
 }

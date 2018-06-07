@@ -67,7 +67,7 @@ public interface GameContract {
         void processRetryServerPagination(Observable<Object> clickObservable);
         void processGuessWordSubmit(Observable<String> clickObservable);
         void processGuessWordHelperText(Observable<String> clickObservable);
-        void processThumbsUpClick(Observable<Object> clickObservable);
-        void processThumbsDownClick(Observable<Object> clickObservable);
+        void processThumbsUpClick(Observable<Long> clickObservable);
+        void processThumbsDownClick(Observable<Long> clickObservable);
     }
 }

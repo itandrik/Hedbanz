@@ -277,35 +277,32 @@ public class GameInteractorFacade {
         mQuestionVotingUseCase.execute(null, onNext, onError);
     }
 
-    public void guessWord(String word){
+    public void guessWord(String word) {
         User currentUser = mPreferenceManger.getUser();
 
         int clientMessageId = Arrays.hashCode(new long[]{
                 System.currentTimeMillis(), currentUser.getId()});
 
-        Question question = new Question.Builder()
-                .setMessageType(MessageType.GUESS_WORD_THIS_USER)
-                .setMessage(word)
-                .setUserFrom(currentUser)
-                .setClientMessageId(clientMessageId)
-                .build();
+        Question question = new Question();
+        question.setMessageType(MessageType.GUESS_WORD_THIS_USER);
+        question.setMessage(word);
+        question.setUserFrom(currentUser);
+        question.setClientMessageId(clientMessageId);
 
         mRepository.guessWord(question);
     }
 
-    public void voteForQuestion(boolean isYes){
+    public void voteForQuestion(boolean isYes, Long questionId) {
         User currentUser = mPreferenceManger.getUser();
 
-        Question question = new Question.Builder()
-                .setUserFrom(currentUser)
-                .build();
+        Question question = new Question();
+        question.setMessageType(MessageType.VOTING_FOR_QUESTION);
+        question.setQuestionId(questionId);
 
-        if(isYes){
-            question.setYesNumber(1);
-            question.setNoNumber(0);
+        if (isYes) {
+            question.setVote(Question.Vote.YES);
         } else {
-            question.setYesNumber(0);
-            question.setNoNumber(1);
+            question.setVote(Question.Vote.NO);
         }
 
         mRepository.voteForQuestion(question);

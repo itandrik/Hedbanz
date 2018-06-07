@@ -41,8 +41,8 @@ import javax.inject.Inject
  */
 class AskingQuestionOtherUserAdapterDelegate @Inject constructor() :
         AdapterDelegate<List<@JvmSuppressWildcards Message>>() {
-    private val thumbsUpSubject: PublishSubject<Any> = PublishSubject.create()
-    private val thumbsDownSubject: PublishSubject<Any> = PublishSubject.create()
+    private val thumbsUpSubject: PublishSubject<Long> = PublishSubject.create()
+    private val thumbsDownSubject: PublishSubject<Long> = PublishSubject.create()
 
     override fun onCreateViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder {
         val context = parent?.context
@@ -59,9 +59,9 @@ class AskingQuestionOtherUserAdapterDelegate @Inject constructor() :
 
     override fun onBindViewHolder(items: List<Message>, position: Int,
                                   holder: RecyclerView.ViewHolder, payloads: MutableList<Any>) {
-        val message = items[position] as Question
+        val question = items[position] as Question
         if (holder is AskingQuestionOtherUserViewHolder) {
-            val userFrom = message.userFrom
+            val userFrom = question.userFrom
 
             var login: String? = null
             var word: String? = null
@@ -73,13 +73,13 @@ class AskingQuestionOtherUserAdapterDelegate @Inject constructor() :
             holder.bindUserWord(word)
             holder.bindShowHideLoginAndImage(false)
             holder.bindUserLogin(login)
-            holder.bindMessage(message.message)
+            holder.bindMessage(question.message)
             holder.bindUserImage(R.drawable.logo) //TODO change this shit
-            holder.bindTime(message.createDate.time)
+            holder.bindTime(question.createDate.time)
 
-            //holder.bindProgress()
-            holder.thumbsDownClickObservable().subscribe(thumbsDownSubject)
-            holder.thumbsUpClickObservable().subscribe(thumbsUpSubject);
+            holder.bindProgress(question.yesVoters, question.noVoters, question.allUsersCount)
+            holder.thumbsDownClickObservable(question.questionId).subscribe(thumbsDownSubject)
+            holder.thumbsUpClickObservable(question.questionId).subscribe(thumbsUpSubject);
         }
     }
 

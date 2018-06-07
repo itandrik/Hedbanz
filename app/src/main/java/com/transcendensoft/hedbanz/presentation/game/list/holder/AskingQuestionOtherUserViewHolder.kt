@@ -17,8 +17,6 @@ import io.reactivex.Observable
 import kotlinx.android.synthetic.main.item_asking_question_this_user.view.*
 import kotlinx.android.synthetic.main.item_message_some_user.view.*
 
-import timber.log.Timber
-
 /**
  * Copyright 2017. Andrii Chernysh
  *
@@ -149,11 +147,6 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
     fun bindProgress(usersThumbsUp: List<User>, usersThumbsDown: List<User>, allUsersCount: Int) {
         setProgressBarsMax(allUsersCount)
 
-        if (usersThumbsUp.size + usersThumbsDown.size != allUsersCount) {
-            Timber.e("Error, while bind progress in asking question item." +
-                    " ThumbUp + ThumbDown users != allUsersCount")
-        }
-
         setThumbsUpInfo(usersThumbsUp)
         setThumbsDownInfo(usersThumbsDown, usersThumbsUp)
 
@@ -181,11 +174,15 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
         if (usersThumbsDown.isEmpty()) {
             mTvPlayersThumbsDown?.visibility = View.GONE
             mThumbsDownPlayersDivider?.visibility = View.GONE
+            (mTvTotal?.layoutParams as RelativeLayout.LayoutParams)
+                    .addRule(RelativeLayout.BELOW, R.id.tvPlayersThumbsDown)
         } else {
             mTvPlayersThumbsDown?.visibility = View.VISIBLE
             mThumbsDownPlayersDivider?.visibility = View.VISIBLE
             mTvPlayersThumbsDown?.text = usersThumbsUp.joinToString(separator = ", ")
             mPbThumbsDown?.progress = usersThumbsDown.size
+            (mTvTotal?.layoutParams as RelativeLayout.LayoutParams)
+                    .addRule(RelativeLayout.BELOW, R.id.dividerThumbsDownPlayers)
         }
     }
 
@@ -197,17 +194,17 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
         }
     }
 
-    fun thumbsUpClickObservable() =
-            Observable.create<Any> { emitter ->
+    fun thumbsUpClickObservable(questionId: Long) =
+            Observable.create<Long> { emitter ->
                 mCvThumbsUp?.setOnClickListener {
-                    emitter.onNext(it)
+                    emitter.onNext(questionId)
                 }
             }!!
 
-    fun thumbsDownClickObservable() =
-            Observable.create<Any> { emitter ->
+    fun thumbsDownClickObservable(questionId: Long) =
+            Observable.create<Long> { emitter ->
                 mCvThumbsDown?.setOnClickListener {
-                    emitter.onNext(it)
+                    emitter.onNext(questionId)
                 }
             }!!
 }

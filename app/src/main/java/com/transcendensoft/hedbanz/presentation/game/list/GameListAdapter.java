@@ -115,12 +115,12 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     }
 
     @NonNull
-    public Observable<Object> askingQuestionThumbsUpObservable(){
+    public Observable<Long> askingQuestionThumbsUpObservable(){
         return mAskingQuestionOtherUserAdapterDelegate.thumbsUpClickObservable();
     }
 
     @NonNull
-    public Observable<Object> askingQuestionThumbsDownObservable(){
+    public Observable<Long> askingQuestionThumbsDownObservable(){
         return mAskingQuestionOtherUserAdapterDelegate.thumbsDownClickObservable();
     }
 }

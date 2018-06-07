@@ -18,6 +18,8 @@ package com.transcendensoft.hedbanz.data.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * DTO for question entity.
  * All question properties received from server described here
@@ -29,20 +31,24 @@ public class QuestionDTO extends MessageDTO{
     @SerializedName("questionId")
     @Expose
     private long questionId;
-    @SerializedName("yesNumber")
+    @SerializedName("yesVoters")
     @Expose
-    private int yesNumber;
-    @SerializedName("noNumber")
+    private List<UserDTO> yesVoters;
+    @SerializedName("noVoters")
     @Expose
-    private int noNumber;
+    private List<UserDTO> noVoters;
+    @SerializedName("vote")
+    @Expose
+    private int voteId;
 
     public QuestionDTO(long id, long senderId, long roomId, String text, int type,
                        Long createDate, long clientMessageId, UserDTO senderUser,
-                       long questionId, int yesNumber, int noNumber) {
+                       long questionId, List<UserDTO> yesVoters, List<UserDTO> noVoters, int voteId) {
         super(id, senderId, roomId, text, type, createDate, clientMessageId, senderUser);
         this.questionId = questionId;
-        this.yesNumber = yesNumber;
-        this.noNumber = noNumber;
+        this.yesVoters = yesVoters;
+        this.noVoters = noVoters;
+        this.voteId = voteId;
     }
 
     public long getQuestionId() {
@@ -53,20 +59,28 @@ public class QuestionDTO extends MessageDTO{
         this.questionId = questionId;
     }
 
-    public int getYesNumber() {
-        return yesNumber;
+    public List<UserDTO> getYesVoters() {
+        return yesVoters;
     }
 
-    public void setYesNumber(int yesNumber) {
-        this.yesNumber = yesNumber;
+    public void setYesVoters(List<UserDTO> yesVoters) {
+        this.yesVoters = yesVoters;
     }
 
-    public int getNoNumber() {
-        return noNumber;
+    public List<UserDTO> getNoVoters() {
+        return noVoters;
     }
 
-    public void setNoNumber(int noNumber) {
-        this.noNumber = noNumber;
+    public void setNoVoters(List<UserDTO> noVoters) {
+        this.noVoters = noVoters;
+    }
+
+    public int getVoteId() {
+        return voteId;
+    }
+
+    public void setVoteId(int voteId) {
+        this.voteId = voteId;
     }
 
     public static class Builder {
@@ -79,8 +93,9 @@ public class QuestionDTO extends MessageDTO{
         private long clientMessageId;
         private UserDTO senderUser;
         private long questionId;
-        private int yesNumber;
-        private int noNumber;
+        private List<UserDTO> yesVoters;
+        private List<UserDTO> noVoters;
+        private int voteId;
 
         public QuestionDTO.Builder setId(long id) {
             this.id = id;
@@ -127,19 +142,24 @@ public class QuestionDTO extends MessageDTO{
             return this;
         }
 
-        public QuestionDTO.Builder setYesNumber(int yesNumber) {
-            this.yesNumber = yesNumber;
+        public QuestionDTO.Builder setYesVoters(List<UserDTO> yesVoters) {
+            this.yesVoters = yesVoters;
             return this;
         }
 
-        public QuestionDTO.Builder setNoNumber(int noNumber) {
-            this.noNumber = noNumber;
+        public QuestionDTO.Builder setNoVoters(List<UserDTO> noVoters) {
+            this.noVoters = noVoters;
+            return this;
+        }
+
+        public QuestionDTO.Builder setVoteId(int vote) {
+            this.voteId = vote;
             return this;
         }
 
         public QuestionDTO build() {
             return new QuestionDTO(id, senderId, roomId, text, type, createDate,
-                    clientMessageId, senderUser, questionId, yesNumber, noNumber);
+                    clientMessageId, senderUser, questionId, yesVoters, noVoters, voteId);
         }
     }
 }

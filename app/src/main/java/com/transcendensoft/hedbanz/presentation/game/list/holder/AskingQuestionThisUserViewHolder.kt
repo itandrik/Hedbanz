@@ -5,12 +5,12 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
+import android.widget.RelativeLayout
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.domain.entity.User
 import com.transcendensoft.hedbanz.utils.DateUtils
 import kotlinx.android.synthetic.main.item_asking_question_this_user.view.*
 import kotlinx.android.synthetic.main.item_message_this_user.view.*
-import timber.log.Timber
 import java.sql.Timestamp
 
 /**
@@ -85,11 +85,6 @@ class AskingQuestionThisUserViewHolder(context: Context, itemView: View?) : Recy
     fun bindProgress(usersThumbsUp: List<User>, usersThumbsDown: List<User>, allUsersCount: Int){
         setProgressBarsMax(allUsersCount)
 
-        if(usersThumbsUp.size + usersThumbsDown.size != allUsersCount){
-            Timber.e("Error, while bind progress in asking question item." +
-                    " ThumbUp + ThumbDown users != allUsersCount")
-        }
-
         setThumbsUpInfo(usersThumbsUp)
         setThumbsDownInfo(usersThumbsDown, usersThumbsUp)
 
@@ -105,11 +100,15 @@ class AskingQuestionThisUserViewHolder(context: Context, itemView: View?) : Recy
         if (usersThumbsUp.isEmpty()) {
             mTvPlayersThumbsUp?.visibility = View.GONE
             mThumbsUpPlayersDivider?.visibility = View.GONE
+            (mTvTotal?.layoutParams as RelativeLayout.LayoutParams)
+                    .addRule(RelativeLayout.BELOW, R.id.tvPlayersThumbsDown)
         } else {
             mTvPlayersThumbsUp?.visibility = View.VISIBLE
             mThumbsUpPlayersDivider?.visibility = View.VISIBLE
             mTvPlayersThumbsUp?.text = usersThumbsUp.joinToString(separator = ", ")
             mPbThumbsUp?.progress = usersThumbsUp.size
+            (mTvTotal?.layoutParams as RelativeLayout.LayoutParams)
+                    .addRule(RelativeLayout.BELOW, R.id.dividerThumbsDownPlayers)
         }
     }
 
