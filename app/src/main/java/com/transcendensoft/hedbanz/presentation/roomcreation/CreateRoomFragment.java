@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.presentation.roomcreation;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
+import com.transcendensoft.hedbanz.presentation.game.GameActivity;
 import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
@@ -166,11 +168,15 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
         }
     }
 
+    private int mScrollY;
     private void initScrollContainer(){
         mSvContainer.getViewTreeObserver().addOnScrollChangedListener(() -> {
-            if(getActivity() != null) {
+            int scrollY = mSvContainer.getScrollY(); // For ScrollView
+            if(getActivity() != null && Math.abs(mScrollY - scrollY) > 20) {
                 KeyboardUtils.hideSoftInput(getActivity());
             }
+
+            mScrollY = scrollY;
         });
     }
 
@@ -199,7 +205,12 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
         mEtRoomName.setText("");
         mEtRoomPassword.setText("");
         AndroidUtils.showShortToast(getActivity(), "Room created successfully");
-        //TODO open view
+
+        Intent intent = new Intent(mContext, GameActivity.class);
+
+        intent.putExtra(mContext.getString(R.string.bundle_room_id),(Long) room.getId());
+        intent.putExtra(mContext.getString(R.string.bundle_is_after_creation), true);
+        mContext.startActivity(intent);
     }
 
     @Override

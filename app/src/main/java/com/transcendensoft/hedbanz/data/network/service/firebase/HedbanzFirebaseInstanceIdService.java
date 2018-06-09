@@ -15,12 +15,20 @@ package com.transcendensoft.hedbanz.data.network.service.firebase;
  * limitations under the License.
  */
 
+import android.app.Service;
+import android.text.TextUtils;
+
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.entity.User;
 
 import javax.inject.Inject;
 
+import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasServiceInjector;
 import timber.log.Timber;
 
 /**
@@ -29,18 +37,24 @@ import timber.log.Timber;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class HedbanzFirebaseInstanceIdService extends FirebaseInstanceIdService{
+public class HedbanzFirebaseInstanceIdService extends FirebaseInstanceIdService implements HasServiceInjector{
     @Inject PreferenceManager mPreferenceManager;
+    @Inject DispatchingAndroidInjector<Service> serviceDispatchingAndroidInjector;
 
-    // Якщо ще не залогінився, тоді записуємо в PreferenceManager;
-    // Інакше відразу після логіна беремо з PreferenceManager і відправляємо запит на сервер bind.
-    // Якщо залогінився і в PreferenceManager немає токена, тоді відправляємо запит на сервер bindю
-    // Не забути про unbind.
+    // Якщо ще не залогінився, тоді записуємо в PreferenceManager;                                  +
+    // Інакше відразу після логіна беремо з PreferenceManager і відправляємо запит на сервер bind.  -
+    // Якщо залогінився і в PreferenceManager немає токена, тоді відправляємо запит на сервер bindю +
+    // Не забути про unbind.                                                                        -
 
     @Override
     public void onCreate() {
-//        AndroidInjection.inject(this);
+        AndroidInjection.inject(this);
         super.onCreate();
+    }
+
+    @Override
+    public AndroidInjector<Service> serviceInjector() {
+        return serviceDispatchingAndroidInjector;
     }
 
     @Override
@@ -49,7 +63,11 @@ public class HedbanzFirebaseInstanceIdService extends FirebaseInstanceIdService{
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Timber.i("Firebase token %s", refreshedToken);
 
-        //mPreferenceManager.setFirebaseToken(refreshedToken);
+        User currentUser = mPreferenceManager.getUser();
+        if(currentUser == null) {
+            mPreferenceManager.setFirebaseToken(refreshedToken);
+        } else if(TextUtils.isEmpty(mPreferenceManager.getFirebaseToken())){
+            //TODO
+        }
     }
-
 }

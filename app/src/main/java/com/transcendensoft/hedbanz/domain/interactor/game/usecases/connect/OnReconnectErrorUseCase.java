@@ -41,8 +41,7 @@ public class OnReconnectErrorUseCase extends ObservableUseCase<String, Void> {
                               GameDataRepository gameDataRepository) {
         super(observableTransformer, mCompositeDisposable);
 
-        Observable<String> observable = gameDataRepository.reconnectErrorObservable()
-                .flatMap(jsonObject -> Observable.just(jsonObject.toString()));
+        Observable<String> observable = gameDataRepository.reconnectErrorObservable();
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
     }

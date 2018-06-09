@@ -148,11 +148,11 @@ dependencies {
     implementation project(path: ':com-google-firebase-messaging')
 
     //Sockets
-    /*implementation ('io.socket:socket.io-client:1.0.0') {
+    implementation ('io.socket:socket.io-client:0.9.0') {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
-    }*/
-    implementation 'io.socket:socket.io-client:0.6.3'
+    }
+    implementation 'com.github.euzee:serviceManager:1.0.2'
 
     //In-app billing
     implementation 'com.android.billingclient:billing:1.0'

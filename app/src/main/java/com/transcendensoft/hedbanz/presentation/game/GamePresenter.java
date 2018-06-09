@@ -58,6 +58,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     private GetMessagesInteractor mGetMessagesInteractor;
     private PreferenceManager mPreferenceManger;
     private List<User> mTypingUsers;
+    private boolean isAfterRoomCreation;
 
     @Inject
     public GamePresenter(GameInteractorFacade gameInteractor,
@@ -88,6 +89,11 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     public void destroy() {
         mGetMessagesInteractor.dispose();
         mGameInteractor.destroy();
+    }
+
+    @Override
+    public void setAfterRoomCreation(boolean afterRoomCreation) {
+        isAfterRoomCreation = afterRoomCreation;
     }
 
     /*------------------------------------*
@@ -164,7 +170,14 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     @Override
     public void processGuessWordSubmit(Observable<String> clickObservable) {
         addDisposable(clickObservable.subscribe(
-                text -> mGameInteractor.guessWord(text),
+                text -> {
+                    Question question = mGameInteractor.guessWord(text);
+                    question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
+                    question.setMessage(text);
+                    question.setAllUsersCount(model.getPlayers().size() - 1);
+                    model.getMessages().add(question);
+                    view().addMessage(question);
+                },
                 err -> Timber.e("Error while guess word. Message : " + err.getMessage())
         ));
     }
@@ -200,10 +213,12 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         mGameInteractor.onConnectListener(
                 str -> {
                     Timber.i("Socket connected: %s", str);
-                    if (mPreferenceManger.getCurrentRoomId() == -1) {
-                        mGameInteractor.joinToRoom(model.getPassword());
-                    } else {
-                        view().showRestoreRoom();
+                    if(!isAfterRoomCreation) {
+                        if (mPreferenceManger.getCurrentRoomId() == -1) {
+                            mGameInteractor.joinToRoom(model.getPassword());
+                        } else {
+                            view().showRestoreRoom();
+                        }
                     }
                 },
                 this::processEventListenerOnError);
@@ -439,14 +454,33 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     private void processAskingQuestion(Question question) {
         User currentUser = mPreferenceManger.getUser();
-        if (currentUser.equals(question.getUserFrom())) {
+        if (currentUser.equals(question.getUserFrom()) &&
+                !question.isLoading() && question.isFinished()) {
             question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
+
+            List<Message> messages = model.getMessages();
+            for (int i = messages.size() - 1; i >= 0; i--) {
+                Message modelMessage = messages.get(i);
+                modelMessage.setLoading(false);
+                modelMessage.setFinished(true);
+                modelMessage.setCreateDate(question.getCreateDate());
+                if (modelMessage instanceof Question &&
+                        modelMessage.getClientMessageId() == question.getClientMessageId()) {
+                    Question modelQuestion = (Question) modelMessage;
+                    modelQuestion.setQuestionId(question.getQuestionId());
+                    modelQuestion.setNoVoters(question.getNoVoters());
+                    modelQuestion.setYesVoters(question.getYesVoters());
+                    modelQuestion.setAllUsersCount((byte) model.getPlayers().size() - 1);
+                    view().setMessage(i, modelQuestion);
+                    break;
+                }
+            }
         } else {
             question.setMessageType(MessageType.ASKING_QUESTION_OTHER_USER);
+            question.setAllUsersCount((byte) model.getPlayers().size() - 1);
+            model.getMessages().add(question);
+            view().addMessage(question);
         }
-        question.setAllUsersCount((byte) model.getPlayers().size() - 1);
-        model.getMessages().add(question);
-        view().addMessage(question);
     }
 
     private void processVoting(Question question) {

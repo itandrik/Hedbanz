@@ -184,10 +184,12 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
         }
 
         private void processServerError(PaginationState<Room> roomPaginationState) {
-            if (roomPaginationState.isRefreshed()) {
-                view().showServerError();
-            } else {
-                mLastHolder.showErrorServer();
+            if(view() != null) {
+                if (roomPaginationState.isRefreshed()) {
+                    view().showServerError();
+                } else {
+                    mLastHolder.showErrorServer();
+                }
             }
         }
 

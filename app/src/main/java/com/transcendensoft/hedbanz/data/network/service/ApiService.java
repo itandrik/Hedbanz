@@ -61,7 +61,7 @@ public interface ApiService {
                                  @Query("token") String token);
 
     @DELETE("user/token")
-    Completable unbindFirebaseToke(@Query("userId") long userId);
+    Completable unbindFirebaseToken(@Query("userId") long userId);
 
     /* Room */
     @GET("rooms/{page}")
@@ -97,5 +97,4 @@ public interface ApiService {
 
     //TODO Completable dismissFriend
     //TODO Completable removeFriend
-
 }

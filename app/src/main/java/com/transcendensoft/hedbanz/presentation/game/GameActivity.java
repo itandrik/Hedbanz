@@ -73,12 +73,16 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         if (mPresenter != null && getIntent() != null) {
             long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
             String password = getIntent().getStringExtra(getString(R.string.bundle_room_password));
+            boolean isAfterRoomCreation = getIntent()
+                    .getBooleanExtra(getString(R.string.bundle_is_after_creation), false);
+
             Room room = new Room.Builder()
                     .setId(roomId)
                     .setWithPassword(true)
                     .setPassword(password)
                     .build();
 
+            mPresenter.setAfterRoomCreation(isAfterRoomCreation);
             mPresenter.setModel(room);
         }
 

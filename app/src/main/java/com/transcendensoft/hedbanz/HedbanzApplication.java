@@ -25,6 +25,7 @@ import com.transcendensoft.hedbanz.utils.logging.CrashReportingTree;
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjector;
+import dagger.android.HasServiceInjector;
 import dagger.android.support.DaggerApplication;
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
@@ -36,7 +37,7 @@ import timber.log.Timber;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class HedbanzApplication extends DaggerApplication {
+public class HedbanzApplication extends DaggerApplication implements HasServiceInjector {
     @Inject Timber.DebugTree mDebugTimberTree;
     @Inject CrashReportingTree mReleaseTimberTree;
 

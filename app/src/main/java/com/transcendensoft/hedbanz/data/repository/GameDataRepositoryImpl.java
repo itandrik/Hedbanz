@@ -39,6 +39,7 @@ import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 import javax.inject.Inject;
@@ -150,10 +151,14 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
-    public Observable<Boolean> connectErrorObservable() {
+    public Observable<String> connectErrorObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
-                emitter.onNext(true);
+                if(args == null){
+                    emitter.onNext("null");
+                } else {
+                    emitter.onNext(Arrays.toString(args));
+                }
             };
             mSocket.on(Socket.EVENT_CONNECT_ERROR, listener);
         });
@@ -181,10 +186,14 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
-    public Observable<Boolean> reconnectErrorObservable() {
+    public Observable<String> reconnectErrorObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
-                emitter.onNext(true);
+                if(args == null){
+                    emitter.onNext("null");
+                } else {
+                    emitter.onNext(Arrays.toString(args));
+                }
             };
             mSocket.on(Socket.EVENT_RECONNECT_ERROR, listener);
         });
@@ -448,6 +457,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         QuestionDTO questionDTO = mQuestionMapper.convert(question);
         questionDTO.setSenderId(mUserId);
         questionDTO.setRoomId(mRoomId);
+
         String json = mGson.toJson(questionDTO);
 
         Timber.i("SOCKET --> SEND(%1$s) : %2$s", CLIENT_USER_ANSWERING_EVENT, json);

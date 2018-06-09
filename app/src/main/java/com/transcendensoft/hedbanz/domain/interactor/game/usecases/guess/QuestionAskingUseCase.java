@@ -47,9 +47,18 @@ public class QuestionAskingUseCase extends ObservableUseCase<Question, Void> {
     }
 
     private void initSubject(GameDataRepository gameDataRepository) {
-        Observable<Question> observable = gameDataRepository.questionAskingObservable();
+        Observable<Question> observable = getObservable(gameDataRepository);
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
+    }
+
+    private Observable<Question> getObservable(GameDataRepository gameDataRepository) {
+        return gameDataRepository.questionAskingObservable()
+                .map(question -> {
+                    question.setLoading(false);
+                    question.setFinished(true);
+                    return question;
+                });
     }
 
     @Override

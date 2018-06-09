@@ -9,6 +9,7 @@
     <!-- Bundle -->
     <string name="bundle_room_id">bundle_room_id</string>
     <string name="bundle_room_password">bundle_room_password</string>
+    <string name="bundle_is_after_creation">bundle_is_after_creation</string>
     <string name="salt">$2a$10$3L8fxrPhH3/qLYhjmsuEku</string>
 
     <!-- Actions -->

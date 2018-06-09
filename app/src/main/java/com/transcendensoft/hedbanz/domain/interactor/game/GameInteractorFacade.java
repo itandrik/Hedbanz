@@ -277,7 +277,7 @@ public class GameInteractorFacade {
         mQuestionVotingUseCase.execute(null, onNext, onError);
     }
 
-    public void guessWord(String word) {
+    public Question guessWord(String word) {
         User currentUser = mPreferenceManger.getUser();
 
         int clientMessageId = Arrays.hashCode(new long[]{
@@ -290,6 +290,8 @@ public class GameInteractorFacade {
         question.setClientMessageId(clientMessageId);
 
         mRepository.guessWord(question);
+
+        return question;
     }
 
     public void voteForQuestion(boolean isYes, Long questionId) {

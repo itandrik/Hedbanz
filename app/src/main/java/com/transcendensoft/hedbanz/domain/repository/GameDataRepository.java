@@ -34,10 +34,10 @@ import io.reactivex.Observable;
 public interface GameDataRepository {
     Observable<Boolean> connectObservable();
     Observable<Boolean> disconnectObservable();
-    Observable<Boolean> connectErrorObservable();
+    Observable<String> connectErrorObservable();
     Observable<Boolean> connectTimeoutObservable();
     Observable<Boolean> reconnectObservable();
-    Observable<Boolean> reconnectErrorObservable();
+    Observable<String> reconnectErrorObservable();
     Observable<Boolean> reconnectingObservable();
 
     Observable<JSONObject> roomInfoObservable();
