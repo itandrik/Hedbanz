@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
+import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.friends.FriendsActivity;
 import com.transcendensoft.hedbanz.presentation.intro.IntroActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
@@ -40,7 +42,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import dagger.android.support.DaggerFragment;
 
 /**
  * Fragment that shows user info and menu items such as:
@@ -49,7 +50,7 @@ import dagger.android.support.DaggerFragment;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-public class MenuFragment extends DaggerFragment {
+public class MenuFragment extends BaseFragment implements MenuFragmentContract.View {
     @BindView(R.id.tvFriends) TextView mTvFriends;
     @BindView(R.id.tvGamesPlayed) TextView mTvGamesPlayed;
     @BindView(R.id.tvMoney) TextView mTvMoney;
@@ -58,6 +59,7 @@ public class MenuFragment extends DaggerFragment {
 
     @Inject PreferenceManager mPreferenceManager;
     @Inject MainActivity mActivity;
+    @Inject MenuFragmentPresenter mPresenter;
 
     @Inject
     public MenuFragment() {
@@ -72,7 +74,35 @@ public class MenuFragment extends DaggerFragment {
         ButterKnife.bind(this, view);
         initUserData();
 
+        if(mPresenter != null) {
+            mPresenter.setModel(new User());
+        }
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mPresenter != null){
+            mPresenter.bindView(this);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mPresenter != null) {
+            mPresenter.unbindView();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mPresenter != null) {
+            mPresenter.destroy();
+        }
     }
 
     private void initUserData() {
@@ -120,14 +150,9 @@ public class MenuFragment extends DaggerFragment {
 
     @OnClick(R.id.btnExit)
     protected void onLogoutClicked() {
-        mPreferenceManager.setIsAuthorised(false);
-        mPreferenceManager.setUser(null);
-
-        Intent intent = new Intent(getActivity(), StartActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        startActivity(intent);
-
+        if(mPresenter != null){
+            mPresenter.unbindFirebaseToken();
+        }
     }
 
     @OnClick(R.id.fabDown)
@@ -135,5 +160,59 @@ public class MenuFragment extends DaggerFragment {
         if (getActivity() != null) {
             mActivity.onBackPressed();
         }
+    }
+
+    @Override
+    public void showLogoutSuccess() {
+        hideLoadingDialog();
+
+        mPreferenceManager.setIsAuthorised(false);
+        mPreferenceManager.setUser(null);
+
+        Intent intent = new Intent(getActivity(), StartActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(intent);
+    }
+
+    @Override
+    public void showLogoutServerError() {
+        hideLoadingDialog();
+
+        new AlertDialog.Builder(mActivity)
+                .setTitle(getString(R.string.menu_logout_error_title))
+                .setMessage(getString(R.string.menu_logout_server_error))
+                .setIcon(R.drawable.ic_dialog_server_error)
+                .setPositiveButton(getString(R.string.action_ok), (dialog, v) -> dialog.dismiss())
+                .setCancelable(true)
+                .show();
+    }
+
+    @Override
+    public void showLogoutNetworkError() {
+        hideLoadingDialog();
+
+        new AlertDialog.Builder(mActivity)
+                .setTitle(getString(R.string.menu_logout_error_title))
+                .setMessage(getString(R.string.menu_logout_network_error))
+                .setIcon(R.drawable.ic_dialog_network_error)
+                .setPositiveButton(getString(R.string.action_ok), (dialog, v) -> dialog.dismiss())
+                .setCancelable(true)
+                .show();
+    }
+
+    @Override
+    public void showLoading() {
+        // Stub
+    }
+
+    @Override
+    public void showContent() {
+        // Stub
+    }
+
+    @Override
+    public void hideAll() {
+        // Stub
     }
 }

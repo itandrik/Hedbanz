@@ -10,6 +10,8 @@
     <string name="bundle_room_id">bundle_room_id</string>
     <string name="bundle_room_password">bundle_room_password</string>
     <string name="bundle_is_after_creation">bundle_is_after_creation</string>
+    <string name="bundle_room_data">bundle_room_data</string>
+
     <string name="salt">$2a$10$3L8fxrPhH3/qLYhjmsuEku</string>
 
     <!-- Actions -->
@@ -91,6 +93,9 @@
     <string name="menu_action_help">Помощь</string>
     <string name="menu_action_settings">Настройки</string>
     <string name="menu_action_logout">Выйти</string>
+    <string name="menu_logout_error_title">Произошла ошибка</string>
+    <string name="menu_logout_server_error">Похоже у нас проблемы с сервером. Попробуйте попытку позже.</string>
+    <string name="menu_logout_network_error">Проверьте ваше интернет соединение и попробуйте выйти снова.</string>
 
     <!-- Credentials activity -->
     <string name="credentials_title">Мои данные</string>

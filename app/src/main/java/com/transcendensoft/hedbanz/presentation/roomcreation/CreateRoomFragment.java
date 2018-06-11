@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
@@ -76,6 +77,7 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
     @Inject CreateRoomPresenter mPresenter;
     @Inject @ActivityContext Context mContext;
     @Inject RoomList mPresenterModel;
+    @Inject Gson mGson;
 
     @Inject
     public CreateRoomFragment() {
@@ -210,6 +212,7 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
 
         intent.putExtra(mContext.getString(R.string.bundle_room_id),(Long) room.getId());
         intent.putExtra(mContext.getString(R.string.bundle_is_after_creation), true);
+        intent.putExtra(mContext.getString(R.string.bundle_room_data), mGson.toJson(room, Room.class));
         mContext.startActivity(intent);
     }
 

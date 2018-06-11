@@ -219,6 +219,10 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                         } else {
                             view().showRestoreRoom();
                         }
+                    } else {
+                        mGameInteractor.sendConnectInfo();
+                        mGameInteractor.setRoomInfo(model);
+                        initRoom(model);
                     }
                 },
                 this::processEventListenerOnError);

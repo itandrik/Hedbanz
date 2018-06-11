@@ -56,9 +56,10 @@ public class RoomDataRepositoryImpl implements RoomDataRepository {
     }
 
     @Override
-    public Observable<List<Room>> getRooms(int page, DataPolicy dataPolicy) {
+    public Observable<List<Room>> getRooms(int page, long userId, DataPolicy dataPolicy) {
         if (dataPolicy == DataPolicy.API) {
-            return mRoomsApiDataSource.getRooms(page).map(mRoomModelDataMapper::convert);
+            return mRoomsApiDataSource.getRooms(page, userId)
+                    .map(mRoomModelDataMapper::convert);
         } else if (dataPolicy == DataPolicy.DB) {
             return Observable.error(new UnsupportedOperationException());
         }

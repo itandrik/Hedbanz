@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.Room;
@@ -45,6 +46,7 @@ import static android.view.View.OVER_SCROLL_NEVER;
 public class GameActivity extends BaseActivity implements GameContract.View {
     @Inject GamePresenter mPresenter;
     @Inject GameListAdapter mAdapter;
+    @Inject Gson mGson;
 
     @BindView(R.id.rvGameList) RecyclerView mRecycler;
     @BindView(R.id.etChatMessage) EditText mEtChatMessage;
@@ -75,12 +77,20 @@ public class GameActivity extends BaseActivity implements GameContract.View {
             String password = getIntent().getStringExtra(getString(R.string.bundle_room_password));
             boolean isAfterRoomCreation = getIntent()
                     .getBooleanExtra(getString(R.string.bundle_is_after_creation), false);
+            String roomIntentString = getIntent().getStringExtra(getString(R.string.bundle_room_data));
 
-            Room room = new Room.Builder()
-                    .setId(roomId)
-                    .setWithPassword(true)
-                    .setPassword(password)
-                    .build();
+            Room room;
+            if(roomIntentString != null){
+                room = mGson.fromJson(roomIntentString, Room.class);
+                // After room creation
+            } else {
+                // After simple opening room
+                room = new Room.Builder()
+                        .setId(roomId)
+                        .setWithPassword(true)
+                        .setPassword(password)
+                        .build();
+            }
 
             mPresenter.setAfterRoomCreation(isAfterRoomCreation);
             mPresenter.setModel(room);

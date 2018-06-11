@@ -353,6 +353,31 @@ public class GameInteractorFacade {
         return message;
     }
 
+    public void sendConnectInfo(){
+        mRepository.sendConnectInfo();
+    }
+
+    public void setRoomInfo(Room room){
+        room.getPlayers().add(mPreferenceManger.getUser());
+        mCurrentRoom.setId(room.getId());
+        mCurrentRoom.setCurrentPlayersNumber(room.getCurrentPlayersNumber());
+        mCurrentRoom.setEndDate(room.getEndDate());
+        mCurrentRoom.setMaxPlayers(room.getMaxPlayers());
+        mCurrentRoom.setName(room.getName());
+        mCurrentRoom.setPassword(room.getPassword());
+        mCurrentRoom.setRoom(room);
+        mCurrentRoom.setStartDate(room.getStartDate());
+        mCurrentRoom.setWithPassword(room.isWithPassword());
+        if(room.getPlayers() != null) {
+            for (User user : room.getPlayers()) {
+                mCurrentRoom.addPlayer(user);
+                mCurrentRoom.setCurrentPlayersNumber(
+                        (byte) (mCurrentRoom.getRoom().getCurrentPlayersNumber() + 1));
+                room.setCurrentPlayersNumber((byte) (room.getCurrentPlayersNumber() + 1));
+            }
+        }
+    }
+
     @SuppressLint("CheckResult")
     public void destroy() {
         mOnConnectUseCase.dispose();

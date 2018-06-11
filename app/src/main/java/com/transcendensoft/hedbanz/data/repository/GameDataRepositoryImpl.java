@@ -531,7 +531,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         mRoomToUserJson = mGson.toJson(joinRoomObject);
     }
 
-    private void sendConnectInfo() {
+    public void sendConnectInfo() {
         Timber.i("SOCKET --> SEND(%1$s). Data : %2$s",
                 CLIENT_CONNECT_INFO, mRoomToUserJson);
         mSocket.emit(CLIENT_CONNECT_INFO, mRoomToUserJson);

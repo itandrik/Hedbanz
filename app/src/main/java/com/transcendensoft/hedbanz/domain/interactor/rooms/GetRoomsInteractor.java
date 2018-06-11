@@ -15,11 +15,13 @@ package com.transcendensoft.hedbanz.domain.interactor.rooms;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.repository.RoomDataRepositoryImpl;
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.domain.PaginationState;
 import com.transcendensoft.hedbanz.domain.PaginationUseCase;
 import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.repository.RoomDataRepository;
 
 import javax.inject.Inject;
@@ -38,18 +40,23 @@ import io.reactivex.disposables.CompositeDisposable;
  */
 public class GetRoomsInteractor extends PaginationUseCase<Room, Void, Void> {
     private final RoomDataRepository mRoomRepository;
+    private final PreferenceManager mPreferenceManager;
 
     @Inject
     public GetRoomsInteractor(ObservableTransformer mSchedulersTransformer,
                               CompositeDisposable mCompositeDisposable,
-                              RoomDataRepositoryImpl roomDataRepository) {
+                              RoomDataRepositoryImpl roomDataRepository,
+                              PreferenceManager preferenceManager) {
         super(mSchedulersTransformer, mCompositeDisposable);
         mRoomRepository = roomDataRepository;
+        mPreferenceManager = preferenceManager;
     }
 
     @Override
     protected Observable<PaginationState<Room>> buildUseCaseObservable(Void params) {
-        return mRoomRepository.getRooms(mCurrentPage, DataPolicy.API)
+        User currentUser = mPreferenceManager.getUser();
+
+        return mRoomRepository.getRooms(mCurrentPage, currentUser.getId(), DataPolicy.API)
                 .flatMap(this::convertEntitiesToPagingResult)
                 .onErrorReturn(this::mapPaginationStateBasedOnError);
     }

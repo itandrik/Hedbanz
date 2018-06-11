@@ -16,12 +16,12 @@ package com.transcendensoft.hedbanz.data.network.service.firebase;
  */
 
 import android.app.Service;
-import android.text.TextUtils;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.interactor.firebase.FirebaseBindTokenInteractor;
 
 import javax.inject.Inject;
 
@@ -35,11 +35,12 @@ import timber.log.Timber;
  * Service for getting Firebase token
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public class HedbanzFirebaseInstanceIdService extends FirebaseInstanceIdService implements HasServiceInjector{
+public class HedbanzFirebaseInstanceIdService extends FirebaseInstanceIdService implements HasServiceInjector {
     @Inject PreferenceManager mPreferenceManager;
     @Inject DispatchingAndroidInjector<Service> serviceDispatchingAndroidInjector;
+    @Inject FirebaseBindTokenInteractor mFirebaseBindTokenInteractor;
 
     // Якщо ще не залогінився, тоді записуємо в PreferenceManager;                                  +
     // Інакше відразу після логіна беремо з PreferenceManager і відправляємо запит на сервер bind.  -
@@ -64,10 +65,13 @@ public class HedbanzFirebaseInstanceIdService extends FirebaseInstanceIdService 
         Timber.i("Firebase token %s", refreshedToken);
 
         User currentUser = mPreferenceManager.getUser();
-        if(currentUser == null) {
+        if (currentUser == null) {
             mPreferenceManager.setFirebaseToken(refreshedToken);
-        } else if(TextUtils.isEmpty(mPreferenceManager.getFirebaseToken())){
-            //TODO
+        } else {
+            mFirebaseBindTokenInteractor.execute(refreshedToken,
+                    () -> mPreferenceManager.setFirebaseTokenBinded(true),
+                    (err) -> mPreferenceManager.setFirebaseTokenBinded(false));
+            mPreferenceManager.setFirebaseToken(refreshedToken);
         }
     }
 }

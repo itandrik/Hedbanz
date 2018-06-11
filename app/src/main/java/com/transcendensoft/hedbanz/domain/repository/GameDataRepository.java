@@ -67,6 +67,7 @@ public interface GameDataRepository {
     void sendRoomRestore();
     void guessWord(Question question);
     void voteForQuestion(Question question);
+    void sendConnectInfo();
 
     void connect(long userId, long roomId);
     void disconnect();

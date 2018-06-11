@@ -42,8 +42,8 @@ public class RoomsApiDataSource extends ApiDataSource implements RoomDataSource 
         super();
     }
 
-    public Observable<List<RoomDTO>> getRooms(int page) {
-        return mService.getRooms(page);
+    public Observable<List<RoomDTO>> getRooms(int page, long userId) {
+        return mService.getRooms(page, userId);
     }
 
     public Observable<RoomDTO> createRoom(RoomDTO roomDTO, long userId) {
