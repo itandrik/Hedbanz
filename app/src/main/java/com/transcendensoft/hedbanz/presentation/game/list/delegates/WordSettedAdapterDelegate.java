@@ -85,7 +85,7 @@ public class WordSettedAdapterDelegate extends RxAdapterDelegate<List<Message>> 
                 viewHolder.bindCurrentUserSettedText(word.getWordReceiverUser().getLogin().trim());
             }
         } else if (currentUser.equals(word.getWordReceiverUser())) {
-            viewHolder.bindTextSettedToCurrentUser(word.getSenderUser().getLogin().trim());
+            viewHolder.bindTextSettedToCurrentUser(word.getSenderUser().getLogin());
         } else {
             viewHolder.bindText(word.getSenderUser().getLogin(),
                     word.getWordReceiverUser().getLogin());

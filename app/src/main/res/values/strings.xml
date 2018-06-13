@@ -69,6 +69,7 @@
     <string name="rooms_search_hint">My_room or #100500...</string>
     <string name="rooms_with_password">С паролем</string>
     <string name="rooms_password_title">Введите пароль от комнаты</string>
+    <string name="rooms_active">Активная</string>
 
     <!-- Create room fragment -->
     <string name="room_creation_title">Создать комнату</string>

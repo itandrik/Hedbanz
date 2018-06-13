@@ -17,6 +17,7 @@ package com.transcendensoft.hedbanz.data.source;
 
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
+import com.transcendensoft.hedbanz.data.models.RoomListDTO;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ import io.reactivex.Observable;
  *         Developed by <u>Transcendensoft</u>
  */
 public interface RoomDataSource {
-    Observable<List<RoomDTO>> getRooms(int page, long userId);
+    Observable<RoomListDTO> getRooms(int page, long userId);
 
     Observable<RoomDTO> createRoom(RoomDTO roomDTO, long userId);
 

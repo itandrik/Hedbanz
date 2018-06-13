@@ -69,55 +69,63 @@ public class MessageListObserver extends DisposableObserver<PaginationState<Mess
     }
 
     private void processNetworkError(PaginationState<Message> messagePaginationState) {
-        if (messagePaginationState.isRefreshed()) {
-            mView.showNetworkError();
-        } else {
-            Message lastMessage = mModel.getMessages().get(0);
-            if (lastMessage.getMessageType() != MessageType.ERROR_NETWORK) {
-                lastMessage.setMessageType(MessageType.ERROR_NETWORK);
-                mView.setMessage(0, lastMessage);
+        if (mView != null) {
+            if (messagePaginationState.isRefreshed()) {
+                mView.showNetworkError();
+            } else {
+                Message lastMessage = mModel.getMessages().get(0);
+                if (lastMessage.getMessageType() != MessageType.ERROR_NETWORK) {
+                    lastMessage.setMessageType(MessageType.ERROR_NETWORK);
+                    mView.setMessage(0, lastMessage);
+                }
             }
         }
     }
 
     private void processServerError(PaginationState<Message> messagePaginationState) {
-        if (messagePaginationState.isRefreshed()) {
-            mView.showServerError();
-        } else {
-            Message lastMessage = mModel.getMessages().get(0);
-            if (lastMessage.getMessageType() != MessageType.ERROR_SERVER) {
-                lastMessage.setMessageType(MessageType.ERROR_SERVER);
-                mView.setMessage(0, lastMessage);
+        if (mView != null) {
+            if (messagePaginationState.isRefreshed()) {
+                mView.showServerError();
+            } else {
+                Message lastMessage = mModel.getMessages().get(0);
+                if (lastMessage.getMessageType() != MessageType.ERROR_SERVER) {
+                    lastMessage.setMessageType(MessageType.ERROR_SERVER);
+                    mView.setMessage(0, lastMessage);
+                }
             }
         }
     }
 
     private void processEmptyMessageList(PaginationState<Message> messagePaginationState) {
-        if (messagePaginationState.isRefreshed()) {
-            mView.showEmptyList();
-        } else {
-            Message lastMessage = mModel.getMessages().get(0);
-            if (lastMessage.getMessageType() == MessageType.LOADING) {
-                mModel.getMessages().remove(0);
-                mView.removeLastMessage();
+        if (mView != null) {
+            if (messagePaginationState.isRefreshed()) {
+                mView.showEmptyList();
+            } else {
+                Message lastMessage = mModel.getMessages().get(0);
+                if (lastMessage.getMessageType() == MessageType.LOADING) {
+                    mModel.getMessages().remove(0);
+                    mView.removeLastMessage();
+                }
             }
         }
     }
 
     private void processNotEmptyMessageList(PaginationState<Message> messagePaginationState, List<Message> messages) {
-        if (!messagePaginationState.isRefreshed()) {
-            mModel.getMessages().remove(0);
-            mView.removeLastMessage();
-        }
+        if (mView != null) {
+            if (!messagePaginationState.isRefreshed()) {
+                mModel.getMessages().remove(0);
+                mView.removeLastMessage();
+            }
 
-        messages.add(0, new Message.Builder().setMessageType(MessageType.LOADING).build());
+            messages.add(0, new Message.Builder().setMessageType(MessageType.LOADING).build());
 
-        mView.addMessages(0, messages);
-        if (!messagePaginationState.isRefreshed()) {
-            mView.invalidateMessageWithPosition(messages.size());
+            mView.addMessages(0, messages);
+            if (!messagePaginationState.isRefreshed()) {
+                mView.invalidateMessageWithPosition(messages.size());
+            }
+            mView.showContent();
+            mModel.getMessages().addAll(0, messages);
         }
-        mView.showContent();
-        mModel.getMessages().addAll(0, messages);
     }
 
     @Override

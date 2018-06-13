@@ -53,6 +53,7 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
     private Button mBtnRetryError;
     private ProgressBar mPbLoading;
     private ProgressDialog mProgressDialog;
+    private TextView mTvActive;
 
     private Context mContext;
     private RoomsPresenter mCallbackPresenter;
@@ -69,6 +70,7 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
         mLlError = itemView.findViewById(R.id.llErrorContainer);
         mTvErrorText = itemView.findViewById(R.id.tvRoomsErrorText);
         mBtnRetryError = itemView.findViewById(R.id.btnReload);
+        mTvActive = itemView.findViewById(R.id.tvActive);
 
         mContext = context;
         this.mCallbackPresenter = callbackPresenter;
@@ -131,6 +133,15 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
             DrawableCompat.setTint(drawable, ContextCompat.getColor(mContext, R.color.textSecondaryLight));
         }
         mIvProtected.setImageDrawable(drawable);
+    }
+
+    @Override
+    public void setIsActive(boolean isActive) {
+        if(isActive){
+            mTvActive.setVisibility(View.VISIBLE);
+        } else {
+            mTvActive.setVisibility(View.GONE);
+        }
     }
 
     @Override

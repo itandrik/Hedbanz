@@ -29,6 +29,7 @@
 
     <!-- Rooms -->
     <color name="filterBackground">#99FFE0B2</color>
+    <color name="active_bg">#77000000</color>
 
     <!-- Game -->
     <color name="message_other_user_bg">#E1E1E1</color>

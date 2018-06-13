@@ -166,7 +166,8 @@ public class GameInteractorFacade {
     public void onUserReturnedListener(Consumer<? super User> onNext,
                                        Consumer<? super Throwable> onError) {
         Consumer<? super User> doOnNext = user -> {
-            if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
+            if ((mCurrentRoom != null) && (mCurrentRoom.getRoom().getPlayers() != null) &&
+                    (user != null)) {
                 List<User> users = mCurrentRoom.getRoom().getPlayers();
                 if (users.contains(user)) {
                     RxUser rxUser = getRxUser(user);
@@ -353,11 +354,11 @@ public class GameInteractorFacade {
         return message;
     }
 
-    public void sendConnectInfo(){
+    public void sendConnectInfo() {
         mRepository.sendConnectInfo();
     }
 
-    public void setRoomInfo(Room room){
+    public void setRoomInfo(Room room) {
         room.getPlayers().add(mPreferenceManger.getUser());
         mCurrentRoom.setId(room.getId());
         mCurrentRoom.setCurrentPlayersNumber(room.getCurrentPlayersNumber());
@@ -368,7 +369,8 @@ public class GameInteractorFacade {
         mCurrentRoom.setRoom(room);
         mCurrentRoom.setStartDate(room.getStartDate());
         mCurrentRoom.setWithPassword(room.isWithPassword());
-        if(room.getPlayers() != null) {
+        if (room.getPlayers() != null && (mCurrentRoom.getRxPlayers() == null ||
+                mCurrentRoom.getRxPlayers().isEmpty())) {
             for (User user : room.getPlayers()) {
                 mCurrentRoom.addPlayer(user);
                 mCurrentRoom.setCurrentPlayersNumber(

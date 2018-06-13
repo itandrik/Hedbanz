@@ -61,10 +61,14 @@ public class RxRoom {
         return mRoom;
     }
 
-    public void setRoom(Room mRoom) {
-        this.mRoom = mRoom;
-        for (User user : mRoom.getPlayers()) {
-            addPlayer(user);
+    public void setRoom(Room room) {
+        this.mRoom = room;
+        for (User user : room.getPlayers()) {
+            RxUser rxUser = new RxUser(user);
+            mPlayers.add(rxUser);
+            if(!mRoom.getPlayers().contains(user)) {
+                mRoom.getPlayers().add(user);
+            }
         }
         mRoomInfoSubject.onNext(this);
     }

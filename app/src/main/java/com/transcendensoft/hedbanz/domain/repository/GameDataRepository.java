@@ -40,11 +40,11 @@ public interface GameDataRepository {
     Observable<String> reconnectErrorObservable();
     Observable<Boolean> reconnectingObservable();
 
-    Observable<JSONObject> roomInfoObservable();
-    Observable<JSONObject> joinedUserObservable();
-    Observable<JSONObject> leftUserObservable();
-    Observable<JSONObject> userAfkObservable();
-    Observable<JSONObject> userReturnedObservable();
+    Observable<Room> roomInfoObservable();
+    Observable<User> joinedUserObservable();
+    Observable<User> leftUserObservable();
+    Observable<User> userAfkObservable();
+    Observable<User> userReturnedObservable();
     Observable<Room> restoreRoomObservable();
 
     Observable<JSONObject> typingObservable();

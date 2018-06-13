@@ -32,6 +32,9 @@ public class UserDTO {
     @SerializedName("id")
     @Expose
     private long id;
+    @SerializedName("userId")
+    @Expose
+    private Long userId;
     @SerializedName("email")
     @Expose
     private String email;
@@ -59,7 +62,7 @@ public class UserDTO {
 
     protected UserDTO(long id, String email, String password, long money,
                       Long registrationDate, String login, boolean isAfk,
-                      boolean isFriend, String word) {
+                      boolean isFriend, String word, Long userId) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -69,6 +72,7 @@ public class UserDTO {
         this.isAfk = isAfk;
         this.isFriend = isFriend;
         this.word = word;
+        this.userId = userId;
     }
 
     public UserDTO() {
@@ -146,6 +150,14 @@ public class UserDTO {
         this.word = word;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -171,6 +183,7 @@ public class UserDTO {
         private boolean isAfk;
         private boolean isFriend;
         private String word;
+        private Long userId;
 
         public Builder setId(long id) {
             this.id = id;
@@ -217,9 +230,14 @@ public class UserDTO {
             return this;
         }
 
+        public Builder setUserId(Long userId) {
+            this.userId = userId;
+            return this;
+        }
+
         public UserDTO build() {
             return new UserDTO(id, email, password, money, registrationDate, login,
-                    isAfk, isFriend, word);
+                    isAfk, isFriend, word, userId);
         }
     }
 }

@@ -15,12 +15,8 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.user;
  * limitations under the License.
  */
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
-import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.room.RoomInfoUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import javax.inject.Inject;
@@ -44,30 +40,16 @@ public class LeftUserUseCase extends ObservableUseCase<User, Void> {
     @Inject
     public LeftUserUseCase(ObservableTransformer observableTransformer,
                              CompositeDisposable mCompositeDisposable,
-                             GameDataRepository gameDataRepository,
-                             Gson gson) {
+                             GameDataRepository gameDataRepository) {
         super(observableTransformer, mCompositeDisposable);
 
-        initSubject(gameDataRepository, gson);
+        initSubject(gameDataRepository);
     }
 
-    private void initSubject(GameDataRepository gameDataRepository, Gson gson) {
-        Observable<User> observable = getObservable(gameDataRepository, gson);
+    private void initSubject(GameDataRepository gameDataRepository) {
+        Observable<User> observable = gameDataRepository.leftUserObservable();
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
-    }
-
-    private Observable<User> getObservable(GameDataRepository gameDataRepository, Gson gson) {
-        return gameDataRepository.leftUserObservable()
-                .flatMap(jsonObject -> {
-                    try {
-                        User user = gson.fromJson(jsonObject.toString(), User.class);
-                        return Observable.just(user);
-                    } catch (JsonSyntaxException e) {
-                        return Observable.error(new IncorrectJsonException(
-                                jsonObject.toString(), RoomInfoUseCase.class.getName()));
-                    }
-                });
     }
 
     @Override

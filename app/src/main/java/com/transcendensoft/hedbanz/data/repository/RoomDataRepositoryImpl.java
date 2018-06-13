@@ -26,6 +26,7 @@ import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
 import com.transcendensoft.hedbanz.domain.repository.RoomDataRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -59,6 +60,29 @@ public class RoomDataRepositoryImpl implements RoomDataRepository {
     public Observable<List<Room>> getRooms(int page, long userId, DataPolicy dataPolicy) {
         if (dataPolicy == DataPolicy.API) {
             return mRoomsApiDataSource.getRooms(page, userId)
+                    .map(roomListDTO -> {
+                        if(roomListDTO != null && roomListDTO.getActiveRooms() != null) {
+                            for (RoomDTO roomDTO : roomListDTO.getActiveRooms()) {
+                                roomDTO.setActive(true);
+                            }
+                        }
+                        return roomListDTO;
+                    })
+                    .map(roomListDTO -> {
+                        List<RoomDTO> roomDTOS = new ArrayList<>();
+                        if(roomListDTO.getActiveRooms() != null) {
+                            roomDTOS.addAll(roomListDTO.getActiveRooms());
+                        }
+                        if(roomListDTO.getAllRooms() != null) {
+                            for (RoomDTO roomDTO: roomListDTO.getAllRooms()) {
+                                if(!roomDTOS.contains(roomDTO)){
+                                    roomDTOS.add(roomDTO);
+                                }
+                            }
+                        }
+
+                        return roomDTOS;
+                    })
                     .map(mRoomModelDataMapper::convert);
         } else if (dataPolicy == DataPolicy.DB) {
             return Observable.error(new UnsupportedOperationException());

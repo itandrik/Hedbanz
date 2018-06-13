@@ -19,6 +19,7 @@ import com.transcendensoft.hedbanz.data.models.FriendDTO;
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
+import com.transcendensoft.hedbanz.data.models.RoomListDTO;
 import com.transcendensoft.hedbanz.data.models.UserDTO;
 
 import java.util.HashMap;
@@ -64,8 +65,8 @@ public interface ApiService {
 
     /* Room */
     @GET("rooms/{page}/user/{userId}")
-    Observable<List<RoomDTO>> getRooms(@Path("page") int page,
-                                       @Path("userId") long userId);
+    Observable<RoomListDTO> getRooms(@Path("page") int page,
+                                     @Path("userId") long userId);
 
     @PUT("rooms")
     Observable<RoomDTO> createRoom(@Body HashMap<String, Object> roomDataMap);
