@@ -148,7 +148,7 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
         setProgressBarsMax(allUsersCount)
 
         setThumbsUpInfo(usersThumbsUp)
-        setThumbsDownInfo(usersThumbsDown, usersThumbsUp)
+        setThumbsDownInfo(usersThumbsDown)
 
         setTotalInfo(usersThumbsUp, usersThumbsDown, allUsersCount)
     }
@@ -165,12 +165,13 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
         } else {
             mTvPlayersThumbsUp?.visibility = View.VISIBLE
             mThumbsUpPlayersDivider?.visibility = View.VISIBLE
-            mTvPlayersThumbsUp?.text = usersThumbsUp.joinToString(separator = ", ")
+            mTvPlayersThumbsUp?.text = usersThumbsUp.joinToString(
+                    separator = ", ", transform = {it.login})
             mPbThumbsUp?.progress = usersThumbsUp.size
         }
     }
 
-    private fun setThumbsDownInfo(usersThumbsDown: List<User>, usersThumbsUp: List<User>) {
+    private fun setThumbsDownInfo(usersThumbsDown: List<User>) {
         if (usersThumbsDown.isEmpty()) {
             mTvPlayersThumbsDown?.visibility = View.GONE
             mThumbsDownPlayersDivider?.visibility = View.GONE
@@ -179,7 +180,8 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
         } else {
             mTvPlayersThumbsDown?.visibility = View.VISIBLE
             mThumbsDownPlayersDivider?.visibility = View.VISIBLE
-            mTvPlayersThumbsDown?.text = usersThumbsUp.joinToString(separator = ", ")
+            mTvPlayersThumbsDown?.text = usersThumbsDown.joinToString(
+                    separator = ", ", transform = {it.login})
             mPbThumbsDown?.progress = usersThumbsDown.size
             (mTvTotal?.layoutParams as RelativeLayout.LayoutParams)
                     .addRule(RelativeLayout.BELOW, R.id.dividerThumbsDownPlayers)

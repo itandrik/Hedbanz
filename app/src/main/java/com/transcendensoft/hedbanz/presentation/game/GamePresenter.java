@@ -164,7 +164,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     @Override
     public void processGuessWordHelperText(Observable<String> clickObservable) {
-
+        processGuessWordSubmit(clickObservable);
     }
 
     @Override
@@ -172,14 +172,32 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         addDisposable(clickObservable.subscribe(
                 text -> {
                     Question question = mGameInteractor.guessWord(text);
+
                     question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
                     question.setMessage(text);
                     question.setAllUsersCount(model.getPlayers().size() - 1);
+
+                    updateSettingQuestionViewParameters(question.getUserFrom(),
+                            false, true);
+
                     model.getMessages().add(question);
                     view().addMessage(question);
                 },
                 err -> Timber.e("Error while guess word. Message : " + err.getMessage())
         ));
+    }
+
+    private void updateSettingQuestionViewParameters(User senderUser, boolean isFinished, boolean isLoading) {
+        for (int i = model.getMessages().size() - 1; i >= 0; i--) {
+            Message message = model.getMessages().get(i);
+            if (message.getMessageType() == MessageType.GUESS_WORD_THIS_USER &&
+                    mPreferenceManger.getUser().equals(senderUser)) {
+                message.setFinished(isFinished);
+                message.setLoading(isLoading);
+                view().setMessage(i, message);
+                break;
+            }
+        }
     }
 
     @Override
@@ -461,6 +479,9 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         if (currentUser.equals(question.getUserFrom()) &&
                 !question.isLoading() && question.isFinished()) {
             question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
+
+            updateSettingQuestionViewParameters(
+                    question.getUserFrom(), true, false);
 
             List<Message> messages = model.getMessages();
             for (int i = messages.size() - 1; i >= 0; i--) {

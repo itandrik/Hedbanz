@@ -301,6 +301,7 @@ public class GameInteractorFacade {
         Question question = new Question();
         question.setMessageType(MessageType.VOTING_FOR_QUESTION);
         question.setQuestionId(questionId);
+        question.setUserFrom(currentUser);
 
         if (isYes) {
             question.setVote(Question.Vote.YES);

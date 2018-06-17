@@ -82,11 +82,11 @@ class AskingQuestionThisUserViewHolder(context: Context, itemView: View?) : Recy
     /*------------------------------------*
      *-------- Card view binding ---------*
      *------------------------------------*/
-    fun bindProgress(usersThumbsUp: List<User>, usersThumbsDown: List<User>, allUsersCount: Int){
+    fun bindProgress(usersThumbsUp: List<User>, usersThumbsDown: List<User>, allUsersCount: Int) {
         setProgressBarsMax(allUsersCount)
 
         setThumbsUpInfo(usersThumbsUp)
-        setThumbsDownInfo(usersThumbsDown, usersThumbsUp)
+        setThumbsDownInfo(usersThumbsDown)
 
         setTotalInfo(usersThumbsUp, usersThumbsDown, allUsersCount)
     }
@@ -105,21 +105,23 @@ class AskingQuestionThisUserViewHolder(context: Context, itemView: View?) : Recy
         } else {
             mTvPlayersThumbsUp?.visibility = View.VISIBLE
             mThumbsUpPlayersDivider?.visibility = View.VISIBLE
-            mTvPlayersThumbsUp?.text = usersThumbsUp.joinToString(separator = ", ")
+            mTvPlayersThumbsUp?.text = usersThumbsUp.joinToString(
+                    separator = ", ", transform = { it.login })
             mPbThumbsUp?.progress = usersThumbsUp.size
             (mTvTotal?.layoutParams as RelativeLayout.LayoutParams)
-                    .addRule(RelativeLayout.BELOW, R.id.dividerThumbsDownPlayers)
+                    .addRule(RelativeLayout.BELOW, R.id.cvThumbsDown)
         }
     }
 
-    private fun setThumbsDownInfo(usersThumbsDown: List<User>, usersThumbsUp: List<User>) {
+    private fun setThumbsDownInfo(usersThumbsDown: List<User>) {
         if (usersThumbsDown.isEmpty()) {
             mTvPlayersThumbsDown?.visibility = View.GONE
             mThumbsDownPlayersDivider?.visibility = View.GONE
         } else {
             mTvPlayersThumbsDown?.visibility = View.VISIBLE
             mThumbsDownPlayersDivider?.visibility = View.VISIBLE
-            mTvPlayersThumbsDown?.text = usersThumbsUp.joinToString(separator = ", ")
+            mTvPlayersThumbsDown?.text = usersThumbsDown.joinToString(
+                    separator = ", ", transform = { it.login })
             mPbThumbsDown?.progress = usersThumbsDown.size
         }
     }

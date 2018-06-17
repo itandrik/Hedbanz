@@ -17,6 +17,8 @@ package com.transcendensoft.hedbanz.presentation.game.list;
 
 import android.support.annotation.NonNull;
 
+import com.transcendensoft.hedbanz.di.qualifier.SchedulerIO;
+import com.transcendensoft.hedbanz.di.qualifier.SchedulerUI;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
@@ -38,6 +40,7 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.Scheduler;
 
 /**
  * Adapter for game mode recycler.
@@ -52,6 +55,9 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     private GuessWordThisUserAdapterDelegate mGuessWordThisUserAdapterDelegate;
     private AskingQuestionOtherUserAdapterDelegate mAskingQuestionOtherUserAdapterDelegate;
 
+    private Scheduler mIoScheduler;
+    private Scheduler mUiScheduler;
+
     @Inject
     public GameListAdapter(LoadingAdapterDelegate loadingAdapterDelegate,
                            ServerErrorAdapterDelegate serverErrorAdapterDelegate,
@@ -65,7 +71,9 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                            GuessWordThisUserAdapterDelegate guessWordThisUserAdapterDelegate,
                            GuessWordOtherUserAdapterDelegate guessWordOtherUserAdapterDelegate,
                            AskingQuestionThisUserAdapterDelegate askingQuestionThisUserAdapterDelegate,
-                           AskingQuestionOtherUserAdapterDelegate askingQuestionOtherUserAdapterDelegate) {
+                           AskingQuestionOtherUserAdapterDelegate askingQuestionOtherUserAdapterDelegate,
+                           @SchedulerIO Scheduler ioScheduler,
+                           @SchedulerUI Scheduler uiScheduler) {
         super();
 
         this.mServerErrorAdapterDelegate = serverErrorAdapterDelegate;
@@ -73,6 +81,8 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
         this.mWordSettingAdapterDelegate = wordSettingAdapterDelegate;
         this.mGuessWordThisUserAdapterDelegate = guessWordThisUserAdapterDelegate;
         this.mAskingQuestionOtherUserAdapterDelegate = askingQuestionOtherUserAdapterDelegate;
+        this.mUiScheduler = uiScheduler;
+        this.mIoScheduler = ioScheduler;
 
         delegatesManager.addDelegate(loadingAdapterDelegate)
                 .addDelegate(serverErrorAdapterDelegate)
@@ -106,12 +116,16 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
 
     @NonNull
     public Observable<String> guessWordSubmitObservable() {
-        return mGuessWordThisUserAdapterDelegate.guessWordObservable();
+        return mGuessWordThisUserAdapterDelegate.guessWordObservable()
+                .subscribeOn(mIoScheduler)
+                .observeOn(mUiScheduler);
     }
 
     @NonNull
     public Observable<String> guessWordHelperStringObservable() {
-        return mGuessWordThisUserAdapterDelegate.guessWordHelperStringsObservable();
+        return mGuessWordThisUserAdapterDelegate.guessWordHelperStringsObservable()
+                .subscribeOn(mIoScheduler)
+                .observeOn(mUiScheduler);
     }
 
     @NonNull

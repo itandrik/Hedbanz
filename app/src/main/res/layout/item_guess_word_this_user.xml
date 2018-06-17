@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:padding="16dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/tvGuessWordTitle"
@@ -30,6 +29,17 @@
         app:layout_constraintTop_toBottomOf="@id/tvGuessWordTitle"
         app:srcCompat="@drawable/ic_accept"
         app:tint="@color/textPrimary" />
+
+    <ProgressBar
+        android:id="@+id/pbGuessLoading"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="8dp"
+        android:theme="@style/AppTheme.RedProgressBar"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/etGuessWord"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvGuessWordTitle" />
 
     <EditText
         android:id="@+id/etGuessWord"
@@ -63,8 +73,8 @@
         android:layout_width="3dp"
         android:layout_height="0dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/google_red"
         android:layout_marginRight="16dp"
+        android:background="@color/google_red"
         app:layout_constraintBottom_toBottomOf="@id/rvGuessHelpers"
         app:layout_constraintEnd_toStartOf="@id/etGuessWord"
         app:layout_constraintStart_toStartOf="parent"

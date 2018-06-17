@@ -57,12 +57,20 @@ class GuessWordThisUserAdapterDelegate @Inject constructor() :
 
     override fun onBindViewHolder(items: List<Message>, position: Int,
                                   holder: RecyclerView.ViewHolder, payloads: MutableList<Any>) {
+        val message = items[position]
         if (holder is GuessWordThisUserViewHolder) {
-            val helperStringsArray = holder.context.resources
+            val helperStringsList = holder.context.resources
                     .getStringArray(R.array.guess_helpers)
-            holder.bindRecyclerViewGuessHelpers(helperStringsArray.toList())
+                    .toList()
+                    .shuffled()
+                    .subList(0, 10)
+
+            holder.bindRecyclerViewGuessHelpers(helperStringsList)
+            holder.bindLoading(message.isLoading, message.isFinished)
+            holder.bindText(message.message)
+
             holder.submitWordObservable().subscribe(guessWordSubject)
-            helperStringSubject = holder.helperStringsObservable()
+            holder.helperStringsObservable().subscribe(helperStringSubject);
         }
     }
 

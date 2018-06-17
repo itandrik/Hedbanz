@@ -100,7 +100,7 @@ public class MessageListObserver extends DisposableObserver<PaginationState<Mess
         if (mView != null) {
             if (messagePaginationState.isRefreshed()) {
                 mView.showEmptyList();
-            } else {
+            } else if(!mModel.getMessages().isEmpty()){
                 Message lastMessage = mModel.getMessages().get(0);
                 if (lastMessage.getMessageType() == MessageType.LOADING) {
                     mModel.getMessages().remove(0);

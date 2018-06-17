@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.typing;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
@@ -45,14 +46,17 @@ import io.reactivex.subjects.PublishSubject;
 public class StartTypingUseCase extends ObservableUseCase<User, List<User>> {
     private PublishSubject<User> mSubject;
     private GameDataRepository mRepository;
+    private PreferenceManager mPreferenceManager;
 
     @Inject
     public StartTypingUseCase(ObservableTransformer observableTransformer,
                               CompositeDisposable mCompositeDisposable,
-                              GameDataRepository gameDataRepository) {
+                              GameDataRepository gameDataRepository,
+                              PreferenceManager preferenceManager) {
         super(observableTransformer, mCompositeDisposable);
         mRepository = gameDataRepository;
         mSubject = PublishSubject.create();
+        mPreferenceManager = preferenceManager;
     }
 
     @Override
@@ -69,7 +73,11 @@ public class StartTypingUseCase extends ObservableUseCase<User, List<User>> {
             Long userId = jsonObject.getLong("userId");
             User user = getUserWithId(params, userId);
 
-            return Observable.just(user);
+            if(user == null || mPreferenceManager.getUser().equals(user)){
+                return Observable.empty();
+            } else {
+                return Observable.just(user);
+            }
         } catch (JSONException e) {
             return Observable.error(new IncorrectJsonException(
                     jsonObject.toString(), RoomInfoUseCase.class.getName()));

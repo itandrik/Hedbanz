@@ -69,9 +69,13 @@ public class QuestionModelDataMapper {
     public Question convert(QuestionDTO questionDTO) {
         Question question = null;
         if (questionDTO != null) {
+            Timestamp timestamp = null;
+            if(questionDTO.getCreateDate() != null){
+                timestamp = new Timestamp(questionDTO.getCreateDate());
+            }
             Message message = new Message.Builder()
                     .setClientMessageId(questionDTO.getClientMessageId())
-                    .setCreateDate(new Timestamp(questionDTO.getCreateDate()))
+                    .setCreateDate(timestamp)
                     .setId(questionDTO.getId())
                     .setMessage(questionDTO.getText())
                     .setMessageType(MessageType.getMessageTypeById(questionDTO.getType()))

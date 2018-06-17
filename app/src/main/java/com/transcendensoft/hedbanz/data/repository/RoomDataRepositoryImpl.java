@@ -63,7 +63,9 @@ public class RoomDataRepositoryImpl implements RoomDataRepository {
                     .map(roomListDTO -> {
                         if(roomListDTO != null && roomListDTO.getActiveRooms() != null) {
                             for (RoomDTO roomDTO : roomListDTO.getActiveRooms()) {
-                                roomDTO.setActive(true);
+                                if(roomDTO != null) {
+                                    roomDTO.setActive(true);
+                                }
                             }
                         }
                         return roomListDTO;

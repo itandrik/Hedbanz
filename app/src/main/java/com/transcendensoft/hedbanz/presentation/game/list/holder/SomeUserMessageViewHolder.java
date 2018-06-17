@@ -109,12 +109,14 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
     public void bindShowHideLoginAndImage(boolean isHide){
         if(isHide){
             mTvLogin.setVisibility(View.GONE);
+            mTvUserWord.setVisibility(View.GONE);
             mIvUserImage.setVisibility(View.INVISIBLE);
             mSeparator.setVisibility(View.VISIBLE);
             mRlContainer.setMinimumHeight(0);
             mTvUserWord.setVisibility(View.GONE);
         } else {
             mTvLogin.setVisibility(View.VISIBLE);
+            mTvUserWord.setVisibility(View.VISIBLE);
             mIvUserImage.setVisibility(View.VISIBLE);
             mSeparator.setVisibility(View.GONE);
             mRlContainer.setMinimumHeight(getListPreferredItemHeight());

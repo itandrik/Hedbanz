@@ -338,7 +338,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                     }
                 } else {
                     Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_RETURNED, "null");
-                    emitter.onError(new NullPointerException("data is null when user joined"));
+                    //emitter.onError(new Throwable("data is null when user joined"));
                 }
             };
             mSocket.on(SERVER_USER_RETURNED, listener);

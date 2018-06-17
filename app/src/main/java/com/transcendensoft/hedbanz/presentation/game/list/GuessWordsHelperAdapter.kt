@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.presentation.game.list.holder.GuessWordHelperViewHolder
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.Observable
 
 /**
  * Copyright 2017. Andrii Chernysh
@@ -31,7 +31,7 @@ import io.reactivex.subjects.PublishSubject
  */
 class GuessWordsHelperAdapter(private val helperStrings: List<String>):
         RecyclerView.Adapter<GuessWordHelperViewHolder>() {
-    val helperStringsSubject = PublishSubject.create<String>()!!
+    var helperStringsObservable: Observable<String>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GuessWordHelperViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -44,6 +44,6 @@ class GuessWordsHelperAdapter(private val helperStrings: List<String>):
     override fun onBindViewHolder(holder: GuessWordHelperViewHolder, position: Int) {
         val helperString = helperStrings[position]
         holder.bindText(helperString)
-        holder.guessWordHelperObservable().subscribe(helperStringsSubject)
+        helperStringsObservable = holder.guessWordHelperObservable()
     }
 }
