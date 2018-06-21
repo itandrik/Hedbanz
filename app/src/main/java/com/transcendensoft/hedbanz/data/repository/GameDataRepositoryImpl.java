@@ -19,17 +19,20 @@ package com.transcendensoft.hedbanz.data.repository;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
+import com.transcendensoft.hedbanz.data.models.PlayerGuessingDTO;
 import com.transcendensoft.hedbanz.data.models.QuestionDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.UserDTO;
 import com.transcendensoft.hedbanz.data.models.WordDTO;
 import com.transcendensoft.hedbanz.data.models.mapper.MessageModelDataMapper;
+import com.transcendensoft.hedbanz.data.models.mapper.PlayerGuessingModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.QuestionModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.RoomModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.UserModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.WordModelDataMapper;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
+import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing;
 import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
@@ -106,7 +109,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private WordModelDataMapper mWordMapper;
     private QuestionModelDataMapper mQuestionMapper;
     private UserModelDataMapper mUserMapper;
-
+    private PlayerGuessingModelDataMapper mPlayerGuessingModelDataMapper;
     private Gson mGson;
     private String mRoomToUserJson;
 
@@ -116,19 +119,21 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                                   RoomModelDataMapper roomMapper,
                                   UserModelDataMapper userModelDataMapper,
                                   QuestionModelDataMapper questionModelDataMapper,
+                                  PlayerGuessingModelDataMapper playerGuessingModelDataMapper,
                                   Gson gson) {
         this.mMessageMapper = messageModelDataMapper;
         this.mWordMapper = wordModelDataMapper;
         this.mRoomMapper = roomMapper;
         this.mQuestionMapper = questionModelDataMapper;
         this.mUserMapper = userModelDataMapper;
+        this.mPlayerGuessingModelDataMapper = playerGuessingModelDataMapper;
         this.mGson = gson;
 
         try {
             IO.Options options = new IO.Options();
             options.forceNew = true;
             options.reconnection = true;
-            options.reconnectionDelay = 1000;
+            options.reconnectionDelay = 5000;
             mSocket = IO.socket(HOST + PORT_SOCKET + GAME_SOCKET_NSP, options);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
@@ -409,18 +414,23 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     public Observable<JSONObject> settingWordObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
-                JSONObject data = (JSONObject) args[0];
-                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_SET_PLAYER_WORD_EVENT,
-                        data != null ? data.toString() : "null");
-                emitter.onNext(data);
+                try {
+                    JSONObject data = (JSONObject) args[0];
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_SET_PLAYER_WORD_EVENT,
+                            data != null ? data.toString() : "null");
+                    emitter.onNext(data);
 
-                if (args.length > 1) {
-                    try {
-                        Ack ack = (Ack) args[args.length - 1];
-                        ack.call(true);
-                    } catch (ClassCastException | ArrayIndexOutOfBoundsException e) {
-                        Timber.e(e.getMessage());
+                    if (args.length > 1) {
+                        try {
+                            Ack ack = (Ack) args[args.length - 1];
+                            ack.call(true);
+                        } catch (ClassCastException | ArrayIndexOutOfBoundsException e) {
+                            Timber.e(e.getMessage());
+                        }
                     }
+                } catch (ClassCastException e){
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_SET_PLAYER_WORD_EVENT,
+                            "data: " + args);
                 }
             };
             mSocket.on(SERVER_SET_PLAYER_WORD_EVENT, listener);
@@ -441,16 +451,17 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
-    public Observable<User> wordGuessingObservable() {
+    public Observable<PlayerGuessing> wordGuessingObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
                 JSONObject data = (JSONObject) args[0];
                 try {
-                    UserDTO userDTO = mGson.fromJson(data.toString(), UserDTO.class);
+                    PlayerGuessingDTO playerGuessingDTO = mGson.fromJson(
+                            data.toString(), PlayerGuessingDTO.class);
 
                     Timber.i("SOCKET <-- GET(%1$s) : %2$s",
                             SERVER_USER_GUESSING_EVENT, data.toString());
-                    emitter.onNext(mUserMapper.convert(userDTO));
+                    emitter.onNext(mPlayerGuessingModelDataMapper.convert(playerGuessingDTO));
                 } catch (JsonSyntaxException | NullPointerException e) {
                     emitter.onError(e);
                 }

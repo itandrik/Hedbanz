@@ -13,6 +13,9 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="4dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:gravity="center"
         android:paddingBottom="6dp"
         android:textColor="@color/textWhite"
         android:textSize="15sp" />

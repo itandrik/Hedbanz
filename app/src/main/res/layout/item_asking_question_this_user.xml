@@ -57,11 +57,10 @@
                 android:layout_alignTop="@id/cvThumbsUp"
                 android:layout_centerVertical="true"
                 app:progress_max="100"
+                style="@style/NumberProgressBar_Default"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_toLeftOf="@id/cvThumbsUp"
-                custom:progress_reached_color="@color/google_blue"
-                custom:progress_text_color="@color/google_red" />
+                android:layout_toLeftOf="@id/cvThumbsUp" />
 
             <TextView
                 android:id="@+id/tvPlayersThumbsUp"
@@ -118,6 +117,8 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_toLeftOf="@id/cvThumbsDown"
+                style="@style/NumberProgressBar_Warning_Red"
+
                 custom:progress_reached_color="@color/google_red"
                 custom:progress_text_color="@color/google_blue" />
 

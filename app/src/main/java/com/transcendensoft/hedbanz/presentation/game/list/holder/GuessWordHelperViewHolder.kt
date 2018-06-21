@@ -29,6 +29,7 @@ import kotlinx.android.synthetic.main.item_guess_word_helper.view.*
  */
 class GuessWordHelperViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
     private val mTvHelperGuessWord = itemView?.tvGuessWordHelper
+    private val mCvGuessWordHelper = itemView?.cvGuessWordHelper
 
     fun bindText(text: String?) {
         if(!text.isNullOrEmpty()){
@@ -42,4 +43,9 @@ class GuessWordHelperViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemV
                     emitter.onNext(mTvHelperGuessWord?.text.toString().trim())
                 }
             }
+
+    fun setEnabled(isEnabled: Boolean){
+        mCvGuessWordHelper?.isEnabled = isEnabled
+        mCvGuessWordHelper?.isClickable = isEnabled
+    }
 }

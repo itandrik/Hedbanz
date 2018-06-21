@@ -58,6 +58,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -379,10 +380,14 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     }
 
     public void hideFilters(){
-        mTvToolbarTitle.setVisibility(View.VISIBLE);
-        mRlSearchContainer.setVisibility(View.GONE);
-        mCvFilters.setVisibility(GONE);
-        mFabSearch.show();
+        try {
+            mTvToolbarTitle.setVisibility(View.VISIBLE);
+            mRlSearchContainer.setVisibility(View.GONE);
+            mCvFilters.setVisibility(GONE);
+            mFabSearch.show();
+        }catch (NullPointerException e){
+            Timber.e(e);
+        }
     }
 
     /*------------------------------------*

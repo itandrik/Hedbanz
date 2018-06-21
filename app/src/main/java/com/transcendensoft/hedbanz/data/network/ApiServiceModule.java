@@ -17,8 +17,9 @@ package com.transcendensoft.hedbanz.data.network;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.transcendensoft.hedbanz.data.network.source.ApiDataSource;
+import com.transcendensoft.hedbanz.data.models.MessageDTO;
 import com.transcendensoft.hedbanz.data.network.service.ApiService;
+import com.transcendensoft.hedbanz.data.network.source.ApiDataSource;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 
 import dagger.Module;
@@ -33,7 +34,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * and Retrofit instances
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 @Module(includes = NetworkModule.class)
 public class ApiServiceModule {
@@ -45,11 +46,30 @@ public class ApiServiceModule {
 
     @Provides
     @ApplicationScope
-    public Gson provideGson() {
+    public Gson provideGson(MessageDeserializer messageDeserializer) {
         return new GsonBuilder()
+                .registerTypeAdapter(MessageDTO.class, messageDeserializer)
                 .setLenient()
                 .create();
     }
+
+    /*@Provides
+    @ApplicationScope
+    public RuntimeTypeAdapterFactory provideRuntimeTypeAdapterFactory() {
+        String questionType = String.valueOf(MessageType.GUESS_WORD_THIS_USER.getId());
+        RuntimeTypeAdapterFactory<MessageDTO> runtimeTypeAdapterFactory =
+                RuntimeTypeAdapterFactory
+                        .of(MessageDTO.class, "type");
+
+        for (MessageType messageType : MessageType.values()) {
+            if (messageType.equals(MessageType.GUESS_WORD_THIS_USER)) {
+                runtimeTypeAdapterFactory.registerSubtype(QuestionDTO.class, questionType);
+            } else {
+                runtimeTypeAdapterFactory.registerSubtype(MessageDTO.class, questionType);
+            }
+        }
+        return runtimeTypeAdapterFactory;
+    }*/
 
     @Provides
     @ApplicationScope

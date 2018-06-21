@@ -20,6 +20,7 @@ import android.support.annotation.NonNull;
 import com.transcendensoft.hedbanz.di.qualifier.SchedulerIO;
 import com.transcendensoft.hedbanz.di.qualifier.SchedulerUI;
 import com.transcendensoft.hedbanz.domain.entity.Message;
+import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.AskingQuestionOtherUserAdapterDelegate;
@@ -115,14 +116,14 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     }
 
     @NonNull
-    public Observable<String> guessWordSubmitObservable() {
+    public Observable<Question> guessWordSubmitObservable() {
         return mGuessWordThisUserAdapterDelegate.guessWordObservable()
                 .subscribeOn(mIoScheduler)
                 .observeOn(mUiScheduler);
     }
 
     @NonNull
-    public Observable<String> guessWordHelperStringObservable() {
+    public Observable<Question> guessWordHelperStringObservable() {
         return mGuessWordThisUserAdapterDelegate.guessWordHelperStringsObservable()
                 .subscribeOn(mIoScheduler)
                 .observeOn(mUiScheduler);

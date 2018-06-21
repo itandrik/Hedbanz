@@ -25,8 +25,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.presentation.game.list.GuessWordsHelperAdapter;
 
 import java.util.List;
@@ -47,6 +49,7 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.rvGuessHelpers) RecyclerView mRvGuessHelpers;
     @BindView(R.id.ivSubmitWord) ImageView mIvSubmitWord;
     @BindView(R.id.pbGuessLoading) ProgressBar mPbGuessLoading;
+    @BindView(R.id.tvGuessWordTitle) TextView mTvGuessWordTitle;
 
     private Context mContext;
     private Observable<String> mHelperStringsObservable;
@@ -64,16 +67,24 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         mRvGuessHelpers.setLayoutManager(new LinearLayoutManager(
                 mContext, LinearLayoutManager.HORIZONTAL, false));
         mRvGuessHelpers.setAdapter(adapter);
-        if(adapter.getHelperStringsObservable() != null) {
-            mHelperStringsObservable = adapter.getHelperStringsObservable()
-                    .doOnNext(s -> mEtGuessWord.setText(s));
-        }
 
+        mHelperStringsObservable = adapter.getHelperStringsSubject()
+                .doOnNext(s -> mEtGuessWord.setText(s));
     }
 
     public void bindText(String text) {
         if (!TextUtils.isEmpty(text)) {
             mEtGuessWord.setText(text);
+        }
+    }
+
+    public void bindTitle(int attempts) {
+        String text = mContext.getString(R.string.game_this_user_think_word_to_user, attempts);
+
+        if (attempts <= 0 || attempts > 3) {
+            mTvGuessWordTitle.setText(text.substring(0, text.indexOf('.')));
+        } else {
+            mTvGuessWordTitle.setText(text);
         }
     }
 
@@ -93,6 +104,7 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
             mEtGuessWord.setEnabled(false);
             mIvSubmitWord.setEnabled(false);
             mRvGuessHelpers.setEnabled(false);
+            ((GuessWordsHelperAdapter)mRvGuessHelpers.getAdapter()).disable();
         } else {
             mIvSubmitWord.setVisibility(View.VISIBLE);
             mPbGuessLoading.setVisibility(View.GONE);
@@ -101,17 +113,27 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public Observable<String> submitWordObservable() {
+    public Observable<Question> submitWordObservable(Long questionId) {
         return Observable.create(emitter -> {
             mIvSubmitWord.setOnClickListener(view -> {
-                emitter.onNext(mEtGuessWord.getText().toString().trim());
+                Question question = new Question();
+                question.setMessage(mEtGuessWord.getText().toString().trim());
+                question.setQuestionId(questionId);
+
+                emitter.onNext(question);
             });
         });
     }
 
-    public Observable<String> helperStringsObservable() {
-        if(mHelperStringsObservable != null) {
-            return mHelperStringsObservable;
+    public Observable<Question> helperStringsObservable(Long questionId) {
+        if (mHelperStringsObservable != null) {
+            return mHelperStringsObservable.map(text -> {
+                Question question = new Question();
+                question.setMessage(mEtGuessWord.getText().toString().trim());
+                question.setQuestionId(questionId);
+
+                return question;
+            });
         } else {
             return Observable.empty();
         }

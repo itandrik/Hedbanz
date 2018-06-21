@@ -58,6 +58,7 @@ public class UserModelDataMapper {
                     .setIsAfk(userDTO.isAfk())
                     .setIsFriend(userDTO.isFriend())
                     .setWord(userDTO.getWord())
+                    .setAttempts(userDTO.getAttempts())
                     .build();
         }
         return userResult;
@@ -76,6 +77,7 @@ public class UserModelDataMapper {
                     .setIsAfk(user.isAFK())
                     .setIsFriend(user.isFriend())
                     .setWord(user.getWord())
+                    .setAttempts(user.getAttempts())
                     .build();
         }
         return userResult;

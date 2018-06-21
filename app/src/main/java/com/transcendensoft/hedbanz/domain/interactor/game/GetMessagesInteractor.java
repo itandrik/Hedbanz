@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.domain.interactor.game;
  */
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
@@ -23,6 +24,9 @@ import com.transcendensoft.hedbanz.domain.PaginationState;
 import com.transcendensoft.hedbanz.domain.PaginationUseCase;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
+import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing;
+import com.transcendensoft.hedbanz.domain.entity.Question;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.repository.MessagesDataRepository;
 
 import java.util.List;
@@ -39,9 +43,9 @@ import io.reactivex.disposables.CompositeDisposable;
  * {@link com.transcendensoft.hedbanz.domain.entity.Message}.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public class GetMessagesInteractor extends PaginationUseCase<Message, Long, Void>{
+public class GetMessagesInteractor extends PaginationUseCase<Message, Long, Void> {
     private MessagesDataRepository mDataRepository;
     private PreferenceManager mPreferenceManager;
 
@@ -65,16 +69,58 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, Long, Void
 
     @NonNull
     private List<Message> mapSetMessageUserAndType(List<Message> messages) {
-        for (Message message:messages) {
-            if(message.getMessageType() == MessageType.SIMPLE_MESSAGE){
-                if(mPreferenceManager.getUser().equals(message.getUserFrom())){
+        User currentUser = mPreferenceManager.getUser();
+        for (int i = 0; i < messages.size(); i++) {
+            Message message = messages.get(i);
+            if (message.getMessageType() == MessageType.SIMPLE_MESSAGE) {
+                if (currentUser.equals(message.getUserFrom())) {
                     message.setMessageType(MessageType.SIMPLE_MESSAGE_THIS_USER);
                 } else {
                     message.setMessageType(MessageType.SIMPLE_MESSAGE_OTHER_USER);
                 }
+                message.setFinished(true);
+                message.setLoading(false);
+            } else if (message.getMessageType() == MessageType.GUESS_WORD_THIS_USER && message instanceof Question) {
+                Question question = (Question) message;
+
+                // Question with guessing
+                PlayerGuessing playerGuessing = new PlayerGuessing.Builder()
+                        .player(question.getUserFrom())
+                        .attempts(question.getUserFrom().getAttempts())
+                        .questionId(question.getQuestionId())
+                        .build();
+                playerGuessing.setUserFrom(question.getUserFrom());
+                playerGuessing.setMessage(question.getMessage());
+                if (currentUser.equals(message.getUserFrom())) {
+                    playerGuessing.setMessageType(MessageType.GUESS_WORD_THIS_USER);
+                } else {
+                    playerGuessing.setMessageType(MessageType.GUESS_WORD_OTHER_USER);
+                }
+                playerGuessing.setFinished(true);
+                playerGuessing.setLoading(false);
+
+                //Question with asking\voting
+                Question askingQuestion = null;
+                if (!TextUtils.isEmpty(question.getMessage())) {
+                    askingQuestion = question.clone();
+                    if (currentUser.equals(message.getUserFrom())) {
+                        askingQuestion.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
+                    } else {
+                        askingQuestion.setMessageType(MessageType.ASKING_QUESTION_OTHER_USER);
+                    }
+                    askingQuestion.setFinished(true);
+                    askingQuestion.setLoading(false);
+                }
+
+                messages.remove(i);
+                if(askingQuestion != null) {
+                    messages.add(i, askingQuestion);
+                    messages.add(i, playerGuessing);
+                    i++;
+                } else {
+                    messages.add(i, playerGuessing);
+                }
             }
-            message.setFinished(true);
-            message.setLoading(false);
         }
         return messages;
     }

@@ -4,6 +4,7 @@
     app:cardBackgroundColor="@color/textWhite"
     app:cardCornerRadius="16dp"
     app:cardElevation="4dp"
+    android:id="@+id/cvGuessWordHelper"
     app:cardUseCompatPadding="true"
     app:contentPadding="8dp"
     android:layout_width="wrap_content"

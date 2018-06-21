@@ -33,10 +33,11 @@ public class User {
     private boolean isFriend;
     private boolean isAFK;
     private String word;
+    private int attempts;
 
     protected User(long id, String email, String password, String confirmPassword,
                    long money, Long registrationDate, String login, boolean isAFK,
-                   boolean isFriend, String word) {
+                   boolean isFriend, String word, int attempts) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -46,6 +47,7 @@ public class User {
         this.login = login;
         this.isAFK = isAFK;
         this.isFriend = isFriend;
+        this.attempts = attempts;
     }
 
     public User() {
@@ -131,6 +133,14 @@ public class User {
         this.word = word;
     }
 
+    public int getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(int attempts) {
+        this.attempts = attempts;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -158,6 +168,8 @@ public class User {
                 ", login='" + login + '\'' +
                 ", isFriend=" + isFriend +
                 ", isAFK=" + isAFK +
+                ", word='" + word + '\'' +
+                ", attempts=" + attempts +
                 '}';
     }
 
@@ -172,6 +184,7 @@ public class User {
         private boolean isAFK;
         private boolean isFriend;
         private String word;
+        private int attempts;
 
         public User.Builder setId(long id) {
             this.id = id;
@@ -223,9 +236,14 @@ public class User {
             return this;
         }
 
+        public User.Builder setAttempts(int attempts){
+            this.attempts = attempts;
+            return this;
+        }
+
         public User build() {
             return new User(id, email, password, confirmPassword, money,
-                    registrationDate, login, isAFK, isFriend, word);
+                    registrationDate, login, isAFK, isFriend, word, attempts);
         }
     }
 }

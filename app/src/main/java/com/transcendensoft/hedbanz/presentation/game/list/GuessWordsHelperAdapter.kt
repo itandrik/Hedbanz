@@ -5,7 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.presentation.game.list.holder.GuessWordHelperViewHolder
-import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import javax.inject.Inject
 
 /**
  * Copyright 2017. Andrii Chernysh
@@ -29,9 +30,10 @@ import io.reactivex.Observable
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class GuessWordsHelperAdapter(private val helperStrings: List<String>):
+class GuessWordsHelperAdapter @Inject constructor (private val helperStrings: List<String>):
         RecyclerView.Adapter<GuessWordHelperViewHolder>() {
-    var helperStringsObservable: Observable<String>? = null
+    val helperStringsSubject: PublishSubject<String> = PublishSubject.create()
+    var isEnabled = true;
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GuessWordHelperViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -44,6 +46,17 @@ class GuessWordsHelperAdapter(private val helperStrings: List<String>):
     override fun onBindViewHolder(holder: GuessWordHelperViewHolder, position: Int) {
         val helperString = helperStrings[position]
         holder.bindText(helperString)
-        helperStringsObservable = holder.guessWordHelperObservable()
+        holder.guessWordHelperObservable().subscribe(helperStringsSubject)
+        holder.setEnabled(isEnabled)
+    }
+
+    fun disable(){
+        isEnabled = false
+        notifyDataSetChanged()
+    }
+
+    fun enable(){
+        isEnabled = true
+        notifyDataSetChanged()
     }
 }

@@ -1,8 +1,6 @@
-package com.transcendensoft.hedbanz.data.network.source
+package com.transcendensoft.hedbanz.di.qualifier
 
-import com.transcendensoft.hedbanz.data.source.FirebaseIdDataSource
-import io.reactivex.Completable
-import javax.inject.Inject
+import javax.inject.Qualifier
 
 /**
  * Copyright 2017. Andrii Chernysh
@@ -21,17 +19,12 @@ import javax.inject.Inject
  *
  */
 /**
- * Bind and unbind firebase token on server
+ * Dagger 2 qualifier for simple GSON that uses just in list of messages.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-class FirebaseIdApiDataSource @Inject constructor() : ApiDataSource(), FirebaseIdDataSource {
-
-    override fun unbindFirebaseToken(userId: Long): Completable =
-            mService.unbindFirebaseToken(userId)
-
-
-    override fun bindFirebaseToken(userId: Long, token: String): Completable =
-            mService.bindFirebaseToken(userId, mapOf("fcmToken" to token))
-}
+@MustBeDocumented
+@Qualifier
+@kotlin.annotation.Retention()
+annotation class MessagesGSON

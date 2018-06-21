@@ -23,6 +23,7 @@ import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
+import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing;
 import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
@@ -163,18 +164,19 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     }
 
     @Override
-    public void processGuessWordHelperText(Observable<String> clickObservable) {
+    public void processGuessWordHelperText(Observable<Question> clickObservable) {
         processGuessWordSubmit(clickObservable);
     }
 
     @Override
-    public void processGuessWordSubmit(Observable<String> clickObservable) {
+    public void processGuessWordSubmit(Observable<Question> clickObservable) {
         addDisposable(clickObservable.subscribe(
-                text -> {
-                    Question question = mGameInteractor.guessWord(text);
+                questionFromView -> {
+                    Question question = mGameInteractor.guessWord(questionFromView.getQuestionId(),
+                            questionFromView.getMessage());
 
                     question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
-                    question.setMessage(text);
+                    question.setMessage(questionFromView.getMessage());
                     question.setAllUsersCount(model.getPlayers().size() - 1);
 
                     updateSettingQuestionViewParameters(question.getUserFrom(),
@@ -231,7 +233,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         mGameInteractor.onConnectListener(
                 str -> {
                     Timber.i("Socket connected: %s", str);
-                    if(!isAfterRoomCreation) {
+                    if (!isAfterRoomCreation) {
                         if (mPreferenceManger.getCurrentRoomId() == -1) {
                             mGameInteractor.joinToRoom(model.getPassword());
                         } else {
@@ -459,19 +461,22 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         }
     }
 
-    private void processGuessWord(User user) {
+    private void processGuessWord(PlayerGuessing playerGuessing) {
         User currentUser = mPreferenceManger.getUser();
-        Message.Builder messageBuilder = new Message.Builder()
-                .setUserFrom(user)
-                .setClientMessageId(user.getId());
-        if (currentUser.equals(user)) {
-            messageBuilder.setMessageType(MessageType.GUESS_WORD_THIS_USER);
-        } else {
-            messageBuilder.setMessageType(MessageType.GUESS_WORD_OTHER_USER);
+
+        playerGuessing.setUserFrom(playerGuessing.getPlayer());
+        if (playerGuessing.getPlayer() != null) {
+            playerGuessing.setClientMessageId(playerGuessing.getPlayer().getId());
+
+            if (currentUser.equals(playerGuessing.getPlayer())) {
+                playerGuessing.setMessageType(MessageType.GUESS_WORD_THIS_USER);
+            } else {
+                playerGuessing.setMessageType(MessageType.GUESS_WORD_OTHER_USER);
+            }
         }
 
-        model.getMessages().add(messageBuilder.build());
-        view().addMessage(messageBuilder.build());
+        model.getMessages().add(playerGuessing);
+        view().addMessage(playerGuessing);
     }
 
     private void processAskingQuestion(Question question) {
@@ -511,8 +516,8 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     private void processVoting(Question question) {
         for (int i = model.getMessages().size() - 1; i >= 0; i--) {
             Message modelMessage = model.getMessages().get(i);
-            if(modelMessage instanceof Question &&
-                    ((Question) modelMessage).getQuestionId() == question.getQuestionId()){
+            if (modelMessage instanceof Question &&
+                    ((Question) modelMessage).getQuestionId() == question.getQuestionId()) {
                 Question modelQuestion = (Question) modelMessage;
                 modelQuestion.setYesVoters(question.getYesVoters());
                 modelQuestion.setNoVoters(question.getNoVoters());

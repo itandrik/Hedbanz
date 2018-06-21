@@ -24,6 +24,7 @@ import com.transcendensoft.hedbanz.data.models.UserDTO;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -58,7 +59,7 @@ public interface ApiService {
     /* Firebase */
     @PUT("user/{userId}/token")
     Completable bindFirebaseToken(@Path("userId") long userId,
-                                 @Body String token);
+                                 @Body Map<String, String> tokenBody);
 
     @DELETE("user/{userId}/token")
     Completable unbindFirebaseToken(@Path("userId") long userId);

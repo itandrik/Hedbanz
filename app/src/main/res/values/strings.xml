@@ -144,11 +144,13 @@
     <string name="game_toolbar_close_menu_content_description">Закрыть меню</string>
     <string name="game_afk">AFK</string>
     
-    <string name="game_some_user_think_word_to_user">Сейчас свое слово будет отгадывать игрок %1$s</string>
-    <string name="game_some_user_think_word_to_user_error">Сейчас свое слово будет отгадывать какой-то игрок</string>
-    <string name="game_this_user_think_word_to_user">Попробуйте отгадать кто вы</string>
-    <string name="game_guess_word_hint">Введите слово</string>
+    <string name="game_some_user_think_word_to_user">Сейчас будет спрашивать игрок %1$s.\n Попытка %2$d/3</string>
+    <string name="game_some_user_think_word_to_user_error">Сейчас будет спрашивать какой-то игрок.\n Попытка %1$d/3</string>
+    <string name="game_this_user_think_word_to_user">Задайте вопрос о том кто вы. Попытка %1$d/3</string>
+    <string name="game_guess_word_hint">Я &#8230;</string>
     <string name="game_asking_total_votes">Всего:</string>
+    <string name="game_notification_title">%1$s (Новое сообщение)</string>
+    <string name="game_notification_channel_title_message">Сообщение</string>
     <!-- Friends -->
     <string name="friends_toolbar_title">Ваши друзяки</string>
 </resources>

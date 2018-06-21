@@ -31,10 +31,18 @@ data class Question(
         var allUsersCount: Int = 0,
         var messageParent: Message = Message()
 ) : Message(messageParent.id, messageParent.message, messageParent.userFrom,
-        messageParent.messageType, messageParent.createDate, messageParent.clientMessageId) {
+        messageParent.messageType, messageParent.createDate, messageParent.clientMessageId), Cloneable {
 
     private constructor(builder: Builder) : this(builder.questionId, builder.yesVoters,
             builder.noVoters, builder.vote, builder.allUsersCount, builder.message)
+
+    override fun clone(): Question {
+        super.clone()
+        return copy(questionId = this.questionId,
+                yesVoters = this.yesVoters, noVoters = this.noVoters,
+                vote = this.vote, allUsersCount = this.allUsersCount,
+                messageParent = this.messageParent)
+    }
 
     class Builder {
         var questionId: Long = 0L

@@ -22,6 +22,7 @@ import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.qualifier.SchedulerIO;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
+import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing;
 import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
@@ -263,7 +264,7 @@ public class GameInteractorFacade {
         mWordSettingUseCase.execute(mCurrentRoom.getRoom().getPlayers(), onNext, onError);
     }
 
-    public void onWordGuessingListener(Consumer<? super User> onNext,
+    public void onWordGuessingListener(Consumer<? super PlayerGuessing> onNext,
                                        Consumer<? super Throwable> onError) {
         mGuessWordUseCase.execute(null, onNext, onError);
     }
@@ -278,13 +279,14 @@ public class GameInteractorFacade {
         mQuestionVotingUseCase.execute(null, onNext, onError);
     }
 
-    public Question guessWord(String word) {
+    public Question guessWord(Long questionId, String word) {
         User currentUser = mPreferenceManger.getUser();
 
         int clientMessageId = Arrays.hashCode(new long[]{
                 System.currentTimeMillis(), currentUser.getId()});
 
         Question question = new Question();
+        question.setQuestionId(questionId);
         question.setMessageType(MessageType.GUESS_WORD_THIS_USER);
         question.setMessage(word);
         question.setUserFrom(currentUser);

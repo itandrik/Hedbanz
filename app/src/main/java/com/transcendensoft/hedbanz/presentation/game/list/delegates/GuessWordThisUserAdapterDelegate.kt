@@ -7,6 +7,8 @@ import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.domain.entity.Message
 import com.transcendensoft.hedbanz.domain.entity.MessageType
+import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing
+import com.transcendensoft.hedbanz.domain.entity.Question
 import com.transcendensoft.hedbanz.presentation.game.list.holder.GuessWordThisUserViewHolder
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
@@ -40,8 +42,8 @@ import javax.inject.Inject
  */
 class GuessWordThisUserAdapterDelegate @Inject constructor() :
         AdapterDelegate<List<@JvmSuppressWildcards Message>>() {
-    private val guessWordSubject: PublishSubject<String> = PublishSubject.create()
-    private var helperStringSubject: PublishSubject<String> = PublishSubject.create()
+    private val guessWordSubject: PublishSubject<Question> = PublishSubject.create()
+    private val helperStringSubject: PublishSubject<Question> = PublishSubject.create()
 
     override fun onCreateViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder {
         val context = parent?.context
@@ -52,12 +54,13 @@ class GuessWordThisUserAdapterDelegate @Inject constructor() :
 
     override fun isForViewType(items: List<Message>, position: Int): Boolean {
         val message = items[position]
-        return message.messageType == MessageType.GUESS_WORD_THIS_USER
+        return message.messageType == MessageType.GUESS_WORD_THIS_USER &&
+                message is PlayerGuessing
     }
 
     override fun onBindViewHolder(items: List<Message>, position: Int,
                                   holder: RecyclerView.ViewHolder, payloads: MutableList<Any>) {
-        val message = items[position]
+        val message = items[position] as PlayerGuessing
         if (holder is GuessWordThisUserViewHolder) {
             val helperStringsList = holder.context.resources
                     .getStringArray(R.array.guess_helpers)
@@ -68,9 +71,10 @@ class GuessWordThisUserAdapterDelegate @Inject constructor() :
             holder.bindRecyclerViewGuessHelpers(helperStringsList)
             holder.bindLoading(message.isLoading, message.isFinished)
             holder.bindText(message.message)
+            holder.bindTitle(message.attempts)
 
-            holder.submitWordObservable().subscribe(guessWordSubject)
-            holder.helperStringsObservable().subscribe(helperStringSubject);
+            holder.submitWordObservable(message.questionId).subscribe(guessWordSubject)
+            holder.helperStringsObservable(message.questionId).subscribe(helperStringSubject);
         }
     }
 
