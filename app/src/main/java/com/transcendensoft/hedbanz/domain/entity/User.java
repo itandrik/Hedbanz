@@ -31,12 +31,12 @@ public class User {
     private Long registrationDate;
     private String login;
     private boolean isFriend;
-    private boolean isAFK;
+    private PlayerStatus playerStatus;
     private String word;
     private int attempts;
 
     protected User(long id, String email, String password, String confirmPassword,
-                   long money, Long registrationDate, String login, boolean isAFK,
+                   long money, Long registrationDate, String login, PlayerStatus playerStatus,
                    boolean isFriend, String word, int attempts) {
         this.id = id;
         this.email = email;
@@ -45,9 +45,10 @@ public class User {
         this.money = money;
         this.registrationDate = registrationDate;
         this.login = login;
-        this.isAFK = isAFK;
+        this.playerStatus = playerStatus;
         this.isFriend = isFriend;
         this.attempts = attempts;
+        this.word = word;
     }
 
     public User() {
@@ -109,12 +110,12 @@ public class User {
         this.login = login;
     }
 
-    public boolean isAFK() {
-        return isAFK;
+    public PlayerStatus getPlayerStatus() {
+        return playerStatus;
     }
 
-    public void setAFK(boolean AFK) {
-        isAFK = AFK;
+    public void setPlayerStatus(PlayerStatus playerStatus) {
+        this.playerStatus = playerStatus;
     }
 
     public boolean isFriend() {
@@ -167,7 +168,7 @@ public class User {
                 ", registrationDate=" + registrationDate +
                 ", login='" + login + '\'' +
                 ", isFriend=" + isFriend +
-                ", isAFK=" + isAFK +
+                ", playerStatus=" + playerStatus +
                 ", word='" + word + '\'' +
                 ", attempts=" + attempts +
                 '}';
@@ -181,7 +182,7 @@ public class User {
         private long money;
         private Long registrationDate;
         private String login;
-        private boolean isAFK;
+        private PlayerStatus playerStatus;
         private boolean isFriend;
         private String word;
         private int attempts;
@@ -221,8 +222,8 @@ public class User {
             return this;
         }
 
-        public User.Builder setIsAfk(boolean isAfk) {
-            this.isAFK = isAfk;
+        public User.Builder setPlayerStatus(PlayerStatus playerStatus) {
+            this.playerStatus = playerStatus;
             return this;
         }
 
@@ -243,7 +244,7 @@ public class User {
 
         public User build() {
             return new User(id, email, password, confirmPassword, money,
-                    registrationDate, login, isAFK, isFriend, word, attempts);
+                    registrationDate, login, playerStatus, isFriend, word, attempts);
         }
     }
 }

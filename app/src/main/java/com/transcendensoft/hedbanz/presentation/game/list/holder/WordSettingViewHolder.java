@@ -16,11 +16,12 @@ package com.transcendensoft.hedbanz.presentation.game.list.holder;
  */
 
 import android.content.Context;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -40,7 +41,8 @@ import io.reactivex.Observable;
  */
 public class WordSettingViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.tvSetWordTitle) TextView mTvSetWordTitle;
-    @BindView(R.id.etSetWord) EditText mEtSetWord;
+    @BindView(R.id.tilSetWord) TextInputLayout mTilSetWord;
+    @BindView(R.id.tietSetWord) TextInputEditText mTietSetWord;
     @BindView(R.id.ivSubmitWord) ImageView mIvSetWord;
     @BindView(R.id.pbWordLoading) ProgressBar mPbWordLoading;
 
@@ -61,25 +63,25 @@ public class WordSettingViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public void bindLoading(boolean isLoading, boolean isFinished){
-        if(isLoading && !isFinished){
+    public void bindLoading(boolean isLoading, boolean isFinished) {
+        if (isLoading && !isFinished) {
             mIvSetWord.setVisibility(View.GONE);
             mPbWordLoading.setVisibility(View.VISIBLE);
             mIvSetWord.setColorFilter(ContextCompat.getColor(mContext, R.color.textPrimary),
                     android.graphics.PorterDuff.Mode.SRC_IN);
-            mEtSetWord.setEnabled(false);
+            mTietSetWord.setEnabled(false);
             mIvSetWord.setEnabled(false);
-        } else if(!isLoading && isFinished){
+        } else if (!isLoading && isFinished) {
             mIvSetWord.setVisibility(View.VISIBLE);
             mIvSetWord.setColorFilter(ContextCompat.getColor(mContext, R.color.google_green),
                     android.graphics.PorterDuff.Mode.SRC_IN);
             mPbWordLoading.setVisibility(View.GONE);
-            mEtSetWord.setEnabled(false);
+            mTietSetWord.setEnabled(false);
             mIvSetWord.setEnabled(false);
         } else {
             mIvSetWord.setVisibility(View.VISIBLE);
             mPbWordLoading.setVisibility(View.GONE);
-            mEtSetWord.setEnabled(true);
+            mTietSetWord.setEnabled(true);
             mIvSetWord.setEnabled(true);
         }
     }
@@ -87,7 +89,13 @@ public class WordSettingViewHolder extends RecyclerView.ViewHolder {
     public Observable<String> setWordObservable() {
         return Observable.create(emitter -> {
             mIvSetWord.setOnClickListener(view -> {
-                emitter.onNext(mEtSetWord.getText().toString().trim());
+                String text = mTietSetWord.getText().toString().trim();
+                if (TextUtils.isEmpty(text)) {
+                    mTilSetWord.setError(mContext.getString(R.string.game_word_setting_error));
+                } else {
+                    mTilSetWord.setError(null);
+                    emitter.onNext(text);
+                }
             });
         });
     }

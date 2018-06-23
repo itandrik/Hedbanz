@@ -16,13 +16,15 @@ package com.transcendensoft.hedbanz.presentation.game.list.holder;
  */
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -45,7 +47,8 @@ import io.reactivex.Observable;
  * Developed by <u>Transcendensoft</u>
  */
 public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.etGuessWord) EditText mEtGuessWord;
+    @BindView(R.id.tilGuessWord) TextInputLayout mTilGuessWord;
+    @BindView(R.id.tietGuessWord) TextInputEditText mTietGuessWord;
     @BindView(R.id.rvGuessHelpers) RecyclerView mRvGuessHelpers;
     @BindView(R.id.ivSubmitWord) ImageView mIvSubmitWord;
     @BindView(R.id.pbGuessLoading) ProgressBar mPbGuessLoading;
@@ -69,12 +72,12 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         mRvGuessHelpers.setAdapter(adapter);
 
         mHelperStringsObservable = adapter.getHelperStringsSubject()
-                .doOnNext(s -> mEtGuessWord.setText(s));
+                .doOnNext(s -> mTietGuessWord.setText(s));
     }
 
     public void bindText(String text) {
         if (!TextUtils.isEmpty(text)) {
-            mEtGuessWord.setText(text);
+            mTietGuessWord.setText(text);
         }
     }
 
@@ -94,21 +97,21 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
             mPbGuessLoading.setVisibility(View.VISIBLE);
             mIvSubmitWord.setColorFilter(ContextCompat.getColor(mContext, R.color.textPrimary),
                     android.graphics.PorterDuff.Mode.SRC_IN);
-            mEtGuessWord.setEnabled(false);
+            mTietGuessWord.setEnabled(false);
             mIvSubmitWord.setEnabled(false);
         } else if (!isLoading && isFinished) {
             mIvSubmitWord.setVisibility(View.VISIBLE);
             mIvSubmitWord.setColorFilter(ContextCompat.getColor(mContext, R.color.google_green),
                     android.graphics.PorterDuff.Mode.SRC_IN);
             mPbGuessLoading.setVisibility(View.GONE);
-            mEtGuessWord.setEnabled(false);
+            mTietGuessWord.setEnabled(false);
             mIvSubmitWord.setEnabled(false);
             mRvGuessHelpers.setEnabled(false);
             ((GuessWordsHelperAdapter)mRvGuessHelpers.getAdapter()).disable();
         } else {
             mIvSubmitWord.setVisibility(View.VISIBLE);
             mPbGuessLoading.setVisibility(View.GONE);
-            mEtGuessWord.setEnabled(true);
+            mTietGuessWord.setEnabled(true);
             mIvSubmitWord.setEnabled(true);
         }
     }
@@ -117,10 +120,18 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         return Observable.create(emitter -> {
             mIvSubmitWord.setOnClickListener(view -> {
                 Question question = new Question();
-                question.setMessage(mEtGuessWord.getText().toString().trim());
-                question.setQuestionId(questionId);
 
-                emitter.onNext(question);
+                String text = mTietGuessWord.getText().toString().trim();
+                if(TextUtils.isEmpty(text)){
+                    mTilGuessWord.setError(mContext.getString(R.string.game_guess_word_error));
+                } else {
+                    mTilGuessWord.setError(null);
+                    question.setMessage(transformInputTextAccordingRules(text));
+                    mTietGuessWord.setText(question.getMessage());
+                    question.setQuestionId(questionId);
+
+                    emitter.onNext(question);
+                }
             });
         });
     }
@@ -129,7 +140,7 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         if (mHelperStringsObservable != null) {
             return mHelperStringsObservable.map(text -> {
                 Question question = new Question();
-                question.setMessage(mEtGuessWord.getText().toString().trim());
+                question.setMessage(mTietGuessWord.getText().toString().trim());
                 question.setQuestionId(questionId);
 
                 return question;
@@ -137,6 +148,19 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         } else {
             return Observable.empty();
         }
+    }
+
+    @NonNull
+    private String transformInputTextAccordingRules(String text) {
+        String startText = mContext.getString(R.string.game_set_word_start_text);
+        String endText = "?";
+        if (!text.startsWith(startText)) {
+            text = startText + " " + text;
+        }
+        if (!text.endsWith(endText)) {
+            text = text + endText;
+        }
+        return text;
     }
 
     public Context getContext() {

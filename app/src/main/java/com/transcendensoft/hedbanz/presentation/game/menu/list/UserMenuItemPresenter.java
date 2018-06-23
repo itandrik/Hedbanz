@@ -57,7 +57,7 @@ public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemCon
     private void updateUserView() {
         //TODO change this shit
         view().setIcon(R.drawable.logo);
-        view().setIsAfk(model.getUser().isAFK());
+        view().setStatus(model.getUser().getPlayerStatus());
         view().setIsFriend(model.getUser().isFriend());
         view().setName(model.getUser().getLogin());
         view().setWord(model.getUser());

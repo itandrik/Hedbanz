@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.entity.PlayerStatus;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.MvpViewHolder;
 
@@ -41,10 +42,13 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
     @BindView(R.id.tvUserWord) TextView mTvWord;
     @BindView(R.id.tvUserLogin) TextView mTvLogin;
     @BindView(R.id.ivFriend) ImageView mIvIsFriend;
+    @BindView(R.id.tvFriendTitle) TextView mTvIsFriend;
     @BindView(R.id.ivUserIcon) ImageView mIvUserIcon;
     @BindView(R.id.tvAfkShadow) TextView mTvAfk;
     @BindView(R.id.tvThisUser) TextView mTvThisUser;
     @BindView(R.id.ivThisUserStar) ImageView mIvThisUserStar;
+    @BindView(R.id.ivWin) ImageView mIvWin;
+
 
     private Context mContext;
 
@@ -74,11 +78,18 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
     }
 
     @Override
-    public void setIsAfk(boolean isAfk) {
-        if (isAfk) {
-            mTvAfk.setVisibility(View.VISIBLE);
-        } else {
-            mTvAfk.setVisibility(View.GONE);
+    public void setStatus(PlayerStatus playerStatus) {
+        switch (playerStatus) {
+            case AFK:
+                mTvAfk.setVisibility(View.VISIBLE);
+                break;
+            case WIN:
+                mIvWin.setVisibility(View.VISIBLE);
+                break;
+            case ACTIVE:
+                mTvAfk.setVisibility(View.GONE);
+                break;
+            default:
         }
     }
 
@@ -86,8 +97,10 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
     public void setIsFriend(boolean isFriend) {
         if (isFriend) {
             mIvIsFriend.setVisibility(View.VISIBLE);
+            mTvIsFriend.setVisibility(View.VISIBLE);
         } else {
             mIvIsFriend.setVisibility(View.GONE);
+            mTvIsFriend.setVisibility(View.GONE);
         }
     }
 

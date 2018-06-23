@@ -23,6 +23,7 @@ import com.transcendensoft.hedbanz.di.qualifier.SchedulerIO;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing;
+import com.transcendensoft.hedbanz.domain.entity.PlayerStatus;
 import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
@@ -158,9 +159,9 @@ public class GameInteractorFacade {
                 if (users.contains(user)) {
                     RxUser rxUser = getRxUser(user);
                     if (rxUser != null) {
-                        rxUser.setAFK(true);
+                        rxUser.setStatus(PlayerStatus.AFK);
                     }
-                    user.setAFK(true);
+                    user.setPlayerStatus(PlayerStatus.AFK);
                 }
             }
         };
@@ -176,9 +177,9 @@ public class GameInteractorFacade {
                 if (users.contains(user)) {
                     RxUser rxUser = getRxUser(user);
                     if (rxUser != null) {
-                        rxUser.setAFK(false);
+                        rxUser.setStatus(PlayerStatus.ACTIVE);
                     }
-                    user.setAFK(false);
+                    user.setPlayerStatus(PlayerStatus.ACTIVE);
                 }
             }
         };
@@ -214,14 +215,19 @@ public class GameInteractorFacade {
 
     public void onUserWinListener(Consumer<? super User> onNext,
                                    Consumer<? super Throwable> onError) {
-        //TODO
-        /*Consumer<? super User> doOnNext = user -> {
-            if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
-                mCurrentRoom.removePlayer(user);
-                mCurrentRoom.setCurrentPlayersNumber(
-                        (byte) (mCurrentRoom.getRoom().getCurrentPlayersNumber() - 1));
+        Consumer<? super User> doOnNext = user -> {
+            if ((mCurrentRoom != null) && (mCurrentRoom.getRoom().getPlayers() != null) &&
+                    (user != null)) {
+                List<User> users = mCurrentRoom.getRoom().getPlayers();
+                if (users.contains(user)) {
+                    RxUser rxUser = getRxUser(user);
+                    if (rxUser != null) {
+                        rxUser.setStatus(PlayerStatus.WIN);
+                    }
+                    user.setPlayerStatus(PlayerStatus.WIN);
+                }
             }
-        };*/
+        };
         mUserWinUseCase.execute(null, onNext, onError);
     }
 
@@ -374,6 +380,7 @@ public class GameInteractorFacade {
 
     public void setRoomInfo(Room room) {
         room.getPlayers().add(mPreferenceManger.getUser());
+        mPreferenceManger.setCurrentRoomId(room.getId());
         mCurrentRoom.setId(room.getId());
         mCurrentRoom.setCurrentPlayersNumber(room.getCurrentPlayersNumber());
         mCurrentRoom.setEndDate(room.getEndDate());

@@ -23,9 +23,9 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/etGuessWord"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvGuessWordTitle"
+        app:layout_constraintTop_toTopOf="@+id/tilGuessWord"
         app:srcCompat="@drawable/ic_accept"
         app:tint="@color/textPrimary" />
 
@@ -36,25 +36,33 @@
         android:layout_marginBottom="8dp"
         android:theme="@style/AppTheme.RedProgressBar"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/etGuessWord"
+        app:layout_constraintBottom_toBottomOf="@id/tilGuessWord"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvGuessWordTitle" />
 
-    <EditText
-        android:id="@+id/etGuessWord"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tilGuessWord"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="@string/game_guess_word_hint"
-        android:inputType="textPersonName"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toStartOf="@id/ivSubmitWord"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvGuessWordTitle" />
+        app:layout_constraintTop_toBottomOf="@id/tvGuessWordTitle">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tietGuessWord"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/game_guess_word_hint"
+            android:inputType="textPersonName"
+            android:textColorHighlight="@color/textSecondaryLight"
+            android:theme="@style/WordSettingEditText" />
+    </android.support.design.widget.TextInputLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvGuessHelpers"
@@ -65,7 +73,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etGuessWord" />
+        app:layout_constraintTop_toBottomOf="@+id/tilGuessWord" />
 
     <View
         android:id="@+id/view"
@@ -75,7 +83,7 @@
         android:layout_marginRight="16dp"
         android:background="@color/google_red"
         app:layout_constraintBottom_toBottomOf="@id/rvGuessHelpers"
-        app:layout_constraintEnd_toStartOf="@id/etGuessWord"
+        app:layout_constraintEnd_toStartOf="@id/tilGuessWord"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvGuessWordTitle" />
 </android.support.constraint.ConstraintLayout>

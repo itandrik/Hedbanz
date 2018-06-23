@@ -12,52 +12,58 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="-40dp"
-        app:srcCompat="@drawable/register_divider"/>
+        app:srcCompat="@drawable/register_divider" />
 
     <TextView
         android:id="@+id/tvStartGame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:text="@string/game_starts"
-        android:gravity="center"
         android:layout_below="@id/ivSeparator"
-        android:layout_marginTop="-48dp"/>
+        android:layout_marginTop="-48dp"
+        android:gravity="center"
+        android:text="@string/game_starts"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvSetWordTitle"
         android:layout_width="match_parent"
-        android:layout_below="@id/tvStartGame"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_below="@id/tvStartGame"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="32dp"
         android:maxWidth="300dp"
         android:text="@string/game_set_word_title"
         android:textColor="@color/google_green"
         android:textSize="15sp" />
 
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/etSetWord"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tilSetWord"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvSetWordTitle"
         android:layout_marginLeft="16dp"
-        android:textColorHighlight="@color/textSecondaryLight"
-        android:theme="@style/WordSettingEditText"
         android:layout_marginRight="48dp"
-        android:layout_marginTop="16dp"
-        android:hint="@string/game_set_word_hint"
-        android:inputType="textCapWords" />
+        android:layout_marginTop="16dp">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tietSetWord"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/game_set_word_hint"
+            android:inputType="textCapWords"
+            android:textColorHighlight="@color/textSecondaryLight"
+            android:theme="@style/WordSettingEditText" />
+    </android.support.design.widget.TextInputLayout>
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/ivSubmitWord"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_alignBottom="@+id/etSetWord"
+        android:layout_alignTop="@id/tilSetWord"
         android:layout_alignParentRight="true"
-        android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_marginBottom="10dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:paddingTop="2dp"
         app:srcCompat="@drawable/ic_accept"
         app:tint="@color/textPrimary" />
@@ -66,16 +72,16 @@
         android:id="@+id/pbWordLoading"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_alignBottom="@+id/etSetWord"
-        android:visibility="gone"
-        android:theme="@style/AppTheme.RedProgressBar"
+        android:layout_alignBottom="@id/tilSetWord"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp"
+        android:theme="@style/AppTheme.RedProgressBar"
+        android:visibility="gone" />
 
     <View
         android:layout_width="3dp"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/etSetWord"
+        android:layout_alignBottom="@id/tilSetWord"
         android:layout_alignTop="@id/tvSetWordTitle"
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
