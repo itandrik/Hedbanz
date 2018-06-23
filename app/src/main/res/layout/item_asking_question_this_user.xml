@@ -144,13 +144,73 @@
                 android:layout_toRightOf="@id/tvPlayersThumbsDown"
                 android:background="@color/google_red" />
 
+            <android.support.v7.widget.CardView
+                android:id="@+id/cvWin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvPlayersThumbsDown"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/message_this_user_bg"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="6dp"
+                app:contentPadding="8dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:srcCompat="@drawable/ic_win_disabled" />
+            </android.support.v7.widget.CardView>
+
+            <com.daimajia.numberprogressbar.NumberProgressBar
+                android:id="@+id/numberProgressBarWin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/cvWin"
+                android:layout_alignParentLeft="true"
+                android:layout_alignTop="@id/cvWin"
+                app:progress_max="100"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_toLeftOf="@id/cvWin"
+                style="@style/NumberProgressBar_Passing_Green"
+
+                custom:progress_reached_color="@color/google_red"
+                custom:progress_text_color="@color/google_blue" />
+
+            <TextView
+                android:id="@+id/tvPlayersWin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="16dp"
+                android:gravity="right"
+                android:layout_below="@id/cvWin"
+                android:layout_marginRight="8dp"
+                android:layout_toLeftOf="@id/cvWin"
+                android:textSize="12sp" />
+
+            <View
+                android:id="@+id/dividerWinPlayers"
+                android:layout_width="2dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tvPlayersWin"
+                android:layout_alignTop="@id/tvPlayersWin"
+                android:layout_marginRight="8dp"
+                android:layout_toRightOf="@id/tvPlayersWin"
+                android:background="@color/google_green" />
+
             <TextView
                 android:id="@+id/tvTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
-                android:layout_below="@id/dividerThumbsDownPlayers"
+                android:layout_below="@id/dividerWinPlayers"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"

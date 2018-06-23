@@ -149,7 +149,8 @@
     <string name="game_this_user_think_word_to_user">Задайте вопрос о том кто вы. Попытка %1$d/3</string>
     <string name="game_guess_word_hint">Я &#8230;</string>
     <string name="game_asking_total_votes">Всего:</string>
-    <string name="game_notification_title">%1$s (Новое сообщение)</string>
+    <string name="game_notification_title">%1$s с комнаты %2$s</string>
+    <string name="game_notification_title_error">Новое сообщение</string>
     <string name="game_notification_channel_title_message">Сообщение</string>
     <!-- Friends -->
     <string name="friends_toolbar_title">Ваши друзяки</string>

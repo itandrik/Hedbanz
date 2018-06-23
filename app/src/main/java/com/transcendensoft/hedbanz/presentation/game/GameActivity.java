@@ -200,6 +200,8 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     mAdapter.askingQuestionThumbsUpObservable());
             mPresenter.processThumbsDownClick(
                     mAdapter.askingQuestionThumbsDownObservable());
+            mPresenter.processWinClick(
+                    mAdapter.askingQuestionWinObservable());
         }
     }
 

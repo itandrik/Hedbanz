@@ -71,5 +71,6 @@ public interface GameContract {
         void processGuessWordHelperText(Observable<Question> clickObservable);
         void processThumbsUpClick(Observable<Long> clickObservable);
         void processThumbsDownClick(Observable<Long> clickObservable);
+        void processWinClick(Observable<Long> clickObservable);
     }
 }

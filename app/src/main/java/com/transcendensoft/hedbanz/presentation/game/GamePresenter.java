@@ -205,7 +205,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     @Override
     public void processThumbsDownClick(Observable<Long> clickObservable) {
         addDisposable(clickObservable.subscribe(
-                questionId -> mGameInteractor.voteForQuestion(false, questionId),
+                questionId -> mGameInteractor.voteForQuestion(Question.Vote.NO, questionId),
                 err -> Timber.e("Error while vote \'no\'. Message : " + err.getMessage())
         ));
     }
@@ -213,8 +213,16 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     @Override
     public void processThumbsUpClick(Observable<Long> clickObservable) {
         addDisposable(clickObservable.subscribe(
-                questionId -> mGameInteractor.voteForQuestion(true, questionId),
+                questionId -> mGameInteractor.voteForQuestion(Question.Vote.YES, questionId),
                 err -> Timber.e("Error while vote \'yes\'. Message : " + err.getMessage())
+        ));
+    }
+
+    @Override
+    public void processWinClick(Observable<Long> clickObservable) {
+        addDisposable(clickObservable.subscribe(
+                questionId -> mGameInteractor.voteForQuestion(Question.Vote.WIN, questionId),
+                err -> Timber.e("Error while vote \'win\'. Message : " + err.getMessage())
         ));
     }
 
@@ -303,6 +311,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         initLeftUserListener();
         initUserAfkListener();
         initUserReturnedListener();
+        initUserWinListener();
         initMessageListeners();
         initWordSettingListeners();
         initWordGuessingListeners();
@@ -362,6 +371,20 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 view().showLoading();
                 refreshMessageHistory();
             }
+        }, this::processEventListenerOnError);
+    }
+
+    private void initUserWinListener(){
+        mGameInteractor.onUserWinListener(user -> {
+            view().showShortToastMessage("User " + user.getLogin() + " wins");
+            /*if (!mPreferenceManger.getUser().equals(user)) {
+                view().showUserAfk(false, user.getLogin());
+            } else {
+                model.setMessages(new ArrayList<>());
+                view().clearMessages();
+                view().showLoading();
+                refreshMessageHistory();
+            }*/
         }, this::processEventListenerOnError);
     }
 

@@ -1,9 +1,4 @@
-package com.transcendensoft.hedbanz.data.network.service.firebase
-
-import android.content.Context
-import com.transcendensoft.hedbanz.di.qualifier.ServiceContext
-import dagger.Binds
-import dagger.Module
+package com.transcendensoft.hedbanz.domain.entity
 
 /**
  * Copyright 2017. Andrii Chernysh
@@ -22,15 +17,12 @@ import dagger.Module
  *
  */
 /**
- * Module that provides context and other
- * instances for firebase instance id service.
+ * Entity that receives from FCM when some user writes message
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-@Module
-interface FirebaseInstanceIdModule {
-    @ServiceContext
-    @Binds
-    fun bindServiceContext(hedbanzFirebaseInstanceIdService: HedbanzFirebaseInstanceIdService): Context
-}
+data class NotificationMessage(val senderName: String? = null,
+                               val roomName: String? = null,
+                               val text: String? = null,
+                               val roomId: Long = 0)

@@ -23,14 +23,15 @@ import dagger.Module
  */
 /**
  * Module that provides context and other
- * instances for firebase instance id service.
+ * instances for firebase messaging service.
+ * Service that recieves push notifications.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 @Module
-interface FirebaseInstanceIdModule {
+interface FirebaseMessagingServiceModule {
     @ServiceContext
     @Binds
-    fun bindServiceContext(hedbanzFirebaseInstanceIdService: HedbanzFirebaseInstanceIdService): Context
+    fun bindServiceContext(hedbanzFirebaseMessagingService: HedbanzFirebaseMessagingService): Context
 }

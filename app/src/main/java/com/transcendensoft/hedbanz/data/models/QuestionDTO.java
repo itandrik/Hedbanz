@@ -25,9 +25,9 @@ import java.util.List;
  * All question properties received from server described here
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public class QuestionDTO extends MessageDTO{
+public class QuestionDTO extends MessageDTO {
     @SerializedName("questionId")
     @Expose
     private long questionId;
@@ -37,17 +37,22 @@ public class QuestionDTO extends MessageDTO{
     @SerializedName("noVoters")
     @Expose
     private List<UserDTO> noVoters;
+    @SerializedName("winVoters")
+    @Expose
+    private List<UserDTO> winVoters;
     @SerializedName("vote")
     @Expose
     private int voteId;
 
     public QuestionDTO(long id, long senderId, long roomId, String text, int type,
                        Long createDate, long clientMessageId, UserDTO senderUser,
-                       long questionId, List<UserDTO> yesVoters, List<UserDTO> noVoters, int voteId) {
+                       long questionId, List<UserDTO> yesVoters, List<UserDTO> noVoters,
+                       List<UserDTO> winVoters, int voteId) {
         super(id, senderId, roomId, text, type, createDate, clientMessageId, senderUser);
         this.questionId = questionId;
         this.yesVoters = yesVoters;
         this.noVoters = noVoters;
+        this.winVoters = winVoters;
         this.voteId = voteId;
     }
 
@@ -75,6 +80,14 @@ public class QuestionDTO extends MessageDTO{
         this.noVoters = noVoters;
     }
 
+    public List<UserDTO> getWinVoters() {
+        return winVoters;
+    }
+
+    public void setWinVoters(List<UserDTO> winVoters) {
+        this.winVoters = winVoters;
+    }
+
     public int getVoteId() {
         return voteId;
     }
@@ -95,6 +108,8 @@ public class QuestionDTO extends MessageDTO{
         private long questionId;
         private List<UserDTO> yesVoters;
         private List<UserDTO> noVoters;
+        private List<UserDTO> winVoters;
+
         private int voteId;
 
         public QuestionDTO.Builder setId(long id) {
@@ -152,6 +167,11 @@ public class QuestionDTO extends MessageDTO{
             return this;
         }
 
+        public QuestionDTO.Builder setWinVoters(List<UserDTO> winVoters) {
+            this.winVoters = winVoters;
+            return this;
+        }
+
         public QuestionDTO.Builder setVoteId(int vote) {
             this.voteId = vote;
             return this;
@@ -159,7 +179,8 @@ public class QuestionDTO extends MessageDTO{
 
         public QuestionDTO build() {
             return new QuestionDTO(id, senderId, roomId, text, type, createDate,
-                    clientMessageId, senderUser, questionId, yesVoters, noVoters, voteId);
+                    clientMessageId, senderUser, questionId, yesVoters, noVoters,
+                    winVoters, voteId);
         }
     }
 }

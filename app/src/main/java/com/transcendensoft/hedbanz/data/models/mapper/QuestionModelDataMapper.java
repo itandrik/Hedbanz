@@ -59,6 +59,7 @@ public class QuestionModelDataMapper {
                             question.getMessageType().getId() : MessageType.UNDEFINED.getId())
                     .setNoVoters(mUserModelDataMapper.convertToDtoUsers(question.getNoVoters()))
                     .setYesVoters(mUserModelDataMapper.convertToDtoUsers(question.getYesVoters()))
+                    .setWinVoters(mUserModelDataMapper.convertToDtoUsers(question.getWinVoters()))
                     .setVoteId(voteId)
                     .setQuestionId(question.getQuestionId())
                     .build();
@@ -87,6 +88,7 @@ public class QuestionModelDataMapper {
                     .questionId(questionDTO.getQuestionId())
                     .yesVoters(mUserModelDataMapper.convertToUsers(questionDTO.getYesVoters()))
                     .noVoters(mUserModelDataMapper.convertToUsers(questionDTO.getNoVoters()))
+                    .winVoters(mUserModelDataMapper.convertToUsers(questionDTO.getWinVoters()))
                     .vote(Question.Vote.Companion.getVoteById(questionDTO.getVoteId()))
                     .message(message)
                     .build();

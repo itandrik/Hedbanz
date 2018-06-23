@@ -27,6 +27,7 @@ data class Question(
         var questionId: Long = 0L,
         var yesVoters: List<User> = listOf(),
         var noVoters: List<User> = listOf(),
+        var winVoters: List<User> = listOf(),
         var vote: Vote? = null,
         var allUsersCount: Int = 0,
         var messageParent: Message = Message()
@@ -34,7 +35,7 @@ data class Question(
         messageParent.messageType, messageParent.createDate, messageParent.clientMessageId), Cloneable {
 
     private constructor(builder: Builder) : this(builder.questionId, builder.yesVoters,
-            builder.noVoters, builder.vote, builder.allUsersCount, builder.message)
+            builder.noVoters, builder.winVoters, builder.vote, builder.allUsersCount, builder.message)
 
     override fun clone(): Question {
         super.clone()
@@ -54,6 +55,9 @@ data class Question(
         var noVoters: List<User> = listOf()
             private set
 
+        var winVoters: List<User> = listOf()
+            private set
+
         var vote: Vote? = null
             private set
 
@@ -69,6 +73,8 @@ data class Question(
 
         fun noVoters(noVoters: List<User>?) = apply { noVoters?.let { this.noVoters = noVoters } }
 
+        fun winVoters(winVoters: List<User>?) = apply { winVoters?.let { this.winVoters = winVoters } }
+
         fun vote(vote: Vote?) = apply { this.vote = vote }
 
         fun allUsersCount(allUsersCount: Int) = apply { this.allUsersCount = allUsersCount }
@@ -81,6 +87,7 @@ data class Question(
     enum class Vote(val id: Int) {
         NO(0),
         YES(1),
+        WIN(2),
         UNDEFINED(-1);
 
         companion object {

@@ -16,7 +16,9 @@ package com.transcendensoft.hedbanz.di;
  */
 
 import com.transcendensoft.hedbanz.data.network.service.firebase.FirebaseInstanceIdModule;
+import com.transcendensoft.hedbanz.data.network.service.firebase.FirebaseMessagingServiceModule;
 import com.transcendensoft.hedbanz.data.network.service.firebase.HedbanzFirebaseInstanceIdService;
+import com.transcendensoft.hedbanz.data.network.service.firebase.HedbanzFirebaseMessagingService;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.di.scope.ServiceScope;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
@@ -74,4 +76,8 @@ public interface ActivityBindingModule {
     @ServiceScope
     @ContributesAndroidInjector(modules = FirebaseInstanceIdModule.class)
     HedbanzFirebaseInstanceIdService hedbanzFirebaseInstanceIdService();
+
+    @ServiceScope
+    @ContributesAndroidInjector(modules = FirebaseMessagingServiceModule.class)
+    HedbanzFirebaseMessagingService hedbanzFirebaseMessagingService();
 }

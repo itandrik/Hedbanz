@@ -59,7 +59,7 @@ class AskingQuestionThisUserAdapterDelegate @Inject constructor() : AdapterDeleg
             holder.bindMessage(question.message)
             holder.bindLoading(question.isLoading, question.isFinished)
             holder.bindTime(question.createDate)
-            holder.bindProgress(question.yesVoters, question.noVoters, question.allUsersCount)
+            holder.bindProgress(question.yesVoters, question.noVoters, question.winVoters, question.allUsersCount)
         }
     }
 }

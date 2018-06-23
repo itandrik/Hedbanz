@@ -43,12 +43,16 @@ import kotlinx.android.synthetic.main.item_message_some_user.view.*
 class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : RecyclerView.ViewHolder(itemView) {
     private val mCvThumbsUp = itemView?.cvThumbsUp
     private val mCvThumbsDown = itemView?.cvThumbsDown
+    private val mCvWin = itemView?.cvWin
     private val mPbThumbsUp = itemView?.numberProgressBarThumbsUp
     private val mPbThumbsDown = itemView?.numberProgressBarThumbsDown
+    private val mPbWin = itemView?.numberProgressBarWin
     private val mTvPlayersThumbsUp = itemView?.tvPlayersThumbsUp
     private val mTvPlayersThumbsDown = itemView?.tvPlayersThumbsDown
+    private val mTvPlayersWin = itemView?.tvPlayersWin
     private val mThumbsUpPlayersDivider = itemView?.dividerThumbsUpPlayers
     private val mThumbsDownPlayersDivider = itemView?.dividerThumbsDownPlayers
+    private val mWinPlayersDivider = itemView?.dividerWinPlayers
     private val mTvUserWord = itemView?.tvUserWord
     private val mTvMessage = itemView?.tvMessage
     private val mIvUserImage = itemView?.ivUserImage
@@ -62,7 +66,7 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
 
 
     fun bindUserWord(word: String?) {
-        if(word.isNullOrEmpty()){
+        if (word.isNullOrEmpty()) {
             mTvUserWord?.visibility = View.GONE
         } else {
             mTvUserWord?.visibility = View.VISIBLE
@@ -144,18 +148,20 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
     /*------------------------------------*
      *-------- Card view binding ---------*
      *------------------------------------*/
-    fun bindProgress(usersThumbsUp: List<User>, usersThumbsDown: List<User>, allUsersCount: Int) {
+    fun bindProgress(usersThumbsUp: List<User>, usersThumbsDown: List<User>, usersWin: List<User>, allUsersCount: Int) {
         setProgressBarsMax(allUsersCount)
 
         setThumbsUpInfo(usersThumbsUp)
         setThumbsDownInfo(usersThumbsDown)
+        setWinsInfo(usersWin)
 
-        setTotalInfo(usersThumbsUp, usersThumbsDown, allUsersCount)
+        setTotalInfo(usersThumbsUp, usersThumbsDown, usersWin, allUsersCount)
     }
 
     private fun setProgressBarsMax(allUsersCount: Int) {
         mPbThumbsUp?.max = allUsersCount
         mPbThumbsDown?.max = allUsersCount
+        mPbWin?.max = allUsersCount
     }
 
     private fun setThumbsUpInfo(usersThumbsUp: List<User>) {
@@ -166,7 +172,7 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
             mTvPlayersThumbsUp?.visibility = View.VISIBLE
             mThumbsUpPlayersDivider?.visibility = View.VISIBLE
             mTvPlayersThumbsUp?.text = usersThumbsUp.joinToString(
-                    separator = ", ", transform = {it.login})
+                    separator = ", ", transform = { it.login })
             mPbThumbsUp?.progress = usersThumbsUp.size
         }
     }
@@ -175,24 +181,38 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
         if (usersThumbsDown.isEmpty()) {
             mTvPlayersThumbsDown?.visibility = View.GONE
             mThumbsDownPlayersDivider?.visibility = View.GONE
-            (mTvTotal?.layoutParams as RelativeLayout.LayoutParams)
-                    .addRule(RelativeLayout.BELOW, R.id.tvPlayersThumbsDown)
         } else {
             mTvPlayersThumbsDown?.visibility = View.VISIBLE
             mThumbsDownPlayersDivider?.visibility = View.VISIBLE
             mTvPlayersThumbsDown?.text = usersThumbsDown.joinToString(
-                    separator = ", ", transform = {it.login})
+                    separator = ", ", transform = { it.login })
             mPbThumbsDown?.progress = usersThumbsDown.size
+        }
+    }
+
+    private fun setWinsInfo(usersWin: List<User>) {
+        if (usersWin.isEmpty()) {
+            mTvPlayersWin?.visibility = View.GONE
+            mWinPlayersDivider?.visibility = View.GONE
             (mTvTotal?.layoutParams as RelativeLayout.LayoutParams)
-                    .addRule(RelativeLayout.BELOW, R.id.dividerThumbsDownPlayers)
+                    .addRule(RelativeLayout.BELOW, R.id.tvPlayersWin)
+        } else {
+            mTvPlayersWin?.visibility = View.VISIBLE
+            mWinPlayersDivider?.visibility = View.VISIBLE
+            mTvPlayersWin?.text = usersWin.joinToString(
+                    separator = ", ", transform = { it.login })
+            mPbWin?.progress = usersWin.size
+            (mTvTotal?.layoutParams as RelativeLayout.LayoutParams)
+                    .addRule(RelativeLayout.BELOW, R.id.dividerWinPlayers)
         }
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setTotalInfo(usersThumbsUp: List<User>, usersThumbsDown: List<User>, allUsersCount: Int) {
+    private fun setTotalInfo(usersThumbsUp: List<User>, usersThumbsDown: List<User>,
+                             usersWin: List<User>, allUsersCount: Int) {
         mTvTotal?.let {
             mTvTotal.text = "${mContext.getString(R.string.game_asking_total_votes)} " +
-                    "${usersThumbsUp.size + usersThumbsDown.size}/$allUsersCount"
+                    "${usersThumbsUp.size + usersThumbsDown.size + usersWin.size}/$allUsersCount"
         }
     }
 
@@ -206,6 +226,13 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
     fun thumbsDownClickObservable(questionId: Long) =
             Observable.create<Long> { emitter ->
                 mCvThumbsDown?.setOnClickListener {
+                    emitter.onNext(questionId)
+                }
+            }!!
+
+    fun winClickObservable(questionId: Long) =
+            Observable.create<Long> { emitter ->
+                mCvWin?.setOnClickListener {
                     emitter.onNext(questionId)
                 }
             }!!

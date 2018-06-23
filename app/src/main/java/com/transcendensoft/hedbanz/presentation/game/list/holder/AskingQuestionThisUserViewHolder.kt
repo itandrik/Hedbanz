@@ -39,10 +39,14 @@ import java.sql.Timestamp
 class AskingQuestionThisUserViewHolder(context: Context, itemView: View?) : RecyclerView.ViewHolder(itemView) {
     private val mPbThumbsUp = itemView?.numberProgressBarThumbsUp
     private val mPbThumbsDown = itemView?.numberProgressBarThumbsDown
+    private val mPbWin = itemView?.numberProgressBarWin
     private val mTvPlayersThumbsUp = itemView?.tvPlayersThumbsUp
     private val mTvPlayersThumbsDown = itemView?.tvPlayersThumbsDown
+    private val mTvPlayersWin = itemView?.tvPlayersWin
     private val mThumbsUpPlayersDivider = itemView?.dividerThumbsUpPlayers
     private val mThumbsDownPlayersDivider = itemView?.dividerThumbsDownPlayers
+    private val mWinPlayersDivider = itemView?.dividerWinPlayers
+
     private val mTvMessage = itemView?.tvMessage
     private val mTvTime = itemView?.tvTime
     private val mPbLoading = itemView?.pbMessageLoading
@@ -82,34 +86,32 @@ class AskingQuestionThisUserViewHolder(context: Context, itemView: View?) : Recy
     /*------------------------------------*
      *-------- Card view binding ---------*
      *------------------------------------*/
-    fun bindProgress(usersThumbsUp: List<User>, usersThumbsDown: List<User>, allUsersCount: Int) {
+    fun bindProgress(usersThumbsUp: List<User>, usersThumbsDown: List<User>, usersWin: List<User>, allUsersCount: Int) {
         setProgressBarsMax(allUsersCount)
 
         setThumbsUpInfo(usersThumbsUp)
         setThumbsDownInfo(usersThumbsDown)
+        setWinsInfo(usersWin)
 
-        setTotalInfo(usersThumbsUp, usersThumbsDown, allUsersCount)
+        setTotalInfo(usersThumbsUp, usersThumbsDown, usersWin, allUsersCount)
     }
 
     private fun setProgressBarsMax(allUsersCount: Int) {
         mPbThumbsUp?.max = allUsersCount
         mPbThumbsDown?.max = allUsersCount
+        mPbWin?.max = allUsersCount
     }
 
     private fun setThumbsUpInfo(usersThumbsUp: List<User>) {
         if (usersThumbsUp.isEmpty()) {
             mTvPlayersThumbsUp?.visibility = View.GONE
             mThumbsUpPlayersDivider?.visibility = View.GONE
-            (mTvTotal?.layoutParams as RelativeLayout.LayoutParams)
-                    .addRule(RelativeLayout.BELOW, R.id.tvPlayersThumbsDown)
         } else {
             mTvPlayersThumbsUp?.visibility = View.VISIBLE
             mThumbsUpPlayersDivider?.visibility = View.VISIBLE
             mTvPlayersThumbsUp?.text = usersThumbsUp.joinToString(
                     separator = ", ", transform = { it.login })
             mPbThumbsUp?.progress = usersThumbsUp.size
-            (mTvTotal?.layoutParams as RelativeLayout.LayoutParams)
-                    .addRule(RelativeLayout.BELOW, R.id.cvThumbsDown)
         }
     }
 
@@ -126,11 +128,29 @@ class AskingQuestionThisUserViewHolder(context: Context, itemView: View?) : Recy
         }
     }
 
+    private fun setWinsInfo(usersWins: List<User>) {
+        if (usersWins.isEmpty()) {
+            mTvPlayersWin?.visibility = View.GONE
+            mWinPlayersDivider?.visibility = View.GONE
+            (mTvTotal?.layoutParams as RelativeLayout.LayoutParams)
+                    .addRule(RelativeLayout.BELOW, R.id.tvPlayersWin)
+        } else {
+            mTvPlayersWin?.visibility = View.VISIBLE
+            mWinPlayersDivider?.visibility = View.VISIBLE
+            mTvPlayersWin?.text = usersWins.joinToString(
+                    separator = ", ", transform = { it.login })
+            mPbWin?.progress = usersWins.size
+            (mTvTotal?.layoutParams as RelativeLayout.LayoutParams)
+                    .addRule(RelativeLayout.BELOW, R.id.cvWin)
+        }
+    }
+
     @SuppressLint("SetTextI18n")
-    private fun setTotalInfo(usersThumbsUp: List<User>, usersThumbsDown: List<User>, allUsersCount: Int) {
+    private fun setTotalInfo(usersThumbsUp: List<User>, usersThumbsDown: List<User>,
+                             usersWins: List<User>, allUsersCount: Int) {
         mTvTotal?.let {
             mTvTotal.text = "${mContext.getString(R.string.game_asking_total_votes)} " +
-                    "${usersThumbsUp.size + usersThumbsDown.size}/$allUsersCount"
+                    "${usersThumbsUp.size + usersThumbsDown.size + usersWins.size}/$allUsersCount"
         }
     }
 }

@@ -42,6 +42,7 @@ import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.JoinedUs
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.LeftUserUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserAfkUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserReturnedUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserWinUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import org.json.JSONObject;
@@ -99,6 +100,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String SERVER_USER_ANSWERING_EVENT = "server-user-answering";
     private static final String CLIENT_USER_GUESSING_EVENT = "client-user-guessing";
     private static final String CLIENT_USER_ANSWERING_EVENT = "client-user-answering";
+    private static final String SERVER_USER_WIN = "server-user-win";
 
     private Socket mSocket;
     private long mUserId;
@@ -347,6 +349,30 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 }
             };
             mSocket.on(SERVER_USER_RETURNED, listener);
+        });
+    }
+
+    @Override
+    public Observable<User> userWin() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+
+                if (data != null) {
+                    try {
+                        UserDTO userDTO = mGson.fromJson(data.toString(), UserDTO.class);
+
+                        Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_WIN, data.toString());
+                        emitter.onNext(mUserMapper.convert(userDTO));
+                    } catch (JsonSyntaxException e) {
+                        emitter.onError(new IncorrectJsonException(
+                                data.toString(), UserWinUseCase.class.getName()));
+                    }
+                } else {
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_WIN, "null");
+                }
+            };
+            mSocket.on(SERVER_USER_WIN, listener);
         });
     }
 
@@ -650,6 +676,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             mSocket.off(SERVER_USER_GUESSING_EVENT);
             mSocket.off(SERVER_USER_ASKING_EVENT);
             mSocket.off(SERVER_USER_ANSWERING_EVENT);
+            mSocket.off(SERVER_USER_WIN);
         }
     }
 }

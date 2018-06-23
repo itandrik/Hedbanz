@@ -138,4 +138,9 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     public Observable<Long> askingQuestionThumbsDownObservable(){
         return mAskingQuestionOtherUserAdapterDelegate.thumbsDownClickObservable();
     }
+
+    @NonNull
+    public Observable<Long> askingQuestionWinObservable(){
+        return mAskingQuestionOtherUserAdapterDelegate.winClickObservable();
+    }
 }

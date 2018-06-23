@@ -26,7 +26,7 @@ import com.transcendensoft.hedbanz.domain.entity.User;
  * business model keys
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class PreferenceManager {
     private SharedPreferences mPreferences;
@@ -46,11 +46,11 @@ public class PreferenceManager {
         return mPreferences.edit();
     }
 
-    public void setIsAuthorised(boolean isAuthorised){
+    public void setIsAuthorised(boolean isAuthorised) {
         getEditor().putBoolean(IS_AUTHORISED, isAuthorised).apply();
     }
 
-    public boolean isAuthorised(){
+    public boolean isAuthorised() {
         return mPreferences.getBoolean(IS_AUTHORISED, false);
     }
 
@@ -63,31 +63,34 @@ public class PreferenceManager {
     public User getUser() {
         Gson gson = new Gson();
         String json = mPreferences.getString(USER_ENTITY, "{}");
-
-        return gson.fromJson(json, User.class);
+        if (json.equals("{}")) {
+            return null;
+        } else {
+            return gson.fromJson(json, User.class);
+        }
     }
 
-    public void setFirebaseToken(String token){
+    public void setFirebaseToken(String token) {
         getEditor().putString(FIREBASE_TOKEN, token).apply();
     }
 
-    public String getFirebaseToken(){
-        return  mPreferences.getString(FIREBASE_TOKEN, "");
+    public String getFirebaseToken() {
+        return mPreferences.getString(FIREBASE_TOKEN, "");
     }
 
-    public void setCurrentRoomId(long currentRoomId){
+    public void setCurrentRoomId(long currentRoomId) {
         getEditor().putLong(CURRENT_ROOM_ID, currentRoomId).apply();
     }
 
-    public long getCurrentRoomId(){
+    public long getCurrentRoomId() {
         return mPreferences.getLong(CURRENT_ROOM_ID, -1);
     }
 
-    public void setFirebaseTokenBinded(boolean firebaseTokenBinded){
+    public void setFirebaseTokenBinded(boolean firebaseTokenBinded) {
         getEditor().putBoolean(FIREBASE_TOKEN_BINDED, firebaseTokenBinded).apply();
     }
 
-    public boolean getFirebaseTokenBinded(){
+    public boolean getFirebaseTokenBinded() {
         return mPreferences.getBoolean(FIREBASE_TOKEN_BINDED, false);
     }
 }

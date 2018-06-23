@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.data.network.service.firebase;
  */
 
 import android.app.Service;
+import android.text.TextUtils;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
@@ -65,7 +66,7 @@ public class HedbanzFirebaseInstanceIdService extends FirebaseInstanceIdService 
         Timber.i("Firebase token %s", refreshedToken);
 
         User currentUser = mPreferenceManager.getUser();
-        if (currentUser == null) {
+        if (currentUser == null || TextUtils.isEmpty(currentUser.getLogin())) {
             mPreferenceManager.setFirebaseToken(refreshedToken);
         } else {
             mFirebaseBindTokenInteractor.execute(refreshedToken,

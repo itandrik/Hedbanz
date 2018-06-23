@@ -47,6 +47,7 @@ public interface GameDataRepository {
     Observable<User> userAfkObservable();
     Observable<User> userReturnedObservable();
     Observable<Room> restoreRoomObservable();
+    Observable<User> userWin();
 
     Observable<JSONObject> typingObservable();
     Observable<JSONObject> stopTypingObservable();

@@ -1,9 +1,4 @@
-package com.transcendensoft.hedbanz.data.network.service.firebase
-
-import android.content.Context
-import com.transcendensoft.hedbanz.di.qualifier.ServiceContext
-import dagger.Binds
-import dagger.Module
+package com.transcendensoft.hedbanz.domain.entity
 
 /**
  * Copyright 2017. Andrii Chernysh
@@ -22,15 +17,26 @@ import dagger.Module
  *
  */
 /**
- * Module that provides context and other
- * instances for firebase instance id service.
+ * Enum with notification message types.
+ * Id of message type must be the same as in server.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-@Module
-interface FirebaseInstanceIdModule {
-    @ServiceContext
-    @Binds
-    fun bindServiceContext(hedbanzFirebaseInstanceIdService: HedbanzFirebaseInstanceIdService): Context
+enum class NotificationMessageType(val id: Int) {
+    MESSAGE(1),
+    SET_WORD(2),
+    GUESS_WORD(3),
+    FRIEND(4),
+    INVITE(5),
+    UNDEFINED(100500);
+
+    companion object {
+        fun getTypeById(id: Int): NotificationMessageType {
+            NotificationMessageType.values().forEach {
+                if (id == it.id) return it
+            }
+            return UNDEFINED
+        }
+    }
 }

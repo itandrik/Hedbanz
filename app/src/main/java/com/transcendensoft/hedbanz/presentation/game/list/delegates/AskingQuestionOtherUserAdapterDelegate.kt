@@ -43,6 +43,7 @@ class AskingQuestionOtherUserAdapterDelegate @Inject constructor() :
         AdapterDelegate<List<@JvmSuppressWildcards Message>>() {
     private val thumbsUpSubject: PublishSubject<Long> = PublishSubject.create()
     private val thumbsDownSubject: PublishSubject<Long> = PublishSubject.create()
+    private val winSubject: PublishSubject<Long> = PublishSubject.create()
 
     override fun onCreateViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder {
         val context = parent?.context
@@ -77,12 +78,14 @@ class AskingQuestionOtherUserAdapterDelegate @Inject constructor() :
             holder.bindUserImage(R.drawable.logo) //TODO change this shit
             holder.bindTime(question.createDate.time)
 
-            holder.bindProgress(question.yesVoters, question.noVoters, question.allUsersCount)
+            holder.bindProgress(question.yesVoters, question.noVoters, question.winVoters, question.allUsersCount)
             holder.thumbsDownClickObservable(question.questionId).subscribe(thumbsDownSubject)
-            holder.thumbsUpClickObservable(question.questionId).subscribe(thumbsUpSubject);
+            holder.thumbsUpClickObservable(question.questionId).subscribe(thumbsUpSubject)
+            holder.winClickObservable(question.questionId).subscribe(winSubject)
         }
     }
 
     fun thumbsDownClickObservable() = thumbsDownSubject
     fun thumbsUpClickObservable() = thumbsUpSubject
+    fun winClickObservable() = winSubject
 }

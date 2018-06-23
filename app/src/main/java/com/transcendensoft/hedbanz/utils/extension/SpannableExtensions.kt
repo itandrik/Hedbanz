@@ -1,9 +1,6 @@
-package com.transcendensoft.hedbanz.data.network.service.firebase
+package com.transcendensoft.hedbanz.utils.extension
 
-import android.content.Context
-import com.transcendensoft.hedbanz.di.qualifier.ServiceContext
-import dagger.Binds
-import dagger.Module
+import android.text.SpannableString
 
 /**
  * Copyright 2017. Andrii Chernysh
@@ -22,15 +19,22 @@ import dagger.Module
  *
  */
 /**
- * Module that provides context and other
- * instances for firebase instance id service.
+ * Kotlin extensions for spannable strings
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-@Module
-interface FirebaseInstanceIdModule {
-    @ServiceContext
-    @Binds
-    fun bindServiceContext(hedbanzFirebaseInstanceIdService: HedbanzFirebaseInstanceIdService): Context
+fun SpannableString.spanWith(target: String, apply: SpannableBuilder.() -> Unit) {
+    val builder = SpannableBuilder()
+    apply(builder)
+
+    val start = this.indexOf(target)
+    val end =  start + target.length
+
+    setSpan(builder.what, start, end, builder.flags)
+}
+
+class SpannableBuilder {
+    lateinit var what: Any
+    var flags: Int = 0
 }
