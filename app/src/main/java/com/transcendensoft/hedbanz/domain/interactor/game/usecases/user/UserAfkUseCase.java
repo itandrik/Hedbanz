@@ -15,19 +15,13 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.user;
  * limitations under the License.
  */
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
-import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
-
-import org.json.JSONObject;
 
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subjects.PublishSubject;
@@ -43,34 +37,20 @@ import io.reactivex.subjects.PublishSubject;
 public class UserAfkUseCase extends ObservableUseCase<User, Void> {
     private PublishSubject<User> mSubject;
     private GameDataRepository mRepository;
-    private Gson mGson;
 
     @Inject
     public UserAfkUseCase(ObservableTransformer observableTransformer,
                           CompositeDisposable mCompositeDisposable,
-                          GameDataRepository gameDataRepository,
-                          Gson gson) {
+                          GameDataRepository gameDataRepository) {
         super(observableTransformer, mCompositeDisposable);
         mRepository = gameDataRepository;
         mSubject = PublishSubject.create();
-        mGson = gson;
     }
 
     @Override
     protected Observable<User> buildUseCaseObservable(Void params) {
-        Observable<User> observable = mRepository.userAfkObservable()
-                .flatMap(this::convertUserIdToUserObservable);
+        Observable<User> observable = mRepository.userAfkObservable();
         observable.subscribe(mSubject);
         return mSubject;
-    }
-
-    private ObservableSource<? extends User> convertUserIdToUserObservable(JSONObject jsonObject) {
-        try {
-            User user = mGson.fromJson(jsonObject.toString(), User.class);
-            return Observable.just(user);
-        } catch (JsonSyntaxException e) {
-            return Observable.error(new IncorrectJsonException(
-                    jsonObject.toString(), UserAfkUseCase.class.getName()));
-        }
     }
 }

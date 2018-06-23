@@ -47,4 +47,15 @@ public class WordSettedViewHolder extends RecyclerView.ViewHolder {
         mTvWordSetted.setText(mContext.getString(R.string.game_word_setted,
                 wordSetterUserLogin, wordReceiverWordLogin));
     }
+
+    public void bindTextSettedToCurrentUser(String wordSetterUserLogin){
+        mTvWordSetted.setText(mContext.getString(R.string.game_word_setted_to_current_user,
+                wordSetterUserLogin));
+    }
+
+    public void bindCurrentUserSettedText(String wordReceiverWordLogin){
+        mTvWordSetted.setText(mContext.getString(R.string.game_word_current_user_setted,
+                wordReceiverWordLogin));
+    }
+
 }

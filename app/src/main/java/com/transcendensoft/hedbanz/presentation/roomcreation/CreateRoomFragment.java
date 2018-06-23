@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.presentation.roomcreation;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -33,15 +34,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.domain.entity.Room;
-import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
+import com.transcendensoft.hedbanz.presentation.game.GameActivity;
+import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
+import com.transcendensoft.hedbanz.utils.KeyboardUtils;
 import com.warkiz.widget.IndicatorSeekBar;
 
 import javax.inject.Inject;
@@ -67,10 +72,12 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
     @BindView(R.id.etRoomName) EditText mEtRoomName;
     @BindView(R.id.etRoomPassword) AppCompatEditText mEtRoomPassword;
     @BindView(R.id.isbPlayersQuantity) IndicatorSeekBar mIsbMaxPlayersQuantity;
+    @BindView(R.id.svCreateRoom) ScrollView mSvContainer;
 
     @Inject CreateRoomPresenter mPresenter;
     @Inject @ActivityContext Context mContext;
     @Inject RoomList mPresenterModel;
+    @Inject Gson mGson;
 
     @Inject
     public CreateRoomFragment() {
@@ -89,6 +96,7 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
 
         mPresenter.setModel(mPresenterModel);
         initPasswordCheckBox();
+        initScrollContainer();
 
         return view;
     }
@@ -162,6 +170,18 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
         }
     }
 
+    private int mScrollY;
+    private void initScrollContainer(){
+        mSvContainer.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            int scrollY = mSvContainer.getScrollY(); // For ScrollView
+            if(getActivity() != null && Math.abs(mScrollY - scrollY) > 20) {
+                KeyboardUtils.hideSoftInput(getActivity());
+            }
+
+            mScrollY = scrollY;
+        });
+    }
+
     /*------------------------------------*
      *-------- On click listeners --------*
      *------------------------------------*/
@@ -187,7 +207,13 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
         mEtRoomName.setText("");
         mEtRoomPassword.setText("");
         AndroidUtils.showShortToast(getActivity(), "Room created successfully");
-        //TODO open view
+
+        Intent intent = new Intent(mContext, GameActivity.class);
+
+        intent.putExtra(mContext.getString(R.string.bundle_room_id),(Long) room.getId());
+        intent.putExtra(mContext.getString(R.string.bundle_is_after_creation), true);
+        intent.putExtra(mContext.getString(R.string.bundle_room_data), mGson.toJson(room, Room.class));
+        mContext.startActivity(intent);
     }
 
     @Override

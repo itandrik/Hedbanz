@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.domain.repository;
  */
 
 import com.transcendensoft.hedbanz.domain.entity.Message;
+import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing;
 import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
@@ -34,18 +35,19 @@ import io.reactivex.Observable;
 public interface GameDataRepository {
     Observable<Boolean> connectObservable();
     Observable<Boolean> disconnectObservable();
-    Observable<Boolean> connectErrorObservable();
+    Observable<String> connectErrorObservable();
     Observable<Boolean> connectTimeoutObservable();
     Observable<Boolean> reconnectObservable();
-    Observable<Boolean> reconnectErrorObservable();
+    Observable<String> reconnectErrorObservable();
     Observable<Boolean> reconnectingObservable();
 
-    Observable<JSONObject> roomInfoObservable();
-    Observable<JSONObject> joinedUserObservable();
-    Observable<JSONObject> leftUserObservable();
-    Observable<JSONObject> userAfkObservable();
-    Observable<JSONObject> userReturnedObservable();
+    Observable<Room> roomInfoObservable();
+    Observable<User> joinedUserObservable();
+    Observable<User> leftUserObservable();
+    Observable<User> userAfkObservable();
+    Observable<User> userReturnedObservable();
     Observable<Room> restoreRoomObservable();
+    Observable<User> userWin();
 
     Observable<JSONObject> typingObservable();
     Observable<JSONObject> stopTypingObservable();
@@ -54,7 +56,7 @@ public interface GameDataRepository {
     Observable<JSONObject> settingWordObservable();
     Observable<JSONObject> wordSettedToUserObservable();
 
-    Observable<User> wordGuessingObservable();
+    Observable<PlayerGuessing> wordGuessingObservable();
     Observable<Question> questionAskingObservable();
     Observable<Question> questionVotingObservable();
 
@@ -67,6 +69,7 @@ public interface GameDataRepository {
     void sendRoomRestore();
     void guessWord(Question question);
     void voteForQuestion(Question question);
+    void sendConnectInfo();
 
     void connect(long userId, long roomId);
     void disconnect();

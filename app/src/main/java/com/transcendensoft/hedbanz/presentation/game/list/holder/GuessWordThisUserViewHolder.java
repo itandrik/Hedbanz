@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.presentation.game.list.holder;
  */
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,8 +24,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.presentation.game.list.GuessWordsHelperAdapter;
 
 import java.util.List;
@@ -32,7 +36,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
-import io.reactivex.subjects.PublishSubject;
 
 /**
  * {@link android.support.v7.widget.RecyclerView.ViewHolder}
@@ -45,9 +48,11 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.etGuessWord) EditText mEtGuessWord;
     @BindView(R.id.rvGuessHelpers) RecyclerView mRvGuessHelpers;
     @BindView(R.id.ivSubmitWord) ImageView mIvSubmitWord;
+    @BindView(R.id.pbGuessLoading) ProgressBar mPbGuessLoading;
+    @BindView(R.id.tvGuessWordTitle) TextView mTvGuessWordTitle;
 
     private Context mContext;
-    private PublishSubject<String> mHelperStringsSubject;
+    private Observable<String> mHelperStringsObservable;
 
     public GuessWordThisUserViewHolder(Context context, View itemView) {
         super(itemView);
@@ -56,35 +61,82 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         mContext = context;
     }
 
-    public void bindRecyclerViewGuessHelpers(List<String> helperStrings){
+    public void bindRecyclerViewGuessHelpers(List<String> helperStrings) {
         GuessWordsHelperAdapter adapter = new GuessWordsHelperAdapter(helperStrings);
         mRvGuessHelpers.setItemAnimator(new DefaultItemAnimator());
         mRvGuessHelpers.setLayoutManager(new LinearLayoutManager(
-                mContext,LinearLayoutManager.HORIZONTAL, false));
+                mContext, LinearLayoutManager.HORIZONTAL, false));
         mRvGuessHelpers.setAdapter(adapter);
-        mHelperStringsSubject = adapter.getHelperStringsSubject();
+
+        mHelperStringsObservable = adapter.getHelperStringsSubject()
+                .doOnNext(s -> mEtGuessWord.setText(s));
     }
 
-    public void bindText(String text){
-        if(!TextUtils.isEmpty(text)){
+    public void bindText(String text) {
+        if (!TextUtils.isEmpty(text)) {
             mEtGuessWord.setText(text);
         }
     }
 
-    public void bindLoading(boolean isLoading){
-        //TODO implement loading for guessing words
+    public void bindTitle(int attempts) {
+        String text = mContext.getString(R.string.game_this_user_think_word_to_user, attempts);
+
+        if (attempts <= 0 || attempts > 3) {
+            mTvGuessWordTitle.setText(text.substring(0, text.indexOf('.')));
+        } else {
+            mTvGuessWordTitle.setText(text);
+        }
     }
 
-    public Observable<String> submitWordObservable(){
+    public void bindLoading(boolean isLoading, boolean isFinished) {
+        if (isLoading && !isFinished) {
+            mIvSubmitWord.setVisibility(View.GONE);
+            mPbGuessLoading.setVisibility(View.VISIBLE);
+            mIvSubmitWord.setColorFilter(ContextCompat.getColor(mContext, R.color.textPrimary),
+                    android.graphics.PorterDuff.Mode.SRC_IN);
+            mEtGuessWord.setEnabled(false);
+            mIvSubmitWord.setEnabled(false);
+        } else if (!isLoading && isFinished) {
+            mIvSubmitWord.setVisibility(View.VISIBLE);
+            mIvSubmitWord.setColorFilter(ContextCompat.getColor(mContext, R.color.google_green),
+                    android.graphics.PorterDuff.Mode.SRC_IN);
+            mPbGuessLoading.setVisibility(View.GONE);
+            mEtGuessWord.setEnabled(false);
+            mIvSubmitWord.setEnabled(false);
+            mRvGuessHelpers.setEnabled(false);
+            ((GuessWordsHelperAdapter)mRvGuessHelpers.getAdapter()).disable();
+        } else {
+            mIvSubmitWord.setVisibility(View.VISIBLE);
+            mPbGuessLoading.setVisibility(View.GONE);
+            mEtGuessWord.setEnabled(true);
+            mIvSubmitWord.setEnabled(true);
+        }
+    }
+
+    public Observable<Question> submitWordObservable(Long questionId) {
         return Observable.create(emitter -> {
             mIvSubmitWord.setOnClickListener(view -> {
-                emitter.onNext(mEtGuessWord.getText().toString().trim());
+                Question question = new Question();
+                question.setMessage(mEtGuessWord.getText().toString().trim());
+                question.setQuestionId(questionId);
+
+                emitter.onNext(question);
             });
         });
     }
 
-    public PublishSubject<String> helperStringsObservable() {
-        return mHelperStringsSubject;
+    public Observable<Question> helperStringsObservable(Long questionId) {
+        if (mHelperStringsObservable != null) {
+            return mHelperStringsObservable.map(text -> {
+                Question question = new Question();
+                question.setMessage(mEtGuessWord.getText().toString().trim());
+                question.setQuestionId(questionId);
+
+                return question;
+            });
+        } else {
+            return Observable.empty();
+        }
     }
 
     public Context getContext() {

@@ -19,26 +19,36 @@ package com.transcendensoft.hedbanz.data.repository;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
+import com.transcendensoft.hedbanz.data.models.PlayerGuessingDTO;
 import com.transcendensoft.hedbanz.data.models.QuestionDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.UserDTO;
 import com.transcendensoft.hedbanz.data.models.WordDTO;
 import com.transcendensoft.hedbanz.data.models.mapper.MessageModelDataMapper;
+import com.transcendensoft.hedbanz.data.models.mapper.PlayerGuessingModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.QuestionModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.RoomModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.UserModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.WordModelDataMapper;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
+import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing;
 import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.entity.Word;
+import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.JoinedUserUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.LeftUserUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserAfkUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserReturnedUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserWinUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 import javax.inject.Inject;
@@ -90,6 +100,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String SERVER_USER_ANSWERING_EVENT = "server-user-answering";
     private static final String CLIENT_USER_GUESSING_EVENT = "client-user-guessing";
     private static final String CLIENT_USER_ANSWERING_EVENT = "client-user-answering";
+    private static final String SERVER_USER_WIN = "server-user-win";
 
     private Socket mSocket;
     private long mUserId;
@@ -100,7 +111,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private WordModelDataMapper mWordMapper;
     private QuestionModelDataMapper mQuestionMapper;
     private UserModelDataMapper mUserMapper;
-
+    private PlayerGuessingModelDataMapper mPlayerGuessingModelDataMapper;
     private Gson mGson;
     private String mRoomToUserJson;
 
@@ -110,19 +121,21 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                                   RoomModelDataMapper roomMapper,
                                   UserModelDataMapper userModelDataMapper,
                                   QuestionModelDataMapper questionModelDataMapper,
+                                  PlayerGuessingModelDataMapper playerGuessingModelDataMapper,
                                   Gson gson) {
         this.mMessageMapper = messageModelDataMapper;
         this.mWordMapper = wordModelDataMapper;
         this.mRoomMapper = roomMapper;
         this.mQuestionMapper = questionModelDataMapper;
         this.mUserMapper = userModelDataMapper;
+        this.mPlayerGuessingModelDataMapper = playerGuessingModelDataMapper;
         this.mGson = gson;
 
         try {
             IO.Options options = new IO.Options();
             options.forceNew = true;
             options.reconnection = true;
-            options.reconnectionDelay = 1000;
+            options.reconnectionDelay = 5000;
             mSocket = IO.socket(HOST + PORT_SOCKET + GAME_SOCKET_NSP, options);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
@@ -150,10 +163,14 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
-    public Observable<Boolean> connectErrorObservable() {
+    public Observable<String> connectErrorObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
-                emitter.onNext(true);
+                if (args == null) {
+                    emitter.onNext("null");
+                } else {
+                    emitter.onNext(Arrays.toString(args));
+                }
             };
             mSocket.on(Socket.EVENT_CONNECT_ERROR, listener);
         });
@@ -181,10 +198,14 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
-    public Observable<Boolean> reconnectErrorObservable() {
+    public Observable<String> reconnectErrorObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
-                emitter.onNext(true);
+                if (args == null) {
+                    emitter.onNext("null");
+                } else {
+                    emitter.onNext(Arrays.toString(args));
+                }
             };
             mSocket.on(Socket.EVENT_RECONNECT_ERROR, listener);
         });
@@ -201,36 +222,67 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
-    public Observable<JSONObject> roomInfoObservable() {
+    public Observable<Room> roomInfoObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
                 JSONObject data = (JSONObject) args[0];
-                Timber.i("SOCKET <-- GET(%1$s) : %2$s", ROOM_INFO_EVENT, data.toString());
-                emitter.onNext(data);
+                if (data != null) {
+                    RoomDTO roomDTO = mGson.fromJson(data.toString(), RoomDTO.class);
+
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", ROOM_INFO_EVENT, data.toString());
+                    emitter.onNext(mRoomMapper.convert(roomDTO));
+                } else {
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", ROOM_INFO_EVENT, "null");
+                }
             };
             mSocket.on(ROOM_INFO_EVENT, listener);
         });
     }
 
     @Override
-    public Observable<JSONObject> joinedUserObservable() {
+    public Observable<User> joinedUserObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
                 JSONObject data = (JSONObject) args[0];
-                Timber.i("SOCKET <-- GET(%1$s) : %2$s", JOINED_USER_EVENT, data.toString());
-                emitter.onNext(data);
+                if (data != null) {
+                    try {
+                        UserDTO userDTO = mGson.fromJson(data.toString(), UserDTO.class);
+
+                        Timber.i("SOCKET <-- GET(%1$s) : %2$s", JOINED_USER_EVENT, data.toString());
+                        emitter.onNext(mUserMapper.convert(userDTO));
+                    } catch (JsonSyntaxException e) {
+                        emitter.onError(new IncorrectJsonException(
+                                data.toString(), JoinedUserUseCase.class.getName()));
+                    }
+                } else {
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", JOINED_USER_EVENT, "null");
+                    emitter.onError(new NullPointerException("data is null when user joined"));
+                }
             };
             mSocket.on(JOINED_USER_EVENT, listener);
         });
     }
 
     @Override
-    public Observable<JSONObject> leftUserObservable() {
+    public Observable<User> leftUserObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
                 JSONObject data = (JSONObject) args[0];
-                Timber.i("SOCKET <-- GET(%1$s) : %2$s", LEFT_USER_EVENT, data.toString());
-                emitter.onNext(data);
+
+                if (data != null) {
+                    try {
+                        UserDTO userDTO = mGson.fromJson(data.toString(), UserDTO.class);
+
+                        Timber.i("SOCKET <-- GET(%1$s) : %2$s", LEFT_USER_EVENT, data.toString());
+                        emitter.onNext(mUserMapper.convert(userDTO));
+                    } catch (JsonSyntaxException e) {
+                        emitter.onError(new IncorrectJsonException(
+                                data.toString(), LeftUserUseCase.class.getName()));
+                    }
+                } else {
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", LEFT_USER_EVENT, "null");
+                    emitter.onError(new NullPointerException("data is null when user joined"));
+                }
             };
             mSocket.on(LEFT_USER_EVENT, listener);
         });
@@ -251,30 +303,76 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
-    public Observable<JSONObject> userAfkObservable() {
+    public Observable<User> userAfkObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
                 JSONObject data = (JSONObject) args[0];
 
-                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_AFK, data.toString());
-                emitter.onNext(data);
+                if (data != null) {
+                    try {
+                        UserDTO userDTO = mGson.fromJson(data.toString(), UserDTO.class);
+
+                        Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_AFK, data.toString());
+                        emitter.onNext(mUserMapper.convert(userDTO));
+                    } catch (JsonSyntaxException e) {
+                        emitter.onError(new IncorrectJsonException(
+                                data.toString(), UserAfkUseCase.class.getName()));
+                    }
+                } else {
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_AFK, "null");
+                    emitter.onError(new NullPointerException("data is null when user joined"));
+                }
             };
             mSocket.on(SERVER_USER_AFK, listener);
         });
     }
 
     @Override
-    public Observable<JSONObject> userReturnedObservable() {
+    public Observable<User> userReturnedObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
                 JSONObject data = (JSONObject) args[0];
 
-                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_RETURNED,
-                        data != null ? data.toString() : "null");
-                emitter.onNext(data);
+                if (data != null) {
+                    try {
+                        UserDTO userDTO = mGson.fromJson(data.toString(), UserDTO.class);
 
+                        Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_RETURNED, data.toString());
+                        emitter.onNext(mUserMapper.convert(userDTO));
+                    } catch (JsonSyntaxException e) {
+                        emitter.onError(new IncorrectJsonException(
+                                data.toString(), UserReturnedUseCase.class.getName()));
+                    }
+                } else {
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_RETURNED, "null");
+                    //emitter.onError(new Throwable("data is null when user joined"));
+                }
             };
             mSocket.on(SERVER_USER_RETURNED, listener);
+        });
+    }
+
+    @Override
+    public Observable<User> userWin() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+
+                if (data != null) {
+                    try {
+                        UserDTO userDTO = mGson.fromJson(data.toString(), UserDTO.class);
+
+                        Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_WIN, data.toString());
+                        emitter.onNext(mUserMapper.convert(userDTO));
+                    } catch (JsonSyntaxException e) {
+                        emitter.onError(new IncorrectJsonException(
+                                data.toString(), UserWinUseCase.class.getName()));
+                    }
+                } else {
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_USER_WIN, "null");
+                }
+            };
+            mSocket.on(SERVER_USER_WIN, listener);
         });
     }
 
@@ -342,18 +440,23 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     public Observable<JSONObject> settingWordObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
-                JSONObject data = (JSONObject) args[0];
-                Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_SET_PLAYER_WORD_EVENT,
-                        data != null ? data.toString() : "null");
-                emitter.onNext(data);
+                try {
+                    JSONObject data = (JSONObject) args[0];
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_SET_PLAYER_WORD_EVENT,
+                            data != null ? data.toString() : "null");
+                    emitter.onNext(data);
 
-                if (args.length > 1) {
-                    try {
-                        Ack ack = (Ack) args[args.length - 1];
-                        ack.call(true);
-                    } catch (ClassCastException | ArrayIndexOutOfBoundsException e) {
-                        Timber.e(e.getMessage());
+                    if (args.length > 1) {
+                        try {
+                            Ack ack = (Ack) args[args.length - 1];
+                            ack.call(true);
+                        } catch (ClassCastException | ArrayIndexOutOfBoundsException e) {
+                            Timber.e(e.getMessage());
+                        }
                     }
+                } catch (ClassCastException e){
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_SET_PLAYER_WORD_EVENT,
+                            "data: " + args);
                 }
             };
             mSocket.on(SERVER_SET_PLAYER_WORD_EVENT, listener);
@@ -374,17 +477,18 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
-    public Observable<User> wordGuessingObservable() {
+    public Observable<PlayerGuessing> wordGuessingObservable() {
         return Observable.create(emitter -> {
             Emitter.Listener listener = args -> {
                 JSONObject data = (JSONObject) args[0];
                 try {
-                    UserDTO userDTO = mGson.fromJson(data.toString(), UserDTO.class);
+                    PlayerGuessingDTO playerGuessingDTO = mGson.fromJson(
+                            data.toString(), PlayerGuessingDTO.class);
 
                     Timber.i("SOCKET <-- GET(%1$s) : %2$s",
                             SERVER_USER_GUESSING_EVENT, data.toString());
-                    emitter.onNext(mUserMapper.convert(userDTO));
-                } catch (JsonSyntaxException | NullPointerException e){
+                    emitter.onNext(mPlayerGuessingModelDataMapper.convert(playerGuessingDTO));
+                } catch (JsonSyntaxException | NullPointerException e) {
                     emitter.onError(e);
                 }
             };
@@ -403,7 +507,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                     Timber.i("SOCKET <-- GET(%1$s) : %2$s",
                             SERVER_USER_ASKING_EVENT, data.toString());
                     emitter.onNext(mQuestionMapper.convert(questionDTO));
-                } catch (JsonSyntaxException | NullPointerException e){
+                } catch (JsonSyntaxException | NullPointerException e) {
                     emitter.onError(e);
                 }
             };
@@ -422,7 +526,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                     Timber.i("SOCKET <-- GET(%1$s) : %2$s",
                             SERVER_USER_ANSWERING_EVENT, data.toString());
                     emitter.onNext(mQuestionMapper.convert(questionDTO));
-                } catch (JsonSyntaxException | NullPointerException e){
+                } catch (JsonSyntaxException | NullPointerException e) {
                     emitter.onError(e);
                 }
             };
@@ -434,6 +538,8 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     public void guessWord(Question question) {
         QuestionDTO questionDTO = mQuestionMapper.convert(question);
         questionDTO.setSenderId(mUserId);
+        questionDTO.setRoomId(mRoomId);
+
         String json = mGson.toJson(questionDTO);
 
         Timber.i("SOCKET --> SEND(%1$s) : %2$s", CLIENT_USER_GUESSING_EVENT, json);
@@ -444,6 +550,8 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     public void voteForQuestion(Question question) {
         QuestionDTO questionDTO = mQuestionMapper.convert(question);
         questionDTO.setSenderId(mUserId);
+        questionDTO.setRoomId(mRoomId);
+
         String json = mGson.toJson(questionDTO);
 
         Timber.i("SOCKET --> SEND(%1$s) : %2$s", CLIENT_USER_ANSWERING_EVENT, json);
@@ -478,6 +586,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     public void sendMessage(Message message) {
         MessageDTO messageDTO = new MessageDTO.Builder()
                 .setSenderUser(new UserDTO.Builder().setId(mUserId).build())
+                .setSenderId(mUserId)
                 .setRoomId(mRoomId)
                 .setText(message.getMessage())
                 .setType(MessageType.SIMPLE_MESSAGE.getId())
@@ -516,7 +625,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         mRoomToUserJson = mGson.toJson(joinRoomObject);
     }
 
-    private void sendConnectInfo() {
+    public void sendConnectInfo() {
         Timber.i("SOCKET --> SEND(%1$s). Data : %2$s",
                 CLIENT_CONNECT_INFO, mRoomToUserJson);
         mSocket.emit(CLIENT_CONNECT_INFO, mRoomToUserJson);
@@ -567,6 +676,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             mSocket.off(SERVER_USER_GUESSING_EVENT);
             mSocket.off(SERVER_USER_ASKING_EVENT);
             mSocket.off(SERVER_USER_ANSWERING_EVENT);
+            mSocket.off(SERVER_USER_WIN);
         }
     }
 }

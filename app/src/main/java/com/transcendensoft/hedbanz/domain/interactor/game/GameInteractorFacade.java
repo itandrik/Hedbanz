@@ -22,6 +22,7 @@ import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.qualifier.SchedulerIO;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
+import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing;
 import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
@@ -46,6 +47,7 @@ import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.JoinedUs
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.LeftUserUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserAfkUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserReturnedUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserWinUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.word.WordSettedUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.word.WordSettingUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
@@ -100,6 +102,8 @@ public class GameInteractorFacade {
     @Inject GuessWordUseCase mGuessWordUseCase;
     @Inject QuestionAskingUseCase mQuestionAskingUseCase;
     @Inject QuestionVotingUseCase mQuestionVotingUseCase;
+
+    @Inject UserWinUseCase mUserWinUseCase;
 
     @Inject @SchedulerIO Scheduler mIoScheduler;
     @Inject RxRoom mCurrentRoom;
@@ -166,7 +170,8 @@ public class GameInteractorFacade {
     public void onUserReturnedListener(Consumer<? super User> onNext,
                                        Consumer<? super Throwable> onError) {
         Consumer<? super User> doOnNext = user -> {
-            if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
+            if ((mCurrentRoom != null) && (mCurrentRoom.getRoom().getPlayers() != null) &&
+                    (user != null)) {
                 List<User> users = mCurrentRoom.getRoom().getPlayers();
                 if (users.contains(user)) {
                     RxUser rxUser = getRxUser(user);
@@ -207,9 +212,22 @@ public class GameInteractorFacade {
         mLeftUserUseCase.execute(null, onNext, onError, doOnNext);
     }
 
+    public void onUserWinListener(Consumer<? super User> onNext,
+                                   Consumer<? super Throwable> onError) {
+        //TODO
+        /*Consumer<? super User> doOnNext = user -> {
+            if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
+                mCurrentRoom.removePlayer(user);
+                mCurrentRoom.setCurrentPlayersNumber(
+                        (byte) (mCurrentRoom.getRoom().getCurrentPlayersNumber() - 1));
+            }
+        };*/
+        mUserWinUseCase.execute(null, onNext, onError);
+    }
+
     public void onMessageReceivedListener(Consumer<? super Message> onNext,
                                           Consumer<? super Throwable> onError) {
-        mMessageUseCase.execute(null, onNext, onError);
+        mMessageUseCase.execute(mCurrentRoom.getRxPlayers(), onNext, onError);
     }
 
     public void onStartTypingListener(Consumer<? super User> onNext,
@@ -262,7 +280,7 @@ public class GameInteractorFacade {
         mWordSettingUseCase.execute(mCurrentRoom.getRoom().getPlayers(), onNext, onError);
     }
 
-    public void onWordGuessingListener(Consumer<? super User> onNext,
+    public void onWordGuessingListener(Consumer<? super PlayerGuessing> onNext,
                                        Consumer<? super Throwable> onError) {
         mGuessWordUseCase.execute(null, onNext, onError);
     }
@@ -277,36 +295,32 @@ public class GameInteractorFacade {
         mQuestionVotingUseCase.execute(null, onNext, onError);
     }
 
-    public void guessWord(String word){
+    public Question guessWord(Long questionId, String word) {
         User currentUser = mPreferenceManger.getUser();
 
         int clientMessageId = Arrays.hashCode(new long[]{
                 System.currentTimeMillis(), currentUser.getId()});
 
-        Question question = new Question.Builder()
-                .setMessageType(MessageType.GUESS_WORD_THIS_USER)
-                .setMessage(word)
-                .setUserFrom(currentUser)
-                .setClientMessageId(clientMessageId)
-                .build();
+        Question question = new Question();
+        question.setQuestionId(questionId);
+        question.setMessageType(MessageType.GUESS_WORD_THIS_USER);
+        question.setMessage(word);
+        question.setUserFrom(currentUser);
+        question.setClientMessageId(clientMessageId);
 
         mRepository.guessWord(question);
+
+        return question;
     }
 
-    public void voteForQuestion(boolean isYes){
+    public void voteForQuestion(Question.Vote vote, Long questionId) {
         User currentUser = mPreferenceManger.getUser();
 
-        Question question = new Question.Builder()
-                .setUserFrom(currentUser)
-                .build();
-
-        if(isYes){
-            question.setYesNumber(1);
-            question.setNoNumber(0);
-        } else {
-            question.setYesNumber(0);
-            question.setNoNumber(1);
-        }
+        Question question = new Question();
+        question.setMessageType(MessageType.VOTING_FOR_QUESTION);
+        question.setQuestionId(questionId);
+        question.setUserFrom(currentUser);
+        question.setVote(vote);
 
         mRepository.voteForQuestion(question);
     }
@@ -347,10 +361,37 @@ public class GameInteractorFacade {
                 .setMessage(text)
                 .setUserFrom(currentUser)
                 .setClientMessageId(clientMessageId)
+
                 .build();
 
         mRepository.sendMessage(message);
         return message;
+    }
+
+    public void sendConnectInfo() {
+        mRepository.sendConnectInfo();
+    }
+
+    public void setRoomInfo(Room room) {
+        room.getPlayers().add(mPreferenceManger.getUser());
+        mCurrentRoom.setId(room.getId());
+        mCurrentRoom.setCurrentPlayersNumber(room.getCurrentPlayersNumber());
+        mCurrentRoom.setEndDate(room.getEndDate());
+        mCurrentRoom.setMaxPlayers(room.getMaxPlayers());
+        mCurrentRoom.setName(room.getName());
+        mCurrentRoom.setPassword(room.getPassword());
+        mCurrentRoom.setRoom(room);
+        mCurrentRoom.setStartDate(room.getStartDate());
+        mCurrentRoom.setWithPassword(room.isWithPassword());
+        if (room.getPlayers() != null && (mCurrentRoom.getRxPlayers() == null ||
+                mCurrentRoom.getRxPlayers().isEmpty())) {
+            for (User user : room.getPlayers()) {
+                mCurrentRoom.addPlayer(user);
+                mCurrentRoom.setCurrentPlayersNumber(
+                        (byte) (mCurrentRoom.getRoom().getCurrentPlayersNumber() + 1));
+                room.setCurrentPlayersNumber((byte) (room.getCurrentPlayersNumber() + 1));
+            }
+        }
     }
 
     @SuppressLint("CheckResult")
@@ -379,6 +420,7 @@ public class GameInteractorFacade {
         mGuessWordUseCase.dispose();
         mQuestionAskingUseCase.dispose();
         mQuestionVotingUseCase.dispose();
+        mUserWinUseCase.dispose();
 
         mRepository.disconnectFromRoom();
         mPreferenceManger.setCurrentRoomId(-1); //We leave from current game

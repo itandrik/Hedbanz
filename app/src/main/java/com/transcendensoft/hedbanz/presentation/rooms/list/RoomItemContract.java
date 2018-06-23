@@ -36,6 +36,8 @@ public interface RoomItemContract {
 
         void setIsProtected(boolean isProtected);
 
+        void setIsActive(boolean isActive);
+
         void showLoadingItem();
 
         void showCard();

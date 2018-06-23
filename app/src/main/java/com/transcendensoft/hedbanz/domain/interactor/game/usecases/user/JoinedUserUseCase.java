@@ -16,11 +16,9 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.user;
  */
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
-import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import javax.inject.Inject;
@@ -61,17 +59,11 @@ public class JoinedUserUseCase extends ObservableUseCase<User, Void> {
 
     private Observable<User> getObservable(GameDataRepository gameDataRepository, Gson gson) {
         return gameDataRepository.joinedUserObservable()
-                .flatMap(jsonObject -> {
-                    try {
-                        User user = gson.fromJson(jsonObject.toString(), User.class);
-                        if(user.equals(mPreferenceManager.getUser())){
-                            return Observable.empty();
-                        } else {
-                            return Observable.just(user);
-                        }
-                    } catch (JsonSyntaxException e) {
-                        return Observable.error(new IncorrectJsonException(
-                                jsonObject.toString(), JoinedUserUseCase.class.getName()));
+                .flatMap(user -> {
+                    if(user.equals(mPreferenceManager.getUser())){
+                        return Observable.empty();
+                    } else {
+                        return Observable.just(user);
                     }
                 });
     }

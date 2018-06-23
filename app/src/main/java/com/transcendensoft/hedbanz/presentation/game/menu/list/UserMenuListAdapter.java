@@ -62,6 +62,6 @@ public class UserMenuListAdapter extends MvpRecyclerListAdapter
     public UserMenuItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_player_menu, parent, false);
-        return new UserMenuItemViewHolder(itemView);
+        return new UserMenuItemViewHolder(parent.getContext(), itemView);
     }
 }

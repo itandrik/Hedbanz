@@ -62,6 +62,7 @@ import butterknife.OnClick;
 public class GameMenuFragment extends BaseFragment implements GameMenuContract.View{
     public static final float NOT_EXIST_USER_ALPHA = 0.3f;
     public static final float EXIST_USER_ALPHA = 1.f;
+
     @BindView(R.id.rvPlayers) RecyclerView mRecycler;
     @BindView(R.id.fabInvite) FloatingActionButton mFabInvite;
     @BindView(R.id.flLoadingContainer) FrameLayout mFlLoadingContainer;

@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.data.models.mapper;
  */
 
 import com.transcendensoft.hedbanz.data.models.QuestionDTO;
+import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.Question;
 
@@ -42,16 +43,24 @@ public class QuestionModelDataMapper {
     public QuestionDTO convert(Question question) {
         QuestionDTO questionDTO = null;
         if (question != null) {
+            int voteId = Question.Vote.UNDEFINED.getId();
+            if (question.getVote() != null) {
+                voteId = question.getVote().getId();
+            }
             questionDTO = new QuestionDTO.Builder()
                     .setClientMessageId(question.getClientMessageId())
                     .setCreateDate(question.getCreateDate() != null ? question.getCreateDate().getTime() : 0L)
                     .setId(question.getId())
-                    .setSenderId(question.getUserFrom().getId())
-                    .setSenderUser(mUserModelDataMapper.convert(question.getUserFrom()))
+                    .setSenderId(question.getUserFrom() != null ? question.getUserFrom().getId() : 0L)
+                    .setSenderUser(question.getUserFrom() != null ?
+                            mUserModelDataMapper.convert(question.getUserFrom()) : null)
                     .setText(question.getMessage())
-                    .setType(question.getMessageType().getId())
-                    .setNoNumber(question.getNoNumber())
-                    .setYesNumber(question.getYesNumber())
+                    .setType(question.getMessageType() != null ?
+                            question.getMessageType().getId() : MessageType.UNDEFINED.getId())
+                    .setNoVoters(mUserModelDataMapper.convertToDtoUsers(question.getNoVoters()))
+                    .setYesVoters(mUserModelDataMapper.convertToDtoUsers(question.getYesVoters()))
+                    .setWinVoters(mUserModelDataMapper.convertToDtoUsers(question.getWinVoters()))
+                    .setVoteId(voteId)
                     .setQuestionId(question.getQuestionId())
                     .build();
         }
@@ -61,16 +70,27 @@ public class QuestionModelDataMapper {
     public Question convert(QuestionDTO questionDTO) {
         Question question = null;
         if (questionDTO != null) {
-            question = new Question.Builder()
+            Timestamp timestamp = null;
+            if(questionDTO.getCreateDate() != null){
+                timestamp = new Timestamp(questionDTO.getCreateDate());
+            }
+            Message message = new Message.Builder()
                     .setClientMessageId(questionDTO.getClientMessageId())
-                    .setCreateDate(new Timestamp(questionDTO.getCreateDate()))
+                    .setCreateDate(timestamp)
                     .setId(questionDTO.getId())
                     .setMessage(questionDTO.getText())
                     .setMessageType(MessageType.getMessageTypeById(questionDTO.getType()))
-                    .setNoNumber(questionDTO.getNoNumber())
-                    .setQuestionId(questionDTO.getQuestionId())
-                    .setUserFrom(mUserModelDataMapper.convert(questionDTO.getSenderUser()))
-                    .setYesNumber(questionDTO.getYesNumber())
+                    .setUserFrom(questionDTO.getSenderUser() != null ?
+                            mUserModelDataMapper.convert(questionDTO.getSenderUser()) : null)
+                    .build();
+
+            question = new Question.Builder()
+                    .questionId(questionDTO.getQuestionId())
+                    .yesVoters(mUserModelDataMapper.convertToUsers(questionDTO.getYesVoters()))
+                    .noVoters(mUserModelDataMapper.convertToUsers(questionDTO.getNoVoters()))
+                    .winVoters(mUserModelDataMapper.convertToUsers(questionDTO.getWinVoters()))
+                    .vote(Question.Vote.Companion.getVoteById(questionDTO.getVoteId()))
+                    .message(message)
                     .build();
         }
         return question;

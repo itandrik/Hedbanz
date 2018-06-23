@@ -73,6 +73,7 @@ public class WordSettedUseCase extends ObservableUseCase<Word, List<User>> {
             Word word = new Word(senderUser, wordReceiverUser);
             word.setLoading(false);
             word.setFinished(true);
+            word.setWord(jsonObject.getString(WordDTO.WORD));
 
             return Observable.just(word);
         } catch (JSONException e) {

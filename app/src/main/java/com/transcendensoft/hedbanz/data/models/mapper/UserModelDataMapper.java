@@ -42,8 +42,14 @@ public class UserModelDataMapper {
     public User convert(UserDTO userDTO){
         User userResult = null;
         if(userDTO != null){
+            long id;
+            if(userDTO.getUserId() == null){
+                id = userDTO.getId();
+            } else {
+                id = userDTO.getUserId();
+            }
             userResult = new User.Builder()
-                    .setId(userDTO.getId())
+                    .setId(id)
                     .setEmail(userDTO.getEmail())
                     .setLogin(userDTO.getLogin())
                     .setMoney(userDTO.getMoney())
@@ -52,6 +58,7 @@ public class UserModelDataMapper {
                     .setIsAfk(userDTO.isAfk())
                     .setIsFriend(userDTO.isFriend())
                     .setWord(userDTO.getWord())
+                    .setAttempts(userDTO.getAttempts())
                     .build();
         }
         return userResult;
@@ -70,6 +77,7 @@ public class UserModelDataMapper {
                     .setIsAfk(user.isAFK())
                     .setIsFriend(user.isFriend())
                     .setWord(user.getWord())
+                    .setAttempts(user.getAttempts())
                     .build();
         }
         return userResult;

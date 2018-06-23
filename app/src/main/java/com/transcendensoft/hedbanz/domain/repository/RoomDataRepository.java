@@ -31,7 +31,7 @@ import io.reactivex.Observable;
  *         Developed by <u>Transcendensoft</u>
  */
 public interface RoomDataRepository {
-    Observable<List<Room>> getRooms(int page, DataPolicy dataPolicy);
+    Observable<List<Room>> getRooms(int page, long userId, DataPolicy dataPolicy);
 
     Observable<Room> createRoom(Room room, long userId);
 

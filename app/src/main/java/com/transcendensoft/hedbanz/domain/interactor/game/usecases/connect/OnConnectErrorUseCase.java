@@ -41,8 +41,7 @@ public class OnConnectErrorUseCase extends ObservableUseCase<String, Void> {
                                GameDataRepository gameDataRepository) {
         super(observableTransformer, mCompositeDisposable);
 
-        Observable<String> observable = gameDataRepository.connectErrorObservable()
-                .flatMap(jsonObject -> Observable.just(jsonObject.toString()));
+        Observable<String> observable = gameDataRepository.connectErrorObservable();
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
     }

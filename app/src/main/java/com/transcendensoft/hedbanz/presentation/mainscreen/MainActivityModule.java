@@ -20,6 +20,7 @@ import android.content.Context;
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.di.scope.FragmentScope;
+import com.transcendensoft.hedbanz.presentation.menu.MenuFragmentModule;
 import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.presentation.menu.MenuFragment;
 
@@ -44,7 +45,7 @@ public interface MainActivityModule {
     MainFragment mainFragment();
 
     @FragmentScope
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(modules = MenuFragmentModule.class)
     MenuFragment menuFragment();
 
     @ActivityContext

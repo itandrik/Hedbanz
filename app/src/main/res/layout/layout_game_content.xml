@@ -7,11 +7,12 @@
     android:background="@color/statusBarColor"
     tools:context="com.transcendensoft.hedbanz.presentation.game.GameActivity">
 
-    <include
+    <!--<include
         android:id="@+id/toolbar"
         layout="@layout/toolbar_game"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content" />-->
+
 
     <RelativeLayout
         android:id="@+id/rlGameDataContainer"
@@ -95,9 +96,9 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/tvSystemField"
             android:layout_alignParentRight="true"
-            android:visibility="gone"
             android:layout_alignTop="@id/tvSystemField"
             android:layout_marginRight="16dp"
+            android:visibility="gone"
             app:srcCompat="@drawable/ic_sad" />
 
         <ImageView
@@ -105,17 +106,49 @@
             android:layout_width="16dp"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/tvSystemField"
-            android:visibility="gone"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@id/tvSystemField"
             android:layout_marginRight="16dp"
+            android:visibility="gone"
             app:srcCompat="@drawable/ic_happy" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvGameList"
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/clSwipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/tvSystemField" />
+            android:layout_above="@id/tvSystemField">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvGameList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                app:backgroundTint="@color/textPrimary"
+                app:fabSize="normal"
+                app:layout_anchor="@id/rvGameList"
+                app:layout_anchorGravity="top|right|end"
+                app:rippleColor="@color/textWhite"
+                app:srcCompat="@drawable/ic_menu" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                app:backgroundTint="@color/textPrimary"
+                app:fabSize="normal"
+                app:layout_anchor="@id/rvGameList"
+                app:layout_anchorGravity="top|left|start"
+                app:rippleColor="@color/textWhite"
+                app:srcCompat="@drawable/ic_exit_from_room" />
+        </android.support.design.widget.CoordinatorLayout>
     </RelativeLayout>
 
     <include

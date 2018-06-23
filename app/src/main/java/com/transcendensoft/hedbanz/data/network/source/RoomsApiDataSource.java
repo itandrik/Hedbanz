@@ -17,6 +17,7 @@ package com.transcendensoft.hedbanz.data.network.source;
 
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
+import com.transcendensoft.hedbanz.data.models.RoomListDTO;
 import com.transcendensoft.hedbanz.data.source.RoomDataSource;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 
@@ -42,8 +43,8 @@ public class RoomsApiDataSource extends ApiDataSource implements RoomDataSource 
         super();
     }
 
-    public Observable<List<RoomDTO>> getRooms(int page) {
-        return mService.getRooms(page);
+    public Observable<RoomListDTO> getRooms(int page, long userId) {
+        return mService.getRooms(page, userId);
     }
 
     public Observable<RoomDTO> createRoom(RoomDTO roomDTO, long userId) {

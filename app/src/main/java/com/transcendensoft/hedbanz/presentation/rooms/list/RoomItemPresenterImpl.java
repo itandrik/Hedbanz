@@ -63,6 +63,7 @@ public class RoomItemPresenterImpl extends BasePresenter<Room, RoomItemContract.
                 view().setCurAndMaxPlayers(model.getCurrentPlayersNumber(), model.getMaxPlayers());
                 view().setName(model.getName());
                 view().setIsProtected(model.isWithPassword());
+                view().setIsActive(model.isActive());
                 //TODO change icon of room
                 view().setIcon(R.drawable.ic_room);
                 view().showCard();

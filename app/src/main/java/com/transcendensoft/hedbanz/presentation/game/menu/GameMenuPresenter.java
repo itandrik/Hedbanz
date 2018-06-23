@@ -43,9 +43,7 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
     @Override
     protected void updateView() {
         if (model != null) {
-
             updateRoomInfo();
-
             subscribeToRoomObservables();
         }
     }

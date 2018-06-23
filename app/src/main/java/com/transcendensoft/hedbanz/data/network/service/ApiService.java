@@ -19,10 +19,12 @@ import com.transcendensoft.hedbanz.data.models.FriendDTO;
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
+import com.transcendensoft.hedbanz.data.models.RoomListDTO;
 import com.transcendensoft.hedbanz.data.models.UserDTO;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -33,7 +35,6 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 /**
  * Interface that describes all API methods with server
@@ -56,16 +57,17 @@ public interface ApiService {
     Observable<UserDTO> getUser(@Path("userId") long userId);
 
     /* Firebase */
-    @PUT("user/token")
-    Completable bindFirebaseToken(@Query("userId") long userId,
-                                 @Query("token") String token);
+    @PUT("user/{userId}/token")
+    Completable bindFirebaseToken(@Path("userId") long userId,
+                                 @Body Map<String, String> tokenBody);
 
-    @DELETE("user/token")
-    Completable unbindFirebaseToke(@Query("userId") long userId);
+    @DELETE("user/{userId}/token")
+    Completable unbindFirebaseToken(@Path("userId") long userId);
 
     /* Room */
-    @GET("rooms/{page}")
-    Observable<List<RoomDTO>> getRooms(@Path("page") int page);
+    @GET("rooms/{page}/user/{userId}")
+    Observable<RoomListDTO> getRooms(@Path("page") int page,
+                                     @Path("userId") long userId);
 
     @PUT("rooms")
     Observable<RoomDTO> createRoom(@Body HashMap<String, Object> roomDataMap);
@@ -79,23 +81,22 @@ public interface ApiService {
     Completable checkRoomPasswordCorrect(@Body HashMap<String, Object> checkPasswordDataMap);
 
     /* Game mode */
-    @GET("rooms/messages")
-    Observable<List<MessageDTO>> getMessages(@Query("roomId") long roomId,
-                                             @Query("page") int page);
+    @GET("rooms/{roomId}/messages/{page}")
+    Observable<List<MessageDTO>> getMessages(@Path("roomId") long roomId,
+                                             @Path("page") int page);
 
     /* Friend */
-    @GET("friends")
-    Observable<List<FriendDTO>> getFriends(@Query("userId") long userId);
+    @GET("user/{userId}/friends")
+    Observable<List<FriendDTO>> getFriends(@Path("userId") long userId);
 
-    @POST("friends")
-    Completable acceptFriend(@Query("userId") long userId,
-                             @Query("friendId") long friendId);
+    @POST("user/{userId}/friends/{friendId}")
+    Completable acceptFriend(@Path("userId") long userId,
+                             @Path("friendId") long friendId);
 
-    @PUT("friends")
-    Completable addFriend(@Query("userId") long userId,
-                          @Query("friendId") long friendId);
+    @PUT("user/{userId}/friends/{friendId}")
+    Completable addFriend(@Path("userId") long userId,
+                          @Path("friendId") long friendId);
 
     //TODO Completable dismissFriend
     //TODO Completable removeFriend
-
 }

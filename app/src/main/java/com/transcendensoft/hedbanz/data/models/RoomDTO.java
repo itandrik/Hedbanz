@@ -42,6 +42,8 @@ public class RoomDTO {
     @SerializedName("maxPlayers")
     @Expose
     private byte maxPlayers;
+    @SerializedName("players")
+    @Expose
     private List<UserDTO> users;
     @SerializedName("currentPlayersNumber")
     @Expose
@@ -51,9 +53,11 @@ public class RoomDTO {
     @SerializedName("isPrivate")
     @Expose
     private boolean isPrivate;
+    private boolean isActive;
 
     private RoomDTO(long id, String password, byte maxPlayers, List<UserDTO> users,
-                    String name, byte currentPlayersNumber, long startDate, long endDate, boolean isPrivate) {
+                    String name, byte currentPlayersNumber, long startDate, long endDate,
+                    boolean isPrivate, boolean isActive) {
         this.id = id;
         this.password = password;
         this.maxPlayers = maxPlayers;
@@ -63,6 +67,7 @@ public class RoomDTO {
         this.endDate = endDate;
         this.name = name;
         this.isPrivate = isPrivate;
+        this.isActive = isActive;
     }
 
     public long getId() {
@@ -137,6 +142,14 @@ public class RoomDTO {
         isPrivate = aPrivate;
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -162,6 +175,7 @@ public class RoomDTO {
         private long startDate;
         private long endDate;
         private boolean isPrivate;
+        private boolean isActive;
 
         public Builder setId(long id) {
             this.id = id;
@@ -208,9 +222,14 @@ public class RoomDTO {
             return this;
         }
 
+        public Builder setIsActive(boolean isActive){
+            this.isActive = isActive;
+            return this;
+        }
+
         public RoomDTO build() {
             return new RoomDTO(id, password, maxPlayers, users, name,
-                    currentPlayersNumber, startDate, endDate, isPrivate);
+                    currentPlayersNumber, startDate, endDate, isPrivate, isActive);
         }
     }
 }

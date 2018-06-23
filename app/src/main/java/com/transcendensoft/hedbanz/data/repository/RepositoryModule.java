@@ -18,6 +18,7 @@ package com.transcendensoft.hedbanz.data.repository;
 import com.transcendensoft.hedbanz.data.source.DataSourceModule;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
+import com.transcendensoft.hedbanz.domain.repository.FirebaseIdDataRepository;
 import com.transcendensoft.hedbanz.domain.repository.FriendsDataRepository;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 import com.transcendensoft.hedbanz.domain.repository.MessagesDataRepository;
@@ -54,4 +55,8 @@ public interface RepositoryModule {
     @Binds
     @ApplicationScope
     MessagesDataRepository bindMessageDataRepository(MessagesDataRepositoryImpl messagesDataRepository);
+
+    @Binds
+    @ApplicationScope
+    FirebaseIdDataRepository bindFirebaseIdDataRepository(FirebaseIdDataRepositoryImpl firebaseIdDataRepository);
 }

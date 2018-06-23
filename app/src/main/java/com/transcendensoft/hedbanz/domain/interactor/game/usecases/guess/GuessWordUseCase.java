@@ -16,7 +16,7 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.guess;
  */
 
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
-import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import javax.inject.Inject;
@@ -34,8 +34,8 @@ import io.reactivex.subjects.PublishSubject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class GuessWordUseCase extends ObservableUseCase<User, Void>{
-    private PublishSubject<User> mSubject;
+public class GuessWordUseCase extends ObservableUseCase<PlayerGuessing, Void>{
+    private PublishSubject<PlayerGuessing> mSubject;
 
     @Inject
     public GuessWordUseCase(ObservableTransformer schedulersTransformer,
@@ -47,13 +47,13 @@ public class GuessWordUseCase extends ObservableUseCase<User, Void>{
     }
 
     private void initSubject(GameDataRepository gameDataRepository) {
-        Observable<User> observable = gameDataRepository.wordGuessingObservable();
+        Observable<PlayerGuessing> observable = gameDataRepository.wordGuessingObservable();
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
     }
 
     @Override
-    protected Observable<User> buildUseCaseObservable(Void params) {
+    protected Observable<PlayerGuessing> buildUseCaseObservable(Void params) {
         return mSubject;
     }
 }

@@ -23,6 +23,8 @@ import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
+import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing;
+import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.entity.Word;
@@ -57,6 +59,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     private GetMessagesInteractor mGetMessagesInteractor;
     private PreferenceManager mPreferenceManger;
     private List<User> mTypingUsers;
+    private boolean isAfterRoomCreation;
 
     @Inject
     public GamePresenter(GameInteractorFacade gameInteractor,
@@ -87,6 +90,11 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     public void destroy() {
         mGetMessagesInteractor.dispose();
         mGameInteractor.destroy();
+    }
+
+    @Override
+    public void setAfterRoomCreation(boolean afterRoomCreation) {
+        isAfterRoomCreation = afterRoomCreation;
     }
 
     /*------------------------------------*
@@ -136,7 +144,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                         updateSettingWordViewParameters(word.getSenderUser(), false, true);
                         mGameInteractor.setWordToUser(word);
                     },
-                    err -> Timber.e("Error while send word to user. MEssage : " + err.getMessage())
+                    err -> Timber.e("Error while send word to user. Message : " + err.getMessage())
             ));
         }
     }
@@ -156,13 +164,66 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     }
 
     @Override
-    public void processGuessWordHelperText(Observable<String> clickObservable) {
-
+    public void processGuessWordHelperText(Observable<Question> clickObservable) {
+        processGuessWordSubmit(clickObservable);
     }
 
     @Override
-    public void processGuessWordSubmit(Observable<String> clickObservable) {
+    public void processGuessWordSubmit(Observable<Question> clickObservable) {
+        addDisposable(clickObservable.subscribe(
+                questionFromView -> {
+                    Question question = mGameInteractor.guessWord(questionFromView.getQuestionId(),
+                            questionFromView.getMessage());
 
+                    question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
+                    question.setMessage(questionFromView.getMessage());
+                    question.setAllUsersCount(model.getPlayers().size() - 1);
+
+                    updateSettingQuestionViewParameters(question.getUserFrom(),
+                            false, true);
+
+                    model.getMessages().add(question);
+                    view().addMessage(question);
+                },
+                err -> Timber.e("Error while guess word. Message : " + err.getMessage())
+        ));
+    }
+
+    private void updateSettingQuestionViewParameters(User senderUser, boolean isFinished, boolean isLoading) {
+        for (int i = model.getMessages().size() - 1; i >= 0; i--) {
+            Message message = model.getMessages().get(i);
+            if (message.getMessageType() == MessageType.GUESS_WORD_THIS_USER &&
+                    mPreferenceManger.getUser().equals(senderUser)) {
+                message.setFinished(isFinished);
+                message.setLoading(isLoading);
+                view().setMessage(i, message);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void processThumbsDownClick(Observable<Long> clickObservable) {
+        addDisposable(clickObservable.subscribe(
+                questionId -> mGameInteractor.voteForQuestion(Question.Vote.NO, questionId),
+                err -> Timber.e("Error while vote \'no\'. Message : " + err.getMessage())
+        ));
+    }
+
+    @Override
+    public void processThumbsUpClick(Observable<Long> clickObservable) {
+        addDisposable(clickObservable.subscribe(
+                questionId -> mGameInteractor.voteForQuestion(Question.Vote.YES, questionId),
+                err -> Timber.e("Error while vote \'yes\'. Message : " + err.getMessage())
+        ));
+    }
+
+    @Override
+    public void processWinClick(Observable<Long> clickObservable) {
+        addDisposable(clickObservable.subscribe(
+                questionId -> mGameInteractor.voteForQuestion(Question.Vote.WIN, questionId),
+                err -> Timber.e("Error while vote \'win\'. Message : " + err.getMessage())
+        ));
     }
 
     /*------------------------------------*
@@ -180,10 +241,16 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         mGameInteractor.onConnectListener(
                 str -> {
                     Timber.i("Socket connected: %s", str);
-                    if (mPreferenceManger.getCurrentRoomId() == -1) {
-                        mGameInteractor.joinToRoom(model.getPassword());
+                    if (!isAfterRoomCreation) {
+                        if (mPreferenceManger.getCurrentRoomId() == -1) {
+                            mGameInteractor.joinToRoom(model.getPassword());
+                        } else {
+                            view().showRestoreRoom();
+                        }
                     } else {
-                        view().showRestoreRoom();
+                        mGameInteractor.sendConnectInfo();
+                        mGameInteractor.setRoomInfo(model);
+                        initRoom(model);
                     }
                 },
                 this::processEventListenerOnError);
@@ -244,9 +311,12 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         initLeftUserListener();
         initUserAfkListener();
         initUserReturnedListener();
+        initUserWinListener();
         initMessageListeners();
         initWordSettingListeners();
         initWordGuessingListeners();
+        initAskingQuestionListener();
+        initWordVotingListeners();
 
         refreshMessageHistory();
     }
@@ -287,32 +357,34 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     private void initUserAfkListener() {
         mGameInteractor.onUserAfkListener(user -> {
-            Message message = new Message.Builder()
-                    .setUserFrom(user)
-                    .setMessageType(MessageType.USER_AFK)
-                    .build();
-
-            model.getMessages().add(message);
-            view().addMessage(message);
+            view().showUserAfk(true, user.getLogin());
         }, this::processEventListenerOnError);
     }
 
     private void initUserReturnedListener() {
         mGameInteractor.onUserReturnedListener(user -> {
-            if(!mPreferenceManger.getUser().equals(user)) {
-                Message message = new Message.Builder()
-                        .setUserFrom(user)
-                        .setMessageType(MessageType.USER_RETURNED)
-                        .build();
-
-                model.getMessages().add(message);
-                view().addMessage(message);
+            if (!mPreferenceManger.getUser().equals(user)) {
+                view().showUserAfk(false, user.getLogin());
             } else {
                 model.setMessages(new ArrayList<>());
                 view().clearMessages();
                 view().showLoading();
                 refreshMessageHistory();
             }
+        }, this::processEventListenerOnError);
+    }
+
+    private void initUserWinListener(){
+        mGameInteractor.onUserWinListener(user -> {
+            view().showShortToastMessage("User " + user.getLogin() + " wins");
+            /*if (!mPreferenceManger.getUser().equals(user)) {
+                view().showUserAfk(false, user.getLogin());
+            } else {
+                model.setMessages(new ArrayList<>());
+                view().clearMessages();
+                view().showLoading();
+                refreshMessageHistory();
+            }*/
         }, this::processEventListenerOnError);
     }
 
@@ -348,9 +420,23 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 this::processEventListenerOnError);
     }
 
-    private void initWordGuessingListeners(){
+    private void initWordGuessingListeners() {
         mGameInteractor.onWordGuessingListener(
                 this::processGuessWord,
+                this::processEventListenerOnError
+        );
+    }
+
+    private void initAskingQuestionListener() {
+        mGameInteractor.onQuestionAskingListener(
+                this::processAskingQuestion,
+                this::processEventListenerOnError
+        );
+    }
+
+    private void initWordVotingListeners() {
+        mGameInteractor.onQuestionVotingListener(
+                this::processVoting,
                 this::processEventListenerOnError
         );
     }
@@ -398,19 +484,71 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         }
     }
 
-    private void processGuessWord(User user){
+    private void processGuessWord(PlayerGuessing playerGuessing) {
         User currentUser = mPreferenceManger.getUser();
-        Message.Builder messageBuilder = new Message.Builder()
-                .setUserFrom(user)
-                .setClientMessageId(user.getId());
-        if(currentUser.equals(user)){
-            messageBuilder.setMessageType(MessageType.GUESS_WORD_THIS_USER);
-        } else {
-            messageBuilder.setMessageType(MessageType.GUESS_WORD_OTHER_USER);
+
+        playerGuessing.setUserFrom(playerGuessing.getPlayer());
+        if (playerGuessing.getPlayer() != null) {
+            playerGuessing.setClientMessageId(playerGuessing.getPlayer().getId());
+
+            if (currentUser.equals(playerGuessing.getPlayer())) {
+                playerGuessing.setMessageType(MessageType.GUESS_WORD_THIS_USER);
+            } else {
+                playerGuessing.setMessageType(MessageType.GUESS_WORD_OTHER_USER);
+            }
         }
 
-        model.getMessages().add(messageBuilder.build());
-        view().addMessage(messageBuilder.build());
+        model.getMessages().add(playerGuessing);
+        view().addMessage(playerGuessing);
+    }
+
+    private void processAskingQuestion(Question question) {
+        User currentUser = mPreferenceManger.getUser();
+        if (currentUser.equals(question.getUserFrom()) &&
+                !question.isLoading() && question.isFinished()) {
+            question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
+
+            updateSettingQuestionViewParameters(
+                    question.getUserFrom(), true, false);
+
+            List<Message> messages = model.getMessages();
+            for (int i = messages.size() - 1; i >= 0; i--) {
+                Message modelMessage = messages.get(i);
+                modelMessage.setLoading(false);
+                modelMessage.setFinished(true);
+                modelMessage.setCreateDate(question.getCreateDate());
+                if (modelMessage instanceof Question &&
+                        modelMessage.getClientMessageId() == question.getClientMessageId()) {
+                    Question modelQuestion = (Question) modelMessage;
+                    modelQuestion.setQuestionId(question.getQuestionId());
+                    modelQuestion.setNoVoters(question.getNoVoters());
+                    modelQuestion.setYesVoters(question.getYesVoters());
+                    modelQuestion.setAllUsersCount((byte) model.getPlayers().size() - 1);
+                    view().setMessage(i, modelQuestion);
+                    break;
+                }
+            }
+        } else {
+            question.setMessageType(MessageType.ASKING_QUESTION_OTHER_USER);
+            question.setAllUsersCount((byte) model.getPlayers().size() - 1);
+            model.getMessages().add(question);
+            view().addMessage(question);
+        }
+    }
+
+    private void processVoting(Question question) {
+        for (int i = model.getMessages().size() - 1; i >= 0; i--) {
+            Message modelMessage = model.getMessages().get(i);
+            if (modelMessage instanceof Question &&
+                    ((Question) modelMessage).getQuestionId() == question.getQuestionId()) {
+                Question modelQuestion = (Question) modelMessage;
+                modelQuestion.setYesVoters(question.getYesVoters());
+                modelQuestion.setNoVoters(question.getNoVoters());
+
+                view().setMessage(i, modelQuestion);
+                return;
+            }
+        }
     }
 
     /*------------------------------------*

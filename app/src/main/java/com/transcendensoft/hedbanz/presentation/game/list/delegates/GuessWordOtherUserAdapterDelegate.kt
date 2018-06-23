@@ -7,6 +7,7 @@ import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.domain.entity.Message
 import com.transcendensoft.hedbanz.domain.entity.MessageType
+import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing
 import com.transcendensoft.hedbanz.presentation.game.list.holder.GuessWordOtherUserViewHolder
 import javax.inject.Inject
 
@@ -47,14 +48,17 @@ class GuessWordOtherUserAdapterDelegate @Inject constructor() : AdapterDelegate<
 
     override fun isForViewType(items: List<Message>, position: Int): Boolean {
         val message = items[position]
-        return message.messageType == MessageType.GUESS_WORD_OTHER_USER
+        return message.messageType == MessageType.GUESS_WORD_OTHER_USER &&
+                message is PlayerGuessing
     }
 
     override fun onBindViewHolder(items: List<Message>, position: Int,
                                   holder: RecyclerView.ViewHolder, payloads: MutableList<Any>) {
-        val message = items[position]
+        val message = items[position] as PlayerGuessing
         if (holder is GuessWordOtherUserViewHolder) {
-            holder.bindSomeUserGuessWord(message.userFrom?.login ?: "")
+            holder.bindSomeUserGuessWord(
+                    message.player?.login ?: "",
+                    message.attempts)
         }
     }
 }

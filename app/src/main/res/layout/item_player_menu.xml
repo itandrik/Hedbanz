@@ -6,24 +6,54 @@
     android:layout_height="wrap_content"
     android:minHeight="100dp">
 
+    <ImageView
+        android:id="@+id/ivThisUserStar"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_this_user_star" />
+
+    <TextView
+        android:id="@+id/tvThisUser"
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/google_blue"
+        android:textSize="15sp"
+        android:textStyle="italic"
+        android:gravity="center_vertical"
+        android:text="@string/game_menu_this_user"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ivThisUserStar"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tvUserWord"
         android:layout_width="wrap_content"
-        android:layout_height="49dp"
+        android:layout_height="56dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="-16dp"
         android:background="@drawable/button_background"
         android:ellipsize="end"
-        android:fontFamily="@font/lemon_tuesday_font_family"
+        android:fontFamily="@font/open_sans_light"
         android:gravity="left|center_vertical"
         android:maxLines="1"
         android:paddingLeft="40dp"
         android:singleLine="true"
-        android:textColor="@color/pen_color"
-        android:textSize="13sp"
+        android:textColor="@color/textPrimary"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tvThisUser" />
 
     <ImageView
         android:id="@+id/ivUserIcon"
@@ -32,10 +62,10 @@
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="-12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvUserWord"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserWord"
         app:srcCompat="@drawable/logo" />
 
     <ImageView
@@ -83,9 +113,11 @@
         android:text="@string/game_afk"
         android:textColor="@color/textWhite"
         android:textSize="18sp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/ivUserIcon"
         app:layout_constraintEnd_toEndOf="@id/ivUserIcon"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/ivUserIcon"
-        app:layout_constraintTop_toTopOf="@id/ivUserIcon" />
+        app:layout_constraintTop_toTopOf="@id/ivUserIcon"
+        app:layout_constraintVertical_bias="1.0" />
 </android.support.constraint.ConstraintLayout>

@@ -18,6 +18,7 @@ package com.transcendensoft.hedbanz.presentation.game;
 import android.widget.EditText;
 
 import com.transcendensoft.hedbanz.domain.entity.Message;
+import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.presentation.base.BaseView;
@@ -49,6 +50,7 @@ public interface GameContract {
         void showFooterDisconnected();
         void showFooterReconnecting();
         void showFooterReconnected();
+        void showUserAfk(boolean isAfk, String login);
         void showRestoreRoom();
 
         void showEmptyList();
@@ -60,11 +62,15 @@ public interface GameContract {
         void messageTextChanges(EditText editText);
         void sendMessage(String message);
         void processSetWordToUserObservable(Observable<Word> sendWordObservable);
+        void setAfterRoomCreation(boolean isAfterRoomCreation);
 
         void restoreRoom();
         void processRetryNetworkPagination(Observable<Object> clickObservable);
         void processRetryServerPagination(Observable<Object> clickObservable);
-        void processGuessWordSubmit(Observable<String> clickObservable);
-        void processGuessWordHelperText(Observable<String> clickObservable);
+        void processGuessWordSubmit(Observable<Question> clickObservable);
+        void processGuessWordHelperText(Observable<Question> clickObservable);
+        void processThumbsUpClick(Observable<Long> clickObservable);
+        void processThumbsDownClick(Observable<Long> clickObservable);
+        void processWinClick(Observable<Long> clickObservable);
     }
 }

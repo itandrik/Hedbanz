@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.utils.DateUtils;
+import com.transcendensoft.hedbanz.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +48,7 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.tvTime) TextView mTvTime;
     @BindView(R.id.separator) View mSeparator;
     @BindView(R.id.rlSomeMessageContainer) RelativeLayout mRlContainer;
+    @BindView(R.id.tvUserWord) TextView mTvUserWord;
 
     private Context mContext;
 
@@ -57,11 +59,28 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
         this.mContext = context;
     }
 
+    public void bindUserWord(String word){
+        if(!TextUtils.isEmpty(word)){
+            mTvUserWord.setVisibility(View.VISIBLE);
+            mTvUserWord.setText(word);
+        } else {
+            mTvUserWord.setVisibility(View.GONE);
+        }
+    }
+
     public void bindMessage(String message){
         if(!TextUtils.isEmpty(message)){
             mTvMessage.setText(message);
         } else {
             mTvMessage.setText("");
+        }
+
+        if(mTvUserWord.getVisibility() == View.VISIBLE){
+            ((RelativeLayout.LayoutParams)mTvMessage.getLayoutParams()).topMargin =
+                    ViewUtils.dpToPx(mContext, 16.f);
+        } else {
+            ((RelativeLayout.LayoutParams)mTvMessage.getLayoutParams()).topMargin =
+                    ViewUtils.dpToPx(mContext, 8.f);
         }
     }
 
@@ -69,6 +88,14 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
         VectorDrawableCompat drawableCompat = VectorDrawableCompat.create(
                 mContext.getResources(), R.drawable.logo, null);
         mIvUserImage.setImageDrawable(drawableCompat);
+
+        if(mIvUserImage.getVisibility() == View.VISIBLE){
+            ((RelativeLayout.LayoutParams)mIvUserImage.getLayoutParams()).topMargin =
+                    ViewUtils.dpToPx(mContext, 16.f);
+        } else {
+            ((RelativeLayout.LayoutParams)mIvUserImage.getLayoutParams()).topMargin =
+                    ViewUtils.dpToPx(mContext, 8.f);
+        }
     }
 
     public void bindUserLogin(String login){
@@ -82,11 +109,14 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
     public void bindShowHideLoginAndImage(boolean isHide){
         if(isHide){
             mTvLogin.setVisibility(View.GONE);
+            mTvUserWord.setVisibility(View.GONE);
             mIvUserImage.setVisibility(View.INVISIBLE);
             mSeparator.setVisibility(View.VISIBLE);
             mRlContainer.setMinimumHeight(0);
+            mTvUserWord.setVisibility(View.GONE);
         } else {
             mTvLogin.setVisibility(View.VISIBLE);
+            mTvUserWord.setVisibility(View.VISIBLE);
             mIvUserImage.setVisibility(View.VISIBLE);
             mSeparator.setVisibility(View.GONE);
             mRlContainer.setMinimumHeight(getListPreferredItemHeight());

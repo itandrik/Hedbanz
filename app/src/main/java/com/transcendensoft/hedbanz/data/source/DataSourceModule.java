@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.data.source;
  */
 
 import com.transcendensoft.hedbanz.data.network.source.ApiDataSource;
+import com.transcendensoft.hedbanz.data.network.source.FirebaseIdApiDataSource;
 import com.transcendensoft.hedbanz.data.network.source.FriendsApiDataSource;
 import com.transcendensoft.hedbanz.data.network.source.MessagesApiDataSource;
 import com.transcendensoft.hedbanz.data.network.source.RoomsApiDataSource;
@@ -43,4 +44,7 @@ public interface DataSourceModule {
 
     @Binds
     ApiDataSource provideMessageApiDataSource(MessagesApiDataSource messagesApiDataSource);
+
+    @Binds
+    ApiDataSource provideFirebaseIdApiDataSource(FirebaseIdApiDataSource firebaseIdApiDataSource);
 }

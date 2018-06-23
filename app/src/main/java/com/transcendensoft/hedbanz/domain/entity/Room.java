@@ -22,7 +22,7 @@ import java.util.List;
  * Room entity that represents room business logic
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class Room {
     private long id;
@@ -35,10 +35,11 @@ public class Room {
     private long endDate;
     private boolean isWithPassword;
     private List<Message> messages;
+    private boolean isActive;
 
     private Room(long id, String password, byte maxPlayers, List<User> players,
-                    String name, byte currentPlayersNumber, long startDate, long endDate,
-                 boolean isWithPassword) {
+                 String name, byte currentPlayersNumber, long startDate, long endDate,
+                 boolean isWithPassword, boolean isActive) {
         this.id = id;
         this.password = password;
         this.maxPlayers = maxPlayers;
@@ -49,9 +50,10 @@ public class Room {
         this.name = name;
         this.isWithPassword = isWithPassword;
         messages = new ArrayList<>();
-        if(this.players == null){
+        if (this.players == null) {
             this.players = new ArrayList<>();
         }
+        this.isActive = isActive;
     }
 
     public Room() {
@@ -137,6 +139,14 @@ public class Room {
         this.messages = messages;
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -177,6 +187,7 @@ public class Room {
         private long startDate;
         private long endDate;
         private boolean isWithPassword;
+        private boolean isActive;
 
         public Room.Builder setId(long id) {
             this.id = id;
@@ -223,8 +234,14 @@ public class Room {
             return this;
         }
 
+        public Room.Builder setIsActive(boolean isActive) {
+            this.isActive = isActive;
+            return this;
+        }
+
         public Room build() {
-            return new Room(id, password, maxPlayers, players, name, currentPlayersNumber, startDate, endDate, isWithPassword);
+            return new Room(id, password, maxPlayers, players, name, currentPlayersNumber,
+                    startDate, endDate, isWithPassword, isActive);
         }
     }
 }

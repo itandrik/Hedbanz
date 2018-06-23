@@ -1,28 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_gravity="right"
+    android:gravity="right"
+    android:orientation="horizontal"
+    android:paddingTop="4dp"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:minHeight="?attr/listPreferredItemHeight">
-
-    <TextView
-        android:id="@+id/tvTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/tvMessage"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:textColor="@color/textSecondary"
-        android:textSize="10sp" />
-
-    <ProgressBar
-        android:id="@+id/pbMessageLoading"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_alignBottom="@id/tvTime"
-        android:layout_toLeftOf="@id/tvTime"
-        android:theme="@style/AppTheme.RedProgressBar" />
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
         android:id="@+id/tvMessage"
@@ -30,10 +14,29 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginRight="4dp"
-        android:layout_toLeftOf="@id/pbMessageLoading"
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="0dp"
         android:background="@drawable/message_this_user"
         android:maxWidth="300dp"
         android:padding="12dp"
         android:textColor="@color/textPrimary"
         android:textSize="14sp" />
-</RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/pbMessageLoading"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_gravity="bottom"
+        android:theme="@style/AppTheme.RedProgressBar" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_gravity="bottom"
+        android:layout_marginRight="16dp"
+        android:textColor="@color/textSecondary"
+        android:textSize="10sp" />
+
+</LinearLayout>

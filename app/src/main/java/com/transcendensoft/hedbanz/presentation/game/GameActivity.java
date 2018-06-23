@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.Animatable2Compat;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
@@ -14,7 +15,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -23,12 +23,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.game.list.GameListAdapter;
+import com.transcendensoft.hedbanz.utils.KeyboardUtils;
 
 import java.util.List;
 
@@ -39,10 +41,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.view.View.GONE;
+import static android.view.View.OVER_SCROLL_NEVER;
 
 public class GameActivity extends BaseActivity implements GameContract.View {
     @Inject GamePresenter mPresenter;
     @Inject GameListAdapter mAdapter;
+    @Inject Gson mGson;
 
     @BindView(R.id.rvGameList) RecyclerView mRecycler;
     @BindView(R.id.etChatMessage) EditText mEtChatMessage;
@@ -55,7 +59,9 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @BindView(R.id.ivSystemSadIcon) ImageView mIvSystemSad;
     @BindView(R.id.ivSystemHappyIcon) ImageView mIvSystemHappy;
     @BindView(R.id.drawerLayout) DrawerLayout mDrawerLayout;
-    @BindView(R.id.toolbarMain) Toolbar mToolbar;
+    @BindView(R.id.fabLogout) FloatingActionButton mFabLogout;
+    @BindView(R.id.fabMenu) FloatingActionButton mFabMenu;
+
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -64,18 +70,29 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-
         ButterKnife.bind(this, this);
 
         if (mPresenter != null && getIntent() != null) {
             long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
             String password = getIntent().getStringExtra(getString(R.string.bundle_room_password));
-            Room room = new Room.Builder()
-                    .setId(roomId)
-                    .setWithPassword(true)
-                    .setPassword(password)
-                    .build();
+            boolean isAfterRoomCreation = getIntent()
+                    .getBooleanExtra(getString(R.string.bundle_is_after_creation), false);
+            String roomIntentString = getIntent().getStringExtra(getString(R.string.bundle_room_data));
 
+            Room room;
+            if(roomIntentString != null){
+                room = mGson.fromJson(roomIntentString, Room.class);
+                // After room creation
+            } else {
+                // After simple opening room
+                room = new Room.Builder()
+                        .setId(roomId)
+                        .setWithPassword(true)
+                        .setPassword(password)
+                        .build();
+            }
+
+            mPresenter.setAfterRoomCreation(isAfterRoomCreation);
             mPresenter.setModel(room);
         }
 
@@ -90,6 +107,11 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         super.onResume();
         if (mPresenter != null) {
             mPresenter.bindView(this);
+            if ((mRecycler != null) && (mAdapter != null) &&
+                    (mAdapter.getItems() != null) &&
+                    (mAdapter.getItems().size() > 0)) {
+                mRecycler.smoothScrollToPosition(mAdapter.getItems().size() - 1);
+            }
         }
     }
 
@@ -112,9 +134,9 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
-    private void initNavDrawer(){
+    private void initNavDrawer() {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, mToolbar,
+                this, mDrawerLayout, null,
                 R.string.game_toolbar_open_menu_content_description,
                 R.string.game_toolbar_close_menu_content_description);
         toggle.setDrawerIndicatorEnabled(false);
@@ -135,6 +157,31 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         manager.setStackFromEnd(true);
         mRecycler.setLayoutManager(manager);
         mRecycler.setItemViewCacheSize(100);
+        mRecycler.setOverScrollMode(OVER_SCROLL_NEVER);
+
+        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                showOrHideFab(mFabLogout, dy);
+                showOrHideFab(mFabMenu, dy);
+                if (dy < -50) {
+                    KeyboardUtils.hideSoftInput(GameActivity.this);
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+    }
+
+    private void showOrHideFab(FloatingActionButton fab, int dy) {
+        if (dy < 0 && fab.isShown()) {
+            fab.hide();
+        } else if (dy > 0) {
+            fab.show();
+        }
     }
 
     private void initAdapterClickListeners() {
@@ -149,6 +196,12 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     mAdapter.guessWordHelperStringObservable());
             mPresenter.processGuessWordSubmit(
                     mAdapter.guessWordSubmitObservable());
+            mPresenter.processThumbsUpClick(
+                    mAdapter.askingQuestionThumbsUpObservable());
+            mPresenter.processThumbsDownClick(
+                    mAdapter.askingQuestionThumbsDownObservable());
+            mPresenter.processWinClick(
+                    mAdapter.askingQuestionWinObservable());
         }
     }
 
@@ -164,29 +217,34 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         }
     }
 
-    @OnClick(R.id.ivExit)
-    protected void onExitFromRoom(){
+    @OnClick(R.id.fabLogout)
+    protected void onExitFromRoom() {
         onBackPressed();
     }
 
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setCancelable(true)
-                .setMessage(getString(R.string.game_exit_room_message))
-                .setTitle(getString(R.string.game_exit_room_title))
-                .setPositiveButton(getString(R.string.game_action_exit_game), (dialog, which) -> {
-                    super.onBackPressed();
-                })
-                .setNegativeButton(getString(R.string.game_action_resume_game), (dialog, which) -> {
-                    dialog.dismiss();
-                })
-                .show();
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+            mDrawerLayout.closeDrawer(GravityCompat.END);
+        } else {
+            new AlertDialog.Builder(this)
+                    .setCancelable(true)
+                    .setMessage(getString(R.string.game_exit_room_message))
+                    .setTitle(getString(R.string.game_exit_room_title))
+                    .setPositiveButton(getString(R.string.game_action_exit_game), (dialog, which) -> {
+                        super.onBackPressed();
+                    })
+                    .setNegativeButton(getString(R.string.game_action_resume_game), (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .show();
+        }
     }
 
-    @OnClick(R.id.ivMenu)
-    protected void onMenuClicked(){
+    @OnClick(R.id.fabMenu)
+    protected void onMenuClicked() {
         mDrawerLayout.openDrawer(GravityCompat.END);
+        KeyboardUtils.hideSoftInput(this);
     }
 
     /*------------------------------------*
@@ -448,5 +506,22 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 .setTitle(getString(R.string.game_restore_room_title))
                 .setMessage(getString(R.string.game_restore_room_message))
                 .show();
+    }
+
+    @Override
+    public void showUserAfk(boolean isAfk, String login) {
+        if (TextUtils.isEmpty(login)) {
+            if (isAfk) {
+                showShortToastMessage(R.string.game_some_user_afk);
+            } else {
+                showShortToastMessage(R.string.game_some_user_returned);
+            }
+        } else {
+            if (isAfk) {
+                showShortToastMessage(getString(R.string.game_user_afk, login));
+            } else {
+                showShortToastMessage(getString(R.string.game_user_returned, login));
+            }
+        }
     }
 }

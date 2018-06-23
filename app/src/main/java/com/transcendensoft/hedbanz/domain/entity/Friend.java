@@ -26,8 +26,9 @@ public class Friend extends User {
 
     private Friend(long id, String email, String password, String confirmPassword,
                    long money, Long registrationDate, String login, boolean isAfk,
-                   boolean isAccepted, boolean isFriend, String word) {
-        super(id, email, password, confirmPassword, money, registrationDate, login, isAfk, isFriend, word);
+                   boolean isAccepted, boolean isFriend, String word, int attempts) {
+        super(id, email, password, confirmPassword, money, registrationDate,
+                login, isAfk, isFriend, word, attempts);
         this.isAccepted = isAccepted;
     }
 
@@ -51,7 +52,7 @@ public class Friend extends User {
         private boolean isAfk;
         private boolean isFriend;
         private String word;
-
+        private int attempts;
         public Builder setId(long id) {
             this.id = id;
             return this;
@@ -107,9 +108,14 @@ public class Friend extends User {
             return this;
         }
 
+        public Builder setAttempts(int attempts){
+            this.attempts = attempts;
+            return this;
+        }
+
         public Friend build() {
             return new Friend(id, email, password, confirmPassword, money,
-                    registrationDate, login, isAfk, isAccepted, isFriend, word);
+                    registrationDate, login, isAfk, isAccepted, isFriend, word, attempts);
         }
     }
 }

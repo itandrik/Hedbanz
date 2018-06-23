@@ -44,11 +44,23 @@ public class GuessWordOtherUserViewHolder extends RecyclerView.ViewHolder {
         this.mContext = context;
     }
 
-    public void bindSomeUserGuessWord(String userName){
+    public void bindSomeUserGuessWord(String userName, int attempts){
+        String text = mContext.getString(R.string.game_some_user_think_word_to_user, userName, attempts);
+        String textError = mContext.getString(R.string.game_some_user_think_word_to_user_error, attempts);
+
         if(TextUtils.isEmpty(userName)){
+            if (attempts <= 0 || attempts > 3) {
+                mTvGuessWord.setText(textError.substring(0, text.indexOf('.')));
+            } else {
+                mTvGuessWord.setText(textError);
+            }
             mTvGuessWord.setText(mContext.getString(R.string.game_some_user_think_word_to_user_error));
         } else {
-            mTvGuessWord.setText(mContext.getString(R.string.game_some_user_think_word_to_user, userName));
+            if (attempts <= 0 || attempts > 3) {
+                mTvGuessWord.setText(text.substring(0, text.indexOf('.')));
+            } else {
+                mTvGuessWord.setText(text);
+            }
         }
     }
 }

@@ -184,10 +184,12 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
         }
 
         private void processServerError(PaginationState<Room> roomPaginationState) {
-            if (roomPaginationState.isRefreshed()) {
-                view().showServerError();
-            } else {
-                mLastHolder.showErrorServer();
+            if(view() != null) {
+                if (roomPaginationState.isRefreshed()) {
+                    view().showServerError();
+                } else {
+                    mLastHolder.showErrorServer();
+                }
             }
         }
 
@@ -198,7 +200,9 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
                 Room lastRoom = model.getRooms().get(model.getRooms().size() - 1);
                 if(lastRoom.getId() == -1) {
                     model.getRooms().remove(model.getRooms().size() - 1);
-                    view().removeLastRoom();
+                    if(view() != null) {
+                        view().removeLastRoom();
+                    }
                 }
             }
         }
@@ -211,9 +215,11 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
 
             rooms.add(new Room.Builder().setId(-1).build()); //ProgressBar view
 
-            view().addRoomsToRecycler(rooms);
-            view().showContent();
-            model.addAllRooms(rooms);
+            if(view() != null) {
+                view().addRoomsToRecycler(rooms);
+                view().showContent();
+                model.addAllRooms(rooms);
+            }
         }
 
         @Override

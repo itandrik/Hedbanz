@@ -15,13 +15,19 @@ package com.transcendensoft.hedbanz.data.repository;
  * limitations under the License.
  */
 
+import android.support.annotation.NonNull;
+
+import com.transcendensoft.hedbanz.data.models.MessageDTO;
+import com.transcendensoft.hedbanz.data.models.QuestionDTO;
 import com.transcendensoft.hedbanz.data.models.mapper.MessageModelDataMapper;
+import com.transcendensoft.hedbanz.data.models.mapper.QuestionModelDataMapper;
 import com.transcendensoft.hedbanz.data.network.source.MessagesApiDataSource;
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.data.source.MessagesDataSource;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.repository.MessagesDataRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,26 +39,41 @@ import io.reactivex.Observable;
  * for getting {@link com.transcendensoft.hedbanz.domain.entity.Message} related data.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class MessagesDataRepositoryImpl implements MessagesDataRepository {
     private MessagesDataSource mDataSource;
     private MessageModelDataMapper mDataMapper;
-
+    private QuestionModelDataMapper mQuestionModelDataMapper;
     @Inject
     public MessagesDataRepositoryImpl(MessagesApiDataSource mDataSource,
-                                      MessageModelDataMapper mDataMapper) {
+                                      MessageModelDataMapper mDataMapper,
+                                      QuestionModelDataMapper questionModelDataMapper) {
         this.mDataSource = mDataSource;
         this.mDataMapper = mDataMapper;
+        this.mQuestionModelDataMapper = questionModelDataMapper;
     }
 
     @Override
     public Observable<List<Message>> getMessages(long roomId, int page, DataPolicy dataPolicy) {
-        if(dataPolicy == DataPolicy.API) {
-            return mDataSource.getMessages(roomId, page).map(mDataMapper::convert);
-        } else if(dataPolicy == DataPolicy.DB){
+        if (dataPolicy == DataPolicy.API) {
+            return mDataSource.getMessages(roomId, page).map(this::mapDTOtoEntity);
+        } else if (dataPolicy == DataPolicy.DB) {
             return Observable.error(new UnsupportedOperationException());
         }
         return Observable.error(new UnsupportedOperationException());
+    }
+
+    @NonNull
+    private List<Message> mapDTOtoEntity(List<MessageDTO> listMessageDTO) {
+        List<Message> messages = new ArrayList<>();
+        for (MessageDTO messageDTO:listMessageDTO) {
+            if (messageDTO instanceof QuestionDTO) {
+                messages.add(mQuestionModelDataMapper.convert((QuestionDTO) messageDTO));
+            } else {
+                messages.add(mDataMapper.convert(messageDTO));
+            }
+        }
+        return messages;
     }
 }

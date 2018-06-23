@@ -9,6 +9,9 @@
     <!-- Bundle -->
     <string name="bundle_room_id">bundle_room_id</string>
     <string name="bundle_room_password">bundle_room_password</string>
+    <string name="bundle_is_after_creation">bundle_is_after_creation</string>
+    <string name="bundle_room_data">bundle_room_data</string>
+
     <string name="salt">$2a$10$3L8fxrPhH3/qLYhjmsuEku</string>
 
     <!-- Actions -->
@@ -66,6 +69,7 @@
     <string name="rooms_search_hint">My_room or #100500...</string>
     <string name="rooms_with_password">С паролем</string>
     <string name="rooms_password_title">Введите пароль от комнаты</string>
+    <string name="rooms_active">Активная</string>
 
     <!-- Create room fragment -->
     <string name="room_creation_title">Создать комнату</string>
@@ -90,6 +94,9 @@
     <string name="menu_action_help">Помощь</string>
     <string name="menu_action_settings">Настройки</string>
     <string name="menu_action_logout">Выйти</string>
+    <string name="menu_logout_error_title">Произошла ошибка</string>
+    <string name="menu_logout_server_error">Похоже у нас проблемы с сервером. Попробуйте попытку позже.</string>
+    <string name="menu_logout_network_error">Проверьте ваше интернет соединение и попробуйте выйти снова.</string>
 
     <!-- Credentials activity -->
     <string name="credentials_title">Мои данные</string>
@@ -112,6 +119,8 @@
     <string name="game_set_word_title_random">Самое время загадать слово случайному игроку</string>
     <string name="game_set_word_hint">Ваше слово&#8230;</string>
     <string name="game_word_setted">Игрок %1$s загадал слово игроку %2$s</string>
+    <string name="game_word_setted_to_current_user">Игрок %1$s загадал вам слово</string>
+    <string name="game_word_current_user_setted">Вы загадали слово игроку %1$s</string>
     <string name="game_error_disconnected">Ожидание подключения&#8230;</string>
     <string name="game_error_reconnecting">Подключаем&#8230;</string>
     <string name="game_error_reconnected">Соединение восстановлено!</string>
@@ -129,16 +138,20 @@
     <string name="game_exit_room_title">Выйти или не выйти, вот в чем вопрос&#8230;</string>
     <string name="game_action_resume_game">Продолжить</string>
     <string name="game_action_exit_game">Кидануть ребят</string>
+    <string name="game_menu_this_user">Это вы</string>
 
     <string name="game_toolbar_open_menu_content_description">Открыть меню</string>
     <string name="game_toolbar_close_menu_content_description">Закрыть меню</string>
     <string name="game_afk">AFK</string>
     
-    <string name="game_some_user_think_word_to_user">Сейчас свое слово будет отгадывать игрок %1$s</string>
-    <string name="game_some_user_think_word_to_user_error">Сейчас свое слово будет отгадывать какой-то игрок</string>
-    <string name="game_this_user_think_word_to_user">Попробуйте отгадать кто вы</string>
-    <string name="game_guess_word_hint">Введите слово</string>
-
+    <string name="game_some_user_think_word_to_user">Сейчас будет спрашивать игрок %1$s.\n Попытка %2$d/3</string>
+    <string name="game_some_user_think_word_to_user_error">Сейчас будет спрашивать какой-то игрок.\n Попытка %1$d/3</string>
+    <string name="game_this_user_think_word_to_user">Задайте вопрос о том кто вы. Попытка %1$d/3</string>
+    <string name="game_guess_word_hint">Я &#8230;</string>
+    <string name="game_asking_total_votes">Всего:</string>
+    <string name="game_notification_title">%1$s с комнаты %2$s</string>
+    <string name="game_notification_title_error">Новое сообщение</string>
+    <string name="game_notification_channel_title_message">Сообщение</string>
     <!-- Friends -->
     <string name="friends_toolbar_title">Ваши друзяки</string>
 </resources>
