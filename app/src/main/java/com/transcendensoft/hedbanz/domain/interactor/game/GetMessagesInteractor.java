@@ -96,8 +96,13 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, Long, Void
                 } else {
                     playerGuessing.setMessageType(MessageType.GUESS_WORD_OTHER_USER);
                 }
-                playerGuessing.setFinished(true);
-                playerGuessing.setLoading(false);
+                if (!TextUtils.isEmpty(question.getMessage())) {
+                    playerGuessing.setFinished(true);
+                    playerGuessing.setLoading(false);
+                } else {
+                    playerGuessing.setFinished(false);
+                    playerGuessing.setLoading(false);
+                }
 
                 //Question with asking\voting
                 Question askingQuestion = null;

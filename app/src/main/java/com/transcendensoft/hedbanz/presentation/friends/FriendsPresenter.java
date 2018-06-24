@@ -24,6 +24,7 @@ import com.transcendensoft.hedbanz.domain.interactor.friends.RemoveFriend;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 
 import java.net.ConnectException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -95,6 +96,15 @@ public class FriendsPresenter extends BasePresenter<List<Friend>, FriendsContrac
         if (friends == null || friends.isEmpty()) {
             view().showEmptyList();
         } else {
+            Collections.sort(friends, (o1, o2) -> {
+                if(o1.isAccepted() == o2.isAccepted()){
+                    return (int) (o1.getId() - o2.getId());
+                } else if(o1.isAccepted()){
+                    return 1;
+                } else {
+                    return -1;
+                }
+            });
             view().addFriendsToRecycler(friends);
         }
     }

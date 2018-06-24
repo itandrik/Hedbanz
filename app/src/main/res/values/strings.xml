@@ -14,12 +14,16 @@
 
     <string name="salt">$2a$10$3L8fxrPhH3/qLYhjmsuEku</string>
 
+    <!-- Tags -->
+    <string name="tag_fragment_user_details">tag_fragment_user_details</string>
+
     <!-- Actions -->
     <string name="action_enter">Войти</string>
     <string name="action_ok">Ок</string>
     <string name="action_yes">Да</string>
     <string name="action_no">Нет</string>
     <string name="action_cancel">Отмена</string>
+    <string name="action_close">Закрыть</string>
     <string name="action_reload">Повторить попытку</string>
     <string name="action_loading">Загрузка&#8230;</string>
 
@@ -156,6 +160,13 @@
     <string name="game_notification_title">%1$s с комнаты %2$s</string>
     <string name="game_notification_title_error">Новое сообщение</string>
     <string name="game_notification_channel_title_message">Сообщение</string>
+
     <!-- Friends -->
     <string name="friends_toolbar_title">Ваши друзяки</string>
+
+    <!-- User details -->
+    <string name="user_details_add_friend">Предложить дружбу</string>
+    <string name="user_details_already_friend">В списке друзей</string>
+    <string name="user_details_friend_request_sent">Дружбу предложено!</string>
+
 </resources>

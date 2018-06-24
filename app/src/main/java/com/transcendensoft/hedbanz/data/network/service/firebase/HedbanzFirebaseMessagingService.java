@@ -69,9 +69,12 @@ public class HedbanzFirebaseMessagingService extends FirebaseMessagingService im
         if (remoteMessage.getData() != null) {
             Map<String, String> bodyMap = remoteMessage.getData();
             int type = Integer.parseInt(bodyMap.get(FIELD_TYPE));
+            Timber.i("FCM push. notification type:" + type);
+
             NotificationMessageType messageType = NotificationMessageType.
                     Companion.getTypeById(type);
             String dataJson = bodyMap.get(DATA_TYPE);
+            Timber.i("FCM push. data:" + dataJson);
 
             processNotificationMessage(messageType, dataJson);
         }

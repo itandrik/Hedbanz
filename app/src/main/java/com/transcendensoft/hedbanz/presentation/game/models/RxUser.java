@@ -55,6 +55,11 @@ public class RxUser {
         mSubject.onNext(mUser);
     }
 
+    public void setIsWinner(boolean isWinner){
+        mUser.setWinner(isWinner);
+        mSubject.onNext(mUser);
+    }
+
     public void setIsFriend(boolean isFriend){
         mUser.setFriend(isFriend);
         mSubject.onNext(mUser);

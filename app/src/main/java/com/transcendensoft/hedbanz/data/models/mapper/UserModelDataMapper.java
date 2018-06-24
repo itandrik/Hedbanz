@@ -59,6 +59,7 @@ public class UserModelDataMapper {
                     .setPlayerStatus(PlayerStatus.getStatusByCode(userDTO.getStatus()))
                     .setIsFriend(userDTO.isFriend())
                     .setWord(userDTO.getWord())
+                    .setIsWinner(userDTO.isWinner())
                     .setAttempts(userDTO.getAttempts())
                     .build();
         }
@@ -80,6 +81,7 @@ public class UserModelDataMapper {
                     .setIsFriend(user.isFriend())
                     .setWord(user.getWord())
                     .setAttempts(user.getAttempts())
+                    .setIsWinner(user.isWinner())
                     .build();
         }
         return userResult;

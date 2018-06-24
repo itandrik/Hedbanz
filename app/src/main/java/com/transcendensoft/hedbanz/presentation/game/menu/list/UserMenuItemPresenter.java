@@ -17,10 +17,12 @@ package com.transcendensoft.hedbanz.presentation.game.menu.list;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
 
 import io.reactivex.ObservableTransformer;
+import io.reactivex.subjects.PublishSubject;
 import timber.log.Timber;
 
 /**
@@ -34,6 +36,7 @@ public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemCon
         implements UserMenuItemContract.Presenter {
     private ObservableTransformer mSchedulersTransformer;
     private PreferenceManager mPreferenceManager;
+    private PublishSubject<User> mItemClickObservable = PublishSubject.create();
 
     public UserMenuItemPresenter(ObservableTransformer schedulersTransformer) {
         this.mSchedulersTransformer = schedulersTransformer;
@@ -61,6 +64,9 @@ public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemCon
         view().setIsFriend(model.getUser().isFriend());
         view().setName(model.getUser().getLogin());
         view().setWord(model.getUser());
+        view().setIsWinner(model.getUser().isWinner());
+        view().getClickObservable(model.getUser())
+                .subscribe(mItemClickObservable);
     }
 
     @Override
@@ -68,13 +74,12 @@ public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemCon
         // stub
     }
 
-    @Override
-    public void onClickUser() {
-
-    }
-
     @SuppressWarnings("unchecked")
     private <S> ObservableTransformer<S, S> applySchedulers() {
         return (ObservableTransformer<S, S>) mSchedulersTransformer;
+    }
+
+    public PublishSubject<User> getItemClickObservable() {
+        return mItemClickObservable;
     }
 }

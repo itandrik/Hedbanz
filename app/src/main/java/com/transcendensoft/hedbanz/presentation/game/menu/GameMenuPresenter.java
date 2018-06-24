@@ -15,11 +15,13 @@ package com.transcendensoft.hedbanz.presentation.game.menu;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import timber.log.Timber;
 
@@ -49,10 +51,12 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
     }
 
     private void updateRoomInfo() {
-        view().clearAndAddPlayers(model.getRxPlayers());
-        view().setRoomName(model.getRoom().getName());
-        view().setMaxPlayersCount(model.getRoom().getMaxPlayers());
-        view().setCurrentPlayersCount(model.getRxPlayers().size());
+        if (view() != null) {
+            view().clearAndAddPlayers(model.getRxPlayers());
+            view().setRoomName(model.getRoom().getName());
+            view().setMaxPlayersCount(model.getRoom().getMaxPlayers());
+            view().setCurrentPlayersCount(model.getRxPlayers().size());
+        }
     }
 
     private void subscribeToRoomObservables() {
@@ -83,5 +87,13 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
     @Override
     public void destroy() {
         // STUB
+    }
+
+    @Override
+    public void processPlayerClickListener(Observable<User> playerClickObservable) {
+        addDisposable(playerClickObservable
+                .subscribe(user -> {
+                    view().onPlayerClicked(user);
+                }, Timber::e));
     }
 }

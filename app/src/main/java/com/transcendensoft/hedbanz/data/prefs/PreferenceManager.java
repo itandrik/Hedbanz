@@ -37,6 +37,7 @@ public class PreferenceManager {
     private static final String FIREBASE_TOKEN = "firebaseToken";
     private static final String CURRENT_ROOM_ID = "currentRoomId";
     private static final String FIREBASE_TOKEN_BINDED = "firebaseTokenBinded";
+    private static final String AUTHORIZATION_TOKEN = "authorizationToken";
 
     public PreferenceManager(Context context) {
         mPreferences = context.getSharedPreferences(PREF_NAME, 0);
@@ -92,5 +93,13 @@ public class PreferenceManager {
 
     public boolean getFirebaseTokenBinded() {
         return mPreferences.getBoolean(FIREBASE_TOKEN_BINDED, false);
+    }
+
+    public void setAuthorizationToken(String token) {
+        getEditor().putString(AUTHORIZATION_TOKEN, token).apply();
+    }
+
+    public String getAuthorizationToken() {
+        return mPreferences.getString(AUTHORIZATION_TOKEN, "");
     }
 }

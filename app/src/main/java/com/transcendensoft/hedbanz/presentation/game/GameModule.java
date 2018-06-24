@@ -21,10 +21,13 @@ import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.di.scope.FragmentScope;
 import com.transcendensoft.hedbanz.domain.entity.Room;
-import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
 import com.transcendensoft.hedbanz.presentation.game.menu.GameMenuContract;
 import com.transcendensoft.hedbanz.presentation.game.menu.GameMenuFragment;
 import com.transcendensoft.hedbanz.presentation.game.menu.GameMenuPresenter;
+import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
+import com.transcendensoft.hedbanz.presentation.userdetails.UserDetailsContract;
+import com.transcendensoft.hedbanz.presentation.userdetails.UserDetailsDialogFragment;
+import com.transcendensoft.hedbanz.presentation.userdetails.UserDetailsPresenter;
 
 import dagger.Binds;
 import dagger.Module;
@@ -47,8 +50,16 @@ public interface GameModule {
     @Binds GameMenuContract.Presenter bindGameMenuPresenter(GameMenuPresenter gameMenuPresenter);
 
     @FragmentScope
+    @Binds
+    UserDetailsContract.Presenter bindUserDetailsPresenter(UserDetailsPresenter userDetailsPresenter);
+
+    @FragmentScope
     @ContributesAndroidInjector
     GameMenuFragment gameMenuFragment();
+
+    @FragmentScope
+    @ContributesAndroidInjector
+    UserDetailsDialogFragment userDetailsDialogFragment();
 
     @ActivityContext
     @Binds Context bindActivityContext(GameActivity gameActivity);

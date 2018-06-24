@@ -30,9 +30,9 @@ public class FriendDTO extends UserDTO {
 
     private FriendDTO(long id, String email, String password, long money,
                       Long registrationDate, String login, int status, boolean isAccepted,
-                      boolean isFriend, String word, Long userId, int attempts) {
+                      boolean isFriend, String word, Long userId, int attempts, boolean isWinner) {
         super(id, email, password, money, registrationDate, login,
-                status, isFriend, word, userId, attempts);
+                status, isFriend, word, userId, attempts, isWinner);
         this.isAccepted = isAccepted;
     }
 
@@ -57,6 +57,7 @@ public class FriendDTO extends UserDTO {
         private String word;
         private Long userId;
         private int attempts;
+        private boolean isWinner;
 
         public FriendDTO.Builder setId(long id) {
             this.id = id;
@@ -118,9 +119,15 @@ public class FriendDTO extends UserDTO {
             return this;
         }
 
+        public FriendDTO.Builder setIsWinner(boolean isWinner) {
+            this.isWinner = isWinner;
+            return this;
+        }
+
         public FriendDTO build() {
             return new FriendDTO(id, email, password, money, registrationDate,
-                    login, status, isAccepted, isFriend, word, userId, attempts);
+                    login, status, isAccepted, isFriend, word, userId, attempts,
+                    isWinner);
         }
     }
 }

@@ -222,9 +222,9 @@ public class GameInteractorFacade {
                 if (users.contains(user)) {
                     RxUser rxUser = getRxUser(user);
                     if (rxUser != null) {
-                        rxUser.setStatus(PlayerStatus.WIN);
+                        rxUser.setIsWinner(true);
                     }
-                    user.setPlayerStatus(PlayerStatus.WIN);
+                    user.setWinner(true);
                 }
             }
         };

@@ -60,6 +60,9 @@ public interface GameDataRepository {
     Observable<Question> questionAskingObservable();
     Observable<Question> questionVotingObservable();
 
+    Observable<User> userAfkWarningObservable();
+    Observable<User> userKickedObservable();
+
     void startTyping();
     void stopTyping();
     void sendMessage(Message message);

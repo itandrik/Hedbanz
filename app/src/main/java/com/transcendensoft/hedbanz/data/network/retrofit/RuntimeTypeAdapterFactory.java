@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.transcendensoft.hedbanz.data.network;
+package com.transcendensoft.hedbanz.data.network.retrofit;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

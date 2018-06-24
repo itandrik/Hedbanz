@@ -102,6 +102,9 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String CLIENT_USER_ANSWERING_EVENT = "client-user-answering";
     private static final String SERVER_USER_WIN = "server-user-win";
 
+    private static final String SERVER_PLAYER_AFK_WARNING = "server-player-afk-warning";
+    private static final String SERVER_KICKED_USER_EVENT = "server-kicked-user";
+
     private Socket mSocket;
     private long mUserId;
     private long mRoomId;
@@ -454,7 +457,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                             Timber.e(e.getMessage());
                         }
                     }
-                } catch (ClassCastException e){
+                } catch (ClassCastException e) {
                     Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_SET_PLAYER_WORD_EVENT,
                             "data: " + args);
                 }
@@ -531,6 +534,54 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 }
             };
             mSocket.on(SERVER_USER_ANSWERING_EVENT, listener);
+        });
+    }
+
+    @Override
+    public Observable<User> userAfkWarningObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+
+                if (data != null) {
+                    try {
+                        UserDTO userDTO = mGson.fromJson(data.toString(), UserDTO.class);
+
+                        Timber.i("SOCKET <-- GET(%1$s) : %2$s",SERVER_PLAYER_AFK_WARNING, data.toString());
+                        emitter.onNext(mUserMapper.convert(userDTO));
+                    } catch (JsonSyntaxException e) {
+                        emitter.onError(new IncorrectJsonException(
+                                data.toString(), UserWinUseCase.class.getName()));
+                    }
+                } else {
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_PLAYER_AFK_WARNING, "null");
+                }
+            };
+            mSocket.on(SERVER_PLAYER_AFK_WARNING, listener);
+        });
+    }
+
+    @Override
+    public Observable<User> userKickedObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+
+                if (data != null) {
+                    try {
+                        UserDTO userDTO = mGson.fromJson(data.toString(), UserDTO.class);
+
+                        Timber.i("SOCKET <-- GET(%1$s) : %2$s",SERVER_KICKED_USER_EVENT, data.toString());
+                        emitter.onNext(mUserMapper.convert(userDTO));
+                    } catch (JsonSyntaxException e) {
+                        emitter.onError(new IncorrectJsonException(
+                                data.toString(), UserWinUseCase.class.getName()));
+                    }
+                } else {
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s", SERVER_KICKED_USER_EVENT, "null");
+                }
+            };
+            mSocket.on(SERVER_KICKED_USER_EVENT, listener);
         });
     }
 
@@ -677,6 +728,9 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             mSocket.off(SERVER_USER_ASKING_EVENT);
             mSocket.off(SERVER_USER_ANSWERING_EVENT);
             mSocket.off(SERVER_USER_WIN);
+
+            mSocket.off(SERVER_PLAYER_AFK_WARNING);
+            mSocket.off(SERVER_KICKED_USER_EVENT);
         }
     }
 }

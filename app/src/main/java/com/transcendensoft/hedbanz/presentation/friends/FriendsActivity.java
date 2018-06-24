@@ -13,8 +13,6 @@ import com.transcendensoft.hedbanz.domain.entity.Friend;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.friends.list.FriendsAdapter;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -49,7 +47,6 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
         ButterKnife.bind(this, this);
 
         initRecycler();
-        addFriends();
     }
 
     /*------------------------------------*
@@ -60,57 +57,6 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
                 this, LinearLayoutManager.VERTICAL, false));
         mRecycler.setItemAnimator(new DefaultItemAnimator());
         mRecycler.setAdapter(mAdapter);
-    }
-
-    private void addFriends(){
-        Friend friend1 = new Friend.Builder()
-                .setId(1)
-                .setLogin("Friend 1")
-                .setIsAccepted(false)
-                .build();
-
-        Friend friend2 = new Friend.Builder()
-                .setId(2)
-                .setLogin("Friend 2")
-                .setIsAccepted(true)
-                .build();
-
-        Friend friend3 = new Friend.Builder()
-                .setId(3)
-                .setLogin("Friend 3")
-                .setIsAccepted(true)
-                .build();
-
-        Friend friend4 = new Friend.Builder()
-                .setId(4)
-                .setLogin("Friend 4")
-                .setIsAccepted(true)
-                .build();
-
-        Friend friend5 = new Friend.Builder()
-                .setId(5)
-                .setLogin("Friend 5")
-                .setIsAccepted(false)
-                .build();
-
-        List<Friend> friends = new ArrayList<>();
-        friends.add(friend1);
-        friends.add(friend2);
-        friends.add(friend3);
-        friends.add(friend4);
-        friends.add(friend5);
-
-        Collections.sort(friends, (o1, o2) -> {
-            if(o1.isAccepted() == o2.isAccepted()){
-                return (int) (o1.getId() - o2.getId());
-            } else if(o1.isAccepted()){
-                return 1;
-            } else {
-                return -1;
-            }
-        });
-
-        mAdapter.clearAndAddAll(friends);
     }
 
     /*------------------------------------*
@@ -131,23 +77,28 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
      *------------------------------------*/
     @Override
     public void addFriendsToRecycler(List<Friend> friends) {
-        mAdapter.addAll(friends);
+        if(mAdapter != null) {
+            mAdapter.clearAndAddAll(friends);
+        }
     }
 
     @Override
     public void deleteFriend(Friend friend) {
-        mAdapter.remove(friend);
+        if(mAdapter != null) {
+            mAdapter.remove(friend);
+        }
     }
 
     @Override
     public void clearFriends() {
-        mAdapter.clear();
+        if(mAdapter != null) {
+            mAdapter.clear();
+        }
     }
 
     /*------------------------------------*
      *-------- Error and loading ---------*
      *------------------------------------*/
-
     @Override
     public void showServerError() {
         hideAll();

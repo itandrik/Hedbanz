@@ -4,7 +4,6 @@ public enum PlayerStatus {
     ACTIVE(1),
     AFK(2),
     LEFT(3),
-    WIN(4),
     UNDEFINED(100500);
 
     private int code;

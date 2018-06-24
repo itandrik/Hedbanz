@@ -20,6 +20,8 @@ import android.support.annotation.DrawableRes;
 import com.transcendensoft.hedbanz.domain.entity.PlayerStatus;
 import com.transcendensoft.hedbanz.domain.entity.User;
 
+import io.reactivex.Observable;
+
 /**
  * View and Presenter interfaces contract for room item presentation
  *
@@ -36,10 +38,13 @@ public interface UserMenuItemContract {
 
         void setIsFriend(boolean isFriend);
 
+        void setIsWinner(boolean isWinner);
+
         void setWord(User user);
+
+        Observable<User> getClickObservable(User user);
     }
 
     interface Presenter {
-        void onClickUser();
     }
 }

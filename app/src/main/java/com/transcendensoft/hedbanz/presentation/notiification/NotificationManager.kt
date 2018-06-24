@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.AudioManager
@@ -131,6 +132,9 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
                 .setPriority(Notification.PRIORITY_MAX)
                 .setAutoCancel(false)
                 .setColor(ContextCompat.getColor(mContext,R.color.colorPrimary))
+                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(),
+                        R.mipmap.ic_launcher))
+                .setAutoCancel(true)
                 .setVibrate(longArrayOf(0L, 600L))
                 .apply(block)
 

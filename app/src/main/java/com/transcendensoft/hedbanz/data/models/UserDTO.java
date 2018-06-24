@@ -62,10 +62,17 @@ public class UserDTO {
     @SerializedName("attempt")
     @Expose
     private int attempts;
+    @SerializedName("securityToken")
+    @Expose
+    private String securityToken;
+    @SerializedName("isWinner")
+    @Expose
+    private boolean isWinner;
 
     protected UserDTO(long id, String email, String password, long money,
                       Long registrationDate, String login, int status,
-                      boolean isFriend, String word, Long userId, int attempts) {
+                      boolean isFriend, String word, Long userId, int attempts,
+                      boolean isWinner) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -77,6 +84,7 @@ public class UserDTO {
         this.word = word;
         this.userId = userId;
         this.attempts = attempts;
+        this.isWinner = isWinner;
     }
 
     public UserDTO() {
@@ -170,6 +178,22 @@ public class UserDTO {
         this.attempts = attempts;
     }
 
+    public String getSecurityToken() {
+        return securityToken;
+    }
+
+    public void setSecurityToken(String securityToken) {
+        this.securityToken = securityToken;
+    }
+
+    public boolean isWinner() {
+        return isWinner;
+    }
+
+    public void setWinner(boolean winner) {
+        isWinner = winner;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -197,6 +221,7 @@ public class UserDTO {
         private String word;
         private Long userId;
         private int attempts;
+        private boolean isWinner;
 
         public Builder setId(long id) {
             this.id = id;
@@ -253,9 +278,14 @@ public class UserDTO {
             return this;
         }
 
+        public Builder setIsWinner(boolean isWinner) {
+            this.isWinner = isWinner;
+            return this;
+        }
+
         public UserDTO build() {
             return new UserDTO(id, email, password, money, registrationDate, login,
-                    status, isFriend, word, userId, attempts);
+                    status, isFriend, word, userId, attempts, isWinner);
         }
     }
 }

@@ -34,10 +34,11 @@ public class User {
     private PlayerStatus playerStatus;
     private String word;
     private int attempts;
+    private boolean isWinner;
 
     protected User(long id, String email, String password, String confirmPassword,
                    long money, Long registrationDate, String login, PlayerStatus playerStatus,
-                   boolean isFriend, String word, int attempts) {
+                   boolean isFriend, String word, int attempts, boolean isWinner) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -49,6 +50,7 @@ public class User {
         this.isFriend = isFriend;
         this.attempts = attempts;
         this.word = word;
+        this.isWinner = isWinner;
     }
 
     public User() {
@@ -142,6 +144,14 @@ public class User {
         this.attempts = attempts;
     }
 
+    public boolean isWinner() {
+        return isWinner;
+    }
+
+    public void setWinner(boolean winner) {
+        isWinner = winner;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -171,6 +181,7 @@ public class User {
                 ", playerStatus=" + playerStatus +
                 ", word='" + word + '\'' +
                 ", attempts=" + attempts +
+                ", isWinner=" + isWinner +
                 '}';
     }
 
@@ -186,6 +197,7 @@ public class User {
         private boolean isFriend;
         private String word;
         private int attempts;
+        private boolean isWinner;
 
         public User.Builder setId(long id) {
             this.id = id;
@@ -242,9 +254,15 @@ public class User {
             return this;
         }
 
+        public User.Builder setIsWinner(boolean isWinner){
+            this.isWinner = isWinner;
+            return this;
+        }
+
         public User build() {
             return new User(id, email, password, confirmPassword, money,
-                    registrationDate, login, playerStatus, isFriend, word, attempts);
+                    registrationDate, login, playerStatus, isFriend,
+                    word, attempts, isWinner);
         }
     }
 }

@@ -29,6 +29,7 @@ import com.transcendensoft.hedbanz.presentation.base.MvpViewHolder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
 
 /**
  * View holder realization for concrete user in game mode
@@ -48,6 +49,7 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
     @BindView(R.id.tvThisUser) TextView mTvThisUser;
     @BindView(R.id.ivThisUserStar) ImageView mIvThisUserStar;
     @BindView(R.id.ivWin) ImageView mIvWin;
+    private Observable<User> itemClickObservable;
 
 
     private Context mContext;
@@ -55,10 +57,6 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
     public UserMenuItemViewHolder(Context context, View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
-
-        itemView.setOnClickListener(v -> {
-            presenter.onClickUser();
-        });
 
         mContext = context;
     }
@@ -83,13 +81,19 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
             case AFK:
                 mTvAfk.setVisibility(View.VISIBLE);
                 break;
-            case WIN:
-                mIvWin.setVisibility(View.VISIBLE);
-                break;
             case ACTIVE:
                 mTvAfk.setVisibility(View.GONE);
                 break;
             default:
+        }
+    }
+
+    @Override
+    public void setIsWinner(boolean isWinner) {
+        if(isWinner){
+            mIvWin.setVisibility(View.VISIBLE);
+        } else {
+            mIvWin.setVisibility(View.GONE);
         }
     }
 
@@ -121,5 +125,14 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
                 mTvWord.setVisibility(View.GONE);
             }
         }
+    }
+
+    @Override
+    public Observable<User> getClickObservable(User user) {
+        return Observable.create(emitter -> {
+            itemView.setOnClickListener(v -> {
+                emitter.onNext(user);
+            });
+        });
     }
 }

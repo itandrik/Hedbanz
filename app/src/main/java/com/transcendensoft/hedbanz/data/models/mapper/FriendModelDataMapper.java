@@ -49,6 +49,7 @@ public class FriendModelDataMapper {
                     .setIsAccepted(friendDTO.isAccepted())
                     .setIsFriend(friendDTO.isFriend())
                     .setWord(friendDTO.getWord())
+                    .setIsWinner(friendDTO.isWinner())
                     .build();
         }
         return friendResult;

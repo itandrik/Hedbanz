@@ -15,10 +15,13 @@ package com.transcendensoft.hedbanz.presentation.game.menu;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BaseView;
+import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
 
 import java.util.List;
+
+import io.reactivex.Observable;
 
 /**
  * View and Presenter interfaces contract for game menu presentation
@@ -34,9 +37,10 @@ public interface GameMenuContract {
         void removePlayer(RxUser rxUser);
         void setCurrentPlayersCount(int currentPlayersCount);
         void setMaxPlayersCount(int maxPlayersCount);
+        void onPlayerClicked(User user);
     }
 
     interface Presenter {
-
+        void processPlayerClickListener(Observable<User> playerClickObservable);
     }
 }
