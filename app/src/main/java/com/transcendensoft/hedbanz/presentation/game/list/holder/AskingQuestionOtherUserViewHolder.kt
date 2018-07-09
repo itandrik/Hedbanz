@@ -74,7 +74,7 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
         }
     }
 
-    fun bindMessage(message: String) {
+    fun bindMessage(message: String?) {
         if (!TextUtils.isEmpty(message)) {
             mTvMessage?.text = message
         } else {

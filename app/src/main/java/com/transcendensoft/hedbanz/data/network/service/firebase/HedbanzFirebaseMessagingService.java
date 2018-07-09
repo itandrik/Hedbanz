@@ -20,9 +20,10 @@ import android.app.Service;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.NotificationMessage;
 import com.transcendensoft.hedbanz.domain.entity.NotificationMessageType;
-import com.transcendensoft.hedbanz.presentation.notiification.NotificationManager;
+import com.transcendensoft.hedbanz.presentation.notification.NotificationManager;
 
 import java.util.Map;
 
@@ -49,6 +50,7 @@ public class HedbanzFirebaseMessagingService extends FirebaseMessagingService im
     @Inject DispatchingAndroidInjector<Service> serviceDispatchingAndroidInjector;
     @Inject Gson mGson;
     @Inject NotificationManager mNotificationManger;
+    @Inject PreferenceManager mPreferenceManager;
 
     @Override
     public void onCreate() {
@@ -81,9 +83,10 @@ public class HedbanzFirebaseMessagingService extends FirebaseMessagingService im
     }
 
     private void processNotificationMessage(NotificationMessageType messageType, String dataJson) {
+        NotificationMessage notificationMessage;
         switch (messageType) {
             case MESSAGE:
-                NotificationMessage notificationMessage = mGson
+                notificationMessage = mGson
                         .fromJson(dataJson, NotificationMessage.class);
                 mNotificationManger.notifyMessage(notificationMessage);
                 break;
@@ -94,6 +97,17 @@ public class HedbanzFirebaseMessagingService extends FirebaseMessagingService im
             case FRIEND:
                 break;
             case INVITE:
+                break;
+            case KICK_WARNING:
+                notificationMessage = mGson
+                        .fromJson(dataJson, NotificationMessage.class);
+                mNotificationManger.notifyKickWarning(notificationMessage);
+                break;
+            case KICKED:
+                notificationMessage = mGson
+                        .fromJson(dataJson, NotificationMessage.class);
+                mNotificationManger.notifyKick(notificationMessage);
+                mPreferenceManager.setCurrentRoomId(-1);
                 break;
             case UNDEFINED:
                 break;

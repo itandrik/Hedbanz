@@ -53,8 +53,8 @@ public interface GameDataRepository {
     Observable<JSONObject> stopTypingObservable();
     Observable<Message> messageObservable();
     Observable<JSONObject> errorObservable();
-    Observable<JSONObject> settingWordObservable();
-    Observable<JSONObject> wordSettedToUserObservable();
+    Observable<Word> settingWordObservable();
+    Observable<Word> wordSettedToUserObservable();
 
     Observable<PlayerGuessing> wordGuessingObservable();
     Observable<Question> questionAskingObservable();

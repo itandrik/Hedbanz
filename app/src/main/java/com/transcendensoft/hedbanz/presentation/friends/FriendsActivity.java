@@ -1,6 +1,7 @@
 package com.transcendensoft.hedbanz.presentation.friends;
 
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +27,7 @@ import static android.view.View.GONE;
 /**
  * Activity that shows friends. User can remove friend here.
  */
-public class FriendsActivity extends BaseActivity implements FriendsContract.View{
+public class FriendsActivity extends BaseActivity implements FriendsContract.View {
     @BindView(R.id.rvFriends) RecyclerView mRecycler;
     @BindView(R.id.rlEmptyListContainer) RelativeLayout mRlEmptyList;
     @BindView(R.id.rlErrorNetwork) RelativeLayout mRlErrorNetwork;
@@ -52,18 +53,29 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
-    private void initRecycler(){
+    private void initRecycler() {
         mRecycler.setLayoutManager(new LinearLayoutManager(
                 this, LinearLayoutManager.VERTICAL, false));
         mRecycler.setItemAnimator(new DefaultItemAnimator());
         mRecycler.setAdapter(mAdapter);
+
+        initRecyclerClickListeners();
+    }
+
+    private void initRecyclerClickListeners() {
+        mPresenter.processAcceptFriendClick(
+                mAdapter.acceptFriendObservable());
+        mPresenter.processDeclineFriendClick(
+                mAdapter.declineFriendObservable());
+        mPresenter.processDeleteFriendClick(
+                mAdapter.deleteFriendObservable());
     }
 
     /*------------------------------------*
      *-------- On click listeners --------*
      *------------------------------------*/
     @OnClick(R.id.ivBack)
-    protected void onBackClicked(){
+    protected void onBackClicked() {
         onBackPressed();
     }
 
@@ -77,21 +89,21 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
      *------------------------------------*/
     @Override
     public void addFriendsToRecycler(List<Friend> friends) {
-        if(mAdapter != null) {
+        if (mAdapter != null) {
             mAdapter.clearAndAddAll(friends);
         }
     }
 
     @Override
     public void deleteFriend(Friend friend) {
-        if(mAdapter != null) {
+        if (mAdapter != null) {
             mAdapter.remove(friend);
         }
     }
 
     @Override
     public void clearFriends() {
-        if(mAdapter != null) {
+        if (mAdapter != null) {
             mAdapter.clear();
         }
     }
@@ -99,6 +111,86 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
     /*------------------------------------*
      *-------- Error and loading ---------*
      *------------------------------------*/
+    @Override
+    public void sureToDeclineFriend(Friend friend) {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.friends_decline_title))
+                .setMessage(getString(R.string.friends_decline_message, friend.getLogin()))
+                .setPositiveButton(getString(R.string.action_yes),
+                        (dialog, v) -> {
+                            mPresenter.declineFriend(friend);
+                            dialog.dismiss();
+                        })
+                .setNegativeButton(getString(R.string.action_no),
+                        (dialog, v) -> dialog.dismiss())
+                .setIcon(R.drawable.ic_friendship)
+                .show();
+    }
+
+    @Override
+    public void sureToDeleteFriend(Friend friend) {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.friends_delete_title))
+                .setMessage(getString(R.string.friends_delete_message, friend.getLogin()))
+                .setPositiveButton(getString(R.string.action_yes),
+                        (dialog, v) -> {
+                            mPresenter.deleteFriend(friend);
+                            dialog.dismiss();
+                        })
+                .setNegativeButton(getString(R.string.action_no),
+                        (dialog, v) -> dialog.dismiss())
+                .setIcon(R.drawable.ic_friendship)
+                .show();
+    }
+
+    @Override
+    public void successAcceptFriend(Friend friend) {
+        hideLoadingDialog();
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.friends_accept_success_title))
+                .setMessage(getString(R.string.friends_accept_success_message, friend.getLogin()))
+                .setPositiveButton(getString(R.string.action_ok),
+                        (dialog, v) -> dialog.dismiss())
+                .setIcon(R.drawable.ic_friendship)
+                .show();
+    }
+
+    @Override
+    public void successDeclineFriend(Friend friend) {
+        hideLoadingDialog();
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.friends_decline_success_title))
+                .setMessage(getString(R.string.friends_decline_success_message, friend.getLogin()))
+                .setPositiveButton(getString(R.string.action_ok),
+                        (dialog, v) -> dialog.dismiss())
+                .setIcon(R.drawable.ic_friendship)
+                .show();
+    }
+
+    @Override
+    public void successDeleteFriend(Friend friend) {
+        hideLoadingDialog();
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.friends_delete_success_title))
+                .setMessage(getString(R.string.friends_delete_success_message, friend.getLogin()))
+                .setPositiveButton(getString(R.string.action_ok),
+                        (dialog, v) -> dialog.dismiss())
+                .setIcon(R.drawable.ic_friendship)
+                .show();
+    }
+
+    @Override
+    public void errorFriend(Friend friend) {
+        hideLoadingDialog();
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.friends_error_title))
+                .setMessage(getString(R.string.friends_error_title))
+                .setPositiveButton(getString(R.string.action_ok),
+                        (dialog, v) -> dialog.dismiss())
+                .setIcon(R.drawable.ic_dialog_server_error)
+                .show();
+    }
+
     @Override
     public void showServerError() {
         hideAll();

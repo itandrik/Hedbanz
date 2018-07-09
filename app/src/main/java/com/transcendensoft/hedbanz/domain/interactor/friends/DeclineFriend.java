@@ -28,30 +28,30 @@ import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
- * that represents a use case for deleting specific
+ * that represents a use case for decline specific
  * {@link com.transcendensoft.hedbanz.domain.entity.Friend} from current
  * {@link com.transcendensoft.hedbanz.domain.entity.User}
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class RemoveFriend extends CompletableUseCase<RemoveFriend.Param> {
+public class DeclineFriend extends CompletableUseCase<DeclineFriend.Param> {
     private FriendsDataRepository mRepository;
     private PreferenceManager mPreferenceManger;
 
     @Inject
-    public RemoveFriend(CompletableTransformer schedulersTransformer,
-                     CompositeDisposable compositeDisposable,
-                     FriendsDataRepository mRepository,
-                     PreferenceManager mPreferenceManger) {
+    public DeclineFriend(CompletableTransformer schedulersTransformer,
+                        CompositeDisposable compositeDisposable,
+                        FriendsDataRepository mRepository,
+                        PreferenceManager mPreferenceManger) {
         super(schedulersTransformer, compositeDisposable);
         this.mRepository = mRepository;
         this.mPreferenceManger = mPreferenceManger;
     }
 
     @Override
-    protected Completable buildUseCaseCompletable(RemoveFriend.Param params) {
-        return mRepository.removeFriend(mPreferenceManger.getUser().getId(),
+    protected Completable buildUseCaseCompletable(Param params) {
+        return mRepository.declineFriend(mPreferenceManger.getUser().getId(),
                 params.getFriendId(), params.getDataPolicy());
 
     }
@@ -82,3 +82,4 @@ public class RemoveFriend extends CompletableUseCase<RemoveFriend.Param> {
         }
     }
 }
+

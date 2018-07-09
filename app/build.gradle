@@ -44,17 +44,23 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        prodType {
+        raspberryType {
             initWith(debug)
-            buildConfigField("String", 'HOST_LINK', '\"http://35.198.153.34\"')
-            buildConfigField("String", 'PORT_API', '\":8080/\"')
+            buildConfigField("String", 'HOST_LINK', '\"http://176.36.146.229\"')
+            buildConfigField("String", 'PORT_API', '\":8085/\"')
             buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
         }
-        devType {
+        dormitoryType {
             initWith(debug)
             buildConfigField("String", 'HOST_LINK', '\"http://77.47.204.201\"')
             buildConfigField("String", 'PORT_API', '\":8082/\"')
             buildConfigField("String", 'PORT_SOCKET', '\":9090\"')
+        }
+        varashType {
+            initWith(debug)
+            buildConfigField("String", 'HOST_LINK', '\"http://134.249.164.155\"')
+            buildConfigField("String", 'PORT_API', '\":8085/\"')
+            buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
         }
     }
     packagingOptions {
@@ -162,8 +168,9 @@ dependencies {
     kapt 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.jakewharton.timber:timber:4.5.1' //4.6.1 has bugs
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    prodTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    devTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    varashTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    dormitoryTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    raspberryTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
     //Tests

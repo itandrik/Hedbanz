@@ -39,5 +39,9 @@ public interface FriendsDataRepository {
 
     Completable acceptFriend(long userId, long friendId, DataPolicy dataPolicy);
 
+    Completable declineFriend(long userId, long friendId, DataPolicy dataPolicy);
+
     Completable addFriend(long userId, long friendId, DataPolicy dataPolicy);
+
+
 }

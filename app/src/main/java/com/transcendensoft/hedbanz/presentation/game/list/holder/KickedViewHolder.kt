@@ -1,4 +1,10 @@
-package com.transcendensoft.hedbanz.domain.entity
+package com.transcendensoft.hedbanz.presentation.game.list.holder
+
+import android.content.Context
+import android.support.v7.widget.RecyclerView
+import android.view.View
+import com.transcendensoft.hedbanz.R
+import kotlinx.android.synthetic.main.item_kick.view.*
 
 /**
  * Copyright 2017. Andrii Chernysh
@@ -17,28 +23,16 @@ package com.transcendensoft.hedbanz.domain.entity
  *
  */
 /**
- * Enum with notification message types.
- * Id of message type must be the same as in server.
+ * {@link android.support.v7.widget.RecyclerView.ViewHolder}
+ * for view that shows that user has been kicked from game
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-enum class NotificationMessageType(val id: Int) {
-    MESSAGE(1),
-    SET_WORD(2),
-    GUESS_WORD(3),
-    FRIEND(4),
-    INVITE(5),
-    KICK_WARNING(6),
-    KICKED(7),
-    UNDEFINED(100500);
+class KickedViewHolder (val mContext: Context?, itemView: View?) : RecyclerView.ViewHolder(itemView) {
+    private val mTvUserKicked = itemView?.tvUserKicked
 
-    companion object {
-        fun getTypeById(id: Int): NotificationMessageType {
-            NotificationMessageType.values().forEach {
-                if (id == it.id) return it
-            }
-            return UNDEFINED
-        }
+    fun bindUserLogin(login: String?) {
+        mTvUserKicked?.text = mContext?.getString(R.string.game_user_kicked, login ?: "")
     }
 }

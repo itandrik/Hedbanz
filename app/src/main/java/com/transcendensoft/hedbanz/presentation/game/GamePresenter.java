@@ -140,8 +140,8 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         if (sendWordObservable != null) {
             addDisposable(sendWordObservable.subscribe(
                     word -> {
-                        word.setSenderUser(mPreferenceManger.getUser());
-                        updateSettingWordViewParameters(word.getSenderUser(), false, true);
+                        word.setUserFrom(mPreferenceManger.getUser());
+                        updateSettingWordViewParameters(word.getUserFrom(), false, true);
                         mGameInteractor.setWordToUser(word);
                     },
                     err -> Timber.e("Error while send word to user. Message : " + err.getMessage())
@@ -317,6 +317,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         initWordGuessingListeners();
         initAskingQuestionListener();
         initWordVotingListeners();
+        initUserKickListeners();
 
         refreshMessageHistory();
     }
@@ -325,7 +326,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         mGameInteractor.onLeftUserListener(
                 user -> {
                     List<User> users = model.getPlayers();
-                    if (!users.contains(user)) {
+                    if (users.contains(user)) {
                         users.remove(user);
                     }
                     Message message = new Message.Builder()
@@ -365,6 +366,16 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         mGameInteractor.onUserReturnedListener(user -> {
             if (!mPreferenceManger.getUser().equals(user)) {
                 view().showUserAfk(false, user.getLogin());
+                for (int i = model.getMessages().size()-1; i >=0; i--) {
+                    Message message = model.getMessages().get(i);
+
+                    if((message.getMessageType() == MessageType.USER_KICK_WARNING) &&
+                            message.getUserFrom().equals(user)){
+                        model.getMessages().remove(i);
+                        view().removeMessage(i);
+                        break;
+                    }
+                }
             } else {
                 model.setMessages(new ArrayList<>());
                 view().clearMessages();
@@ -395,14 +406,15 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             model.getMessages().add(word);
             view().addMessage(word);
 
-            updateSettingWordViewParameters(word.getSenderUser(), true, false);
+            updateSettingWordViewParameters(word.getUserFrom(), true, false);
         }, this::processEventListenerOnError);
 
         mGameInteractor.onWordSettingListener(wordReceiverUser -> {
-            Word word = new Word(null, wordReceiverUser);
-            word.setWordReceiverId(wordReceiverUser.getId());
+            Word word = new Word.Builder()
+                    .setMessageType(MessageType.WORD_SETTING)
+                    .setWordReceiverUser(wordReceiverUser)
+                    .build();
 
-            word.setMessageType(MessageType.WORD_SETTING);
             model.getMessages().add(word);
             view().addMessage(word);
         }, this::processEventListenerOnError);
@@ -439,6 +451,16 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 this::processVoting,
                 this::processEventListenerOnError
         );
+    }
+
+    private void initUserKickListeners(){
+        mGameInteractor.onKickWarningListener(
+                this::processUserKickWarning,
+                this::processEventListenerOnError
+        );
+        mGameInteractor.onUserKickedListener(
+                this::processUserKicked,
+                this::processEventListenerOnError);
     }
 
     private void processSimpleMessage(Message message) {
@@ -549,6 +571,28 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 return;
             }
         }
+    }
+
+    private void processUserKickWarning(User user){
+        Message message = new Message.Builder()
+                .setUserFrom(user)
+                .setMessageType(MessageType.USER_KICK_WARNING)
+                .build();
+        model.getMessages().add(message);
+        view().addMessage(message);
+    }
+
+    private void processUserKicked(User user){
+        List<User> users = model.getPlayers();
+        if (users.contains(user)) {
+            users.remove(user);
+        }
+        Message message = new Message.Builder()
+                .setUserFrom(user)
+                .setMessageType(MessageType.USER_KICKED)
+                .build();
+        model.getMessages().add(message);
+        view().addMessage(message);
     }
 
     /*------------------------------------*

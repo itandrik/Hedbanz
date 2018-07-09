@@ -157,12 +157,34 @@
     <string name="game_guess_word_error">Вы ничего не спросили</string>
     <string name="game_guess_word_hint">Вопрос</string>
     <string name="game_asking_total_votes">Всего:</string>
+    <string name="game_user_kicked">Игрок %1$s был исключен из игры из-за длительного отсутствия</string>
+    <string name="game_user_kick_warning">Игрок %1$s будет исключен из игры, если не вернется в комнату на протяжении 60 секунд</string>
+
+    <!-- Game notification -->
     <string name="game_notification_title">%1$s с комнаты %2$s</string>
     <string name="game_notification_title_error">Новое сообщение</string>
     <string name="game_notification_channel_title_message">Сообщение</string>
+    <string name="game_notification_kick_warning_title">Внимание! У вас есть 30 секунд чтобы вернуться в комнату</string>
+    <string name="game_notification_kick_warning_message">Ваши друзья ждут вас в комнате %1$s при загадывании слов. Если вы не вернетесь в игру, то через 30 секунд будете исключены из нее. Уважайте время других игроков.</string>
+    <string name="game_notification_kick_title">Вас исключили с комнаты %1$s</string>
+    <string name="game_notification_kick_message">Из-за того, что у вы не присутствовали в игре на этапе загадывания слов долгое время, вас исключили с комнаты. Попробуйте сыграть с другими ребятами.</string>
 
     <!-- Friends -->
     <string name="friends_toolbar_title">Ваши друзяки</string>
+    <string name="friends_decline_title">Не хотите дружить с этим человеком?</string>
+    <string name="friends_decline_message">Вы уверенны, что хотите отменить запрос на дружбу от пользователя %1$s</string>
+    <string name="friends_delete_title">Вы больше не хотите дружить с этим человеком?</string>
+    <string name="friends_delete_message">Вы уверенны, что хотите удалить пользователя %1$s из вашего списка друзей?</string>
+
+    <string name="friends_accept_success_title">У вас появился новый друг</string>
+    <string name="friends_accept_success_message">Теперь %1$s в вашем списке друзей</string>
+    <string name="friends_decline_success_title">Дружба отклонена</string>
+    <string name="friends_decline_success_message">Вы успешно отклонили запрос пользоватеся %1$s на дружбу!</string>
+    <string name="friends_delete_success_title">Друг удален</string>
+    <string name="friends_delete_success_message">Вы успешно удалили друга %1$s из списка.</string>
+    <string name="friends_error_title">Что-то пошло не так</string>
+    <string name="friends_error_message">Произошла ошибка, повторите действие позже.</string>
+    <string name="friends_pending">Ожидает подтверждения</string>
 
     <!-- User details -->
     <string name="user_details_add_friend">Предложить дружбу</string>

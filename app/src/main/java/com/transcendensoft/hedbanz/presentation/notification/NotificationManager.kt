@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.presentation.notiification
+package com.transcendensoft.hedbanz.presentation.notification
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -57,12 +57,14 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
         private const val GUESS_WORD_NOTIFICATION_ID = 3
         private const val FRIEND_NOTIFICATION_ID = 4;
         private const val INVITE_NOTIFICATION_ID = 5;
+        private const val KICK_NOTIFICATION_ID = 6;
 
         private const val MESSAGE_NOTIFICATION_REQUEST_CODE = 100;
         private const val SET_WORD_NOTIFICATION_REQUEST_CODE = 101
         private const val GUESS_WORD_NOTIFICATION_REQUEST_CODE = 102
         private const val FRIEND_NOTIFICATION_REQUEST_CODE = 103;
         private const val INVITE_NOTIFICATION_REQUEST_CODE = 104;
+        private const val KICK_NOTIFICATION_REQUEST_CODE = 105;
 
         private const val GAME_CHANNEL_ID = "GAME_CHANNEL"
         private const val FRIEND_CHANNEL_ID = "FRIENDS_CHANNEL"
@@ -77,7 +79,7 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
         val text = mContext.getString(R.string.game_notification_title,
                 message.senderName, message.roomName)
         var spannedNotificationTitle = SpannableString(text)
-        if(message.roomName != null && message.senderName != null) {
+        if (message.roomName != null && message.senderName != null) {
             spannedNotificationTitle.spanWith(message.senderName) {
                 what = StyleSpan(android.graphics.Typeface.BOLD)
                 flags = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -95,14 +97,60 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
             setContentTitle(spannedNotificationTitle)
             setContentText(message.text)
 
-            val pendingIntent = getPendingIntentForGame(message)
+            val pendingIntent = getPendingIntentForGame(message, MESSAGE_NOTIFICATION_REQUEST_CODE)
             setContentIntent(pendingIntent)
         }
 
         notify(MESSAGE_NOTIFICATION_ID, notification)
     }
 
-    private fun getPendingIntentForGame(message: NotificationMessage): PendingIntent? {
+    fun notifyKickWarning(message: NotificationMessage) {
+        createNotificationChannel(
+                GAME_CHANNEL_ID,
+                mContext.getString(R.string.game_notification_channel_title_message))
+
+        val title = mContext.getString(R.string.game_notification_kick_warning_title)
+        val spannedNotificationTitle = SpannableString(title)
+        spannedNotificationTitle.spanWith(title.substringBefore(delimiter = "!")) {
+            what = StyleSpan(android.graphics.Typeface.BOLD)
+            flags = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        }
+
+        val text = mContext.getString(R.string.game_notification_kick_warning_message, message.roomName ?: "")
+        val notification = notification(GAME_CHANNEL_ID) {
+            setContentTitle(spannedNotificationTitle)
+            setContentText(text)
+            setStyle(NotificationCompat.BigTextStyle().bigText(text))
+
+            val pendingIntent = getPendingIntentForGame(message, KICK_NOTIFICATION_REQUEST_CODE)
+            setContentIntent(pendingIntent)
+        }
+
+        notify(MESSAGE_NOTIFICATION_ID, notification)
+    }
+
+    fun notifyKick(message: NotificationMessage) {
+        createNotificationChannel(
+                GAME_CHANNEL_ID,
+                mContext.getString(R.string.game_notification_channel_title_message))
+
+        val notification = notification(GAME_CHANNEL_ID) {
+            setContentTitle(mContext.getString(R.string.game_notification_kick_title, message.roomName ?: ""))
+            val text = mContext.getString(R.string.game_notification_kick_message)
+            setContentText(text)
+            setStyle(NotificationCompat.BigTextStyle().bigText(text))
+
+            val intent = Intent(mContext, MainActivity::class.java)
+            val pendingIntent = PendingIntent.getActivity(
+                    mContext, KICK_NOTIFICATION_REQUEST_CODE,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            setContentIntent(pendingIntent)
+        }
+
+        notify(MESSAGE_NOTIFICATION_ID, notification)
+    }
+
+    private fun getPendingIntentForGame(message: NotificationMessage, requestCode: Int): PendingIntent? {
         val stackBuilder = TaskStackBuilder.create(mContext)
         stackBuilder.addParentStack(MainActivity::class.java)
 
@@ -110,10 +158,8 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
         gameIntent.putExtra(mContext.getString(R.string.bundle_room_id), message.roomId)
         stackBuilder.addNextIntent(gameIntent)
 
-        val pendingIntent = stackBuilder.getPendingIntent(
-                MESSAGE_NOTIFICATION_REQUEST_CODE, PendingIntent.FLAG_UPDATE_CURRENT)
-
-        return pendingIntent
+        return stackBuilder.getPendingIntent(
+                requestCode, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     private fun notify(notificationId: Int, notification: Notification) {
@@ -131,7 +177,7 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
                 .setLights(Color.argb(100, 250, 185, 5), 2000, 700)
                 .setPriority(Notification.PRIORITY_MAX)
                 .setAutoCancel(false)
-                .setColor(ContextCompat.getColor(mContext,R.color.colorPrimary))
+                .setColor(ContextCompat.getColor(mContext, R.color.colorPrimary))
                 .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(),
                         R.mipmap.ic_launcher))
                 .setAutoCancel(true)

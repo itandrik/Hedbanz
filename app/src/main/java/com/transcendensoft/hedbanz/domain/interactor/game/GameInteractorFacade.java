@@ -40,6 +40,8 @@ import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnRec
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.guess.GuessWordUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.guess.QuestionAskingUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.guess.QuestionVotingUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.kick.KickUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.kick.KickWarningUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.room.RoomInfoUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.room.RoomRestoreUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.typing.StartTypingUseCase;
@@ -105,6 +107,8 @@ public class GameInteractorFacade {
     @Inject QuestionVotingUseCase mQuestionVotingUseCase;
 
     @Inject UserWinUseCase mUserWinUseCase;
+    @Inject KickWarningUseCase mKickWarningUseCase;
+    @Inject KickUseCase mKickUseCase;
 
     @Inject @SchedulerIO Scheduler mIoScheduler;
     @Inject RxRoom mCurrentRoom;
@@ -214,7 +218,7 @@ public class GameInteractorFacade {
     }
 
     public void onUserWinListener(Consumer<? super User> onNext,
-                                   Consumer<? super Throwable> onError) {
+                                  Consumer<? super Throwable> onError) {
         Consumer<? super User> doOnNext = user -> {
             if ((mCurrentRoom != null) && (mCurrentRoom.getRoom().getPlayers() != null) &&
                     (user != null)) {
@@ -228,7 +232,7 @@ public class GameInteractorFacade {
                 }
             }
         };
-        mUserWinUseCase.execute(null, onNext, onError);
+        mUserWinUseCase.execute(null, onNext, onError, doOnNext);
     }
 
     public void onMessageReceivedListener(Consumer<? super Message> onNext,
@@ -278,12 +282,12 @@ public class GameInteractorFacade {
                 }
             }
         };
-        mWordSettedUseCase.execute(mCurrentRoom.getRoom().getPlayers(), onNext, onError, doOnNext);
+        mWordSettedUseCase.execute(null, onNext, onError, doOnNext);
     }
 
     public void onWordSettingListener(Consumer<? super User> onNext,
                                       Consumer<? super Throwable> onError) {
-        mWordSettingUseCase.execute(mCurrentRoom.getRoom().getPlayers(), onNext, onError);
+        mWordSettingUseCase.execute(null, onNext, onError);
     }
 
     public void onWordGuessingListener(Consumer<? super PlayerGuessing> onNext,
@@ -299,6 +303,23 @@ public class GameInteractorFacade {
     public void onQuestionVotingListener(Consumer<? super Question> onNext,
                                          Consumer<? super Throwable> onError) {
         mQuestionVotingUseCase.execute(null, onNext, onError);
+    }
+
+    public void onKickWarningListener(Consumer<? super User> onNext,
+                                      Consumer<? super Throwable> onError) {
+        mKickWarningUseCase.execute(null, onNext, onError);
+    }
+
+    public void onUserKickedListener(Consumer<? super User> onNext,
+                                     Consumer<? super Throwable> onError) {
+        Consumer<? super User> doOnNext = user -> {
+            if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
+                mCurrentRoom.removePlayer(user);
+                mCurrentRoom.setCurrentPlayersNumber(
+                        (byte) (mCurrentRoom.getRoom().getCurrentPlayersNumber() - 1));
+            }
+        };
+        mKickUseCase.execute(null, onNext, onError, doOnNext);
     }
 
     public Question guessWord(Long questionId, String word) {
@@ -428,6 +449,8 @@ public class GameInteractorFacade {
         mQuestionAskingUseCase.dispose();
         mQuestionVotingUseCase.dispose();
         mUserWinUseCase.dispose();
+        mKickWarningUseCase.dispose();
+        mKickUseCase.dispose();
 
         mRepository.disconnectFromRoom();
         mPreferenceManger.setCurrentRoomId(-1); //We leave from current game

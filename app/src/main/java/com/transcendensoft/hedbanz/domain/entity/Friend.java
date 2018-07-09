@@ -23,13 +23,16 @@ package com.transcendensoft.hedbanz.domain.entity;
  */
 public class Friend extends User {
     private boolean isAccepted;
+    private boolean isPending;
 
     private Friend(long id, String email, String password, String confirmPassword,
                    long money, Long registrationDate, String login, PlayerStatus playerStatus,
-                   boolean isAccepted, boolean isFriend, String word, int attempts, boolean isWinner) {
+                   boolean isAccepted, boolean isPending, boolean isFriend,
+                   String word, int attempts, boolean isWinner) {
         super(id, email, password, confirmPassword, money, registrationDate,
                 login, playerStatus, isFriend, word, attempts, isWinner);
         this.isAccepted = isAccepted;
+        this.isPending = isPending;
     }
 
     public boolean isAccepted() {
@@ -38,6 +41,14 @@ public class Friend extends User {
 
     public void setAccepted(boolean accepted) {
         isAccepted = accepted;
+    }
+
+    public boolean isPending() {
+        return isPending;
+    }
+
+    public void setPending(boolean pending) {
+        isPending = pending;
     }
 
     public static class Builder {
@@ -54,6 +65,7 @@ public class Friend extends User {
         private String word;
         private int attempts;
         private boolean isWinner;
+        private boolean isPending;
 
         public Builder setId(long id) {
             this.id = id;
@@ -95,6 +107,11 @@ public class Friend extends User {
             return this;
         }
 
+        public Builder setIsPending(boolean isPending) {
+            this.isPending = isPending;
+            return this;
+        }
+
         public Builder setPlayerStatus(PlayerStatus playerStatus) {
             this.playerStatus = playerStatus;
             return this;
@@ -122,7 +139,7 @@ public class Friend extends User {
 
         public Friend build() {
             return new Friend(id, email, password, confirmPassword, money,
-                    registrationDate, login, playerStatus, isAccepted,
+                    registrationDate, login, playerStatus, isAccepted, isPending,
                     isFriend, word, attempts, isWinner);
         }
     }

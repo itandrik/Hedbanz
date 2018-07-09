@@ -6,6 +6,7 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.transcendensoft.hedbanz.data.models.MessageDTO
 import com.transcendensoft.hedbanz.data.models.QuestionDTO
+import com.transcendensoft.hedbanz.data.models.WordDTO
 import com.transcendensoft.hedbanz.domain.entity.MessageType
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -37,8 +38,11 @@ class MessageDeserializer @Inject constructor(): JsonDeserializer<MessageDTO>{
         val gson = Gson()
         val obj = json?.asJsonObject
         val type = obj?.get("type")?.asString
+
         if (type.equals("${MessageType.GUESS_WORD_THIS_USER.id}", ignoreCase = true)) {
             return gson.fromJson(json, QuestionDTO::class.java)
+        } else if(type.equals("${MessageType.WORD_SETTING.id}", ignoreCase = true)) {
+            return gson.fromJson(json, WordDTO::class.java)
         } else {
             return gson.fromJson(json, MessageDTO::class.java)
         }

@@ -27,6 +27,7 @@ import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing;
 import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.domain.repository.MessagesDataRepository;
 
 import java.util.List;
@@ -124,6 +125,37 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, Long, Void
                     i++;
                 } else {
                     messages.add(i, playerGuessing);
+                }
+            } else if(message.getMessageType() == MessageType.WORD_SETTING){
+                Word word = (Word) message;
+
+                messages.remove(i);
+                if (currentUser.equals(message.getUserFrom())) {
+                    word.setMessageType(MessageType.WORD_SETTING);
+
+                    if(TextUtils.isEmpty(word.getWord())){
+                        word.setLoading(false);
+                        word.setFinished(false);
+                        messages.add(i, word);
+                    } else {
+                        Word wordSetted = new Word.Builder()
+                                .setWord(word.getWord())
+                                .setWordReceiverUser(word.getWordReceiverUser())
+                                .setMessageType(MessageType.WORD_SETTED)
+                                .setUserFrom(word.getUserFrom())
+                                .build();
+                        word.setLoading(false);
+                        word.setFinished(true);
+
+                        messages.add(i, wordSetted);
+                        messages.add(i, word);
+                        i++;
+                    }
+                } else {
+                    if(!TextUtils.isEmpty(word.getWord())){
+                        word.setMessageType(MessageType.WORD_SETTED);
+                        messages.add(i, word);
+                    }
                 }
             }
         }

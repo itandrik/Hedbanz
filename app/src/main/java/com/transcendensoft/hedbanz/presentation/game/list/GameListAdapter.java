@@ -28,6 +28,8 @@ import com.transcendensoft.hedbanz.presentation.game.list.delegates.AskingQuesti
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.GuessWordOtherUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.GuessWordThisUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.JoinedLeftUserAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.KickWarningAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.KickedAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.LoadingAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageOtherUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageThisUserAdapterDelegate;
@@ -73,6 +75,8 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                            GuessWordOtherUserAdapterDelegate guessWordOtherUserAdapterDelegate,
                            AskingQuestionThisUserAdapterDelegate askingQuestionThisUserAdapterDelegate,
                            AskingQuestionOtherUserAdapterDelegate askingQuestionOtherUserAdapterDelegate,
+                           KickedAdapterDelegate kickedAdapterDelegate,
+                           KickWarningAdapterDelegate kickWarningAdapterDelegate,
                            @SchedulerIO Scheduler ioScheduler,
                            @SchedulerUI Scheduler uiScheduler) {
         super();
@@ -97,7 +101,9 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                 .addDelegate(guessWordOtherUserAdapterDelegate)
                 .addDelegate(userAfkReturnedAdapterDelegate)
                 .addDelegate(askingQuestionOtherUserAdapterDelegate)
-                .addDelegate(askingQuestionThisUserAdapterDelegate);
+                .addDelegate(askingQuestionThisUserAdapterDelegate)
+                .addDelegate(kickedAdapterDelegate)
+                .addDelegate(kickWarningAdapterDelegate);
     }
 
     @Nullable

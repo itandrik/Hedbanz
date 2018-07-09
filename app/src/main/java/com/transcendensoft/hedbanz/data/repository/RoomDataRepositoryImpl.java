@@ -15,8 +15,11 @@ package com.transcendensoft.hedbanz.data.repository;
  * limitations under the License.
  */
 
+import android.support.annotation.NonNull;
+
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
+import com.transcendensoft.hedbanz.data.models.RoomListDTO;
 import com.transcendensoft.hedbanz.data.models.mapper.RoomFilterModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.RoomModelDataMapper;
 import com.transcendensoft.hedbanz.data.network.source.RoomsApiDataSource;
@@ -60,36 +63,41 @@ public class RoomDataRepositoryImpl implements RoomDataRepository {
     public Observable<List<Room>> getRooms(int page, long userId, DataPolicy dataPolicy) {
         if (dataPolicy == DataPolicy.API) {
             return mRoomsApiDataSource.getRooms(page, userId)
-                    .map(roomListDTO -> {
-                        if(roomListDTO != null && roomListDTO.getActiveRooms() != null) {
-                            for (RoomDTO roomDTO : roomListDTO.getActiveRooms()) {
-                                if(roomDTO != null) {
-                                    roomDTO.setActive(true);
-                                }
-                            }
-                        }
-                        return roomListDTO;
-                    })
-                    .map(roomListDTO -> {
-                        List<RoomDTO> roomDTOS = new ArrayList<>();
-                        if(roomListDTO.getActiveRooms() != null) {
-                            roomDTOS.addAll(roomListDTO.getActiveRooms());
-                        }
-                        if(roomListDTO.getAllRooms() != null) {
-                            for (RoomDTO roomDTO: roomListDTO.getAllRooms()) {
-                                if(!roomDTOS.contains(roomDTO)){
-                                    roomDTOS.add(roomDTO);
-                                }
-                            }
-                        }
-
-                        return roomDTOS;
-                    })
+                    .map(this::mapActiveRooms)
+                    .map(this::sortRooms)
                     .map(mRoomModelDataMapper::convert);
         } else if (dataPolicy == DataPolicy.DB) {
             return Observable.error(new UnsupportedOperationException());
         }
         return Observable.error(new UnsupportedOperationException());
+    }
+
+    private RoomListDTO mapActiveRooms(RoomListDTO roomListDTO) {
+        if (roomListDTO != null && roomListDTO.getActiveRooms() != null) {
+            for (RoomDTO roomDTO : roomListDTO.getActiveRooms()) {
+                if (roomDTO != null) {
+                    roomDTO.setActive(true);
+                }
+            }
+        }
+        return roomListDTO;
+    }
+
+    @NonNull
+    private List<RoomDTO> sortRooms(RoomListDTO roomListDTO) {
+        List<RoomDTO> roomDTOS = new ArrayList<>();
+        if (roomListDTO.getActiveRooms() != null) {
+            roomDTOS.addAll(roomListDTO.getActiveRooms());
+        }
+        if (roomListDTO.getAllRooms() != null) {
+            for (RoomDTO roomDTO : roomListDTO.getAllRooms()) {
+                if (!roomDTOS.contains(roomDTO)) {
+                    roomDTOS.add(roomDTO);
+                }
+            }
+        }
+
+        return roomDTOS;
     }
 
     @Override
@@ -100,10 +108,12 @@ public class RoomDataRepositoryImpl implements RoomDataRepository {
     }
 
     @Override
-    public Observable<List<Room>> filterRooms(int page, RoomFilter roomFilter, DataPolicy dataPolicy) {
+    public Observable<List<Room>> filterRooms(int page, long userId, RoomFilter roomFilter, DataPolicy dataPolicy) {
         RoomFilterDTO roomFilterDTO = mRoomFilterModelDataMapper.convert(roomFilter);
         if (dataPolicy == DataPolicy.API) {
-            return mRoomsApiDataSource.filterRooms(page, roomFilterDTO)
+            return mRoomsApiDataSource.filterRooms(page, userId, roomFilterDTO)
+                    .map(this::mapActiveRooms)
+                    .map(this::sortRooms)
                     .map(mRoomModelDataMapper::convert);
         } else if (dataPolicy == DataPolicy.DB) {
             return Observable.error(new UnsupportedOperationException());

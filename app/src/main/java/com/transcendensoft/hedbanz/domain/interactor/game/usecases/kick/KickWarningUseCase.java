@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor.game.usecases.word;
+package com.transcendensoft.hedbanz.domain.interactor.game.usecases.kick;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>
@@ -16,7 +16,7 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.word;
  */
 
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
-import com.transcendensoft.hedbanz.domain.entity.Word;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
 import javax.inject.Inject;
@@ -28,33 +28,33 @@ import io.reactivex.subjects.PublishSubject;
 
 /**
  * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
- * that represents a use case listening event when some word has been setted to user
+ * that represents a use case listening {@link com.transcendensoft.hedbanz.domain.entity.User}
+ * information when some user gonna be kicked after 60 seconds.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- * Developed by <u>Transcendensoft</u>
- **/
-public class WordSettedUseCase extends ObservableUseCase<Word, Void> {
-    private PublishSubject<Word> mSubject;
-    private GameDataRepository mRepository;
+ *         Developed by <u>Transcendensoft</u>
+ */
+public class KickWarningUseCase extends ObservableUseCase<User, Void> {
+    private PublishSubject<User> mSubject;
 
     @Inject
-    public WordSettedUseCase(ObservableTransformer schedulersTransformer,
-                             CompositeDisposable compositeDisposable,
-                             GameDataRepository gameDataRepository) {
-        super(schedulersTransformer, compositeDisposable);
-        mRepository = gameDataRepository;
+    public KickWarningUseCase(ObservableTransformer observableTransformer,
+                          CompositeDisposable mCompositeDisposable,
+                          GameDataRepository gameDataRepository) {
+        super(observableTransformer, mCompositeDisposable);
+
+        initSubject(gameDataRepository);
+    }
+
+    private void initSubject(GameDataRepository gameDataRepository) {
+        Observable<User> observable = gameDataRepository.userAfkWarningObservable();
         mSubject = PublishSubject.create();
+        observable.subscribe(mSubject);
     }
 
     @Override
-    protected Observable<Word> buildUseCaseObservable(Void params) {
-        Observable<Word> observable = mRepository.wordSettedToUserObservable()
-                .map(word -> {
-                    word.setLoading(false);
-                    word.setFinished(true);
-                    return word;
-                });
-        observable.subscribe(mSubject);
+    protected Observable<User> buildUseCaseObservable(Void params) {
         return mSubject;
     }
 }
+

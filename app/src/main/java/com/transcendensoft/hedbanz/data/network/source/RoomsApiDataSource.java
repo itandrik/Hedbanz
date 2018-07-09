@@ -23,7 +23,6 @@ import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -58,8 +57,8 @@ public class RoomsApiDataSource extends ApiDataSource implements RoomDataSource 
         return mService.createRoom(result);
     }
 
-    public Observable<List<RoomDTO>> filterRooms(int page, RoomFilterDTO roomFilter) {
-        return mService.filterRooms(page, roomFilter);
+    public Observable<RoomListDTO> filterRooms(int page, long userId, RoomFilterDTO roomFilter) {
+        return mService.filterRooms(page, userId, roomFilter);
     }
 
     public Completable isPasswordCorrect(long userId, long roomId, String password){

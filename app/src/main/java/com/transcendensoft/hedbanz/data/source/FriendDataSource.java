@@ -34,6 +34,8 @@ public interface FriendDataSource {
 
     Completable removeFriend(long userId, long friendId);
 
+    Completable declineFriend(long userId, long friendId);
+
     Completable addFriend(long userId, long friendId);
 
     Completable acceptFriend(long userId, long friendId);

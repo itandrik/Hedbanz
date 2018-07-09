@@ -59,7 +59,17 @@ public class FriendsDataRepositoryImpl implements FriendsDataRepository{
     @Override
     public Completable removeFriend(long userId, long friendId, DataPolicy dataPolicy) {
         if(dataPolicy == DataPolicy.API) {
+            return mFriendsApiDataSource.removeFriend(userId, friendId);
+        } else if(dataPolicy == DataPolicy.DB){
             return Completable.error(new UnsupportedOperationException());
+        }
+        return Completable.error(new UnsupportedOperationException());
+    }
+
+    @Override
+    public Completable declineFriend(long userId, long friendId, DataPolicy dataPolicy) {
+        if(dataPolicy == DataPolicy.API) {
+            return mFriendsApiDataSource.declineFriend(userId, friendId);
         } else if(dataPolicy == DataPolicy.DB){
             return Completable.error(new UnsupportedOperationException());
         }

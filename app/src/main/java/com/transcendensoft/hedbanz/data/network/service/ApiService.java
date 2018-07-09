@@ -72,9 +72,10 @@ public interface ApiService {
     @PUT("rooms")
     Observable<RoomDTO> createRoom(@Body HashMap<String, Object> roomDataMap);
 
-    @POST("rooms/{page}")
-    Observable<List<RoomDTO>> filterRooms(
+    @POST("rooms/{page}/user/{userId}")
+    Observable<RoomListDTO> filterRooms(
             @Path("page") int page,
+            @Path("userId") long userId,
             @Body RoomFilterDTO roomFilter);
 
     @POST("rooms/password")
@@ -89,14 +90,19 @@ public interface ApiService {
     @GET("user/{userId}/friends")
     Observable<List<FriendDTO>> getFriends(@Path("userId") long userId);
 
-    @POST("user/{userId}/friends/{friendId}")
-    Completable acceptFriend(@Path("userId") long userId,
-                             @Path("friendId") long friendId);
-
     @PUT("user/{userId}/friends/{friendId}")
     Completable addFriend(@Path("userId") long userId,
                           @Path("friendId") long friendId);
 
-    //TODO Completable dismissFriend
-    //TODO Completable removeFriend
+    @DELETE("user/{userId}/friends/{friendId}")
+    Completable deleteFriend(@Path("userId") long userId,
+                             @Path("friendId") long friendId);
+
+    @POST("user/{userId}/friends/{friendId}")
+    Completable acceptFriend(@Path("userId") long userId,
+                             @Path("friendId") long friendId);
+
+    @PATCH("user/{userId}/friends/{friendId}")
+    Completable declineFriend(@Path("userId") long userId,
+                          @Path("friendId") long friendId);
 }
