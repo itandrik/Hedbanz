@@ -159,6 +159,11 @@
     <string name="game_asking_total_votes">Всего:</string>
     <string name="game_user_kicked">Игрок %1$s был исключен из игры из-за длительного отсутствия</string>
     <string name="game_user_kick_warning">Игрок %1$s будет исключен из игры, если не вернется в комнату на протяжении 60 секунд</string>
+    <string name="game_user_wins">Игрок %1$s угадал загаданное ему слово!</string>
+    <string name="game_this_user_wins">Вы угадали загаданное вам слово!</string>
+    <string name="game_error_user_wins">Какой-то игрок угадал загаданное ему слово!</string>
+    <string name="game_over_title">Игра окончена. Все игроки угадали свои слова.</string>
+    <string name="game_restart_question">Вы хотите повторить игру с этой командой?</string>
 
     <!-- Game notification -->
     <string name="game_notification_title">%1$s с комнаты %2$s</string>

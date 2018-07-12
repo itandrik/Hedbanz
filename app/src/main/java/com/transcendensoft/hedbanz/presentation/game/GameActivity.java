@@ -202,6 +202,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     mAdapter.askingQuestionThumbsDownObservable());
             mPresenter.processWinClick(
                     mAdapter.askingQuestionWinObservable());
+            mPresenter.processRestartGameClick(
+                    mAdapter.restartGameObservable());
+            mPresenter.processCancelGameClick(
+                    mAdapter.cancelGameObservable());
         }
     }
 
@@ -354,6 +358,11 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         mRlErrorNetwork.setVisibility(GONE);
         mFlLoadingContainer.setVisibility(GONE);
         mRlDataContainer.setVisibility(GONE);
+    }
+
+    @Override
+    public void showWinDialog() {
+        showShortToastMessage("You won!!!");
     }
 
     @Override

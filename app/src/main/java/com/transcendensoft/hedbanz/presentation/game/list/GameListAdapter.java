@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.presentation.game.list;
  */
 
 import android.support.annotation.NonNull;
+import android.view.View;
 
 import com.transcendensoft.hedbanz.di.qualifier.SchedulerIO;
 import com.transcendensoft.hedbanz.di.qualifier.SchedulerUI;
@@ -25,6 +26,7 @@ import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.AskingQuestionOtherUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.AskingQuestionThisUserAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.GameOverAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.GuessWordOtherUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.GuessWordThisUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.JoinedLeftUserAdapterDelegate;
@@ -36,6 +38,7 @@ import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageThisU
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.NetworkErrorAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.ServerErrorAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.UserAfkReturnedAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.UserWinsAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.WordSettedAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.WordSettingAdapterDelegate;
 
@@ -57,6 +60,7 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     private WordSettingAdapterDelegate mWordSettingAdapterDelegate;
     private GuessWordThisUserAdapterDelegate mGuessWordThisUserAdapterDelegate;
     private AskingQuestionOtherUserAdapterDelegate mAskingQuestionOtherUserAdapterDelegate;
+    private GameOverAdapterDelegate mGameOverAdapterDelegate;
 
     private Scheduler mIoScheduler;
     private Scheduler mUiScheduler;
@@ -77,6 +81,8 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                            AskingQuestionOtherUserAdapterDelegate askingQuestionOtherUserAdapterDelegate,
                            KickedAdapterDelegate kickedAdapterDelegate,
                            KickWarningAdapterDelegate kickWarningAdapterDelegate,
+                           UserWinsAdapterDelegate userWinsAdapterDelegate,
+                           GameOverAdapterDelegate gameOverAdapterDelegate,
                            @SchedulerIO Scheduler ioScheduler,
                            @SchedulerUI Scheduler uiScheduler) {
         super();
@@ -86,6 +92,8 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
         this.mWordSettingAdapterDelegate = wordSettingAdapterDelegate;
         this.mGuessWordThisUserAdapterDelegate = guessWordThisUserAdapterDelegate;
         this.mAskingQuestionOtherUserAdapterDelegate = askingQuestionOtherUserAdapterDelegate;
+        this.mGameOverAdapterDelegate = gameOverAdapterDelegate;
+
         this.mUiScheduler = uiScheduler;
         this.mIoScheduler = ioScheduler;
 
@@ -103,7 +111,9 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                 .addDelegate(askingQuestionOtherUserAdapterDelegate)
                 .addDelegate(askingQuestionThisUserAdapterDelegate)
                 .addDelegate(kickedAdapterDelegate)
-                .addDelegate(kickWarningAdapterDelegate);
+                .addDelegate(kickWarningAdapterDelegate)
+                .addDelegate(userWinsAdapterDelegate)
+                .addDelegate(gameOverAdapterDelegate);
     }
 
     @Nullable
@@ -148,5 +158,15 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     @NonNull
     public Observable<Long> askingQuestionWinObservable(){
         return mAskingQuestionOtherUserAdapterDelegate.winClickObservable();
+    }
+
+    @NonNull
+    public Observable<View> restartGameObservable(){
+        return mGameOverAdapterDelegate.getRestartSubject();
+    }
+
+    @NonNull
+    public Observable<View> cancelGameObservable(){
+        return mGameOverAdapterDelegate.getCancelSubject();
     }
 }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.support.annotation.DrawableRes
 import android.support.graphics.drawable.VectorDrawableCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.TypedValue
@@ -14,7 +15,7 @@ import com.transcendensoft.hedbanz.domain.entity.User
 import com.transcendensoft.hedbanz.utils.DateUtils
 import com.transcendensoft.hedbanz.utils.ViewUtils
 import io.reactivex.Observable
-import kotlinx.android.synthetic.main.item_asking_question_this_user.view.*
+import kotlinx.android.synthetic.main.item_asking_question_other_user.view.*
 import kotlinx.android.synthetic.main.item_message_some_user.view.*
 
 /**
@@ -43,6 +44,8 @@ import kotlinx.android.synthetic.main.item_message_some_user.view.*
 class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : RecyclerView.ViewHolder(itemView) {
     private val mCvThumbsUp = itemView?.cvThumbsUp
     private val mCvThumbsDown = itemView?.cvThumbsDown
+    private val mIvThumbsUp = itemView?.ivThumbsUp
+    private val mIvThumbsDown = itemView?.ivThumbsDown
     private val mCvWin = itemView?.cvWin
     private val mPbThumbsUp = itemView?.numberProgressBarThumbsUp
     private val mPbThumbsDown = itemView?.numberProgressBarThumbsDown
@@ -204,6 +207,26 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
             mPbWin?.progress = usersWin.size
             (mTvTotal?.layoutParams as RelativeLayout.LayoutParams)
                     .addRule(RelativeLayout.BELOW, R.id.dividerWinPlayers)
+        }
+    }
+
+    fun bindWin(isWin: Boolean) {
+        if (isWin) {
+            mCvThumbsUp?.isEnabled = false
+            mCvThumbsUp?.isClickable = false
+            mCvThumbsUp?.setCardBackgroundColor(ContextCompat
+                    .getColor(mContext, R.color.message_this_user_bg))
+            val thumbsUpDisabledDrawable = VectorDrawableCompat.create(
+                    mContext.resources, R.drawable.thumbs_up_disabled, null)
+            mIvThumbsUp?.setImageDrawable(thumbsUpDisabledDrawable)
+
+            mCvThumbsDown?.isEnabled = false
+            mCvThumbsDown?.isClickable = false
+            mCvThumbsDown?.setCardBackgroundColor(ContextCompat
+                    .getColor(mContext, R.color.message_this_user_bg))
+            val thumbsDownDisabledDrawable = VectorDrawableCompat.create(
+                    mContext.resources, R.drawable.thumbs_down_disabled, null)
+            mIvThumbsDown?.setImageDrawable(thumbsDownDisabledDrawable)
         }
     }
 

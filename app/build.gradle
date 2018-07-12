@@ -36,7 +36,6 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         project.ext.set("archivesBaseName", "Hedbanz-v" + versionName);
         multiDexEnabled true
-
     }
     buildTypes {
         release {

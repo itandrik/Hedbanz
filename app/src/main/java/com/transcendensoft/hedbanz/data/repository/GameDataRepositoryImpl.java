@@ -109,6 +109,9 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String SERVER_PLAYER_AFK_WARNING = "server-player-afk-warning";
     private static final String SERVER_KICKED_USER_EVENT = "server-kicked-user";
 
+    public static final String SERVER_GAME_OVER = "server-game-over";
+    public static final String CLIENT_RESTART_GAME = "client-restart-game";
+
     private Socket mSocket;
     private long mUserId;
     private long mRoomId;
@@ -620,6 +623,25 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
+    public Observable<Boolean> gameOverObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                emitter.onNext(false);
+                Timber.i("SOCKET <-- GET(%1$s) : Game over.",
+                        SERVER_GAME_OVER);
+            };
+            mSocket.on(SERVER_GAME_OVER, listener);
+        });
+    }
+
+    @Override
+    public void restartGame() {
+        Timber.i("SOCKET --> SEND(%1$s) : %2$s",
+                CLIENT_RESTART_GAME, mRoomToUserJson);
+        mSocket.emit(CLIENT_RESTART_GAME, mRoomToUserJson);
+    }
+
+    @Override
     public void guessWord(Question question) {
         QuestionDTO questionDTO = mQuestionMapper.convert(question);
         questionDTO.setSenderId(mUserId);
@@ -769,6 +791,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             mSocket.off(SERVER_USER_ASKING_EVENT);
             mSocket.off(SERVER_USER_ANSWERING_EVENT);
             mSocket.off(SERVER_USER_WIN);
+            mSocket.off(SERVER_GAME_OVER);
 
             mSocket.off(SERVER_PLAYER_AFK_WARNING);
             mSocket.off(SERVER_KICKED_USER_EVENT);

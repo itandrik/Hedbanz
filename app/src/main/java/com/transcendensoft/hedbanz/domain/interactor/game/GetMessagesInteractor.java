@@ -157,6 +157,10 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, Long, Void
                         messages.add(i, word);
                     }
                 }
+            } else if(message.getMessageType() == MessageType.USER_WINS_THIS){
+                if(!mPreferenceManager.getUser().equals(message.getUserFrom())){
+                    message.setMessageType(MessageType.USER_WINS_OTHER);
+                }
             }
         }
         return messages;

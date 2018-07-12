@@ -29,6 +29,7 @@ import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.ErrorUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.GameOverUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.MessageUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnConnectErrorUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnConnectTimeoutUseCase;
@@ -109,6 +110,8 @@ public class GameInteractorFacade {
     @Inject UserWinUseCase mUserWinUseCase;
     @Inject KickWarningUseCase mKickWarningUseCase;
     @Inject KickUseCase mKickUseCase;
+
+    @Inject GameOverUseCase mGameOverUseCase;
 
     @Inject @SchedulerIO Scheduler mIoScheduler;
     @Inject RxRoom mCurrentRoom;
@@ -322,6 +325,15 @@ public class GameInteractorFacade {
         mKickUseCase.execute(null, onNext, onError, doOnNext);
     }
 
+    public void onGameOverListener(Consumer<? super Boolean> onNext,
+                                   Consumer<? super Throwable> onError){
+        mGameOverUseCase.execute(null, onNext, onError);
+    }
+
+    public void restartGame(){
+        mRepository.restartGame();
+    }
+
     public Question guessWord(Long questionId, String word) {
         User currentUser = mPreferenceManger.getUser();
 
@@ -451,6 +463,7 @@ public class GameInteractorFacade {
         mUserWinUseCase.dispose();
         mKickWarningUseCase.dispose();
         mKickUseCase.dispose();
+        mGameOverUseCase.dispose();
 
         mRepository.disconnectFromRoom();
         mPreferenceManger.setCurrentRoomId(-1); //We leave from current game

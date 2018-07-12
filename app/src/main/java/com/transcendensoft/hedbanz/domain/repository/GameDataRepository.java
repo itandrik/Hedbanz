@@ -62,6 +62,7 @@ public interface GameDataRepository {
 
     Observable<User> userAfkWarningObservable();
     Observable<User> userKickedObservable();
+    Observable<Boolean> gameOverObservable();
 
     void startTyping();
     void stopTyping();
@@ -73,6 +74,7 @@ public interface GameDataRepository {
     void guessWord(Question question);
     void voteForQuestion(Question question);
     void sendConnectInfo();
+    void restartGame();
 
     void connect(long userId, long roomId);
     void disconnect();
