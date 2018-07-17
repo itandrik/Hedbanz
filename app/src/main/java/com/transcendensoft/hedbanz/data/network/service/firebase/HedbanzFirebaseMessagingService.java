@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.data.network.service.firebase;
  */
 
 import android.app.Service;
+import android.content.Intent;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -46,6 +47,9 @@ public class HedbanzFirebaseMessagingService extends FirebaseMessagingService im
     private static final String TAG = HedbanzFirebaseMessagingService.class.getName();
     public static final String FIELD_TYPE = "type";
     public static final String DATA_TYPE = "data";
+    public static final String ACTION_ADD_NEW_ROOM = "com.hedbanz.ACTION_ADD_NEW_ROOM";
+    public static final String ACTION_NEW_VERSION_AVAILABLE =
+            "com.hedbanz.ACTION_NEW_VERSION_AVAILABLE";
 
     @Inject DispatchingAndroidInjector<Service> serviceDispatchingAndroidInjector;
     @Inject Gson mGson;
@@ -83,31 +87,45 @@ public class HedbanzFirebaseMessagingService extends FirebaseMessagingService im
     }
 
     private void processNotificationMessage(NotificationMessageType messageType, String dataJson) {
-        NotificationMessage notificationMessage;
+        NotificationMessage notificationMessage = mGson
+                .fromJson(dataJson, NotificationMessage.class);;
         switch (messageType) {
             case MESSAGE:
-                notificationMessage = mGson
-                        .fromJson(dataJson, NotificationMessage.class);
                 mNotificationManger.notifyMessage(notificationMessage);
                 break;
             case SET_WORD:
+                mNotificationManger.notifySetWord(notificationMessage);
                 break;
             case GUESS_WORD:
+                mNotificationManger.notifyGuessWord(notificationMessage);
                 break;
             case FRIEND:
+                mNotificationManger.notifyFriendRequest(notificationMessage);
                 break;
             case INVITE:
+                mNotificationManger.notifyInviteToGame(notificationMessage);
                 break;
             case KICK_WARNING:
-                notificationMessage = mGson
-                        .fromJson(dataJson, NotificationMessage.class);
                 mNotificationManger.notifyKickWarning(notificationMessage);
                 break;
             case KICKED:
-                notificationMessage = mGson
-                        .fromJson(dataJson, NotificationMessage.class);
                 mNotificationManger.notifyKick(notificationMessage);
                 mPreferenceManager.setCurrentRoomId(-1);
+                break;
+            case GAME_OVER:
+                mNotificationManger.notifyGameOver(notificationMessage);
+                break;
+            case LAST_PLAYER:
+
+                break;
+            case NEW_ROOM_CREATED:
+                Intent roomCreatedIntent = new Intent(ACTION_ADD_NEW_ROOM);
+                sendBroadcast(roomCreatedIntent);
+                break;
+            case APP_NEW_VERSION:
+                mPreferenceManager.setAppNewVersion(true);
+                Intent newVersionAvailableIntent = new Intent(ACTION_NEW_VERSION_AVAILABLE);
+                sendBroadcast(newVersionAvailableIntent);
                 break;
             case UNDEFINED:
                 break;

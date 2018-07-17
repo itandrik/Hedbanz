@@ -15,7 +15,10 @@ package com.transcendensoft.hedbanz.presentation.game.menu;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.domain.entity.Friend;
+import com.transcendensoft.hedbanz.domain.entity.Invite;
 import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.interactor.rooms.InviteToRoomInteractor;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
 
@@ -36,10 +39,13 @@ import timber.log.Timber;
 public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.View>
         implements GameMenuContract.Presenter {
     private ObservableTransformer mSchedulersTransformer;
+    private InviteToRoomInteractor mInviteToRoomInteractor;
 
     @Inject
-    public GameMenuPresenter(ObservableTransformer schedulersTransformer) {
+    public GameMenuPresenter(ObservableTransformer schedulersTransformer,
+                             InviteToRoomInteractor inviteToRoomInteractor) {
         this.mSchedulersTransformer = schedulersTransformer;
+        this.mInviteToRoomInteractor = inviteToRoomInteractor;
     }
 
     @Override
@@ -86,7 +92,7 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
 
     @Override
     public void destroy() {
-        // STUB
+        mInviteToRoomInteractor.dispose();
     }
 
     @Override
@@ -95,5 +101,22 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
                 .subscribe(user -> {
                     view().onPlayerClicked(user);
                 }, Timber::e));
+    }
+
+    @Override
+    public void inviteFriend(Friend friend) {
+        Invite invite = new Invite.Builder()
+                .invitedUserId(friend.getId())
+                .password(model.getRoom().getPassword())
+                .roomId(model.getRoom().getId())
+                .build();
+
+        mInviteToRoomInteractor.execute(
+                invite,
+                () -> view().showInviteSuccess(),
+                err -> {
+                    view().showInviteError();
+                    Timber.e(err);
+                });
     }
 }

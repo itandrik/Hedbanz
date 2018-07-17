@@ -26,6 +26,10 @@
     <string name="action_close">Закрыть</string>
     <string name="action_reload">Повторить попытку</string>
     <string name="action_loading">Загрузка&#8230;</string>
+    <string name="action_accept">Принять</string>
+    <string name="action_decline">Отклонить</string>
+    <string name="action_update">Обновить</string>
+    <string name="action_later">Позже</string>
 
     <!-- Errors -->
     <string name="error_server">Похоже что у нас проблемы с сервером. Повторите попытку позже.</string>
@@ -63,6 +67,10 @@
     <string name="register_validate_password">Это некорректный пароль. Допустимая длина от 6 до 14 символов.</string>
     <string name="register_validate_confirm_password">Пароль подтвержен неправильно.</string>
     <string name="register_validate_login">Некорректный логин. Длина 3&#8211;10 символов. Допустимо только буквы, цифры и точка (\".\")</string>
+
+    <!-- Main menu -->
+    <string name="main_menu_new_version_title">Новая версия игры доступна</string>
+    <string name="main_menu_new_version_message">Вы хотите установить последнюю версию приложения?</string>
 
     <!-- Rooms fragment -->
     <string name="rooms_title">Список комнат</string>
@@ -162,17 +170,33 @@
     <string name="game_user_wins">Игрок %1$s угадал загаданное ему слово!</string>
     <string name="game_this_user_wins">Вы угадали загаданное вам слово!</string>
     <string name="game_error_user_wins">Какой-то игрок угадал загаданное ему слово!</string>
-    <string name="game_over_title">Игра окончена. Все игроки угадали свои слова.</string>
+    <string name="game_over_title">Игра окончена.\n Все игроки угадали свои слова.</string>
     <string name="game_restart_question">Вы хотите повторить игру с этой командой?</string>
 
     <!-- Game notification -->
     <string name="game_notification_title">%1$s с комнаты %2$s</string>
     <string name="game_notification_title_error">Новое сообщение</string>
     <string name="game_notification_channel_title_message">Сообщение</string>
+    <string name="game_invite_notification_channel_title_message">Приглашение в игру</string>
     <string name="game_notification_kick_warning_title">Внимание! У вас есть 30 секунд чтобы вернуться в комнату</string>
     <string name="game_notification_kick_warning_message">Ваши друзья ждут вас в комнате %1$s при загадывании слов. Если вы не вернетесь в игру, то через 30 секунд будете исключены из нее. Уважайте время других игроков.</string>
     <string name="game_notification_kick_title">Вас исключили с комнаты %1$s</string>
     <string name="game_notification_kick_message">Из-за того, что у вы не присутствовали в игре на этапе загадывания слов долгое время, вас исключили с комнаты. Попробуйте сыграть с другими ребятами.</string>
+    <string name="game_notification_channel_title_friend">Друзья</string>
+    <string name="game_notification_friend_title">Запрос в друзья</string>
+    <string name="game_notification_friend_message">Игрок %1$s хочет дружить с вами</string>
+    <string name="game_notification_set_word_message">Вернитесь в комнату %1$s и придумайте слово игроку %2$s</string>
+    <string name="game_notification_set_word_title">Загадайте слово</string>
+    <string name="game_notification_set_word_message_error">Вам нужно придумать слово</string>
+    <string name="game_notification_guess_word_title">Время угадать кто же вы</string>
+    <string name="game_notification_guess_word_message">Вернитесь в комнату %1$s и задайте вопрос о том кто вы</string>
+    <string name="game_notification_guess_word_message_error">Вернитесь в игру и задайте вопрос о том кто вы</string>
+    <string name="game_notification_invite_title">Вас пригласили!</string>
+    <string name="game_notification_invite_message">Игрок %1$s пригласил вас поиграть с ним в комнате %2$s</string>
+    <string name="game_notification_invite_message_error">Кто-то пригласил вас поиграть с ним</string>
+    <string name="game_notification_game_over_title">Игра окончена</string>
+    <string name="game_notification_game_over_message">Игра в комнате %1$s закончилась, все игроки угадали свои слова. Вернитесь в комнату и начните новую игру.</string>
+    <string name="game_notification_game_over_message_error">Игра закончилась, все игроки угадали свои слова. Вернитесь в комнату и начните новую игру.</string>
 
     <!-- Friends -->
     <string name="friends_toolbar_title">Ваши друзяки</string>

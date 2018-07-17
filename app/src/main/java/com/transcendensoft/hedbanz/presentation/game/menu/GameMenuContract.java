@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.presentation.game.menu;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.domain.entity.Friend;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BaseView;
 import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
@@ -38,9 +39,12 @@ public interface GameMenuContract {
         void setCurrentPlayersCount(int currentPlayersCount);
         void setMaxPlayersCount(int maxPlayersCount);
         void onPlayerClicked(User user);
+        void showInviteSuccess();
+        void showInviteError();
     }
 
     interface Presenter {
         void processPlayerClickListener(Observable<User> playerClickObservable);
+        void inviteFriend(Friend friend);
     }
 }

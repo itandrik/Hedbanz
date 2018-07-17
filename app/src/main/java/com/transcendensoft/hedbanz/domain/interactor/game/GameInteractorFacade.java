@@ -290,7 +290,19 @@ public class GameInteractorFacade {
 
     public void onWordSettingListener(Consumer<? super User> onNext,
                                       Consumer<? super Throwable> onError) {
-        mWordSettingUseCase.execute(null, onNext, onError);
+        Consumer<? super User> doOnNext = user -> {
+            if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
+                for (RxUser rxUser : mCurrentRoom.getRxPlayers()) {
+                    rxUser.setWord("");
+                    rxUser.setIsWinner(false);
+                }
+                for (User player : mCurrentRoom.getRoom().getPlayers()) {
+                    player.setWord("");
+                    player.setWinner(false);
+                }
+            }
+        };
+        mWordSettingUseCase.execute(null, onNext, onError, doOnNext);
     }
 
     public void onWordGuessingListener(Consumer<? super PlayerGuessing> onNext,
@@ -326,11 +338,11 @@ public class GameInteractorFacade {
     }
 
     public void onGameOverListener(Consumer<? super Boolean> onNext,
-                                   Consumer<? super Throwable> onError){
+                                   Consumer<? super Throwable> onError) {
         mGameOverUseCase.execute(null, onNext, onError);
     }
 
-    public void restartGame(){
+    public void restartGame() {
         mRepository.restartGame();
     }
 
@@ -468,6 +480,14 @@ public class GameInteractorFacade {
         mRepository.disconnectFromRoom();
         mPreferenceManger.setCurrentRoomId(-1); //We leave from current game
         mRepository.disconnect();
+    }
+
+    public void resumeSocket() {
+        mRepository.startSocket();
+    }
+
+    public void stopSocket() {
+        mRepository.stopSocket();
     }
 
     @Nullable

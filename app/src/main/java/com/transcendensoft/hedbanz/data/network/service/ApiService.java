@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.data.network.service;
  */
 
 import com.transcendensoft.hedbanz.data.models.FriendDTO;
+import com.transcendensoft.hedbanz.data.models.InviteDTO;
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
@@ -80,6 +81,9 @@ public interface ApiService {
 
     @POST("rooms/password")
     Completable checkRoomPasswordCorrect(@Body HashMap<String, Object> checkPasswordDataMap);
+
+    @POST("rooms/invite")
+    Completable inviteFriendToRoom(@Body InviteDTO inviteDTO);
 
     /* Game mode */
     @GET("rooms/{roomId}/messages/{page}")

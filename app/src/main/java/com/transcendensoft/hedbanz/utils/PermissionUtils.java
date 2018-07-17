@@ -13,8 +13,10 @@ import android.support.v4.content.ContextCompat;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 /**
+ * Utility class that processes runtime permissions
+ *
  * @author Andrii Chernysh
- *         Developed by <u>Ubrainians</u>
+ *         Developed by <u>Transcendensoft</u>
  */
 
 public class PermissionUtils {

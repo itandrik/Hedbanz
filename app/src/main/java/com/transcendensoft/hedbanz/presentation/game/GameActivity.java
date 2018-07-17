@@ -236,6 +236,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     .setMessage(getString(R.string.game_exit_room_message))
                     .setTitle(getString(R.string.game_exit_room_title))
                     .setPositiveButton(getString(R.string.game_action_exit_game), (dialog, which) -> {
+                        mPresenter.setIsLeaveFromRoom(true);
                         super.onBackPressed();
                     })
                     .setNegativeButton(getString(R.string.game_action_resume_game), (dialog, which) -> {

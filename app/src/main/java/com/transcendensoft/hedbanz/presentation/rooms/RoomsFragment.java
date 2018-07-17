@@ -16,6 +16,10 @@ package com.transcendensoft.hedbanz.presentation.rooms;
  */
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -43,11 +47,12 @@ import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
-import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.custom.widget.rangeseekbar.RangeSeekBar;
+import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainFragment;
 import com.transcendensoft.hedbanz.presentation.rooms.list.RoomsAdapter;
+import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -62,6 +67,7 @@ import timber.log.Timber;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.transcendensoft.hedbanz.data.network.service.firebase.HedbanzFirebaseMessagingService.ACTION_ADD_NEW_ROOM;
 
 /**
  * Fragment that shows room list.
@@ -93,14 +99,16 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     private SearchView mSvRoomSearch;
     private ImageView mIvSearchFilter;
     private ImageView mIvCloseSearch;
+    private BroadcastReceiver mRoomsReceiver;
 
     @Inject RoomsPresenter mPresenter;
     @Inject RoomList mPresenterModel;
     @Inject RoomsAdapter mAdapter;
+    @Inject MainActivity mActivity;
 
     @Inject
     public RoomsFragment() {
-        // Requires empty public constructor
+
     }
 
     /*------------------------------------*
@@ -118,6 +126,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         initRecycler();
         initSearchView();
         initFilters();
+        initRoomsReceiver();
 
         return view;
     }
@@ -128,6 +137,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         if (mPresenter != null) {
             mPresenter.bindView(this);
         }
+        mActivity.registerReceiver(mRoomsReceiver, new IntentFilter(ACTION_ADD_NEW_ROOM));
     }
 
     @Override
@@ -136,6 +146,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         if (mPresenter != null) {
             mPresenter.unbindView();
         }
+        mActivity.unregisterReceiver(mRoomsReceiver);
     }
 
     @Override
@@ -297,6 +308,19 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
                         .build());
             }
         });
+    }
+
+    private void initRoomsReceiver(){
+        mRoomsReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if((intent != null) && (intent.getAction() != null) &&
+                        intent.getAction().equalsIgnoreCase(ACTION_ADD_NEW_ROOM) &&
+                        mRecycler.getScrollY() <= 0){
+                    mPresenter.refreshRooms();
+                }
+            }
+        };
     }
 
     private void disableFilters() {

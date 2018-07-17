@@ -38,6 +38,7 @@ public class PreferenceManager {
     private static final String CURRENT_ROOM_ID = "currentRoomId";
     private static final String FIREBASE_TOKEN_BINDED = "firebaseTokenBinded";
     private static final String AUTHORIZATION_TOKEN = "authorizationToken";
+    private static final String APP_NEW_VERSION = "appNewVersion";
 
     public PreferenceManager(Context context) {
         mPreferences = context.getSharedPreferences(PREF_NAME, 0);
@@ -101,5 +102,13 @@ public class PreferenceManager {
 
     public String getAuthorizationToken() {
         return mPreferences.getString(AUTHORIZATION_TOKEN, "");
+    }
+
+    public void setAppNewVersion(boolean isNewVersionAvailable) {
+        getEditor().putBoolean(APP_NEW_VERSION, isNewVersionAvailable).apply();
+    }
+
+    public boolean isAppNewVersionAvailable() {
+        return mPreferences.getBoolean(APP_NEW_VERSION, false);
     }
 }

@@ -3,6 +3,7 @@ package com.transcendensoft.hedbanz.presentation.userdetails
 import android.app.ProgressDialog
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
@@ -11,16 +12,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import butterknife.BindView
+import butterknife.ButterKnife
+import butterknife.OnClick
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.domain.entity.User
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
-import kotlinx.android.synthetic.main.fragment_user_details.*
 import javax.inject.Inject
-import kotlin.reflect.KProperty
 
 /**
  * Copyright 2017. Andrii Chernysh
@@ -50,8 +55,18 @@ class UserDetailsDialogFragment @Inject constructor() : DialogFragment(),
     lateinit var mPresenter: UserDetailsPresenter
     @Inject
     lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
+    @BindView(R.id.btnAddFriend)
+    lateinit var btnAddFriend: Button
+    @BindView(R.id.ivUserIcon)
+    lateinit var ivUserIcon: ImageView
+    @BindView(R.id.tvUserLogin)
+    lateinit var tvUserLogin: TextView
+    @BindView(R.id.ivFriendship)
+    lateinit var ivFriendship: ImageView
+    @BindView(R.id.tvFriendship)
+    lateinit var tvFriendship: TextView
 
-    var user: User? by UserDelegate()
+    var user: User? = null
     lateinit var mProgressDialog: ProgressDialog
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> =
@@ -67,7 +82,7 @@ class UserDetailsDialogFragment @Inject constructor() : DialogFragment(),
         mProgressDialog = ProgressDialog(context)
         mProgressDialog.setMessage(getString(R.string.action_loading))
         mProgressDialog.setCancelable(false)
-        mProgressDialog.setIndeterminate(true)
+        mProgressDialog.isIndeterminate = true
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -79,18 +94,62 @@ class UserDetailsDialogFragment @Inject constructor() : DialogFragment(),
             dialog.window.requestFeature(Window.FEATURE_NO_TITLE)
         }
 
-        initCloseClick()
-        initAddFriendClick()
+        ButterKnife.bind(this, view)
+        initUserView()
 
         return view
     }
 
-    private fun initCloseClick() {
-        btnClose.setOnClickListener { dismiss() }
+    override fun onStart() {
+        super.onStart()
+        if (dialog != null) {
+            // retrieve display dimensions
+            val displayRectangle = Rect()
+            val window = dialog.window
+            window.decorView.getWindowVisibleDisplayFrame(displayRectangle)
+
+            dialog.window.setLayout((displayRectangle.width() * 0.8f).toInt(),
+                    ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
     }
 
-    private fun initAddFriendClick() {
-        btnAddFriend.setOnClickListener { mPresenter.addFriend() }
+    override fun onResume() {
+        super.onResume()
+        mPresenter.bindView(this)
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mPresenter.unbindView()
+
+    }
+
+    private fun initUserView() {
+        user?.let {
+            mPresenter.setModel(it)
+            ivUserIcon.setImageResource(R.drawable.logo)
+            tvUserLogin.text = it.login
+            if (it.isFriend) {
+                tvFriendship.visibility = View.VISIBLE
+                ivFriendship.visibility = View.VISIBLE
+                btnAddFriend.visibility = View.INVISIBLE
+            } else {
+                tvFriendship.visibility = View.GONE
+                ivFriendship.visibility = View.GONE
+                btnAddFriend.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    @OnClick(R.id.btnClose)
+    fun onCloseClick() {
+        dismiss()
+    }
+
+    @OnClick(R.id.btnAddFriend)
+    fun onAddFriendClick() {
+        mPresenter.addFriend()
     }
 
     override fun showLoadingDialog() {
@@ -126,28 +185,6 @@ class UserDetailsDialogFragment @Inject constructor() : DialogFragment(),
     override fun onDestroy() {
         super.onDestroy()
         mProgressDialog.hide()
-    }
-
-    private inner class UserDelegate {
-        operator fun getValue(thisRef: Any?, property: KProperty<*>): User? {
-            return user
-        }
-
-        operator fun setValue(thisRef: Any?, property: KProperty<*>, value: User?) {
-            value?.let {
-                mPresenter.setModel(it)
-                ivUserIcon.setImageResource(R.drawable.logo)
-                tvUserLogin.text = it.login
-                if(it.isFriend){
-                    tvFriendship.visibility = View.VISIBLE
-                    ivFriendship.visibility = View.VISIBLE
-                    btnAddFriend.visibility = View.INVISIBLE
-                } else {
-                    tvFriendship.visibility = View.GONE
-                    ivFriendship.visibility = View.GONE
-                    btnAddFriend.visibility = View.VISIBLE
-                }
-            }
-        }
+        mPresenter.destroy()
     }
 }

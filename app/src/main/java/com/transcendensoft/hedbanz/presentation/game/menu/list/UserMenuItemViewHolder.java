@@ -40,7 +40,7 @@ import io.reactivex.Observable;
  */
 public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
         implements UserMenuItemContract.View {
-    @BindView(R.id.tvUserWord) TextView mTvWord;
+    @BindView(R.id.tvUserWordMenu) TextView mTvWord;
     @BindView(R.id.tvUserLogin) TextView mTvLogin;
     @BindView(R.id.ivFriend) ImageView mIvIsFriend;
     @BindView(R.id.tvFriendTitle) TextView mTvIsFriend;
@@ -49,8 +49,7 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
     @BindView(R.id.tvThisUser) TextView mTvThisUser;
     @BindView(R.id.ivThisUserStar) ImageView mIvThisUserStar;
     @BindView(R.id.ivWin) ImageView mIvWin;
-    private Observable<User> itemClickObservable;
-
+    private View mItemView;
 
     private Context mContext;
 
@@ -59,6 +58,7 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
         ButterKnife.bind(this, itemView);
 
         mContext = context;
+        mItemView = itemView;
     }
 
     @Override
@@ -130,7 +130,7 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
     @Override
     public Observable<User> getClickObservable(User user) {
         return Observable.create(emitter -> {
-            itemView.setOnClickListener(v -> {
+            mItemView.setOnClickListener(v -> {
                 emitter.onNext(user);
             });
         });

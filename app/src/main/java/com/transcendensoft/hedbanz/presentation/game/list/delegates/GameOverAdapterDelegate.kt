@@ -48,7 +48,7 @@ class GameOverAdapterDelegate @Inject constructor() :
         val context = parent?.context
         val itemView = LayoutInflater.from(context)
                 .inflate(R.layout.item_game_over, parent, false)
-        return GameOverViewHolder(itemView)
+        return GameOverViewHolder(context!!, itemView)
     }
 
     override fun isForViewType(items: List<Message>, position: Int): Boolean {

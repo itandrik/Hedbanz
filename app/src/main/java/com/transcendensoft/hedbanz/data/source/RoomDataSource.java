@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.data.source;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.models.InviteDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
 import com.transcendensoft.hedbanz.data.models.RoomListDTO;
@@ -37,4 +38,6 @@ public interface RoomDataSource {
     Observable<RoomListDTO> filterRooms(int page, long userId, RoomFilterDTO roomFilter);
 
     Completable isPasswordCorrect(long userId, long roomId, String password);
+
+    Completable inviteFriend(InviteDTO inviteDTO);
 }

@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.data.network.source;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.models.InviteDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
 import com.transcendensoft.hedbanz.data.models.RoomListDTO;
@@ -68,5 +69,9 @@ public class RoomsApiDataSource extends ApiDataSource implements RoomDataSource 
         result.put("password", password);
 
         return mService.checkRoomPasswordCorrect(result);
+    }
+
+    public Completable inviteFriend(InviteDTO inviteDTO){
+        return mService.inviteFriendToRoom(inviteDTO);
     }
 }

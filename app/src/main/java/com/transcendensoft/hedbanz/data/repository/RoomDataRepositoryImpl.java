@@ -20,11 +20,13 @@ import android.support.annotation.NonNull;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
 import com.transcendensoft.hedbanz.data.models.RoomListDTO;
+import com.transcendensoft.hedbanz.data.models.mapper.InviteModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.RoomFilterModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.RoomModelDataMapper;
 import com.transcendensoft.hedbanz.data.network.source.RoomsApiDataSource;
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
+import com.transcendensoft.hedbanz.domain.entity.Invite;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
 import com.transcendensoft.hedbanz.domain.repository.RoomDataRepository;
@@ -49,14 +51,16 @@ public class RoomDataRepositoryImpl implements RoomDataRepository {
     private RoomsApiDataSource mRoomsApiDataSource;
     private RoomModelDataMapper mRoomModelDataMapper;
     private RoomFilterModelDataMapper mRoomFilterModelDataMapper;
-
+    private InviteModelDataMapper mInviteModelDataMapper;
     @Inject
     public RoomDataRepositoryImpl(RoomsApiDataSource roomsApiManager,
                                   RoomModelDataMapper roomModelDataMapper,
-                                  RoomFilterModelDataMapper roomFilterModelDataMapper) {
+                                  RoomFilterModelDataMapper roomFilterModelDataMapper,
+                                  InviteModelDataMapper inviteModelDataMapper) {
         this.mRoomsApiDataSource = roomsApiManager;
         this.mRoomModelDataMapper = roomModelDataMapper;
         this.mRoomFilterModelDataMapper = roomFilterModelDataMapper;
+        this.mInviteModelDataMapper = inviteModelDataMapper;
     }
 
     @Override
@@ -129,5 +133,10 @@ public class RoomDataRepositoryImpl implements RoomDataRepository {
             return Completable.error(new UnsupportedOperationException());
         }
         return Completable.error(new UnsupportedOperationException());
+    }
+
+    @Override
+    public Completable inviteFriend(Invite invite) {
+        return mRoomsApiDataSource.inviteFriend(mInviteModelDataMapper.convert(invite));
     }
 }

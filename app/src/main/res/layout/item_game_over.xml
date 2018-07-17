@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/ivSeparator"
-        android:layout_marginTop="-48dp"
+        android:layout_marginTop="-20dp"
         android:gravity="center"
         android:text="@string/game_over_title"
         android:textSize="16sp"
@@ -31,24 +31,25 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tvGameOver"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:maxWidth="300dp"
         android:text="@string/game_restart_question"
-        android:textColor="@color/textPrimary"
+        android:textColor="@color/google_dark_green"
+        android:textStyle="bold"
         android:textSize="15sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvRestartGameText"
-        android:layout_marginTop="16dp"
+        android:layout_margin="16dp"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/btnCancel"
             android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginRight="4dp"
+            android:layout_height="48dp"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:background="@drawable/cancel_button_bg"
             android:text="@string/action_no" />
@@ -56,12 +57,12 @@
         <Button
             android:id="@+id/btnRestart"
             android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginLeft="4dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="8dp"
             android:layout_weight="1"
             android:background="@drawable/restart_button_bg"
             android:text="@string/action_yes"
-            android:textColor="@color/textSecondaryDark" />
+            android:textColor="@color/textWhite" />
     </LinearLayout>
 
 </RelativeLayout>

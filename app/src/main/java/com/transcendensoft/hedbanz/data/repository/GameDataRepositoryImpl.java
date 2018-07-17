@@ -143,7 +143,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
 
         try {
             IO.Options options = new IO.Options();
-            options.forceNew = true;
+            options.forceNew = false;
             options.reconnection = true;
             mSocket = IO.socket(HOST + PORT_SOCKET + GAME_SOCKET_NSP, options);
         } catch (URISyntaxException e) {
@@ -756,6 +756,25 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     public void disconnectFromRoom() {
         Timber.i("SOCKET --> SEND(%1$s)", LEAVE_ROOM_EVENT);
         mSocket.emit(LEAVE_ROOM_EVENT, mRoomToUserJson);
+    }
+
+    private boolean isAfterStop = false;
+
+    @Override
+    public void startSocket() {
+        if(mSocket != null && isAfterStop){
+            mSocket.connect();
+            sendConnectInfo();
+            isAfterStop = false;
+        }
+    }
+
+    @Override
+    public void stopSocket() {
+        if(mSocket != null){
+            mSocket.disconnect();
+            isAfterStop = true;
+        }
     }
 
     @Override

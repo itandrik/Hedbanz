@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="?attr/selectableItemBackground"
     android:layout_height="wrap_content"
     android:minHeight="100dp">
 
@@ -35,7 +36,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ivThisUserStar" />
 
     <TextView
-        android:id="@+id/tvUserWord"
+        android:id="@+id/tvUserWordMenu"
         android:layout_width="wrap_content"
         android:layout_height="56dp"
         android:background="@drawable/button_background"
@@ -60,7 +61,7 @@
         android:layout_marginTop="-12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserWord"
+        app:layout_constraintTop_toBottomOf="@id/tvUserWordMenu"
         app:srcCompat="@drawable/logo" />
 
     <ImageView
@@ -139,8 +140,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvUserWord"
+        app:layout_constraintBottom_toBottomOf="@id/tvUserWordMenu"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvUserWord"
+        app:layout_constraintTop_toTopOf="@id/tvUserWordMenu"
         app:srcCompat="@drawable/ic_win" />
 </android.support.constraint.ConstraintLayout>

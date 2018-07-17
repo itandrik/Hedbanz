@@ -65,6 +65,7 @@ public interface GameContract {
         void sendMessage(String message);
         void processSetWordToUserObservable(Observable<Word> sendWordObservable);
         void setAfterRoomCreation(boolean isAfterRoomCreation);
+        void setIsLeaveFromRoom(boolean isLeaveFromRoom);
 
         void restoreRoom();
         void processRetryNetworkPagination(Observable<Object> clickObservable);

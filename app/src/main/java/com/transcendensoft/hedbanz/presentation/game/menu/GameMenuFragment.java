@@ -82,7 +82,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     }
 
     /*------------------------------------*
-     *-------- Activity lifecycle --------*
+     *-------- Fragment lifecycle --------*
      *------------------------------------*/
     @Nullable
     @Override
@@ -251,5 +251,15 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
         mFabInvite.setVisibility(View.GONE);
         mFlLoadingContainer.setVisibility(View.GONE);
         mRecycler.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showInviteSuccess() {
+        //TODO
+    }
+
+    @Override
+    public void showInviteError() {
+        //TODO
     }
 }

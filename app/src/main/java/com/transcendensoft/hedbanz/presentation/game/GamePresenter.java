@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.presentation.game;
  * limitations under the License.
  */
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -61,6 +62,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     private PreferenceManager mPreferenceManger;
     private List<User> mTypingUsers;
     private boolean isAfterRoomCreation;
+    private boolean isLeaveFromRoom = false;
 
     @Inject
     public GamePresenter(GameInteractorFacade gameInteractor,
@@ -70,6 +72,11 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         this.mGetMessagesInteractor = getMessagesInteractor;
         this.mPreferenceManger = preferenceManager;
         mTypingUsers = new ArrayList<>();
+    }
+
+    @Override
+    public void setIsLeaveFromRoom(boolean isLeaveFromRoom) {
+        this.isLeaveFromRoom = isLeaveFromRoom;
     }
 
     /*------------------------------------*
@@ -91,6 +98,22 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     public void destroy() {
         mGetMessagesInteractor.dispose();
         mGameInteractor.destroy();
+    }
+
+    @Override
+    public void bindView(@NonNull GameContract.View view) {
+        super.bindView(view);
+        if(mGameInteractor != null) {
+            mGameInteractor.resumeSocket();
+        }
+    }
+
+    @Override
+    public void unbindView() {
+        super.unbindView();
+        if(mGameInteractor != null && !isLeaveFromRoom) {
+            mGameInteractor.stopSocket();
+        }
     }
 
     @Override

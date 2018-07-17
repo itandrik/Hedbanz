@@ -78,4 +78,6 @@ public interface GameDataRepository {
 
     void connect(long userId, long roomId);
     void disconnect();
+    void stopSocket();
+    void startSocket();
 }

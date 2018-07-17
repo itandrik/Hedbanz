@@ -48,7 +48,7 @@ class UserDetailsPresenter @Inject constructor(
     override fun addFriend() {
         model?.let {
             val addFriendParam = AddFriend.Param(DataPolicy.API, model.id)
-
+            view()?.showLoadingDialog()
             mAddFriendInteractor.execute(addFriendParam,
                     view()::showAddFriendSuccess,
                     this::processAddFriendError)
