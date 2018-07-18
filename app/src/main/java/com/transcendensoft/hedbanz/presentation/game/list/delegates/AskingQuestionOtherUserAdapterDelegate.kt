@@ -79,6 +79,7 @@ class AskingQuestionOtherUserAdapterDelegate @Inject constructor() :
             holder.bindTime(question.createDate.time)
 
             holder.bindProgress(question.yesVoters, question.noVoters, question.winVoters, question.allUsersCount)
+            holder.bindWin(question.isWin)
             holder.thumbsDownClickObservable(question.questionId).subscribe(thumbsDownSubject)
             holder.thumbsUpClickObservable(question.questionId).subscribe(thumbsUpSubject)
             holder.winClickObservable(question.questionId).subscribe(winSubject)

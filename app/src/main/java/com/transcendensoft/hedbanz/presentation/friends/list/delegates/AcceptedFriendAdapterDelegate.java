@@ -24,15 +24,14 @@ import android.view.ViewGroup;
 
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate;
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.domain.entity.Friend;
-import com.transcendensoft.hedbanz.domain.interactor.friends.RemoveFriend;
-import com.transcendensoft.hedbanz.presentation.friends.list.FriendsAdapter;
 import com.transcendensoft.hedbanz.presentation.friends.list.holder.AcceptedFriendViewHolder;
 
 import java.util.List;
 
-import io.reactivex.disposables.Disposable;
+import javax.inject.Inject;
+
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * This delegate is responsible for creating
@@ -47,14 +46,10 @@ import io.reactivex.disposables.Disposable;
  * Developed by <u>Transcendensoft</u>
  */
 public class AcceptedFriendAdapterDelegate extends AdapterDelegate<List<Friend>> {
-    private RemoveFriend mRemoveFriendUseCase;
-    private FriendsAdapter mAdapter;
-    private Disposable mRemoveFriendDisposable;
+    private PublishSubject<Friend> removeFriendSubject = PublishSubject.create();
 
-    public AcceptedFriendAdapterDelegate(RemoveFriend removeFriendUseCase, FriendsAdapter adapter) {
-        mRemoveFriendUseCase = removeFriendUseCase;
-        mAdapter = adapter;
-    }
+    @Inject
+    public AcceptedFriendAdapterDelegate() {}
 
     @Override
     protected boolean isForViewType(@NonNull List<Friend> items, int position) {
@@ -78,25 +73,12 @@ public class AcceptedFriendAdapterDelegate extends AdapterDelegate<List<Friend>>
         AcceptedFriendViewHolder acceptedFriendViewHolder = (AcceptedFriendViewHolder) holder;
 
         acceptedFriendViewHolder.bindName(friend.getLogin());
-        acceptedFriendViewHolder.bindIcon(R.drawable.logo); //TODO change this shit
-
-        mRemoveFriendDisposable = acceptedFriendViewHolder.removeFriendObservable()
-                .subscribe(obj -> {
-                    RemoveFriend.Param param = new RemoveFriend.Param(DataPolicy.API, friend.getId());
-                    //TODO show loading
-                    mRemoveFriendUseCase.execute(param,
-                            () -> mAdapter.remove(friend),
-                            err -> {
-                                //TODO hide loading and show error message
-                            });
-                });
+        acceptedFriendViewHolder.bindIcon(R.drawable.logo);
+        acceptedFriendViewHolder.removeFriendObservable(friend)
+                .subscribe(removeFriendSubject);
     }
 
-    @Override
-    protected void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-        if (mRemoveFriendDisposable != null) {
-            mRemoveFriendDisposable.dispose();
-        }
+    public PublishSubject<Friend> getRemoveFriendSubject() {
+        return removeFriendSubject;
     }
 }

@@ -30,16 +30,16 @@ import javax.inject.Inject;
  * domain layer.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class FriendModelDataMapper {
     @Inject
     public FriendModelDataMapper() {
     }
 
-    public Friend convert(FriendDTO friendDTO){
+    public Friend convert(FriendDTO friendDTO) {
         Friend friendResult = null;
-        if(friendDTO != null){
+        if (friendDTO != null) {
             friendResult = new Friend.Builder()
                     .setId(friendDTO.getId())
                     .setEmail(friendDTO.getEmail())
@@ -47,15 +47,17 @@ public class FriendModelDataMapper {
                     .setMoney(friendDTO.getMoney())
                     .setRegistrationDate(friendDTO.getRegistrationDate())
                     .setIsAccepted(friendDTO.isAccepted())
+                    .setIsPending(friendDTO.isPending())
                     .setIsFriend(friendDTO.isFriend())
                     .setWord(friendDTO.getWord())
+                    .setIsWinner(friendDTO.isWinner())
                     .build();
         }
         return friendResult;
     }
 
     public List<Friend> convert(Collection<FriendDTO> friendDTOCollection) {
-        if(friendDTOCollection == null){
+        if (friendDTOCollection == null) {
             return null;
         }
 

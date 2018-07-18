@@ -15,11 +15,10 @@ package com.transcendensoft.hedbanz.data.source;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.models.InviteDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
 import com.transcendensoft.hedbanz.data.models.RoomListDTO;
-
-import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -36,7 +35,9 @@ public interface RoomDataSource {
 
     Observable<RoomDTO> createRoom(RoomDTO roomDTO, long userId);
 
-    Observable<List<RoomDTO>> filterRooms(int page, RoomFilterDTO roomFilter);
+    Observable<RoomListDTO> filterRooms(int page, long userId, RoomFilterDTO roomFilter);
 
     Completable isPasswordCorrect(long userId, long roomId, String password);
+
+    Completable inviteFriend(InviteDTO inviteDTO);
 }

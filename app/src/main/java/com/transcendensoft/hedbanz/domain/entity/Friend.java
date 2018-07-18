@@ -23,13 +23,21 @@ package com.transcendensoft.hedbanz.domain.entity;
  */
 public class Friend extends User {
     private boolean isAccepted;
+    private boolean isPending;
+    private boolean isInvited;
+    private boolean isInGame;
+    private boolean isSelected;
 
     private Friend(long id, String email, String password, String confirmPassword,
-                   long money, Long registrationDate, String login, boolean isAfk,
-                   boolean isAccepted, boolean isFriend, String word, int attempts) {
+                   long money, Long registrationDate, String login, PlayerStatus playerStatus,
+                   boolean isAccepted, boolean isPending, boolean isFriend,
+                   String word, int attempts, boolean isWinner, boolean isInvited, boolean isInGame) {
         super(id, email, password, confirmPassword, money, registrationDate,
-                login, isAfk, isFriend, word, attempts);
+                login, playerStatus, isFriend, word, attempts, isWinner);
         this.isAccepted = isAccepted;
+        this.isPending = isPending;
+        this.isInvited = isInvited;
+        this.isInGame = isInGame;
     }
 
     public boolean isAccepted() {
@@ -38,6 +46,38 @@ public class Friend extends User {
 
     public void setAccepted(boolean accepted) {
         isAccepted = accepted;
+    }
+
+    public boolean isPending() {
+        return isPending;
+    }
+
+    public void setPending(boolean pending) {
+        isPending = pending;
+    }
+
+    public boolean isInvited() {
+        return isInvited;
+    }
+
+    public void setInvited(boolean invited) {
+        isInvited = invited;
+    }
+
+    public boolean isInGame() {
+        return isInGame;
+    }
+
+    public void setInGame(boolean inGame) {
+        isInGame = inGame;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 
     public static class Builder {
@@ -49,10 +89,15 @@ public class Friend extends User {
         private Long registrationDate;
         private String login;
         private boolean isAccepted;
-        private boolean isAfk;
+        private PlayerStatus playerStatus;
         private boolean isFriend;
         private String word;
         private int attempts;
+        private boolean isWinner;
+        private boolean isPending;
+        private boolean isInvited;
+        private boolean isInGame;
+
         public Builder setId(long id) {
             this.id = id;
             return this;
@@ -93,8 +138,13 @@ public class Friend extends User {
             return this;
         }
 
-        public Builder setIsAfk(boolean isAfk) {
-            this.isAfk = isAfk;
+        public Builder setIsPending(boolean isPending) {
+            this.isPending = isPending;
+            return this;
+        }
+
+        public Builder setPlayerStatus(PlayerStatus playerStatus) {
+            this.playerStatus = playerStatus;
             return this;
         }
 
@@ -113,9 +163,25 @@ public class Friend extends User {
             return this;
         }
 
+        public Builder setIsWinner(boolean isWinner){
+            this.isWinner = isWinner;
+            return this;
+        }
+
+        public Builder setIsInvited(boolean isInvited){
+            this.isInvited = isInvited;
+            return this;
+        }
+
+        public Builder setIsInGame(boolean isInGame){
+            this.isInGame = isInGame;
+            return this;
+        }
+
         public Friend build() {
             return new Friend(id, email, password, confirmPassword, money,
-                    registrationDate, login, isAfk, isAccepted, isFriend, word, attempts);
+                    registrationDate, login, playerStatus, isAccepted, isPending,
+                    isFriend, word, attempts, isWinner, isInvited, isInGame);
         }
     }
 }

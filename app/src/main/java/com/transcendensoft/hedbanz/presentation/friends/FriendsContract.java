@@ -20,6 +20,8 @@ import com.transcendensoft.hedbanz.presentation.base.BaseView;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+
 /**
  * View and Presenter interfaces contract for friends list presentation
  *
@@ -35,10 +37,32 @@ public class FriendsContract {
         void clearFriends();
 
         void showEmptyList();
+
+        void sureToDeleteFriend(Friend friend);
+
+        void sureToDeclineFriend(Friend friend);
+
+        void successAcceptFriend(Friend friend);
+
+        void successDeclineFriend(Friend friend);
+
+        void successDeleteFriend(Friend friend);
+
+        void errorFriend(Friend friend);
     }
 
     interface Presenter {
-        void deleteFriendWithId(Friend friend);
+        void processDeleteFriendClick(Observable<Friend> clickObservable);
+
+        void processAcceptFriendClick(Observable<Friend> clickObservable);
+
+        void processDeclineFriendClick(Observable<Friend> clickObservable);
+
+        void deleteFriend(Friend friend);
+
+        void acceptFriend(Friend friend);
+
+        void declineFriend(Friend friend);
 
         void getFriends();
     }

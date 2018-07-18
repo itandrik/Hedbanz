@@ -21,10 +21,16 @@ import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.di.scope.FragmentScope;
 import com.transcendensoft.hedbanz.domain.entity.Room;
-import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
 import com.transcendensoft.hedbanz.presentation.game.menu.GameMenuContract;
 import com.transcendensoft.hedbanz.presentation.game.menu.GameMenuFragment;
 import com.transcendensoft.hedbanz.presentation.game.menu.GameMenuPresenter;
+import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
+import com.transcendensoft.hedbanz.presentation.invite.InviteContract;
+import com.transcendensoft.hedbanz.presentation.invite.InviteDialogFragment;
+import com.transcendensoft.hedbanz.presentation.invite.InvitePresenter;
+import com.transcendensoft.hedbanz.presentation.userdetails.UserDetailsContract;
+import com.transcendensoft.hedbanz.presentation.userdetails.UserDetailsDialogFragment;
+import com.transcendensoft.hedbanz.presentation.userdetails.UserDetailsPresenter;
 
 import dagger.Binds;
 import dagger.Module;
@@ -47,8 +53,24 @@ public interface GameModule {
     @Binds GameMenuContract.Presenter bindGameMenuPresenter(GameMenuPresenter gameMenuPresenter);
 
     @FragmentScope
+    @Binds
+    UserDetailsContract.Presenter bindUserDetailsPresenter(UserDetailsPresenter userDetailsPresenter);
+
+    @FragmentScope
+    @Binds
+    InviteContract.Presenter bindInvitePresenter(InvitePresenter invitePresenter);
+
+    @FragmentScope
     @ContributesAndroidInjector
     GameMenuFragment gameMenuFragment();
+
+    @FragmentScope
+    @ContributesAndroidInjector
+    UserDetailsDialogFragment userDetailsDialogFragment();
+
+    @FragmentScope
+    @ContributesAndroidInjector
+    InviteDialogFragment inviteDialogFragment();
 
     @ActivityContext
     @Binds Context bindActivityContext(GameActivity gameActivity);

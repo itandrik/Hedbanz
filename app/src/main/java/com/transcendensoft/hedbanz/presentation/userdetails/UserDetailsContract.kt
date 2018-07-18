@@ -1,6 +1,4 @@
-package com.transcendensoft.hedbanz.di.qualifier
-
-import javax.inject.Qualifier
+package com.transcendensoft.hedbanz.presentation.userdetails
 
 /**
  * Copyright 2017. Andrii Chernysh
@@ -19,12 +17,22 @@ import javax.inject.Qualifier
  *
  */
 /**
- * Dagger 2 qualifier for simple GSON that uses just in list of messages.
+ * View and Presenter interfaces contract for user details presentation
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- * Developed by <u>Transcendensoft</u>
+ *         Developed by <u>Transcendensoft</u>
  */
-@MustBeDocumented
-@Qualifier
-@kotlin.annotation.Retention()
-annotation class MessagesGSON
+interface UserDetailsContract{
+    interface View {
+        fun showLoadingDialog()
+        fun hideLoadingDialog()
+        fun showAddFriendSuccess()
+        fun showInternetError()
+        fun showServerError()
+        fun showAlreadySentRequest()
+    }
+
+    interface Presenter {
+        fun addFriend()
+    }
+}

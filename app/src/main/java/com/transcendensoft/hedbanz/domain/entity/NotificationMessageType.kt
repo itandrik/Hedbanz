@@ -29,6 +29,12 @@ enum class NotificationMessageType(val id: Int) {
     GUESS_WORD(3),
     FRIEND(4),
     INVITE(5),
+    KICK_WARNING(6),
+    KICKED(7),
+    GAME_OVER(8),
+    NEW_ROOM_CREATED(9),
+    LAST_PLAYER(10),
+    APP_NEW_VERSION(20),
     UNDEFINED(100500);
 
     companion object {

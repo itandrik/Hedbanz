@@ -202,6 +202,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     mAdapter.askingQuestionThumbsDownObservable());
             mPresenter.processWinClick(
                     mAdapter.askingQuestionWinObservable());
+            mPresenter.processRestartGameClick(
+                    mAdapter.restartGameObservable());
+            mPresenter.processCancelGameClick(
+                    mAdapter.cancelGameObservable());
         }
     }
 
@@ -232,6 +236,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     .setMessage(getString(R.string.game_exit_room_message))
                     .setTitle(getString(R.string.game_exit_room_title))
                     .setPositiveButton(getString(R.string.game_action_exit_game), (dialog, which) -> {
+                        mPresenter.setIsLeaveFromRoom(true);
                         super.onBackPressed();
                     })
                     .setNegativeButton(getString(R.string.game_action_resume_game), (dialog, which) -> {
@@ -354,6 +359,11 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         mRlErrorNetwork.setVisibility(GONE);
         mFlLoadingContainer.setVisibility(GONE);
         mRlDataContainer.setVisibility(GONE);
+    }
+
+    @Override
+    public void showWinDialog() {
+        showShortToastMessage("You won!!!");
     }
 
     @Override

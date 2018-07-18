@@ -23,47 +23,15 @@ package com.transcendensoft.hedbanz.domain.entity;
  *         Developed by <u>Transcendensoft</u>
  */
 public class Word extends Message{
-    private long senderId;
-    private long roomId;
-    private long wordReceiverId;
     private String word;
-    private User senderUser;
     private User wordReceiverUser;
+    private Long roomId;
 
-    public Word(User senderUser, User wordReceiverUser) {
-        this.senderUser = senderUser;
-        this.wordReceiverUser = wordReceiverUser;
-    }
-
-    private Word(long senderId, long roomId, long wordReceiverId, String word) {
-        this.senderId = senderId;
-        this.roomId = roomId;
-        this.wordReceiverId = wordReceiverId;
+    public Word(User userFrom, MessageType messageType, String word, User wordReceiverUser, Long roomId) {
+        super(0L, null, userFrom, messageType, null,0L);
         this.word = word;
-    }
-
-    public long getSenderId() {
-        return senderId;
-    }
-
-    public void setSenderId(long senderId) {
-        this.senderId = senderId;
-    }
-
-    public long getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(long roomId) {
+        this.wordReceiverUser = wordReceiverUser;
         this.roomId = roomId;
-    }
-
-    public long getWordReceiverId() {
-        return wordReceiverId;
-    }
-
-    public void setWordReceiverId(long wordReceiverId) {
-        this.wordReceiverId = wordReceiverId;
     }
 
     public String getWord() {
@@ -74,30 +42,49 @@ public class Word extends Message{
         this.word = word;
     }
 
-    public User getSenderUser() {
-        return senderUser;
-    }
-
-    public void setSenderUser(User senderUser) {
-        this.senderUser = senderUser;
-    }
-
     public User getWordReceiverUser() {
         return wordReceiverUser;
+    }
+
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
     }
 
     public void setWordReceiverUser(User wordReceiverUser) {
         this.wordReceiverUser = wordReceiverUser;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Word word1 = (Word) o;
+
+        if (word != null ? !word.equals(word1.word) : word1.word != null) return false;
+        return wordReceiverUser != null ? wordReceiverUser.equals(word1.wordReceiverUser) : word1.wordReceiverUser == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = word != null ? word.hashCode() : 0;
+        result = 31 * result + (wordReceiverUser != null ? wordReceiverUser.hashCode() : 0);
+        return result;
+    }
+
     public static class Builder {
-        private long senderId;
-        private long roomId;
-        private long wordReceiverId;
+        private User userFrom;
+        private MessageType messageType;
+        private Long roomId;
+        private User wordReceiverUser;
         private String word;
 
-        public Builder setSenderId(long senderId) {
-            this.senderId = senderId;
+        public Builder setUserFrom(User userFrom) {
+            this.userFrom = userFrom;
             return this;
         }
 
@@ -106,8 +93,8 @@ public class Word extends Message{
             return this;
         }
 
-        public Builder setWordReceiverId(long wordReceiverId) {
-            this.wordReceiverId = wordReceiverId;
+        public Builder setWordReceiverUser(User wordReceiverUser) {
+            this.wordReceiverUser = wordReceiverUser;
             return this;
         }
 
@@ -116,8 +103,13 @@ public class Word extends Message{
             return this;
         }
 
+        public Builder setMessageType(MessageType messageType) {
+            this.messageType = messageType;
+            return this;
+        }
+
         public Word build() {
-            return new Word(senderId, roomId, wordReceiverId, word);
+            return new Word(userFrom, messageType, word, wordReceiverUser, roomId);
         }
     }
 }

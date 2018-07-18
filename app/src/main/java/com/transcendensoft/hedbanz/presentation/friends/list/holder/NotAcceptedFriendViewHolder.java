@@ -22,8 +22,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding2.view.RxView;
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.domain.entity.Friend;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,13 +60,19 @@ public class NotAcceptedFriendViewHolder extends RecyclerView.ViewHolder{
         mIvIcon.setImageResource(drawableIcon);
     }
 
-    public Observable<Object> acceptObservable(){
-        return RxView.clicks(mIvAcceptFriend)
-                .takeUntil(RxView.detaches(itemView));
+    public Observable<Friend> acceptObservable(Friend friend){
+        return Observable.create(emitter -> {
+            mIvAcceptFriend.setOnClickListener(v -> {
+                emitter.onNext(friend);
+            });
+        });
     }
 
-    public Observable<Object> dismissObservable(){
-        return RxView.clicks(mIvDismissFriend)
-                .takeUntil(RxView.detaches(itemView));
+    public Observable<Friend> dismissObservable(Friend friend){
+        return Observable.create(emitter -> {
+            mIvDismissFriend.setOnClickListener(v -> {
+                emitter.onNext(friend);
+            });
+        });
     }
 }

@@ -22,8 +22,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding2.view.RxView;
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.domain.entity.Friend;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,9 +34,9 @@ import io.reactivex.Observable;
  * for view that represents already accepted friend
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public class AcceptedFriendViewHolder extends RecyclerView.ViewHolder{
+public class AcceptedFriendViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.ivFriendIcon) ImageView mIvIcon;
     @BindView(R.id.ivRemoveFriend) ImageView mIvRemoveFriend;
     @BindView(R.id.tvFriendName) TextView mTvFriendName;
@@ -47,20 +47,23 @@ public class AcceptedFriendViewHolder extends RecyclerView.ViewHolder{
         ButterKnife.bind(this, itemView);
     }
 
-    public void bindName(String name){
-        if(!TextUtils.isEmpty(name)){
+    public void bindName(String name) {
+        if (!TextUtils.isEmpty(name)) {
             mTvFriendName.setText(name);
         } else {
             mTvFriendName.setText("");
         }
     }
 
-    public void bindIcon(@DrawableRes int drawableIcon){
+    public void bindIcon(@DrawableRes int drawableIcon) {
         mIvIcon.setImageResource(drawableIcon);
     }
 
-    public Observable<Object> removeFriendObservable(){
-        return RxView.clicks(mIvRemoveFriend)
-                .takeUntil(RxView.detaches(itemView));
+    public Observable<Friend> removeFriendObservable(Friend friend) {
+        return Observable.create(emitter -> {
+            mIvRemoveFriend.setOnClickListener(v -> {
+                emitter.onNext(friend);
+            });
+        });
     }
 }

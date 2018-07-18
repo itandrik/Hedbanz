@@ -21,12 +21,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.MvpRecyclerListAdapter;
 import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * List adapter for users in menu side bar
@@ -37,6 +40,7 @@ import io.reactivex.ObservableTransformer;
 public class UserMenuListAdapter extends MvpRecyclerListAdapter
         <RxUser, UserMenuItemPresenter, UserMenuItemViewHolder> {
     private ObservableTransformer mSchedulersTransformer;
+    private PublishSubject<User> mItemClickListener = PublishSubject.create();
 
     @Inject
     public UserMenuListAdapter(ObservableTransformer schedulersTransformer) {
@@ -48,6 +52,7 @@ public class UserMenuListAdapter extends MvpRecyclerListAdapter
     protected UserMenuItemPresenter createPresenter(@NonNull RxUser model) {
         UserMenuItemPresenter presenter = new UserMenuItemPresenter(mSchedulersTransformer);
         presenter.setModel(model);
+        presenter.getItemClickObservable().subscribe(mItemClickListener);
         return presenter;
     }
 
@@ -63,5 +68,9 @@ public class UserMenuListAdapter extends MvpRecyclerListAdapter
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_player_menu, parent, false);
         return new UserMenuItemViewHolder(parent.getContext(), itemView);
+    }
+
+    public Observable<User> getItemClickListener() {
+        return mItemClickListener;
     }
 }

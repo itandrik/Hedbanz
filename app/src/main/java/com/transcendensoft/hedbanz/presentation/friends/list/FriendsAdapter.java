@@ -15,14 +15,16 @@ package com.transcendensoft.hedbanz.presentation.friends.list;
  * limitations under the License.
  */
 
+import android.support.annotation.NonNull;
+
 import com.transcendensoft.hedbanz.domain.entity.Friend;
-import com.transcendensoft.hedbanz.domain.interactor.friends.AcceptFriend;
-import com.transcendensoft.hedbanz.domain.interactor.friends.RemoveFriend;
 import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
 import com.transcendensoft.hedbanz.presentation.friends.list.delegates.AcceptedFriendAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.friends.list.delegates.NotAcceptedFriendAdapterDelegate;
 
 import javax.inject.Inject;
+
+import io.reactivex.Observable;
 
 /**
  * Adapter for friends recycler view.
@@ -31,13 +33,30 @@ import javax.inject.Inject;
  * Developed by <u>Transcendensoft</u>
  */
 public class FriendsAdapter extends RecyclerDelegationAdapter<Friend> {
+    @Inject AcceptedFriendAdapterDelegate mAcceptedFriendAdapterDelegate;
+    @Inject NotAcceptedFriendAdapterDelegate mNotAcceptedFriendAdapterDelegate;
 
     @Inject
-    public FriendsAdapter(AcceptFriend acceptFriend, RemoveFriend removeFriend) {
+    public FriendsAdapter() {
         super();
 
         delegatesManager
-                .addDelegate(new AcceptedFriendAdapterDelegate(removeFriend, this))
-                .addDelegate(new NotAcceptedFriendAdapterDelegate(acceptFriend, this));
+                .addDelegate(mAcceptedFriendAdapterDelegate)
+                .addDelegate(mNotAcceptedFriendAdapterDelegate);
+    }
+
+    @NonNull
+    public Observable<Friend> acceptFriendObservable(){
+        return mNotAcceptedFriendAdapterDelegate.getAcceptSubject();
+    }
+
+    @NonNull
+    public Observable<Friend> declineFriendObservable(){
+        return mNotAcceptedFriendAdapterDelegate.getDeclineSubject();
+    }
+
+    @NonNull
+    public Observable<Friend> deleteFriendObservable(){
+        return mAcceptedFriendAdapterDelegate.getRemoveFriendSubject();
     }
 }

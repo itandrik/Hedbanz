@@ -17,6 +17,7 @@ package com.transcendensoft.hedbanz.data.models.mapper;
 
 import com.transcendensoft.hedbanz.data.models.UserDTO;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
+import com.transcendensoft.hedbanz.domain.entity.PlayerStatus;
 import com.transcendensoft.hedbanz.domain.entity.User;
 
 import java.util.ArrayList;
@@ -55,9 +56,10 @@ public class UserModelDataMapper {
                     .setMoney(userDTO.getMoney())
                     .setPassword(userDTO.getPassword())
                     .setRegistrationDate(userDTO.getRegistrationDate())
-                    .setIsAfk(userDTO.isAfk())
+                    .setPlayerStatus(PlayerStatus.getStatusByCode(userDTO.getStatus()))
                     .setIsFriend(userDTO.isFriend())
                     .setWord(userDTO.getWord())
+                    .setIsWinner(userDTO.isWinner())
                     .setAttempts(userDTO.getAttempts())
                     .build();
         }
@@ -74,10 +76,12 @@ public class UserModelDataMapper {
                     .setMoney(user.getMoney())
                     .setPassword(user.getPassword())
                     .setRegistrationDate(user.getRegistrationDate())
-                    .setIsAfk(user.isAFK())
+                    .setStatus(user.getPlayerStatus() != null ?
+                            user.getPlayerStatus().getCode() : PlayerStatus.UNDEFINED.getCode())
                     .setIsFriend(user.isFriend())
                     .setWord(user.getWord())
                     .setAttempts(user.getAttempts())
+                    .setIsWinner(user.isWinner())
                     .build();
         }
         return userResult;

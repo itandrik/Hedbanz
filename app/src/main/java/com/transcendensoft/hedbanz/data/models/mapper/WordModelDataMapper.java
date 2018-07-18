@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.data.models.mapper;
  */
 
 import com.transcendensoft.hedbanz.data.models.WordDTO;
+import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.Word;
 
 import java.util.ArrayList;
@@ -33,8 +34,11 @@ import javax.inject.Inject;
  *         Developed by <u>Transcendensoft</u>
  */
 public class WordModelDataMapper {
+    private UserModelDataMapper mUserModelDataMapper;
+
     @Inject
     public WordModelDataMapper() {
+        mUserModelDataMapper = new UserModelDataMapper();
     }
 
     public Word convert(WordDTO wordDTO){
@@ -42,9 +46,10 @@ public class WordModelDataMapper {
         if(wordDTO != null){
             wordResult = new Word.Builder()
                     .setRoomId(wordDTO.getRoomId())
-                    .setSenderId(wordDTO.getSenderId())
                     .setWord(wordDTO.getWord())
-                    .setWordReceiverId(wordDTO.getWordReceiverId())
+                    .setMessageType(MessageType.getMessageTypeById(wordDTO.getType()))
+                    .setUserFrom(mUserModelDataMapper.convert(wordDTO.getSenderUser()))
+                    .setWordReceiverUser(mUserModelDataMapper.convert(wordDTO.getWordReceiverUser()))
                     .build();
         }
         return wordResult;
@@ -55,9 +60,10 @@ public class WordModelDataMapper {
         if(word != null){
             wordDTOResult = new WordDTO.Builder()
                     .setRoomId(word.getRoomId())
-                    .setSenderId(word.getSenderId())
                     .setWord(word.getWord())
-                    .setWordReceiverId(word.getWordReceiverId())
+                    .setType(word.getMessageType() != null ? word.getMessageType().getId() : MessageType.UNDEFINED.getId())
+                    .setSenderUser(mUserModelDataMapper.convert(word.getUserFrom()))
+                    .setWordReceiverUser(mUserModelDataMapper.convert(word.getWordReceiverUser()))
                     .build();
         }
         return wordDTOResult;

@@ -15,16 +15,10 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.word;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.models.WordDTO;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.User;
-import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
+import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,7 +35,7 @@ import io.reactivex.subjects.PublishSubject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  **/
-public class WordSettingUseCase extends ObservableUseCase<User, List<User>>{
+public class WordSettingUseCase extends ObservableUseCase<User, Void>{
     private PublishSubject<User> mSubject;
     private GameDataRepository mRepository;
 
@@ -55,35 +49,10 @@ public class WordSettingUseCase extends ObservableUseCase<User, List<User>>{
     }
 
     @Override
-    protected Observable<User> buildUseCaseObservable(List<User> params) {
+    protected Observable<User> buildUseCaseObservable(Void params) {
         Observable<User> observable = mRepository.settingWordObservable()
-                .flatMap(jsonObject -> convertJsonToUserObservable(params, jsonObject));
+                .map(Word::getWordReceiverUser);
         observable.subscribe(mSubject);
         return mSubject;
-    }
-
-    private Observable<User> convertJsonToUserObservable(List<User> users, JSONObject jsonObject){
-        try {
-            Long wordReceiverId = jsonObject.getLong(WordDTO.WORD_RECEIVER_ID);
-            User wordReceiverUser = getUserWithId(users, wordReceiverId);
-
-            return Observable.just(wordReceiverUser);
-        } catch (JSONException e) {
-            return Observable.error(new IncorrectJsonException(
-                    jsonObject.toString(), WordSettedUseCase.class.getName()));
-        }
-    }
-
-    private User getUserWithId(List<User> users, long id) {
-        User user = null;
-        for (User innerUser : users) {
-            if (innerUser.getId() == id) {
-                user = innerUser;
-            }
-        }
-        if(user == null){
-            user = new User.Builder().setId(id).build();
-        }
-        return user;
     }
 }

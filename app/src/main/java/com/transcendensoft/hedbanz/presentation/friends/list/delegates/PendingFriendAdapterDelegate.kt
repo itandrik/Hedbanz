@@ -1,6 +1,4 @@
-package com.transcendensoft.hedbanz.di.qualifier
-
-import javax.inject.Qualifier
+package com.transcendensoft.hedbanz.presentation.friends.list.delegates
 
 /**
  * Copyright 2017. Andrii Chernysh
@@ -19,12 +17,10 @@ import javax.inject.Qualifier
  *
  */
 /**
- * Dagger 2 qualifier for simple GSON that uses everywhere
+ * //TODO add class description
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- * Developed by <u>Transcendensoft</u>
+ *         Developed by <u>Transcendensoft</u>
  */
-@MustBeDocumented
-@Qualifier
-@kotlin.annotation.Retention()
-annotation class SimpleGSON
+class PendingFriendAdapterDelegate {
+}

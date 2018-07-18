@@ -15,19 +15,22 @@ package com.transcendensoft.hedbanz.presentation.friends;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.domain.entity.Friend;
 import com.transcendensoft.hedbanz.domain.interactor.friends.AcceptFriend;
+import com.transcendensoft.hedbanz.domain.interactor.friends.DeclineFriend;
 import com.transcendensoft.hedbanz.domain.interactor.friends.GetFriends;
 import com.transcendensoft.hedbanz.domain.interactor.friends.RemoveFriend;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 
 import java.net.ConnectException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableTransformer;
 import timber.log.Timber;
 
 /**
@@ -41,15 +44,20 @@ public class FriendsPresenter extends BasePresenter<List<Friend>, FriendsContrac
         implements FriendsContract.Presenter {
     private GetFriends mGetFriendsInteractor;
     private AcceptFriend mAcceptFriendInteractor;
+    private DeclineFriend mDeclineFriendInteractor;
     private RemoveFriend mRemoveFriendInteractor;
+    private ObservableTransformer mObservableTransformer;
 
     @Inject
     public FriendsPresenter(GetFriends getFriendsInteractor,
                             AcceptFriend acceptFriendInteractor,
-                            RemoveFriend removeFriendInteractor) {
+                            RemoveFriend removeFriendInteractor,
+                            DeclineFriend declineFriendInteractor,
+                            ObservableTransformer transformer) {
         this.mGetFriendsInteractor = getFriendsInteractor;
         this.mAcceptFriendInteractor = acceptFriendInteractor;
         this.mRemoveFriendInteractor = removeFriendInteractor;
+        this.mDeclineFriendInteractor = declineFriendInteractor;
     }
 
     @Override
@@ -67,25 +75,67 @@ public class FriendsPresenter extends BasePresenter<List<Friend>, FriendsContrac
         mAcceptFriendInteractor.dispose();
         mGetFriendsInteractor.dispose();
         mRemoveFriendInteractor.dispose();
+        mDeclineFriendInteractor.dispose();
     }
 
     @Override
-    public void deleteFriendWithId(Friend friend) {
-        RemoveFriend.Param params = new RemoveFriend.Param(DataPolicy.API, friend.getId());
-        mRemoveFriendInteractor.execute(params, () -> {
-            // TODO friend deleted
-        }, err -> {
-            Timber.e(err);
-            view().showShortToastMessage(R.string.error_server);
-        });
+    public void processAcceptFriendClick(Observable<Friend> clickObservable) {
+        addDisposable(clickObservable
+                .compose(applySchedulers())
+                .subscribe(this::acceptFriend, Timber::e));
+    }
 
+    @Override
+    public void processDeclineFriendClick(Observable<Friend> clickObservable) {
+        addDisposable(clickObservable
+                .compose(applySchedulers())
+                .subscribe(view()::sureToDeclineFriend, Timber::e));
+    }
+
+    @Override
+    public void processDeleteFriendClick(Observable<Friend> clickObservable) {
+        addDisposable(clickObservable
+                .compose(applySchedulers())
+                .subscribe(view()::sureToDeleteFriend, Timber::e));
+    }
+
+    @Override
+    public void deleteFriend(Friend friend) {
+        view().showLoadingDialog();
+        RemoveFriend.Param param = new RemoveFriend.Param(DataPolicy.API, friend.getId());
+        mRemoveFriendInteractor.execute(param,
+                () -> view().successDeleteFriend(friend),
+                err -> processFriendError(friend, err));
+    }
+
+    @Override
+    public void acceptFriend(Friend friend) {
+        view().showLoadingDialog();
+        AcceptFriend.Param param = new AcceptFriend.Param(DataPolicy.API, friend.getId());
+        mAcceptFriendInteractor.execute(param,
+                () -> view().successAcceptFriend(friend),
+                err -> processFriendError(friend, err));
+    }
+
+    @Override
+    public void declineFriend(Friend friend) {
+        view().showLoadingDialog();
+        DeclineFriend.Param param = new DeclineFriend.Param(DataPolicy.API, friend.getId());
+        mDeclineFriendInteractor.execute(param,
+                () -> view().successDeclineFriend(friend),
+                err -> processFriendError(friend, err));
+    }
+
+    private void processFriendError(Friend friend, Throwable err) {
+        view().errorFriend(friend);
+        Timber.e(err);
     }
 
     @Override
     public void getFriends() {
         mGetFriendsInteractor.execute(DataPolicy.API,
                 this::processGetFriendsOnNext,
-                this::processGetFriendsOnError,
+                this::processOnError,
                 () -> view().showContent(),
                 (d) -> view().showLoading());
 
@@ -95,16 +145,30 @@ public class FriendsPresenter extends BasePresenter<List<Friend>, FriendsContrac
         if (friends == null || friends.isEmpty()) {
             view().showEmptyList();
         } else {
+            Collections.sort(friends, (o1, o2) -> {
+                if (o1.isAccepted() == o2.isAccepted()) {
+                    return (int) (o1.getId() - o2.getId());
+                } else if (o1.isAccepted()) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            });
             view().addFriendsToRecycler(friends);
         }
     }
 
-    private void processGetFriendsOnError(Throwable err) {
+    private void processOnError(Throwable err) {
         Timber.e(err);
         if (err instanceof ConnectException) {
             view().showNetworkError();
         } else {
             view().showServerError();
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <S> ObservableTransformer<S, S> applySchedulers() {
+        return (ObservableTransformer<S, S>) mObservableTransformer;
     }
 }

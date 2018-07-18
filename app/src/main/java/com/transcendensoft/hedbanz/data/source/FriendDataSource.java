@@ -32,7 +32,11 @@ import io.reactivex.Observable;
 public interface FriendDataSource {
     Observable<List<FriendDTO>> getFriends(long userId);
 
+    Observable<List<FriendDTO>> getInviteFriends(long userId, long roomId);
+
     Completable removeFriend(long userId, long friendId);
+
+    Completable declineFriend(long userId, long friendId);
 
     Completable addFriend(long userId, long friendId);
 

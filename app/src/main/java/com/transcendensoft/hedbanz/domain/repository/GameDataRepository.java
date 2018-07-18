@@ -53,12 +53,16 @@ public interface GameDataRepository {
     Observable<JSONObject> stopTypingObservable();
     Observable<Message> messageObservable();
     Observable<JSONObject> errorObservable();
-    Observable<JSONObject> settingWordObservable();
-    Observable<JSONObject> wordSettedToUserObservable();
+    Observable<Word> settingWordObservable();
+    Observable<Word> wordSettedToUserObservable();
 
     Observable<PlayerGuessing> wordGuessingObservable();
     Observable<Question> questionAskingObservable();
     Observable<Question> questionVotingObservable();
+
+    Observable<User> userAfkWarningObservable();
+    Observable<User> userKickedObservable();
+    Observable<Boolean> gameOverObservable();
 
     void startTyping();
     void stopTyping();
@@ -70,7 +74,10 @@ public interface GameDataRepository {
     void guessWord(Question question);
     void voteForQuestion(Question question);
     void sendConnectInfo();
+    void restartGame();
 
     void connect(long userId, long roomId);
     void disconnect();
+    void stopSocket();
+    void startSocket();
 }

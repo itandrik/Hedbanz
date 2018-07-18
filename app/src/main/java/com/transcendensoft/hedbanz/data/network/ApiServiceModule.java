@@ -18,6 +18,8 @@ package com.transcendensoft.hedbanz.data.network;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
+import com.transcendensoft.hedbanz.data.network.retrofit.HedbanzApiErrorHandlerFactory;
+import com.transcendensoft.hedbanz.data.network.retrofit.MessageDeserializer;
 import com.transcendensoft.hedbanz.data.network.service.ApiService;
 import com.transcendensoft.hedbanz.data.network.source.ApiDataSource;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;

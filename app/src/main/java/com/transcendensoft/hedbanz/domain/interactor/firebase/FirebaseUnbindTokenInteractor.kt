@@ -39,7 +39,7 @@ class FirebaseUnbindTokenInteractor @Inject constructor(
         private val mPreferenceManager: PreferenceManager) :
         CompletableUseCase<Unit>(schedulersTransformer, compositeDisposable) {
 
-    override fun buildUseCaseCompletable(unit: Unit): Completable =
+    override fun buildUseCaseCompletable(unit: Unit?): Completable =
             mFirebaseIdDataRepository.unbindFirebaseId(
                     mPreferenceManager.user.id, DataPolicy.API)
 }

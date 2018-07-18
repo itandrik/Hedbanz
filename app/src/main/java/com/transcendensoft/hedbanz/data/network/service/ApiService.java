@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.data.network.service;
  */
 
 import com.transcendensoft.hedbanz.data.models.FriendDTO;
+import com.transcendensoft.hedbanz.data.models.InviteDTO;
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
@@ -72,13 +73,17 @@ public interface ApiService {
     @PUT("rooms")
     Observable<RoomDTO> createRoom(@Body HashMap<String, Object> roomDataMap);
 
-    @POST("rooms/{page}")
-    Observable<List<RoomDTO>> filterRooms(
+    @POST("rooms/{page}/user/{userId}")
+    Observable<RoomListDTO> filterRooms(
             @Path("page") int page,
+            @Path("userId") long userId,
             @Body RoomFilterDTO roomFilter);
 
     @POST("rooms/password")
     Completable checkRoomPasswordCorrect(@Body HashMap<String, Object> checkPasswordDataMap);
+
+    @POST("rooms/invite")
+    Completable inviteFriendToRoom(@Body InviteDTO inviteDTO);
 
     /* Game mode */
     @GET("rooms/{roomId}/messages/{page}")
@@ -89,14 +94,23 @@ public interface ApiService {
     @GET("user/{userId}/friends")
     Observable<List<FriendDTO>> getFriends(@Path("userId") long userId);
 
-    @POST("user/{userId}/friends/{friendId}")
-    Completable acceptFriend(@Path("userId") long userId,
-                             @Path("friendId") long friendId);
+    @GET("user/{userId}/friends/room/{roomId}")
+    Observable<List<FriendDTO>> getInviteFriends(@Path("userId") long userId,
+                                                 @Path("roomId") long roomId);
 
     @PUT("user/{userId}/friends/{friendId}")
     Completable addFriend(@Path("userId") long userId,
                           @Path("friendId") long friendId);
 
-    //TODO Completable dismissFriend
-    //TODO Completable removeFriend
+    @DELETE("user/{userId}/friends/{friendId}")
+    Completable deleteFriend(@Path("userId") long userId,
+                             @Path("friendId") long friendId);
+
+    @POST("user/{userId}/friends/{friendId}")
+    Completable acceptFriend(@Path("userId") long userId,
+                             @Path("friendId") long friendId);
+
+    @PATCH("user/{userId}/friends/{friendId}")
+    Completable declineFriend(@Path("userId") long userId,
+                          @Path("friendId") long friendId);
 }

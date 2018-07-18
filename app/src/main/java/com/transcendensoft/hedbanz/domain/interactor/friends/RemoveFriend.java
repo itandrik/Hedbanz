@@ -29,7 +29,7 @@ import io.reactivex.disposables.CompositeDisposable;
 /**
  * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
  * that represents a use case for deleting specific
- * {@link com.transcendensoft.hedbanz.domain.entity.Friend} for current
+ * {@link com.transcendensoft.hedbanz.domain.entity.Friend} from current
  * {@link com.transcendensoft.hedbanz.domain.entity.User}
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com

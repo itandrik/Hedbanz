@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.data.network.source;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.models.InviteDTO;
 import com.transcendensoft.hedbanz.data.models.RoomDTO;
 import com.transcendensoft.hedbanz.data.models.RoomFilterDTO;
 import com.transcendensoft.hedbanz.data.models.RoomListDTO;
@@ -23,7 +24,6 @@ import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -58,8 +58,8 @@ public class RoomsApiDataSource extends ApiDataSource implements RoomDataSource 
         return mService.createRoom(result);
     }
 
-    public Observable<List<RoomDTO>> filterRooms(int page, RoomFilterDTO roomFilter) {
-        return mService.filterRooms(page, roomFilter);
+    public Observable<RoomListDTO> filterRooms(int page, long userId, RoomFilterDTO roomFilter) {
+        return mService.filterRooms(page, userId, roomFilter);
     }
 
     public Completable isPasswordCorrect(long userId, long roomId, String password){
@@ -69,5 +69,9 @@ public class RoomsApiDataSource extends ApiDataSource implements RoomDataSource 
         result.put("password", password);
 
         return mService.checkRoomPasswordCorrect(result);
+    }
+
+    public Completable inviteFriend(InviteDTO inviteDTO){
+        return mService.inviteFriendToRoom(inviteDTO);
     }
 }

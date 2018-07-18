@@ -23,11 +23,13 @@ import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.entity.PlayerStatus;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.MvpViewHolder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
 
 /**
  * View holder realization for concrete user in game mode
@@ -38,13 +40,16 @@ import butterknife.ButterKnife;
  */
 public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
         implements UserMenuItemContract.View {
-    @BindView(R.id.tvUserWord) TextView mTvWord;
+    @BindView(R.id.tvUserWordMenu) TextView mTvWord;
     @BindView(R.id.tvUserLogin) TextView mTvLogin;
     @BindView(R.id.ivFriend) ImageView mIvIsFriend;
+    @BindView(R.id.tvFriendTitle) TextView mTvIsFriend;
     @BindView(R.id.ivUserIcon) ImageView mIvUserIcon;
     @BindView(R.id.tvAfkShadow) TextView mTvAfk;
     @BindView(R.id.tvThisUser) TextView mTvThisUser;
     @BindView(R.id.ivThisUserStar) ImageView mIvThisUserStar;
+    @BindView(R.id.ivWin) ImageView mIvWin;
+    private View mItemView;
 
     private Context mContext;
 
@@ -52,11 +57,8 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
         super(itemView);
         ButterKnife.bind(this, itemView);
 
-        itemView.setOnClickListener(v -> {
-            presenter.onClickUser();
-        });
-
         mContext = context;
+        mItemView = itemView;
     }
 
     @Override
@@ -74,11 +76,24 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
     }
 
     @Override
-    public void setIsAfk(boolean isAfk) {
-        if (isAfk) {
-            mTvAfk.setVisibility(View.VISIBLE);
+    public void setStatus(PlayerStatus playerStatus) {
+        switch (playerStatus) {
+            case AFK:
+                mTvAfk.setVisibility(View.VISIBLE);
+                break;
+            case ACTIVE:
+                mTvAfk.setVisibility(View.GONE);
+                break;
+            default:
+        }
+    }
+
+    @Override
+    public void setIsWinner(boolean isWinner) {
+        if(isWinner){
+            mIvWin.setVisibility(View.VISIBLE);
         } else {
-            mTvAfk.setVisibility(View.GONE);
+            mIvWin.setVisibility(View.GONE);
         }
     }
 
@@ -86,8 +101,10 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
     public void setIsFriend(boolean isFriend) {
         if (isFriend) {
             mIvIsFriend.setVisibility(View.VISIBLE);
+            mTvIsFriend.setVisibility(View.VISIBLE);
         } else {
             mIvIsFriend.setVisibility(View.GONE);
+            mTvIsFriend.setVisibility(View.GONE);
         }
     }
 
@@ -108,5 +125,14 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
                 mTvWord.setVisibility(View.GONE);
             }
         }
+    }
+
+    @Override
+    public Observable<User> getClickObservable(User user) {
+        return Observable.create(emitter -> {
+            mItemView.setOnClickListener(v -> {
+                emitter.onNext(user);
+            });
+        });
     }
 }

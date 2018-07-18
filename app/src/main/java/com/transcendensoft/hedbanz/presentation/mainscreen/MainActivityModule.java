@@ -30,6 +30,7 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
+import dagger.android.support.DaggerAppCompatActivity;
 
 /**
  * Module that provides fragments, presenters
@@ -51,6 +52,10 @@ public interface MainActivityModule {
     @ActivityContext
     @Binds
     Context bindActivityContext(MainActivity mainActivity);
+
+    @Binds
+    @ActivityScope
+    DaggerAppCompatActivity bindMainActivity(MainActivity mainActivity);
 
     @Provides
     @ActivityScope

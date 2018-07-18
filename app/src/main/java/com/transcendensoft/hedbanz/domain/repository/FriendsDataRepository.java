@@ -35,9 +35,15 @@ import io.reactivex.Observable;
 public interface FriendsDataRepository {
     Observable<List<Friend>> getFriends(long userId, DataPolicy dataPolicy);
 
+    Observable<List<Friend>> getInviteFriends(long userId, long roomId, DataPolicy dataPolicy);
+
     Completable removeFriend(long userId, long friendId, DataPolicy dataPolicy);
 
     Completable acceptFriend(long userId, long friendId, DataPolicy dataPolicy);
 
+    Completable declineFriend(long userId, long friendId, DataPolicy dataPolicy);
+
     Completable addFriend(long userId, long friendId, DataPolicy dataPolicy);
+
+
 }

@@ -238,7 +238,7 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
 
         @Override
         protected void onStart() {
-            if(model == null || model.isEmpty()) {
+            if(model == null || model.isEmpty() && view() != null) {
                 view().showLoading();
             }
         }

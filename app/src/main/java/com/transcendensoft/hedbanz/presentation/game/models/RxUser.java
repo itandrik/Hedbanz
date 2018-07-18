@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.presentation.game.models;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.domain.entity.PlayerStatus;
 import com.transcendensoft.hedbanz.domain.entity.User;
 
 import io.reactivex.Observable;
@@ -49,8 +50,13 @@ public class RxUser {
         mSubject.onNext(mUser);
     }
 
-    public void setAFK(boolean isAFK) {
-        mUser.setAFK(isAFK);
+    public void setStatus(PlayerStatus status) {
+        mUser.setPlayerStatus(status);
+        mSubject.onNext(mUser);
+    }
+
+    public void setIsWinner(boolean isWinner){
+        mUser.setWinner(isWinner);
         mSubject.onNext(mUser);
     }
 

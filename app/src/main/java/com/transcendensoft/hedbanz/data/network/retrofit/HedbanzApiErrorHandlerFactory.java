@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.data.network;
+package com.transcendensoft.hedbanz.data.network.retrofit;
 /**
  * Copyright 2017. Andrii Chernysh
  * <p>

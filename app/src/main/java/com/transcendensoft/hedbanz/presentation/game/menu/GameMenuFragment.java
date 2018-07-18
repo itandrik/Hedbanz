@@ -39,10 +39,13 @@ import android.widget.LinearLayout;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.game.menu.list.UserMenuListAdapter;
 import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
 import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
+import com.transcendensoft.hedbanz.presentation.invite.InviteDialogFragment;
+import com.transcendensoft.hedbanz.presentation.userdetails.UserDetailsDialogFragment;
 import com.transcendensoft.hedbanz.utils.ViewUtils;
 
 import java.util.List;
@@ -72,6 +75,9 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     @Inject RxRoom mModel;
     @Inject GameMenuPresenter mPresenter;
     @Inject UserMenuListAdapter mAdapter;
+    @Inject UserDetailsDialogFragment mUserDetailsDialogFragment;
+    @Inject InviteDialogFragment mInviteDialogFragment;
+
     @Inject @ActivityContext Context mContext;
 
     @Inject
@@ -79,7 +85,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     }
 
     /*------------------------------------*
-     *-------- Activity lifecycle --------*
+     *-------- Fragment lifecycle --------*
      *------------------------------------*/
     @Nullable
     @Override
@@ -130,6 +136,8 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
         LinearLayoutManager manager = new LinearLayoutManager(
                 mContext, LinearLayoutManager.VERTICAL, false);
         mRecycler.setLayoutManager(manager);
+
+        initRecyclerClickListeners();
     }
 
     private void initCollapsingToolbar(){
@@ -206,13 +214,24 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     /*------------------------------------*
      *----- Recycler click listeners -----*
      *------------------------------------*/
+    private void initRecyclerClickListeners(){
+        mPresenter.processPlayerClickListener(mAdapter.getItemClickListener());
+    }
 
     /*------------------------------------*
      *-------- On click listeners --------*
      *------------------------------------*/
     @OnClick(R.id.fabInvite)
     protected void onInviteClicked(){
-        //TODO
+        mInviteDialogFragment.setRoom(mPresenter.getRoom());
+        mInviteDialogFragment.show(getChildFragmentManager(), getString(R.string.tag_fragment_invite));
+    }
+
+    @Override
+    public void onPlayerClicked(User user) {
+        mUserDetailsDialogFragment.setUser(user);
+        mUserDetailsDialogFragment.show(getChildFragmentManager(),
+                getString(R.string.tag_fragment_user_details));
     }
 
     /*------------------------------------*

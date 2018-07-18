@@ -50,9 +50,9 @@ public class UserDTO {
     @SerializedName("login")
     @Expose
     private String login;
-    @SerializedName("isAFK")
+    @SerializedName("status")
     @Expose
-    private boolean isAfk;
+    private int status;
     @SerializedName("isFriend")
     @Expose
     private boolean isFriend;
@@ -62,21 +62,29 @@ public class UserDTO {
     @SerializedName("attempt")
     @Expose
     private int attempts;
+    @SerializedName("securityToken")
+    @Expose
+    private String securityToken;
+    @SerializedName("isWinner")
+    @Expose
+    private boolean isWinner;
 
     protected UserDTO(long id, String email, String password, long money,
-                      Long registrationDate, String login, boolean isAfk,
-                      boolean isFriend, String word, Long userId, int attempts) {
+                      Long registrationDate, String login, int status,
+                      boolean isFriend, String word, Long userId, int attempts,
+                      boolean isWinner) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.money = money;
         this.registrationDate = registrationDate;
         this.login = login;
-        this.isAfk = isAfk;
+        this.status = status;
         this.isFriend = isFriend;
         this.word = word;
         this.userId = userId;
         this.attempts = attempts;
+        this.isWinner = isWinner;
     }
 
     public UserDTO() {
@@ -130,12 +138,12 @@ public class UserDTO {
         this.registrationDate = registrationDate;
     }
 
-    public boolean isAfk() {
-        return isAfk;
+    public int getStatus() {
+        return status;
     }
 
-    public void setAfk(boolean afk) {
-        isAfk = afk;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public boolean isFriend() {
@@ -170,6 +178,22 @@ public class UserDTO {
         this.attempts = attempts;
     }
 
+    public String getSecurityToken() {
+        return securityToken;
+    }
+
+    public void setSecurityToken(String securityToken) {
+        this.securityToken = securityToken;
+    }
+
+    public boolean isWinner() {
+        return isWinner;
+    }
+
+    public void setWinner(boolean winner) {
+        isWinner = winner;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -192,11 +216,12 @@ public class UserDTO {
         private long money;
         private Long registrationDate;
         private String login;
-        private boolean isAfk;
+        private int status;
         private boolean isFriend;
         private String word;
         private Long userId;
         private int attempts;
+        private boolean isWinner;
 
         public Builder setId(long id) {
             this.id = id;
@@ -228,8 +253,8 @@ public class UserDTO {
             return this;
         }
 
-        public Builder setIsAfk(boolean isAfk) {
-            this.isAfk = isAfk;
+        public Builder setStatus(int status) {
+            this.status = status;
             return this;
         }
 
@@ -253,9 +278,14 @@ public class UserDTO {
             return this;
         }
 
+        public Builder setIsWinner(boolean isWinner) {
+            this.isWinner = isWinner;
+            return this;
+        }
+
         public UserDTO build() {
             return new UserDTO(id, email, password, money, registrationDate, login,
-                    isAfk, isFriend, word, userId, attempts);
+                    status, isFriend, word, userId, attempts, isWinner);
         }
     }
 }

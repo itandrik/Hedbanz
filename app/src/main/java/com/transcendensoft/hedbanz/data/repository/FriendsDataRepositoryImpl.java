@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.data.repository;
  */
 
 import com.transcendensoft.hedbanz.data.models.mapper.FriendModelDataMapper;
+import com.transcendensoft.hedbanz.data.models.mapper.InviteModelDataMapper;
 import com.transcendensoft.hedbanz.data.network.source.FriendsApiDataSource;
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.domain.entity.Friend;
@@ -33,24 +34,39 @@ import io.reactivex.Observable;
  * for getting or deleting Friend related data.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public class FriendsDataRepositoryImpl implements FriendsDataRepository{
+public class FriendsDataRepositoryImpl implements FriendsDataRepository {
     private FriendsApiDataSource mFriendsApiDataSource;
     private FriendModelDataMapper mFriendsDataMapper;
+    private InviteModelDataMapper mInviteModelDataMapper;
 
     @Inject
     public FriendsDataRepositoryImpl(FriendsApiDataSource friendsApiDataSource,
-                                     FriendModelDataMapper friendsDataMapper) {
+                                     FriendModelDataMapper friendsDataMapper,
+                                     InviteModelDataMapper inviteModelDataMapper) {
         this.mFriendsApiDataSource = friendsApiDataSource;
         this.mFriendsDataMapper = friendsDataMapper;
+        this.mInviteModelDataMapper = inviteModelDataMapper;
     }
 
     @Override
     public Observable<List<Friend>> getFriends(long userId, DataPolicy dataPolicy) {
-        if(dataPolicy == DataPolicy.API) {
+        if (dataPolicy == DataPolicy.API) {
             return mFriendsApiDataSource.getFriends(userId).map(mFriendsDataMapper::convert);
-        } else if(dataPolicy == DataPolicy.DB){
+        } else if (dataPolicy == DataPolicy.DB) {
+            return Observable.error(new UnsupportedOperationException());
+        }
+        return Observable.error(new UnsupportedOperationException());
+    }
+
+    @Override
+    public Observable<List<Friend>> getInviteFriends(long userId, long roomId,
+                                                     DataPolicy dataPolicy) {
+        if (dataPolicy == DataPolicy.API) {
+            return mFriendsApiDataSource.getInviteFriends(userId, roomId)
+                    .map(mFriendsDataMapper::convert);
+        } else if (dataPolicy == DataPolicy.DB) {
             return Observable.error(new UnsupportedOperationException());
         }
         return Observable.error(new UnsupportedOperationException());
@@ -58,9 +74,19 @@ public class FriendsDataRepositoryImpl implements FriendsDataRepository{
 
     @Override
     public Completable removeFriend(long userId, long friendId, DataPolicy dataPolicy) {
-        if(dataPolicy == DataPolicy.API) {
+        if (dataPolicy == DataPolicy.API) {
+            return mFriendsApiDataSource.removeFriend(userId, friendId);
+        } else if (dataPolicy == DataPolicy.DB) {
             return Completable.error(new UnsupportedOperationException());
-        } else if(dataPolicy == DataPolicy.DB){
+        }
+        return Completable.error(new UnsupportedOperationException());
+    }
+
+    @Override
+    public Completable declineFriend(long userId, long friendId, DataPolicy dataPolicy) {
+        if (dataPolicy == DataPolicy.API) {
+            return mFriendsApiDataSource.declineFriend(userId, friendId);
+        } else if (dataPolicy == DataPolicy.DB) {
             return Completable.error(new UnsupportedOperationException());
         }
         return Completable.error(new UnsupportedOperationException());
@@ -68,9 +94,9 @@ public class FriendsDataRepositoryImpl implements FriendsDataRepository{
 
     @Override
     public Completable acceptFriend(long userId, long friendId, DataPolicy dataPolicy) {
-        if(dataPolicy == DataPolicy.API) {
+        if (dataPolicy == DataPolicy.API) {
             return mFriendsApiDataSource.acceptFriend(userId, friendId);
-        } else if(dataPolicy == DataPolicy.DB){
+        } else if (dataPolicy == DataPolicy.DB) {
             return Completable.error(new UnsupportedOperationException());
         }
         return Completable.error(new UnsupportedOperationException());
@@ -78,9 +104,9 @@ public class FriendsDataRepositoryImpl implements FriendsDataRepository{
 
     @Override
     public Completable addFriend(long userId, long friendId, DataPolicy dataPolicy) {
-        if(dataPolicy == DataPolicy.API) {
+        if (dataPolicy == DataPolicy.API) {
             return mFriendsApiDataSource.addFriend(userId, friendId);
-        } else if(dataPolicy == DataPolicy.DB){
+        } else if (dataPolicy == DataPolicy.DB) {
             return Completable.error(new UnsupportedOperationException());
         }
         return Completable.error(new UnsupportedOperationException());

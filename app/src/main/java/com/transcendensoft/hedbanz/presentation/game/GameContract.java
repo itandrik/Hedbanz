@@ -52,6 +52,8 @@ public interface GameContract {
         void showFooterReconnected();
         void showUserAfk(boolean isAfk, String login);
         void showRestoreRoom();
+        void showWinDialog();
+        void onBackPressed();
 
         void showEmptyList();
         void removeLastMessage();
@@ -63,6 +65,7 @@ public interface GameContract {
         void sendMessage(String message);
         void processSetWordToUserObservable(Observable<Word> sendWordObservable);
         void setAfterRoomCreation(boolean isAfterRoomCreation);
+        void setIsLeaveFromRoom(boolean isLeaveFromRoom);
 
         void restoreRoom();
         void processRetryNetworkPagination(Observable<Object> clickObservable);
@@ -72,5 +75,7 @@ public interface GameContract {
         void processThumbsUpClick(Observable<Long> clickObservable);
         void processThumbsDownClick(Observable<Long> clickObservable);
         void processWinClick(Observable<Long> clickObservable);
+        void processRestartGameClick(Observable<android.view.View> clickObservable);
+        void processCancelGameClick(Observable<android.view.View> clickObservable);
     }
 }

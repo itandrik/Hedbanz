@@ -16,13 +16,15 @@ package com.transcendensoft.hedbanz.data.network.service.firebase;
  */
 
 import android.app.Service;
+import android.content.Intent;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.NotificationMessage;
 import com.transcendensoft.hedbanz.domain.entity.NotificationMessageType;
-import com.transcendensoft.hedbanz.presentation.notiification.NotificationManager;
+import com.transcendensoft.hedbanz.presentation.notification.NotificationManager;
 
 import java.util.Map;
 
@@ -45,10 +47,14 @@ public class HedbanzFirebaseMessagingService extends FirebaseMessagingService im
     private static final String TAG = HedbanzFirebaseMessagingService.class.getName();
     public static final String FIELD_TYPE = "type";
     public static final String DATA_TYPE = "data";
+    public static final String ACTION_ADD_NEW_ROOM = "com.hedbanz.ACTION_ADD_NEW_ROOM";
+    public static final String ACTION_NEW_VERSION_AVAILABLE =
+            "com.hedbanz.ACTION_NEW_VERSION_AVAILABLE";
 
     @Inject DispatchingAndroidInjector<Service> serviceDispatchingAndroidInjector;
     @Inject Gson mGson;
     @Inject NotificationManager mNotificationManger;
+    @Inject PreferenceManager mPreferenceManager;
 
     @Override
     public void onCreate() {
@@ -69,28 +75,57 @@ public class HedbanzFirebaseMessagingService extends FirebaseMessagingService im
         if (remoteMessage.getData() != null) {
             Map<String, String> bodyMap = remoteMessage.getData();
             int type = Integer.parseInt(bodyMap.get(FIELD_TYPE));
+            Timber.i("FCM push. notification type:" + type);
+
             NotificationMessageType messageType = NotificationMessageType.
                     Companion.getTypeById(type);
             String dataJson = bodyMap.get(DATA_TYPE);
+            Timber.i("FCM push. data:" + dataJson);
 
             processNotificationMessage(messageType, dataJson);
         }
     }
 
     private void processNotificationMessage(NotificationMessageType messageType, String dataJson) {
+        NotificationMessage notificationMessage = mGson
+                .fromJson(dataJson, NotificationMessage.class);;
         switch (messageType) {
             case MESSAGE:
-                NotificationMessage notificationMessage = mGson
-                        .fromJson(dataJson, NotificationMessage.class);
                 mNotificationManger.notifyMessage(notificationMessage);
                 break;
             case SET_WORD:
+                mNotificationManger.notifySetWord(notificationMessage);
                 break;
             case GUESS_WORD:
+                mNotificationManger.notifyGuessWord(notificationMessage);
                 break;
             case FRIEND:
+                mNotificationManger.notifyFriendRequest(notificationMessage);
                 break;
             case INVITE:
+                mNotificationManger.notifyInviteToGame(notificationMessage);
+                break;
+            case KICK_WARNING:
+                mNotificationManger.notifyKickWarning(notificationMessage);
+                break;
+            case KICKED:
+                mNotificationManger.notifyKick(notificationMessage);
+                mPreferenceManager.setCurrentRoomId(-1);
+                break;
+            case GAME_OVER:
+                mNotificationManger.notifyGameOver(notificationMessage);
+                break;
+            case LAST_PLAYER:
+
+                break;
+            case NEW_ROOM_CREATED:
+                Intent roomCreatedIntent = new Intent(ACTION_ADD_NEW_ROOM);
+                sendBroadcast(roomCreatedIntent);
+                break;
+            case APP_NEW_VERSION:
+                mPreferenceManager.setAppNewVersion(true);
+                Intent newVersionAvailableIntent = new Intent(ACTION_NEW_VERSION_AVAILABLE);
+                sendBroadcast(newVersionAvailableIntent);
                 break;
             case UNDEFINED:
                 break;

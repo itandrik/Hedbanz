@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.data.models;
  * limitations under the License.
  */
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -26,13 +27,20 @@ import com.google.gson.annotations.SerializedName;
  */
 public class FriendDTO extends UserDTO {
     @SerializedName("isAccepted")
+    @Expose
     private boolean isAccepted;
+    @SerializedName("isPending")
+    @Expose
+    private boolean isPending;
 
     private FriendDTO(long id, String email, String password, long money,
-                      Long registrationDate, String login, boolean isAfk, boolean isAccepted,
-                      boolean isFriend, String word, Long userId, int attempts) {
-        super(id, email, password, money, registrationDate, login, isAfk, isFriend, word, userId, attempts);
+                      Long registrationDate, String login, int status,
+                      boolean isAccepted, boolean isPending, boolean isFriend,
+                      String word, Long userId, int attempts, boolean isWinner) {
+        super(id, email, password, money, registrationDate, login,
+                status, isFriend, word, userId, attempts, isWinner);
         this.isAccepted = isAccepted;
+        this.isPending = isPending;
     }
 
     public boolean isAccepted() {
@@ -43,6 +51,14 @@ public class FriendDTO extends UserDTO {
         isAccepted = accepted;
     }
 
+    public boolean isPending() {
+        return isPending;
+    }
+
+    public void setPending(boolean pending) {
+        isPending = pending;
+    }
+
     public static class Builder {
         private long id;
         private String email;
@@ -51,11 +67,13 @@ public class FriendDTO extends UserDTO {
         private Long registrationDate;
         private String login;
         private boolean isAccepted;
-        private boolean isAfk;
+        private boolean isPending;
+        private int status;
         private boolean isFriend;
         private String word;
         private Long userId;
         private int attempts;
+        private boolean isWinner;
 
         public FriendDTO.Builder setId(long id) {
             this.id = id;
@@ -92,8 +110,13 @@ public class FriendDTO extends UserDTO {
             return this;
         }
 
-        public FriendDTO.Builder setIsAfk(boolean isAfk) {
-            this.isAfk = isAfk;
+        public FriendDTO.Builder setIsPending(boolean isPending) {
+            this.isPending = isPending;
+            return this;
+        }
+
+        public FriendDTO.Builder setStatus(int status) {
+            this.status = status;
             return this;
         }
 
@@ -117,9 +140,15 @@ public class FriendDTO extends UserDTO {
             return this;
         }
 
+        public FriendDTO.Builder setIsWinner(boolean isWinner) {
+            this.isWinner = isWinner;
+            return this;
+        }
+
         public FriendDTO build() {
             return new FriendDTO(id, email, password, money, registrationDate,
-                    login, isAfk, isAccepted, isFriend, word, userId, attempts);
+                    login, status, isAccepted, isPending, isFriend, word, userId, attempts,
+                    isWinner);
         }
     }
 }

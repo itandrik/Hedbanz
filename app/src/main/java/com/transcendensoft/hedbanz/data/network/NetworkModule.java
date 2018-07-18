@@ -18,6 +18,7 @@ package com.transcendensoft.hedbanz.data.network;
 import android.content.Context;
 
 import com.transcendensoft.hedbanz.BuildConfig;
+import com.transcendensoft.hedbanz.data.network.retrofit.AuthorizationHeaderInterceptor;
 import com.transcendensoft.hedbanz.di.qualifier.ApplicationContext;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 
@@ -66,9 +67,12 @@ public class NetworkModule {
 
     @Provides
     @ApplicationScope
-    public OkHttpClient provideOkHttpClient(HttpLoggingInterceptor loggingInterceptor, Cache cache) {
+    public OkHttpClient provideOkHttpClient(HttpLoggingInterceptor loggingInterceptor,
+                                            AuthorizationHeaderInterceptor headerInterceptor,
+                                            Cache cache) {
         return new OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
+                .addInterceptor(headerInterceptor)
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(1, TimeUnit.HOURS)
                 .readTimeout(1, TimeUnit.HOURS)

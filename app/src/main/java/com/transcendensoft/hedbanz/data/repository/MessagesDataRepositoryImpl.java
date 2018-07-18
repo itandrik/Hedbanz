@@ -19,8 +19,10 @@ import android.support.annotation.NonNull;
 
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
 import com.transcendensoft.hedbanz.data.models.QuestionDTO;
+import com.transcendensoft.hedbanz.data.models.WordDTO;
 import com.transcendensoft.hedbanz.data.models.mapper.MessageModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.QuestionModelDataMapper;
+import com.transcendensoft.hedbanz.data.models.mapper.WordModelDataMapper;
 import com.transcendensoft.hedbanz.data.network.source.MessagesApiDataSource;
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.data.source.MessagesDataSource;
@@ -45,10 +47,14 @@ public class MessagesDataRepositoryImpl implements MessagesDataRepository {
     private MessagesDataSource mDataSource;
     private MessageModelDataMapper mDataMapper;
     private QuestionModelDataMapper mQuestionModelDataMapper;
+    private WordModelDataMapper mWordModelDataMapper;
+
     @Inject
     public MessagesDataRepositoryImpl(MessagesApiDataSource mDataSource,
                                       MessageModelDataMapper mDataMapper,
-                                      QuestionModelDataMapper questionModelDataMapper) {
+                                      QuestionModelDataMapper questionModelDataMapper,
+                                      WordModelDataMapper wordModelDataMapper) {
+        this.mWordModelDataMapper = wordModelDataMapper;
         this.mDataSource = mDataSource;
         this.mDataMapper = mDataMapper;
         this.mQuestionModelDataMapper = questionModelDataMapper;
@@ -70,6 +76,8 @@ public class MessagesDataRepositoryImpl implements MessagesDataRepository {
         for (MessageDTO messageDTO:listMessageDTO) {
             if (messageDTO instanceof QuestionDTO) {
                 messages.add(mQuestionModelDataMapper.convert((QuestionDTO) messageDTO));
+            } else if(messageDTO instanceof WordDTO){
+                messages.add(mWordModelDataMapper.convert((WordDTO) messageDTO));
             } else {
                 messages.add(mDataMapper.convert(messageDTO));
             }

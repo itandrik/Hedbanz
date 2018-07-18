@@ -17,6 +17,7 @@ package com.transcendensoft.hedbanz.data.repository;
 
 import com.transcendensoft.hedbanz.data.models.UserDTO;
 import com.transcendensoft.hedbanz.data.models.mapper.UserModelDataMapper;
+import com.transcendensoft.hedbanz.data.network.retrofit.AuthorizationHeaderInterceptor;
 import com.transcendensoft.hedbanz.data.network.source.UserApiDataSource;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
@@ -55,28 +56,40 @@ public class UserDataRepositoryImpl implements UserDataRepository {
     private UserApiDataSource mUserApiDataSource;
     private UserModelDataMapper mUserModelDataMapper;
     private PreferenceManager mPreferenceManager;
-
+    private AuthorizationHeaderInterceptor mAuthorizationHeaderInterceptor;
     private Socket mSocket;
 
     @Inject
     public UserDataRepositoryImpl(UserApiDataSource mUserApiDataSource,
                                   UserModelDataMapper mUserModelDataMapper,
-                                  PreferenceManager preferenceManager) {
+                                  PreferenceManager preferenceManager,
+                                  AuthorizationHeaderInterceptor authorizationHeaderInterceptor) {
         this.mUserApiDataSource = mUserApiDataSource;
         this.mUserModelDataMapper = mUserModelDataMapper;
         this.mPreferenceManager = preferenceManager;
+        this.mAuthorizationHeaderInterceptor = authorizationHeaderInterceptor;
     }
 
     @Override
     public Observable<User> registerUser(User user) {
         UserDTO userDTO = mUserModelDataMapper.convert(user);
-        return mUserApiDataSource.registerUser(userDTO).map(mUserModelDataMapper::convert);
+        return mUserApiDataSource.registerUser(userDTO)
+                .doOnNext(dto -> {
+                    mPreferenceManager.setAuthorizationToken(dto.getSecurityToken());
+                    mAuthorizationHeaderInterceptor.setSessionToken(dto.getSecurityToken());
+                })
+                .map(mUserModelDataMapper::convert);
     }
 
     @Override
     public Observable<User> authUser(User user) {
         UserDTO userDTO = mUserModelDataMapper.convert(user);
-        return mUserApiDataSource.authUser(userDTO).map(mUserModelDataMapper::convert);
+        return mUserApiDataSource.authUser(userDTO)
+                .doOnNext(dto -> {
+                    mPreferenceManager.setAuthorizationToken(dto.getSecurityToken());
+                    mAuthorizationHeaderInterceptor.setSessionToken(dto.getSecurityToken());
+                })
+                .map(mUserModelDataMapper::convert);
     }
 
     @Override

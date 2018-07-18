@@ -25,54 +25,27 @@ import com.google.gson.annotations.SerializedName;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class WordDTO {
-    public static final String SENDER_ID = "senderId";
-    public static final String ROOM_ID = "roomId";
-    public static final String WORD_RECEIVER_ID = "wordReceiverId";
-    public static final String WORD = "word";
-
-    @SerializedName(SENDER_ID)
+public class WordDTO extends MessageDTO{
+    @SerializedName("wordReceiverUser")
     @Expose
-    private long senderId;
-    @SerializedName(ROOM_ID)
-    @Expose
-    private long roomId;
-    @SerializedName(WORD_RECEIVER_ID)
-    @Expose
-    private long wordReceiverId;
-    @SerializedName(WORD)
+    private UserDTO wordReceiverUser;
+    @SerializedName("word")
     @Expose
     private String word;
 
-    private WordDTO(long senderId, long roomId, long wordReceiverId, String word) {
-        this.senderId = senderId;
-        this.roomId = roomId;
-        this.wordReceiverId = wordReceiverId;
+
+    public WordDTO(long roomId, int type, UserDTO senderUser, UserDTO wordReceiverUser, String word) {
+        super(0L, 0L, roomId, "", type, 0L, 0L, senderUser);
+        this.wordReceiverUser = wordReceiverUser;
         this.word = word;
     }
 
-    public long getSenderId() {
-        return senderId;
+    public UserDTO getWordReceiverUser() {
+        return wordReceiverUser;
     }
 
-    public void setSenderId(long senderId) {
-        this.senderId = senderId;
-    }
-
-    public long getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(long roomId) {
-        this.roomId = roomId;
-    }
-
-    public long getWordReceiverId() {
-        return wordReceiverId;
-    }
-
-    public void setWordReceiverId(long wordReceiverId) {
-        this.wordReceiverId = wordReceiverId;
+    public void setWordReceiverUser(UserDTO wordReceiverUser) {
+        this.wordReceiverUser = wordReceiverUser;
     }
 
     public String getWord() {
@@ -83,46 +56,15 @@ public class WordDTO {
         this.word = word;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        WordDTO wordDTO = (WordDTO) o;
-
-        if (senderId != wordDTO.senderId) return false;
-        if (roomId != wordDTO.roomId) return false;
-        if (wordReceiverId != wordDTO.wordReceiverId) return false;
-        return word != null ? word.equals(wordDTO.word) : wordDTO.word == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (senderId ^ (senderId >>> 32));
-        result = 31 * result + (int) (roomId ^ (roomId >>> 32));
-        result = 31 * result + (int) (wordReceiverId ^ (wordReceiverId >>> 32));
-        result = 31 * result + (word != null ? word.hashCode() : 0);
-        return result;
-    }
-
     public static class Builder {
-        private long senderId;
         private long roomId;
-        private long wordReceiverId;
+        private int type;
+        private UserDTO senderUser;
+        private UserDTO wordReceiverUser;
         private String word;
 
-        public Builder setSenderId(long senderId) {
-            this.senderId = senderId;
-            return this;
-        }
-
-        public Builder setRoomId(long roomId) {
-            this.roomId = roomId;
-            return this;
-        }
-
-        public Builder setWordReceiverId(long wordReceiverId) {
-            this.wordReceiverId = wordReceiverId;
+        public Builder setWordReceiverUser(UserDTO wordReceiverUser) {
+            this.wordReceiverUser = wordReceiverUser;
             return this;
         }
 
@@ -131,8 +73,23 @@ public class WordDTO {
             return this;
         }
 
+        public Builder setRoomId(long roomId) {
+            this.roomId = roomId;
+            return this;
+        }
+
+        public Builder setType(int type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder setSenderUser(UserDTO senderUser) {
+            this.senderUser = senderUser;
+            return this;
+        }
+
         public WordDTO build() {
-            return new WordDTO(senderId, roomId, wordReceiverId, word);
+            return new WordDTO(roomId, type, senderUser, wordReceiverUser, word);
         }
     }
 }

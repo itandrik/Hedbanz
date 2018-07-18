@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.domain.repository;
  */
 
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
+import com.transcendensoft.hedbanz.domain.entity.Invite;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
 
@@ -35,7 +36,9 @@ public interface RoomDataRepository {
 
     Observable<Room> createRoom(Room room, long userId);
 
-    Observable<List<Room>> filterRooms(int page, RoomFilter roomFilter, DataPolicy dataPolicy);
+    Observable<List<Room>> filterRooms(int page, long userId, RoomFilter roomFilter, DataPolicy dataPolicy);
 
     Completable isPasswordCorrect(long userId, long roomId, String password, DataPolicy dataPolicy);
+
+    Completable inviteFriend(Invite invite);
 }

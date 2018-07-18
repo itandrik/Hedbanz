@@ -31,13 +31,14 @@ public class User {
     private Long registrationDate;
     private String login;
     private boolean isFriend;
-    private boolean isAFK;
+    private PlayerStatus playerStatus;
     private String word;
     private int attempts;
+    private boolean isWinner;
 
     protected User(long id, String email, String password, String confirmPassword,
-                   long money, Long registrationDate, String login, boolean isAFK,
-                   boolean isFriend, String word, int attempts) {
+                   long money, Long registrationDate, String login, PlayerStatus playerStatus,
+                   boolean isFriend, String word, int attempts, boolean isWinner) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -45,9 +46,11 @@ public class User {
         this.money = money;
         this.registrationDate = registrationDate;
         this.login = login;
-        this.isAFK = isAFK;
+        this.playerStatus = playerStatus;
         this.isFriend = isFriend;
         this.attempts = attempts;
+        this.word = word;
+        this.isWinner = isWinner;
     }
 
     public User() {
@@ -109,12 +112,12 @@ public class User {
         this.login = login;
     }
 
-    public boolean isAFK() {
-        return isAFK;
+    public PlayerStatus getPlayerStatus() {
+        return playerStatus;
     }
 
-    public void setAFK(boolean AFK) {
-        isAFK = AFK;
+    public void setPlayerStatus(PlayerStatus playerStatus) {
+        this.playerStatus = playerStatus;
     }
 
     public boolean isFriend() {
@@ -139,6 +142,14 @@ public class User {
 
     public void setAttempts(int attempts) {
         this.attempts = attempts;
+    }
+
+    public boolean isWinner() {
+        return isWinner;
+    }
+
+    public void setWinner(boolean winner) {
+        isWinner = winner;
     }
 
     @Override
@@ -167,9 +178,10 @@ public class User {
                 ", registrationDate=" + registrationDate +
                 ", login='" + login + '\'' +
                 ", isFriend=" + isFriend +
-                ", isAFK=" + isAFK +
+                ", playerStatus=" + playerStatus +
                 ", word='" + word + '\'' +
                 ", attempts=" + attempts +
+                ", isWinner=" + isWinner +
                 '}';
     }
 
@@ -181,10 +193,11 @@ public class User {
         private long money;
         private Long registrationDate;
         private String login;
-        private boolean isAFK;
+        private PlayerStatus playerStatus;
         private boolean isFriend;
         private String word;
         private int attempts;
+        private boolean isWinner;
 
         public User.Builder setId(long id) {
             this.id = id;
@@ -221,8 +234,8 @@ public class User {
             return this;
         }
 
-        public User.Builder setIsAfk(boolean isAfk) {
-            this.isAFK = isAfk;
+        public User.Builder setPlayerStatus(PlayerStatus playerStatus) {
+            this.playerStatus = playerStatus;
             return this;
         }
 
@@ -241,9 +254,15 @@ public class User {
             return this;
         }
 
+        public User.Builder setIsWinner(boolean isWinner){
+            this.isWinner = isWinner;
+            return this;
+        }
+
         public User build() {
             return new User(id, email, password, confirmPassword, money,
-                    registrationDate, login, isAFK, isFriend, word, attempts);
+                    registrationDate, login, playerStatus, isFriend,
+                    word, attempts, isWinner);
         }
     }
 }

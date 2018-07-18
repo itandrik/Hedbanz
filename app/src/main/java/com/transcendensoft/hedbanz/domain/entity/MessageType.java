@@ -41,6 +41,11 @@ public enum MessageType {
     VOTING_FOR_QUESTION(17),
     GUESS_WORD_OTHER_USER(18),
     ASKING_QUESTION_OTHER_USER(19),
+    USER_KICK_WARNING(20),
+    USER_KICKED(21),
+    USER_WINS_THIS(22),
+    USER_WINS_OTHER(23),
+    GAME_OVER(24),
     UNDEFINED(100500);
 
     private int id;

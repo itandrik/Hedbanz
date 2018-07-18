@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.domain.interactor.rooms;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.repository.RoomDataRepositoryImpl;
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.domain.PaginationState;
@@ -35,20 +36,23 @@ import io.reactivex.disposables.CompositeDisposable;
  * {@link com.transcendensoft.hedbanz.domain.entity.Room}.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class FilterRoomsInteractor extends PaginationUseCase<Room, Void, RoomFilter> {
     public static final String NULL_ROOM_FILTER_MSG = "RoomFilter is NULL when filtering." +
             "Call refresh() before method invocation";
     private final RoomDataRepository mRoomRepository;
     private RoomFilter mRoomFilter;
+    private PreferenceManager mPreferenceManager;
 
     @Inject
     public FilterRoomsInteractor(ObservableTransformer mSchedulersTransformer,
                                  CompositeDisposable mCompositeDisposable,
-                                 RoomDataRepositoryImpl roomDataRepository) {
+                                 RoomDataRepositoryImpl roomDataRepository,
+                                 PreferenceManager preferenceManager) {
         super(mSchedulersTransformer, mCompositeDisposable);
         mRoomRepository = roomDataRepository;
+        mPreferenceManager = preferenceManager;
     }
 
     @Override
@@ -64,7 +68,8 @@ public class FilterRoomsInteractor extends PaginationUseCase<Room, Void, RoomFil
             throw new NullPointerException(NULL_ROOM_FILTER_MSG);
         }
 
-        return mRoomRepository.filterRooms(mCurrentPage, mRoomFilter, DataPolicy.API)
+        return mRoomRepository.filterRooms(mCurrentPage,
+                mPreferenceManager.getUser().getId(), mRoomFilter, DataPolicy.API)
                 .flatMap(this::convertEntitiesToPagingResult)
                 .onErrorReturn(this::mapPaginationStateBasedOnError);
     }

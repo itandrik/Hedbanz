@@ -30,7 +30,8 @@ data class Question(
         var winVoters: List<User> = listOf(),
         var vote: Vote? = null,
         var allUsersCount: Int = 0,
-        var messageParent: Message = Message()
+        var messageParent: Message = Message(),
+        var isWin: Boolean = false
 ) : Message(messageParent.id, messageParent.message, messageParent.userFrom,
         messageParent.messageType, messageParent.createDate, messageParent.clientMessageId), Cloneable {
 
@@ -42,7 +43,7 @@ data class Question(
         return copy(questionId = this.questionId,
                 yesVoters = this.yesVoters, noVoters = this.noVoters,
                 vote = this.vote, allUsersCount = this.allUsersCount,
-                messageParent = this.messageParent)
+                messageParent = this.messageParent, isWin = this.isWin)
     }
 
     class Builder {

@@ -43,8 +43,13 @@ public class FriendsApiDataSource extends ApiDataSource implements FriendDataSou
     }
 
     @Override
+    public Observable<List<FriendDTO>> getInviteFriends(long userId, long roomId) {
+        return mService.getInviteFriends(userId, roomId);
+    }
+
+    @Override
     public Completable removeFriend(long userId, long friendId) {
-        return null;
+        return mService.deleteFriend(userId, friendId);
     }
 
     @Override
@@ -55,5 +60,10 @@ public class FriendsApiDataSource extends ApiDataSource implements FriendDataSou
     @Override
     public Completable acceptFriend(long userId, long friendId) {
         return mService.acceptFriend(userId, friendId);
+    }
+
+    @Override
+    public Completable declineFriend(long userId, long friendId) {
+        return mService.declineFriend(userId, friendId);
     }
 }

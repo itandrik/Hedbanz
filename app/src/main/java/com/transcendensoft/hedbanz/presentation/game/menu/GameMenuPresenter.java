@@ -15,11 +15,15 @@ package com.transcendensoft.hedbanz.presentation.game.menu;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.domain.entity.Room;
+import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.interactor.rooms.InviteToRoomInteractor;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import timber.log.Timber;
 
@@ -34,10 +38,13 @@ import timber.log.Timber;
 public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.View>
         implements GameMenuContract.Presenter {
     private ObservableTransformer mSchedulersTransformer;
+    private InviteToRoomInteractor mInviteToRoomInteractor;
 
     @Inject
-    public GameMenuPresenter(ObservableTransformer schedulersTransformer) {
+    public GameMenuPresenter(ObservableTransformer schedulersTransformer,
+                             InviteToRoomInteractor inviteToRoomInteractor) {
         this.mSchedulersTransformer = schedulersTransformer;
+        this.mInviteToRoomInteractor = inviteToRoomInteractor;
     }
 
     @Override
@@ -49,10 +56,12 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
     }
 
     private void updateRoomInfo() {
-        view().clearAndAddPlayers(model.getRxPlayers());
-        view().setRoomName(model.getRoom().getName());
-        view().setMaxPlayersCount(model.getRoom().getMaxPlayers());
-        view().setCurrentPlayersCount(model.getRxPlayers().size());
+        if (view() != null) {
+            view().clearAndAddPlayers(model.getRxPlayers());
+            view().setRoomName(model.getRoom().getName());
+            view().setMaxPlayersCount(model.getRoom().getMaxPlayers());
+            view().setCurrentPlayersCount(model.getRxPlayers().size());
+        }
     }
 
     private void subscribeToRoomObservables() {
@@ -82,6 +91,19 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
 
     @Override
     public void destroy() {
-        // STUB
+        mInviteToRoomInteractor.dispose();
+    }
+
+    @Override
+    public void processPlayerClickListener(Observable<User> playerClickObservable) {
+        addDisposable(playerClickObservable
+                .subscribe(user -> {
+                    view().onPlayerClicked(user);
+                }, Timber::e));
+    }
+
+    @Override
+    public Room getRoom() {
+        return model.getRoom();
     }
 }

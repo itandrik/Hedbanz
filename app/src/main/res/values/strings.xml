@@ -14,14 +14,23 @@
 
     <string name="salt">$2a$10$3L8fxrPhH3/qLYhjmsuEku</string>
 
+    <!-- Tags -->
+    <string name="tag_fragment_user_details">tag_fragment_user_details</string>
+    <string name="tag_fragment_invite">tag_fragment_invite</string>
+
     <!-- Actions -->
     <string name="action_enter">Войти</string>
     <string name="action_ok">Ок</string>
     <string name="action_yes">Да</string>
     <string name="action_no">Нет</string>
     <string name="action_cancel">Отмена</string>
+    <string name="action_close">Закрыть</string>
     <string name="action_reload">Повторить попытку</string>
     <string name="action_loading">Загрузка&#8230;</string>
+    <string name="action_accept">Принять</string>
+    <string name="action_decline">Отклонить</string>
+    <string name="action_update">Обновить</string>
+    <string name="action_later">Позже</string>
 
     <!-- Errors -->
     <string name="error_server">Похоже что у нас проблемы с сервером. Повторите попытку позже.</string>
@@ -59,6 +68,10 @@
     <string name="register_validate_password">Это некорректный пароль. Допустимая длина от 6 до 14 символов.</string>
     <string name="register_validate_confirm_password">Пароль подтвержен неправильно.</string>
     <string name="register_validate_login">Некорректный логин. Длина 3&#8211;10 символов. Допустимо только буквы, цифры и точка (\".\")</string>
+
+    <!-- Main menu -->
+    <string name="main_menu_new_version_title">Новая версия игры доступна</string>
+    <string name="main_menu_new_version_message">Вы хотите установить последнюю версию приложения?</string>
 
     <!-- Rooms fragment -->
     <string name="rooms_title">Список комнат</string>
@@ -118,6 +131,8 @@
     <string name="game_set_word_title">Самое время загадать слово игроку %1$s</string>
     <string name="game_set_word_title_random">Самое время загадать слово случайному игроку</string>
     <string name="game_set_word_hint">Ваше слово&#8230;</string>
+    <string name="game_word_setting_error">Вы не ввели слово игроку</string>
+    <string name="game_set_word_start_text">Я</string>
     <string name="game_word_setted">Игрок %1$s загадал слово игроку %2$s</string>
     <string name="game_word_setted_to_current_user">Игрок %1$s загадал вам слово</string>
     <string name="game_word_current_user_setted">Вы загадали слово игроку %1$s</string>
@@ -142,16 +157,75 @@
 
     <string name="game_toolbar_open_menu_content_description">Открыть меню</string>
     <string name="game_toolbar_close_menu_content_description">Закрыть меню</string>
+    <string name="game_menu_friend">Друг</string>
     <string name="game_afk">AFK</string>
     
     <string name="game_some_user_think_word_to_user">Сейчас будет спрашивать игрок %1$s.\n Попытка %2$d/3</string>
     <string name="game_some_user_think_word_to_user_error">Сейчас будет спрашивать какой-то игрок.\n Попытка %1$d/3</string>
     <string name="game_this_user_think_word_to_user">Задайте вопрос о том кто вы. Попытка %1$d/3</string>
-    <string name="game_guess_word_hint">Я &#8230;</string>
+    <string name="game_guess_word_error">Вы ничего не спросили</string>
+    <string name="game_guess_word_hint">Вопрос</string>
     <string name="game_asking_total_votes">Всего:</string>
+    <string name="game_user_kicked">Игрок %1$s был исключен из игры из-за длительного отсутствия</string>
+    <string name="game_user_kick_warning">Игрок %1$s будет исключен из игры, если не вернется в комнату на протяжении 60 секунд</string>
+    <string name="game_user_wins">Игрок %1$s угадал загаданное ему слово!</string>
+    <string name="game_this_user_wins">Вы угадали загаданное вам слово!</string>
+    <string name="game_error_user_wins">Какой-то игрок угадал загаданное ему слово!</string>
+    <string name="game_over_title">Игра окончена.\n Все игроки угадали свои слова.</string>
+    <string name="game_restart_question">Вы хотите повторить игру с этой командой?</string>
+
+    <!-- Game notification -->
     <string name="game_notification_title">%1$s с комнаты %2$s</string>
     <string name="game_notification_title_error">Новое сообщение</string>
     <string name="game_notification_channel_title_message">Сообщение</string>
+    <string name="game_invite_notification_channel_title_message">Приглашение в игру</string>
+    <string name="game_notification_kick_warning_title">Внимание! У вас есть 30 секунд чтобы вернуться в комнату</string>
+    <string name="game_notification_kick_warning_message">Ваши друзья ждут вас в комнате %1$s при загадывании слов. Если вы не вернетесь в игру, то через 30 секунд будете исключены из нее. Уважайте время других игроков.</string>
+    <string name="game_notification_kick_title">Вас исключили с комнаты %1$s</string>
+    <string name="game_notification_kick_message">Из-за того, что у вы не присутствовали в игре на этапе загадывания слов долгое время, вас исключили с комнаты. Попробуйте сыграть с другими ребятами.</string>
+    <string name="game_notification_channel_title_friend">Друзья</string>
+    <string name="game_notification_friend_title">Запрос в друзья</string>
+    <string name="game_notification_friend_message">Игрок %1$s хочет дружить с вами</string>
+    <string name="game_notification_set_word_message">Вернитесь в комнату %1$s и придумайте слово игроку %2$s</string>
+    <string name="game_notification_set_word_title">Загадайте слово</string>
+    <string name="game_notification_set_word_message_error">Вам нужно придумать слово</string>
+    <string name="game_notification_guess_word_title">Время угадать кто же вы</string>
+    <string name="game_notification_guess_word_message">Вернитесь в комнату %1$s и задайте вопрос о том кто вы</string>
+    <string name="game_notification_guess_word_message_error">Вернитесь в игру и задайте вопрос о том кто вы</string>
+    <string name="game_notification_invite_title">Вас пригласили!</string>
+    <string name="game_notification_invite_message">Игрок %1$s пригласил вас поиграть с ним в комнате %2$s</string>
+    <string name="game_notification_invite_message_error">Кто-то пригласил вас поиграть с ним</string>
+    <string name="game_notification_game_over_title">Игра окончена</string>
+    <string name="game_notification_game_over_message">Игра в комнате %1$s закончилась, все игроки угадали свои слова. Вернитесь в комнату и начните новую игру.</string>
+    <string name="game_notification_game_over_message_error">Игра закончилась, все игроки угадали свои слова. Вернитесь в комнату и начните новую игру.</string>
+
     <!-- Friends -->
     <string name="friends_toolbar_title">Ваши друзяки</string>
+    <string name="friends_decline_title">Не хотите дружить с этим человеком?</string>
+    <string name="friends_decline_message">Вы уверенны, что хотите отменить запрос на дружбу от пользователя %1$s</string>
+    <string name="friends_delete_title">Вы больше не хотите дружить с этим человеком?</string>
+    <string name="friends_delete_message">Вы уверенны, что хотите удалить пользователя %1$s из вашего списка друзей?</string>
+
+    <string name="friends_accept_success_title">У вас появился новый друг</string>
+    <string name="friends_accept_success_message">Теперь %1$s в вашем списке друзей</string>
+    <string name="friends_decline_success_title">Дружба отклонена</string>
+    <string name="friends_decline_success_message">Вы успешно отклонили запрос пользоватеся %1$s на дружбу!</string>
+    <string name="friends_delete_success_title">Друг удален</string>
+    <string name="friends_delete_success_message">Вы успешно удалили друга %1$s из списка.</string>
+    <string name="friends_error_title">Что-то пошло не так</string>
+    <string name="friends_error_message">Произошла ошибка, повторите действие позже.</string>
+    <string name="friends_pending">Ожидает подтверждения</string>
+
+    <!-- User details -->
+    <string name="user_details_add_friend">Предложить дружбу</string>
+    <string name="user_details_already_friend">В списке друзей</string>
+    <string name="user_details_friend_request_sent">Дружбу предложено!</string>
+
+    <!-- Invite -->
+    <string name="invite_title">Пригласите друзей в игру</string>
+    <string name="invite_action">Пригласить</string>
+    <string name="invite_no_users_selected">Сначала выберите пользователей, которых вы хотите пригласить</string>
+    <string name="invite_already_invited">Приглашен</string>
+    <string name="invite_already_in_game">В игре</string>
+
 </resources>

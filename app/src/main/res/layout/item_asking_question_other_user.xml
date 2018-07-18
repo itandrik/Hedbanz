@@ -43,6 +43,7 @@
                 app:contentPadding="8dp">
 
                 <ImageView
+                    android:id="@+id/ivThumbsUp"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     app:srcCompat="@drawable/thumbs_up" />
@@ -56,6 +57,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@id/cvThumbsUp"
                 app:progress_max="100"
+                app:progress_current="0"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
@@ -98,6 +100,7 @@
                 app:contentPadding="8dp">
 
                 <ImageView
+                    android:id="@+id/ivThumbsDown"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     app:srcCompat="@drawable/thumbs_down" />
@@ -112,6 +115,7 @@
                 android:layout_alignTop="@id/cvThumbsDown"
                 android:layout_centerVertical="true"
                 app:progress_max="100"
+                app:progress_current="0"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 style="@style/NumberProgressBar_Warning_Red"
@@ -169,6 +173,7 @@
                 android:layout_alignTop="@id/cvWin"
                 android:layout_centerVertical="true"
                 app:progress_max="100"
+                app:progress_current="0"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 style="@style/NumberProgressBar_Passing_Green"

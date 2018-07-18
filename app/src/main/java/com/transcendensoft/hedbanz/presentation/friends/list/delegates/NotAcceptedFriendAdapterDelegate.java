@@ -24,15 +24,14 @@ import android.view.ViewGroup;
 
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate;
 import com.transcendensoft.hedbanz.R;
-import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.domain.entity.Friend;
-import com.transcendensoft.hedbanz.domain.interactor.friends.AcceptFriend;
-import com.transcendensoft.hedbanz.presentation.friends.list.FriendsAdapter;
 import com.transcendensoft.hedbanz.presentation.friends.list.holder.NotAcceptedFriendViewHolder;
 
 import java.util.List;
 
-import io.reactivex.disposables.CompositeDisposable;
+import javax.inject.Inject;
+
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * This delegate is responsible for creating
@@ -47,14 +46,11 @@ import io.reactivex.disposables.CompositeDisposable;
  * Developed by <u>Transcendensoft</u>
  */
 public class NotAcceptedFriendAdapterDelegate extends AdapterDelegate<List<Friend>> {
-    private AcceptFriend mAcceptFriendUseCase;
-    private FriendsAdapter mAdapter;
-    private CompositeDisposable mButtonsCompositeDisposable;
+    private PublishSubject<Friend> mAcceptSubject = PublishSubject.create();
+    private PublishSubject<Friend> mDeclineSubject = PublishSubject.create();
 
-    public NotAcceptedFriendAdapterDelegate(AcceptFriend acceptFriendUseCase, FriendsAdapter adapter) {
-        mAcceptFriendUseCase = acceptFriendUseCase;
-        mAdapter = adapter;
-        mButtonsCompositeDisposable = new CompositeDisposable();
+    @Inject
+    public NotAcceptedFriendAdapterDelegate() {
     }
 
     @Override
@@ -80,41 +76,17 @@ public class NotAcceptedFriendAdapterDelegate extends AdapterDelegate<List<Frien
 
         notAcceptedFriendViewHolder.bindName(friend.getLogin());
         notAcceptedFriendViewHolder.bindIcon(R.drawable.logo); //TODO change this shit
-
-        mButtonsCompositeDisposable.add(notAcceptedFriendViewHolder.acceptObservable()
-                .subscribe(obj -> {
-                    AcceptFriend.Param param = new AcceptFriend.Param(DataPolicy.API, friend.getId());
-                    //TODO showLoading
-                    mAcceptFriendUseCase.execute(param,
-                            () -> acceptFriendOnNext(friend),
-                            err -> acceptFriendOnError(err, friend));
-                }));
-        mButtonsCompositeDisposable.add(notAcceptedFriendViewHolder.dismissObservable()
-                .subscribe(obj -> {
-                    //TODO implement dismiss click
-                }));
+        notAcceptedFriendViewHolder.acceptObservable(friend)
+                .subscribe(mAcceptSubject);
+        notAcceptedFriendViewHolder.dismissObservable(friend)
+                .subscribe(mDeclineSubject);
     }
 
-    private void acceptFriendOnNext(Friend friend) {
-        mAdapter.remove(friend);
-        List<Friend> adapterFriends = mAdapter.getItems();
-        int i = 0;
-        while (adapterFriends.get(i).isAccepted()) {
-            i++;
-        }
-        friend.setAccepted(true);
-        mAdapter.add(friend);
+    public PublishSubject<Friend> getAcceptSubject() {
+        return mAcceptSubject;
     }
 
-    private void acceptFriendOnError(Throwable error, Friend friend) {
-        //TODO hide loading and show error message
-    }
-
-    @Override
-    protected void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-        if (mButtonsCompositeDisposable != null) {
-            mButtonsCompositeDisposable.dispose();
-        }
+    public PublishSubject<Friend> getDeclineSubject() {
+        return mDeclineSubject;
     }
 }

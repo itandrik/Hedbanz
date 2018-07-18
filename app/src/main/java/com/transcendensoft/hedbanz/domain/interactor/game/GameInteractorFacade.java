@@ -23,11 +23,13 @@ import com.transcendensoft.hedbanz.di.qualifier.SchedulerIO;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing;
+import com.transcendensoft.hedbanz.domain.entity.PlayerStatus;
 import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.ErrorUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.GameOverUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.MessageUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnConnectErrorUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnConnectTimeoutUseCase;
@@ -39,6 +41,8 @@ import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnRec
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.guess.GuessWordUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.guess.QuestionAskingUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.guess.QuestionVotingUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.kick.KickUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.kick.KickWarningUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.room.RoomInfoUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.room.RoomRestoreUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.typing.StartTypingUseCase;
@@ -104,6 +108,10 @@ public class GameInteractorFacade {
     @Inject QuestionVotingUseCase mQuestionVotingUseCase;
 
     @Inject UserWinUseCase mUserWinUseCase;
+    @Inject KickWarningUseCase mKickWarningUseCase;
+    @Inject KickUseCase mKickUseCase;
+
+    @Inject GameOverUseCase mGameOverUseCase;
 
     @Inject @SchedulerIO Scheduler mIoScheduler;
     @Inject RxRoom mCurrentRoom;
@@ -158,9 +166,9 @@ public class GameInteractorFacade {
                 if (users.contains(user)) {
                     RxUser rxUser = getRxUser(user);
                     if (rxUser != null) {
-                        rxUser.setAFK(true);
+                        rxUser.setStatus(PlayerStatus.AFK);
                     }
-                    user.setAFK(true);
+                    user.setPlayerStatus(PlayerStatus.AFK);
                 }
             }
         };
@@ -176,9 +184,9 @@ public class GameInteractorFacade {
                 if (users.contains(user)) {
                     RxUser rxUser = getRxUser(user);
                     if (rxUser != null) {
-                        rxUser.setAFK(false);
+                        rxUser.setStatus(PlayerStatus.ACTIVE);
                     }
-                    user.setAFK(false);
+                    user.setPlayerStatus(PlayerStatus.ACTIVE);
                 }
             }
         };
@@ -213,16 +221,21 @@ public class GameInteractorFacade {
     }
 
     public void onUserWinListener(Consumer<? super User> onNext,
-                                   Consumer<? super Throwable> onError) {
-        //TODO
-        /*Consumer<? super User> doOnNext = user -> {
-            if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
-                mCurrentRoom.removePlayer(user);
-                mCurrentRoom.setCurrentPlayersNumber(
-                        (byte) (mCurrentRoom.getRoom().getCurrentPlayersNumber() - 1));
+                                  Consumer<? super Throwable> onError) {
+        Consumer<? super User> doOnNext = user -> {
+            if ((mCurrentRoom != null) && (mCurrentRoom.getRoom().getPlayers() != null) &&
+                    (user != null)) {
+                List<User> users = mCurrentRoom.getRoom().getPlayers();
+                if (users.contains(user)) {
+                    RxUser rxUser = getRxUser(user);
+                    if (rxUser != null) {
+                        rxUser.setIsWinner(true);
+                    }
+                    user.setWinner(true);
+                }
             }
-        };*/
-        mUserWinUseCase.execute(null, onNext, onError);
+        };
+        mUserWinUseCase.execute(null, onNext, onError, doOnNext);
     }
 
     public void onMessageReceivedListener(Consumer<? super Message> onNext,
@@ -272,12 +285,24 @@ public class GameInteractorFacade {
                 }
             }
         };
-        mWordSettedUseCase.execute(mCurrentRoom.getRoom().getPlayers(), onNext, onError, doOnNext);
+        mWordSettedUseCase.execute(null, onNext, onError, doOnNext);
     }
 
     public void onWordSettingListener(Consumer<? super User> onNext,
                                       Consumer<? super Throwable> onError) {
-        mWordSettingUseCase.execute(mCurrentRoom.getRoom().getPlayers(), onNext, onError);
+        Consumer<? super User> doOnNext = user -> {
+            if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
+                for (RxUser rxUser : mCurrentRoom.getRxPlayers()) {
+                    rxUser.setWord("");
+                    rxUser.setIsWinner(false);
+                }
+                for (User player : mCurrentRoom.getRoom().getPlayers()) {
+                    player.setWord("");
+                    player.setWinner(false);
+                }
+            }
+        };
+        mWordSettingUseCase.execute(null, onNext, onError, doOnNext);
     }
 
     public void onWordGuessingListener(Consumer<? super PlayerGuessing> onNext,
@@ -293,6 +318,32 @@ public class GameInteractorFacade {
     public void onQuestionVotingListener(Consumer<? super Question> onNext,
                                          Consumer<? super Throwable> onError) {
         mQuestionVotingUseCase.execute(null, onNext, onError);
+    }
+
+    public void onKickWarningListener(Consumer<? super User> onNext,
+                                      Consumer<? super Throwable> onError) {
+        mKickWarningUseCase.execute(null, onNext, onError);
+    }
+
+    public void onUserKickedListener(Consumer<? super User> onNext,
+                                     Consumer<? super Throwable> onError) {
+        Consumer<? super User> doOnNext = user -> {
+            if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
+                mCurrentRoom.removePlayer(user);
+                mCurrentRoom.setCurrentPlayersNumber(
+                        (byte) (mCurrentRoom.getRoom().getCurrentPlayersNumber() - 1));
+            }
+        };
+        mKickUseCase.execute(null, onNext, onError, doOnNext);
+    }
+
+    public void onGameOverListener(Consumer<? super Boolean> onNext,
+                                   Consumer<? super Throwable> onError) {
+        mGameOverUseCase.execute(null, onNext, onError);
+    }
+
+    public void restartGame() {
+        mRepository.restartGame();
     }
 
     public Question guessWord(Long questionId, String word) {
@@ -374,6 +425,7 @@ public class GameInteractorFacade {
 
     public void setRoomInfo(Room room) {
         room.getPlayers().add(mPreferenceManger.getUser());
+        mPreferenceManger.setCurrentRoomId(room.getId());
         mCurrentRoom.setId(room.getId());
         mCurrentRoom.setCurrentPlayersNumber(room.getCurrentPlayersNumber());
         mCurrentRoom.setEndDate(room.getEndDate());
@@ -421,10 +473,21 @@ public class GameInteractorFacade {
         mQuestionAskingUseCase.dispose();
         mQuestionVotingUseCase.dispose();
         mUserWinUseCase.dispose();
+        mKickWarningUseCase.dispose();
+        mKickUseCase.dispose();
+        mGameOverUseCase.dispose();
 
         mRepository.disconnectFromRoom();
         mPreferenceManger.setCurrentRoomId(-1); //We leave from current game
         mRepository.disconnect();
+    }
+
+    public void resumeSocket() {
+        mRepository.startSocket();
+    }
+
+    public void stopSocket() {
+        mRepository.stopSocket();
     }
 
     @Nullable

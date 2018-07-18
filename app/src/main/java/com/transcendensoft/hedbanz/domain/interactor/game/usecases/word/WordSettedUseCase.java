@@ -15,17 +15,9 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.word;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.models.WordDTO;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
-import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.entity.Word;
-import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,7 +33,7 @@ import io.reactivex.subjects.PublishSubject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  **/
-public class WordSettedUseCase extends ObservableUseCase<Word, List<User>> {
+public class WordSettedUseCase extends ObservableUseCase<Word, Void> {
     private PublishSubject<Word> mSubject;
     private GameDataRepository mRepository;
 
@@ -55,43 +47,14 @@ public class WordSettedUseCase extends ObservableUseCase<Word, List<User>> {
     }
 
     @Override
-    protected Observable<Word> buildUseCaseObservable(List<User> params) {
+    protected Observable<Word> buildUseCaseObservable(Void params) {
         Observable<Word> observable = mRepository.wordSettedToUserObservable()
-                .flatMap(jsonObject -> convertJsonToWord(params, jsonObject));
+                .map(word -> {
+                    word.setLoading(false);
+                    word.setFinished(true);
+                    return word;
+                });
         observable.subscribe(mSubject);
         return mSubject;
-    }
-
-    private Observable<Word> convertJsonToWord(List<User> users, JSONObject jsonObject){
-        try {
-            Long senderId = jsonObject.getLong(WordDTO.SENDER_ID);
-            User senderUser = getUserWithId(users, senderId);
-
-            Long wordReceiverId = jsonObject.getLong(WordDTO.WORD_RECEIVER_ID);
-            User wordReceiverUser = getUserWithId(users, wordReceiverId);
-
-            Word word = new Word(senderUser, wordReceiverUser);
-            word.setLoading(false);
-            word.setFinished(true);
-            word.setWord(jsonObject.getString(WordDTO.WORD));
-
-            return Observable.just(word);
-        } catch (JSONException e) {
-            return Observable.error(new IncorrectJsonException(
-                    jsonObject.toString(), WordSettedUseCase.class.getName()));
-        }
-    }
-
-    private User getUserWithId(List<User> users, long id) {
-        User user = null;
-        for (User innerUser : users) {
-            if (innerUser.getId() == id) {
-                user = innerUser;
-            }
-        }
-        if(user == null){
-            user = new User.Builder().setId(id).build();
-        }
-        return user;
     }
 }
