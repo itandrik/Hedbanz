@@ -25,25 +25,25 @@ package com.transcendensoft.hedbanz.data.models
 data class InviteDTO(
         var senderId: Long? = 0L,
         var roomId: Long? = 0L,
-        var invitedUserId: Long? = 0L,
+        var invitedUserIds: List<Long>? = emptyList(),
         var password: String? = "") {
 
     private constructor(builder: Builder) : this(
-            builder.senderId, builder.roomId, builder.invitedUserId, builder.password)
+            builder.senderId, builder.roomId, builder.invitedUserIds, builder.password)
 
     class Builder {
         var senderId: Long = 0L
             private set
         var roomId: Long = 0L
             private set
-        var invitedUserId: Long = 0L
+        var invitedUserIds: List<Long> = emptyList()
             private set
         var password: String = ""
             private set
 
         fun senderId(senderId: Long) = apply { this.senderId = senderId }
         fun roomId(roomId: Long) = apply { this.roomId = roomId }
-        fun invitedUserId(senderId: Long) = apply { this.invitedUserId = invitedUserId }
+        fun invitedUserIds(invitedUserIds: List<Long>) = apply { this.invitedUserIds = invitedUserIds }
         fun password(password: String) = apply { this.password = password }
 
         fun build() = InviteDTO(this)

@@ -51,20 +51,13 @@ import javax.inject.Inject
  */
 class UserDetailsDialogFragment @Inject constructor() : DialogFragment(),
         HasSupportFragmentInjector, UserDetailsContract.View {
-    @Inject
-    lateinit var mPresenter: UserDetailsPresenter
-    @Inject
-    lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
-    @BindView(R.id.btnAddFriend)
-    lateinit var btnAddFriend: Button
-    @BindView(R.id.ivUserIcon)
-    lateinit var ivUserIcon: ImageView
-    @BindView(R.id.tvUserLogin)
-    lateinit var tvUserLogin: TextView
-    @BindView(R.id.ivFriendship)
-    lateinit var ivFriendship: ImageView
-    @BindView(R.id.tvFriendship)
-    lateinit var tvFriendship: TextView
+    @Inject lateinit var mPresenter: UserDetailsPresenter
+    @Inject lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
+    @BindView(R.id.btnAddFriend) lateinit var btnAddFriend: Button
+    @BindView(R.id.ivUserIcon) lateinit var ivUserIcon: ImageView
+    @BindView(R.id.tvUserLogin) lateinit var tvUserLogin: TextView
+    @BindView(R.id.ivFriendship) lateinit var ivFriendship: ImageView
+    @BindView(R.id.tvFriendship) lateinit var tvFriendship: TextView
 
     var user: User? = null
     lateinit var mProgressDialog: ProgressDialog

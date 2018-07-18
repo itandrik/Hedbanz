@@ -94,6 +94,10 @@ public interface ApiService {
     @GET("user/{userId}/friends")
     Observable<List<FriendDTO>> getFriends(@Path("userId") long userId);
 
+    @GET("user/{userId}/friends/room/{roomId}")
+    Observable<List<FriendDTO>> getInviteFriends(@Path("userId") long userId,
+                                                 @Path("roomId") long roomId);
+
     @PUT("user/{userId}/friends/{friendId}")
     Completable addFriend(@Path("userId") long userId,
                           @Path("friendId") long friendId);

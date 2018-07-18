@@ -35,7 +35,7 @@ class InviteModelDataMapper @Inject constructor() {
             inviteDTO = InviteDTO(
                     senderId = invite.senderId,
                     roomId = invite.roomId,
-                    invitedUserId = invite.invitedUserId,
+                    invitedUserIds = invite.invitedUserIds,
                     password = invite.password
             )
         }
@@ -48,7 +48,7 @@ class InviteModelDataMapper @Inject constructor() {
             invite = Invite(
                     senderId = inviteDTO.senderId,
                     roomId = inviteDTO.roomId,
-                    invitedUserId = inviteDTO.invitedUserId,
+                    invitedUserIds = inviteDTO.invitedUserIds,
                     password = inviteDTO.password
             )
         }

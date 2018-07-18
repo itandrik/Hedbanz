@@ -16,6 +16,7 @@
 
     <!-- Tags -->
     <string name="tag_fragment_user_details">tag_fragment_user_details</string>
+    <string name="tag_fragment_invite">tag_fragment_invite</string>
 
     <!-- Actions -->
     <string name="action_enter">Войти</string>
@@ -219,5 +220,12 @@
     <string name="user_details_add_friend">Предложить дружбу</string>
     <string name="user_details_already_friend">В списке друзей</string>
     <string name="user_details_friend_request_sent">Дружбу предложено!</string>
+
+    <!-- Invite -->
+    <string name="invite_title">Пригласите друзей в игру</string>
+    <string name="invite_action">Пригласить</string>
+    <string name="invite_no_users_selected">Сначала выберите пользователей, которых вы хотите пригласить</string>
+    <string name="invite_already_invited">Приглашен</string>
+    <string name="invite_already_in_game">В игре</string>
 
 </resources>

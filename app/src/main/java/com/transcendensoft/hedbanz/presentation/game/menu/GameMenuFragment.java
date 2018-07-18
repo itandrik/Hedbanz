@@ -44,6 +44,7 @@ import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.game.menu.list.UserMenuListAdapter;
 import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
 import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
+import com.transcendensoft.hedbanz.presentation.invite.InviteDialogFragment;
 import com.transcendensoft.hedbanz.presentation.userdetails.UserDetailsDialogFragment;
 import com.transcendensoft.hedbanz.utils.ViewUtils;
 
@@ -75,6 +76,8 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     @Inject GameMenuPresenter mPresenter;
     @Inject UserMenuListAdapter mAdapter;
     @Inject UserDetailsDialogFragment mUserDetailsDialogFragment;
+    @Inject InviteDialogFragment mInviteDialogFragment;
+
     @Inject @ActivityContext Context mContext;
 
     @Inject
@@ -220,7 +223,8 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
      *------------------------------------*/
     @OnClick(R.id.fabInvite)
     protected void onInviteClicked(){
-        //TODO
+        mInviteDialogFragment.setRoom(mPresenter.getRoom());
+        mInviteDialogFragment.show(getChildFragmentManager(), getString(R.string.tag_fragment_invite));
     }
 
     @Override
@@ -251,15 +255,5 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
         mFabInvite.setVisibility(View.GONE);
         mFlLoadingContainer.setVisibility(View.GONE);
         mRecycler.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showInviteSuccess() {
-        //TODO
-    }
-
-    @Override
-    public void showInviteError() {
-        //TODO
     }
 }

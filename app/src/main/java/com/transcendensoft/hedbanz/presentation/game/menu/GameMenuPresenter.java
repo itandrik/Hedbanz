@@ -15,8 +15,7 @@ package com.transcendensoft.hedbanz.presentation.game.menu;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.domain.entity.Friend;
-import com.transcendensoft.hedbanz.domain.entity.Invite;
+import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.InviteToRoomInteractor;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
@@ -104,19 +103,7 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
     }
 
     @Override
-    public void inviteFriend(Friend friend) {
-        Invite invite = new Invite.Builder()
-                .invitedUserId(friend.getId())
-                .password(model.getRoom().getPassword())
-                .roomId(model.getRoom().getId())
-                .build();
-
-        mInviteToRoomInteractor.execute(
-                invite,
-                () -> view().showInviteSuccess(),
-                err -> {
-                    view().showInviteError();
-                    Timber.e(err);
-                });
+    public Room getRoom() {
+        return model.getRoom();
     }
 }
