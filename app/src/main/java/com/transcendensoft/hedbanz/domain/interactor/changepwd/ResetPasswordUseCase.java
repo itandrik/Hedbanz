@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor.user.changepwd;
+package com.transcendensoft.hedbanz.domain.interactor.changepwd;
 /**
  * Copyright 2018. Andrii Chernysh
  * <p>
@@ -27,12 +27,12 @@ import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
- * that represents a use case for user changing password. After this request
+ * that represents a use case for user reseting password.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class ResetPasswordUseCase extends CompletableUseCase<Void>{
+public class ResetPasswordUseCase extends CompletableUseCase<ResetPasswordUseCase.Param>{
     private UserDataRepository mUserDataRepository;
 
     @Inject
@@ -44,7 +44,43 @@ public class ResetPasswordUseCase extends CompletableUseCase<Void>{
     }
 
     @Override
-    protected Completable buildUseCaseCompletable(Void params) {
-        return null; //mUserDataRepository.resetPassword();
+    protected Completable buildUseCaseCompletable(ResetPasswordUseCase.Param param) {
+        return mUserDataRepository.resetPassword(param.login, param.keyword, param.password);
+    }
+
+    public static class Param{
+        private String login;
+        private String keyword;
+        private String password;
+
+        public Param(String login, String keyword, String password) {
+            this.login = login;
+            this.keyword = keyword;
+            this.password = password;
+        }
+
+        public String getLogin() {
+            return login;
+        }
+
+        public void setLogin(String login) {
+            this.login = login;
+        }
+
+        public String getKeyword() {
+            return keyword;
+        }
+
+        public void setKeyword(String keyword) {
+            this.keyword = keyword;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
     }
 }

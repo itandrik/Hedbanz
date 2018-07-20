@@ -21,6 +21,8 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.transcendensoft.hedbanz.domain.entity.User;
 
+import java.util.Locale;
+
 /**
  * Wrapper for SharedPreferences with
  * business model keys
@@ -39,6 +41,7 @@ public class PreferenceManager {
     private static final String FIREBASE_TOKEN_BINDED = "firebaseTokenBinded";
     private static final String AUTHORIZATION_TOKEN = "authorizationToken";
     private static final String APP_NEW_VERSION = "appNewVersion";
+    private static final String LOCALE = "locale";
 
     public PreferenceManager(Context context) {
         mPreferences = context.getSharedPreferences(PREF_NAME, 0);
@@ -110,5 +113,13 @@ public class PreferenceManager {
 
     public boolean isAppNewVersionAvailable() {
         return mPreferences.getBoolean(APP_NEW_VERSION, false);
+    }
+
+    public void setLocale(String locale){
+        getEditor().putString(LOCALE, locale).apply();
+    }
+
+    public String getLocale(){
+        return mPreferences.getString(LOCALE, Locale.getDefault().getLanguage());
     }
 }

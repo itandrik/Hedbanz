@@ -113,18 +113,18 @@ public class UserDataRepositoryImpl implements UserDataRepository {
     }
 
     @Override
-    public Completable forgotPassword(long userId, String locale) {
-        return mUserApiDataSource.forgotPassword(userId, locale);
+    public Completable forgotPassword(String login, String locale) {
+        return mUserApiDataSource.forgotPassword(login, locale);
     }
 
     @Override
-    public Completable checkKeyword(long userId, String keyword) {
-        return mUserApiDataSource.checkKeyword(userId, keyword);
+    public Completable checkKeyword(String login, String keyword) {
+        return mUserApiDataSource.checkKeyword(login, keyword);
     }
 
     @Override
-    public Completable resetPassword(long userId, String keyword, String password) {
-        return mUserApiDataSource.resetPassword(userId, keyword, password);
+    public Completable resetPassword(String login, String keyword, String password) {
+        return mUserApiDataSource.resetPassword(login, keyword, password);
     }
 
     @Override

@@ -38,11 +38,11 @@ public interface UserDataRepository {
     Observable<User> updateUser(long id, String newLogin,
                                 String oldPassword, String newPassword, DataPolicy dataPolicy);
 
-    Completable forgotPassword(long userId, String locale);
+    Completable forgotPassword(String login, String locale);
 
-    Completable checkKeyword(long userId, String keyword);
+    Completable checkKeyword(String login, String keyword);
 
-    Completable resetPassword(long userId, String keyword, String password);
+    Completable resetPassword(String login, String keyword, String password);
 
     void connectIsLoginAvailable();
 

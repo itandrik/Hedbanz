@@ -43,6 +43,7 @@ import com.transcendensoft.hedbanz.domain.interactor.game.usecases.kick.KickUseC
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.kick.KickWarningUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.JoinedUserUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.LeftUserUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.PlayersInfoUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserAfkUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserReturnedUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserWinUseCase;
@@ -384,7 +385,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                         emitter.onNext(mUserMapper.convertToUsers(players));
                     } catch (JsonSyntaxException e) {
                         emitter.onError(new IncorrectJsonException(
-                                data.toString(), UserReturnedUseCase.class.getName()));
+                                data.toString(), PlayersInfoUseCase.class.getName()));
                     }
                 } else {
                     Timber.i("SOCKET <-- GET(%1$s) : %2$s",

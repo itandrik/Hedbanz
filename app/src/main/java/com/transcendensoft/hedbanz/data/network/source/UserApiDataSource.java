@@ -62,27 +62,30 @@ public class UserApiDataSource extends ApiDataSource implements UserDataSource{
     }
 
     @Override
-    public Completable forgotPassword(long userId, String locale) {
+    public Completable forgotPassword(String login, String locale) {
         HashMap<String, Object> body = new HashMap<>();
+        body.put("login", login);
         body.put("language", locale);
 
-        return mService.forgotPassword(userId, body);
+        return mService.forgotPassword(body);
     }
 
     @Override
-    public Completable checkKeyword(long userId, String keyword) {
+    public Completable checkKeyword(String login, String keyword) {
         HashMap<String, Object> body = new HashMap<>();
+        body.put("login", login);
         body.put("keyWord", keyword);
 
-        return mService.checkKey(userId, body);
+        return mService.checkKey(body);
     }
 
     @Override
-    public Completable resetPassword(long userId, String keyword, String password) {
+    public Completable resetPassword(String login, String keyword, String password) {
         HashMap<String, Object> body = new HashMap<>();
+        body.put("login", login);
         body.put("keyWord", keyword);
         body.put("password", password);
 
-        return mService.resetPassword(userId, body);
+        return mService.resetPassword(body);
     }
 }

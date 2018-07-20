@@ -115,15 +115,12 @@ public interface ApiService {
                           @Path("friendId") long friendId);
 
     /*Forgot password*/
-    @POST("user/{userId}/forgot-password")
-    Completable forgotPassword(@Path("userId") long userId,
-                               @Body HashMap<String, Object> body);
+    @POST("forgot-password")
+    Completable forgotPassword(@Body HashMap<String, Object> body);
 
-    @POST("user/{userId}/check-key")
-    Completable checkKey(@Path("userId") long userId,
-                               @Body HashMap<String, Object> body);
+    @POST("check-key")
+    Completable checkKey(@Body HashMap<String, Object> body);
 
-    @POST("user/{userId}/reset-password")
-    Completable resetPassword(@Path("userId") long userId,
-                               @Body HashMap<String, Object> body);
+    @POST("reset-password")
+    Completable resetPassword(@Body HashMap<String, Object> body);
 }
