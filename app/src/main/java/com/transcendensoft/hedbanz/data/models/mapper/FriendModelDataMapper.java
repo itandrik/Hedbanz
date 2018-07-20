@@ -51,6 +51,8 @@ public class FriendModelDataMapper {
                     .setIsFriend(friendDTO.isFriend())
                     .setWord(friendDTO.getWord())
                     .setIsWinner(friendDTO.isWinner())
+                    .setIsInGame(friendDTO.isInGame())
+                    .setIsInvited(friendDTO.isInvited())
                     .build();
         }
         return friendResult;

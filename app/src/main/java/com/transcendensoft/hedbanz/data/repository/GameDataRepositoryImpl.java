@@ -18,6 +18,7 @@ package com.transcendensoft.hedbanz.data.repository;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
 import com.transcendensoft.hedbanz.data.models.PlayerGuessingDTO;
 import com.transcendensoft.hedbanz.data.models.QuestionDTO;
@@ -49,11 +50,13 @@ import com.transcendensoft.hedbanz.domain.interactor.game.usecases.word.WordSett
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.word.WordSettingUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -87,6 +90,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String ROOM_INFO_EVENT = "joined-room";
     private static final String JOINED_USER_EVENT = "joined-user";
     private static final String LEFT_USER_EVENT = "left-user";
+    private static final String SERVER_PLAYERS_INFO = "server-players-status";
     private static final String CLIENT_TYPING_EVENT = "client-start-typing";
     private static final String CLIENT_STOP_TYPING_EVENT = "client-stop-typing";
     private static final String CLIENT_MESSAGE_EVENT = "client-msg";
@@ -361,6 +365,33 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 }
             };
             mSocket.on(SERVER_USER_RETURNED, listener);
+        });
+    }
+
+    @Override
+    public Observable<List<User>> playersInfoObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                JSONArray data = (JSONArray) args[0];
+
+                if (data != null) {
+                    try {
+                        List<UserDTO> players = mGson.fromJson(data.toString(),
+                                new TypeToken<List<UserDTO>>(){}.getType());
+
+                        Timber.i("SOCKET <-- GET(%1$s) : %2$s",
+                                SERVER_PLAYERS_INFO, data.toString());
+                        emitter.onNext(mUserMapper.convertToUsers(players));
+                    } catch (JsonSyntaxException e) {
+                        emitter.onError(new IncorrectJsonException(
+                                data.toString(), UserReturnedUseCase.class.getName()));
+                    }
+                } else {
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s",
+                            SERVER_PLAYERS_INFO, "null");
+                }
+            };
+            mSocket.on(SERVER_PLAYERS_INFO, listener);
         });
     }
 
@@ -798,6 +829,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             mSocket.off(SERVER_RESTORE_ROOM);
             mSocket.off(SERVER_USER_AFK);
             mSocket.off(SERVER_USER_RETURNED);
+            mSocket.off(SERVER_PLAYERS_INFO);
 
             mSocket.off(SERVER_TYPING_EVENT);
             mSocket.off(SERVER_STOP_TYPING_EVENT);

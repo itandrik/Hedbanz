@@ -65,10 +65,13 @@ class MenuFragmentPresenter @Inject constructor(
     override fun unbindFirebaseToken() {
         val firebaseTokenBinded = mPreferenceManager.firebaseTokenBinded
 
-        if(firebaseTokenBinded){
+        if (firebaseTokenBinded) {
             view()?.showLoadingDialog()
             mFirebaseUnbindTokenInteractor.execute(null,
-                    {view()?.showLogoutSuccess()},
+                    {
+                        view()?.showLogoutSuccess()
+                        mPreferenceManager.firebaseTokenBinded = false
+                    },
                     this::processCreateRoomOnError)
         } else {
             view()?.showLogoutSuccess()

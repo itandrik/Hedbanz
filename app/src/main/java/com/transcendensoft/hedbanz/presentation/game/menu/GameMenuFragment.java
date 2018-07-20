@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.presentation.game.menu;
  */
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -38,6 +40,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
@@ -60,9 +63,9 @@ import butterknife.OnClick;
  * Fragment that shows sidebar menu with users.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public class GameMenuFragment extends BaseFragment implements GameMenuContract.View{
+public class GameMenuFragment extends BaseFragment implements GameMenuContract.View {
     public static final float NOT_EXIST_USER_ALPHA = 0.3f;
     public static final float EXIST_USER_ALPHA = 1.f;
 
@@ -77,7 +80,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     @Inject UserMenuListAdapter mAdapter;
     @Inject UserDetailsDialogFragment mUserDetailsDialogFragment;
     @Inject InviteDialogFragment mInviteDialogFragment;
-
+    @Inject PreferenceManager mPreferenceManger;
     @Inject @ActivityContext Context mContext;
 
     @Inject
@@ -127,7 +130,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
-    private void initRecycler(){
+    private void initRecycler() {
         mRecycler.setAdapter(mAdapter);
         mRecycler.setItemAnimator(new DefaultItemAnimator());
         mRecycler.addItemDecoration(new DividerItemDecoration(
@@ -140,7 +143,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
         initRecyclerClickListeners();
     }
 
-    private void initCollapsingToolbar(){
+    private void initCollapsingToolbar() {
         Typeface typeface = ResourcesCompat.getFont(mContext, R.font.open_sans_light);
         mCollapsingToolbar.setCollapsedTitleTypeface(typeface);
         mCollapsingToolbar.setExpandedTitleTypeface(typeface);
@@ -151,7 +154,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
      *------------------------------------*/
     @Override
     public void setRoomName(String roomName) {
-        if(!TextUtils.isEmpty(roomName)){
+        if (!TextUtils.isEmpty(roomName)) {
             mCollapsingToolbar.setTitle(roomName);
         } else {
             mCollapsingToolbar.setTitle("");
@@ -160,7 +163,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
 
     @Override
     public void clearAndAddPlayers(List<RxUser> rxUsers) {
-        if(mAdapter != null) {
+        if (mAdapter != null) {
             mAdapter.clearAll();
             mAdapter.addAll(rxUsers);
         }
@@ -168,14 +171,14 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
 
     @Override
     public void addPlayer(RxUser rxUser) {
-        if(mAdapter != null) {
+        if (mAdapter != null) {
             mAdapter.addItem(rxUser);
         }
     }
 
     @Override
     public void removePlayer(RxUser rxUser) {
-        if(mAdapter != null) {
+        if (mAdapter != null) {
             mAdapter.removeItem(rxUser);
         }
     }
@@ -188,10 +191,10 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
             ivPlayer.setAlpha(NOT_EXIST_USER_ALPHA);
 
             Drawable drawable = VectorDrawableCompat.create(
-                    mContext.getResources(),R.drawable.ic_user, null);
+                    mContext.getResources(), R.drawable.ic_user, null);
             ivPlayer.setImageDrawable(drawable);
 
-            int size = ViewUtils.dpToPx(mContext,24);
+            int size = ViewUtils.dpToPx(mContext, 24);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(size, size);
             ivPlayer.setLayoutParams(params);
 
@@ -203,7 +206,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     public void setCurrentPlayersCount(int currentPlayersCount) {
         for (int i = 0; i < mLlUsersIndicator.getChildCount(); i++) {
             ImageView ivPlayer = (ImageView) mLlUsersIndicator.getChildAt(i);
-            if(i < currentPlayersCount){
+            if (i < currentPlayersCount) {
                 ivPlayer.setAlpha(EXIST_USER_ALPHA);
             } else {
                 ivPlayer.setAlpha(NOT_EXIST_USER_ALPHA);
@@ -214,7 +217,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     /*------------------------------------*
      *----- Recycler click listeners -----*
      *------------------------------------*/
-    private void initRecyclerClickListeners(){
+    private void initRecyclerClickListeners() {
         mPresenter.processPlayerClickListener(mAdapter.getItemClickListener());
     }
 
@@ -222,16 +225,18 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
      *-------- On click listeners --------*
      *------------------------------------*/
     @OnClick(R.id.fabInvite)
-    protected void onInviteClicked(){
+    protected void onInviteClicked() {
         mInviteDialogFragment.setRoom(mPresenter.getRoom());
         mInviteDialogFragment.show(getChildFragmentManager(), getString(R.string.tag_fragment_invite));
     }
 
     @Override
     public void onPlayerClicked(User user) {
-        mUserDetailsDialogFragment.setUser(user);
-        mUserDetailsDialogFragment.show(getChildFragmentManager(),
-                getString(R.string.tag_fragment_user_details));
+        if (!user.equals(mPreferenceManger.getUser())) {
+            mUserDetailsDialogFragment.setUser(user);
+            mUserDetailsDialogFragment.show(getChildFragmentManager(),
+                    getString(R.string.tag_fragment_user_details));
+        }
     }
 
     /*------------------------------------*
@@ -255,5 +260,17 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
         mFabInvite.setVisibility(View.GONE);
         mFlLoadingContainer.setVisibility(View.GONE);
         mRecycler.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setInviteEnabled(boolean isEnabled) {
+        mFabInvite.setEnabled(isEnabled);
+        if(isEnabled){
+            mFabInvite.setBackgroundTintList(ColorStateList.valueOf(
+                    ContextCompat.getColor(mContext, R.color.google_green)));
+        } else {
+            mFabInvite.setBackgroundTintList(ColorStateList.valueOf(
+                    ContextCompat.getColor(mContext, R.color.invite_fab_disabled)));
+        }
     }
 }

@@ -31,6 +31,7 @@ public enum RoomError {
     EMPTY_NAME(2, R.string.room_creation_error_name_empty),
     EMPTY_PASSWORD(3, R.string.room_creation_error_password_empty),
     INVALID_PASSWORD(4, R.string.room_creation_error_password_incorrect),
+    ROOM_ALREADY_EXIST(17, R.string.room_creation_error_name_already_exist),
     UNDEFINED_ERROR(100, R.string.error_undefined_error);
 
     private int errorCode;

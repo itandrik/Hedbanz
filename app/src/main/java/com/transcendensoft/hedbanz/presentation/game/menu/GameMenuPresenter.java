@@ -17,7 +17,6 @@ package com.transcendensoft.hedbanz.presentation.game.menu;
 
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
-import com.transcendensoft.hedbanz.domain.interactor.rooms.InviteToRoomInteractor;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
 
@@ -38,13 +37,10 @@ import timber.log.Timber;
 public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.View>
         implements GameMenuContract.Presenter {
     private ObservableTransformer mSchedulersTransformer;
-    private InviteToRoomInteractor mInviteToRoomInteractor;
 
     @Inject
-    public GameMenuPresenter(ObservableTransformer schedulersTransformer,
-                             InviteToRoomInteractor inviteToRoomInteractor) {
+    public GameMenuPresenter(ObservableTransformer schedulersTransformer) {
         this.mSchedulersTransformer = schedulersTransformer;
-        this.mInviteToRoomInteractor = inviteToRoomInteractor;
     }
 
     @Override
@@ -61,6 +57,11 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
             view().setRoomName(model.getRoom().getName());
             view().setMaxPlayersCount(model.getRoom().getMaxPlayers());
             view().setCurrentPlayersCount(model.getRxPlayers().size());
+            if(model.getRxPlayers().size() >= model.getRoom().getMaxPlayers()){
+                view().setInviteEnabled(false);
+            } else {
+                view().setInviteEnabled(true);
+            }
         }
     }
 
@@ -91,7 +92,7 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
 
     @Override
     public void destroy() {
-        mInviteToRoomInteractor.dispose();
+
     }
 
     @Override

@@ -107,7 +107,7 @@ class InviteDialogFragment @Inject constructor() : DialogFragment(),
             window.decorView.getWindowVisibleDisplayFrame(displayRectangle)
 
             dialog.window.setLayout((displayRectangle.width() * 0.8f).toInt(),
-                    (displayRectangle.height() * 0.8f).toInt())
+                    (displayRectangle.height() * 0.5f).toInt())
         }
     }
 
@@ -141,6 +141,7 @@ class InviteDialogFragment @Inject constructor() : DialogFragment(),
 
     private fun initPresenter(){
         mPresenter.room = this.mRoom
+        mPresenter.setModel(listOf())
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> =
@@ -196,6 +197,11 @@ class InviteDialogFragment @Inject constructor() : DialogFragment(),
 
     override fun showNoUsersSelected() {
         AndroidUtils.showLongToast(mActivity, R.string.invite_no_users_selected)
+    }
+
+    override fun showEmptyFriendsList() {
+        hideAll()
+        mRlEmptyListContainer.visibility = View.VISIBLE
     }
 
     override fun showLoadingDialog() {

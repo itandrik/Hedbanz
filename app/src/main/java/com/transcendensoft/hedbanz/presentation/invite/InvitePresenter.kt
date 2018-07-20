@@ -58,8 +58,12 @@ class InvitePresenter @Inject constructor(
         view()?.showLoading()
         getInviteFriendsInteractor.execute(DataPolicy.API,
                 { friends ->
-                    view()?.setFriends(friends)
-                    view()?.showContent()
+                    if (friends.isEmpty()) {
+                        view()?.showEmptyFriendsList()
+                    } else {
+                        view()?.setFriends(friends)
+                        view()?.showContent()
+                    }
                 }, this::processOnError)
     }
 
@@ -73,23 +77,27 @@ class InvitePresenter @Inject constructor(
     }
 
     override fun inviteSelectedUsers(selectedFriends: List<Friend>) {
-        view()?.showLoadingDialog()
-        val invite = Invite.Builder()
-                .invitedUserIds(selectedFriends.map { it.id })
-                .password(room?.password ?: "")
-                .roomId(room?.id ?: 0L)
-                .build()
+        if(selectedFriends.isEmpty()){
+            view()?.showNoUsersSelected()
+        } else {
+            view()?.showLoadingDialog()
+            val invite = Invite.Builder()
+                    .invitedUserIds(selectedFriends.map { it.id })
+                    .password(room?.password ?: "")
+                    .roomId(room?.id ?: 0L)
+                    .build()
 
-        inviteToRoomInteractor.execute(
-                invite,
-                {
-                    view()?.showInviteSuccess()
-                    loadInvitingFriends()
-                },
-                { err ->
-                    view()?.showInviteError()
-                    Timber.e(err)
-                })
+            inviteToRoomInteractor.execute(
+                    invite,
+                    {
+                        view()?.showInviteSuccess()
+                        loadInvitingFriends()
+                    },
+                    { err ->
+                        view()?.showInviteError()
+                        Timber.e(err)
+                    })
+        }
     }
 
 }

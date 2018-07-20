@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 /**
@@ -58,5 +59,30 @@ public class UserApiDataSource extends ApiDataSource implements UserDataSource{
         result.put("newPassword", newPassword);
 
         return mService.updateUser(result);
+    }
+
+    @Override
+    public Completable forgotPassword(long userId, String locale) {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("language", locale);
+
+        return mService.forgotPassword(userId, body);
+    }
+
+    @Override
+    public Completable checkKeyword(long userId, String keyword) {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("keyWord", keyword);
+
+        return mService.checkKey(userId, body);
+    }
+
+    @Override
+    public Completable resetPassword(long userId, String keyword, String password) {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("keyWord", keyword);
+        body.put("password", password);
+
+        return mService.resetPassword(userId, body);
     }
 }

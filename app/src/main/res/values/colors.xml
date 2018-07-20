@@ -45,4 +45,5 @@
     <color name="google_blue">#4185F4</color>
     <color name="google_red">#EA4235</color>
     <color name="google_dark_green">#4c8c4a</color>
+    <color name="invite_fab_disabled">#bb34a853</color>
 </resources>

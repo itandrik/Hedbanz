@@ -132,13 +132,17 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     @Override
     public void onTopReached() {
         Timber.i("TOP reached");
+        GetMessagesInteractor.Param param = new GetMessagesInteractor.Param(
+                model.getId(), model.getPlayers().size());
         mGetMessagesInteractor.loadNextPage()
-                .execute(new MessageListObserver(view(), model), model.getId());
+                .execute(new MessageListObserver(view(), model), param);
     }
 
     private void refreshMessageHistory() {
+        GetMessagesInteractor.Param param = new GetMessagesInteractor.Param(
+                model.getId(), model.getPlayers().size());
         mGetMessagesInteractor.refresh(null)
-                .execute(new MessageListObserver(view(), model), model.getId());
+                .execute(new MessageListObserver(view(), model), param);
     }
 
     /*------------------------------------*
@@ -352,6 +356,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         initLeftUserListener();
         initUserAfkListener();
         initUserReturnedListener();
+        initPlayersInfoListener();
         initUserWinListener();
         initMessageListeners();
         initWordSettingListeners();
@@ -388,12 +393,15 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                     if (!users.contains(user)) {
                         users.add(user);
                     }
-                    Message message = new Message.Builder()
-                            .setUserFrom(user)
-                            .setMessageType(MessageType.JOINED_USER)
-                            .build();
-                    model.getMessages().add(message);
-                    view().addMessage(message);
+                    if(!(model.getMessages().get(model.getMessages().size()-1).getMessageType() ==
+                            MessageType.JOINED_USER && mPreferenceManger.getUser().equals(user))) {
+                        Message message = new Message.Builder()
+                                .setUserFrom(user)
+                                .setMessageType(MessageType.JOINED_USER)
+                                .build();
+                        model.getMessages().add(message);
+                        view().addMessage(message);
+                    }
                 },
                 this::processEventListenerOnError);
     }
@@ -419,11 +427,18 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                     }
                 }
             } else {
-                model.setMessages(new ArrayList<>());
-                view().clearMessages();
-                view().showLoading();
-                refreshMessageHistory();
+                // Here was history loading
             }
+        }, this::processEventListenerOnError);
+    }
+
+    private void initPlayersInfoListener(){
+        mGameInteractor.onPlayersInfoUseCase(users -> {
+            model.setPlayers(users);
+            model.setMessages(new ArrayList<>());
+            view().clearMessages();
+            view().showLoading();
+            refreshMessageHistory();
         }, this::processEventListenerOnError);
     }
 

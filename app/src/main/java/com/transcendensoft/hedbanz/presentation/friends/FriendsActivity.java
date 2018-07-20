@@ -14,6 +14,7 @@ import com.transcendensoft.hedbanz.domain.entity.Friend;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.friends.list.FriendsAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -46,8 +47,33 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
         setContentView(R.layout.activity_friends);
 
         ButterKnife.bind(this, this);
-
+        mPresenter.bindView(this);
+        mPresenter.setModel(new ArrayList<>());
         initRecycler();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mPresenter != null) {
+            mPresenter.bindView(this);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mPresenter != null) {
+            mPresenter.unbindView();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mPresenter != null) {
+            mPresenter.destroy();
+        }
     }
 
     /*------------------------------------*

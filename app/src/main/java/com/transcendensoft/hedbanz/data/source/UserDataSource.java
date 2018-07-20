@@ -17,6 +17,7 @@ package com.transcendensoft.hedbanz.data.source;
 
 import com.transcendensoft.hedbanz.data.models.UserDTO;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 /**
@@ -34,4 +35,10 @@ public interface UserDataSource {
 
     Observable<UserDTO> updateUser(long id, String newLogin,
                                    String oldPassword, String newPassword);
+
+    Completable forgotPassword(long userId, String locale);
+
+    Completable checkKeyword(long userId, String keyword);
+
+    Completable resetPassword(long userId, String keyword, String password);
 }

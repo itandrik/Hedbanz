@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.Animatable2Compat;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -363,7 +364,13 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
     @Override
     public void showWinDialog() {
-        showShortToastMessage("You won!!!");
+        Drawable icon = VectorDrawableCompat.create(getResources(), R.drawable.ic_win_happy, null);
+        new AlertDialog.Builder(this)
+                .setMessage(getString(R.string.game_win_user_alert_message))
+                .setTitle(getString(R.string.game_win_user_alert_title))
+                .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> dialog.dismiss())
+                .setIcon(icon)
+                .show();
     }
 
     @Override

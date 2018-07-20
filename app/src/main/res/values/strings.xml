@@ -96,6 +96,7 @@
     <string name="room_creation_error_password_incorrect">Это некорректный пароль. Допустимая длина от 6 до 14 символов.</string>
     <string name="room_creation_error_password_empty">Введите пароль от комнаты</string>
     <string name="room_creation_error_name_empty">Введите имя комнаты</string>
+    <string name="room_creation_error_name_already_exist">Комната с таким именем уже существует</string>
 
     <!-- Menu fragment -->
     <string name="menu_games_played">Игр сыграно</string>
@@ -173,6 +174,8 @@
     <string name="game_error_user_wins">Какой-то игрок угадал загаданное ему слово!</string>
     <string name="game_over_title">Игра окончена.\n Все игроки угадали свои слова.</string>
     <string name="game_restart_question">Вы хотите повторить игру с этой командой?</string>
+    <string name="game_win_user_alert_message">Поздравляем вас, вы угадали свое слово и выиграли игру! Вы можете понаблюдать за игрой ваших товарищей, пообщаться с ними, помочь в отгадывании. Если вам надоест вы всегда можете уйти с комнаты.</string>
+    <string name="game_win_user_alert_title">Победа!</string>
 
     <!-- Game notification -->
     <string name="game_notification_title">%1$s с комнаты %2$s</string>

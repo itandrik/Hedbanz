@@ -94,6 +94,7 @@ public class CreateRoomPresenter extends BasePresenter<RoomList, CreateRoomContr
                 Timber.e(mContext.getString(roomError.getErrorMessage()));
                 view().createRoomError();
                 break;
+            case ROOM_ALREADY_EXIST:
             case EMPTY_NAME:
                 view().showIncorrectRoomName(roomError.getErrorMessage());
                 break;

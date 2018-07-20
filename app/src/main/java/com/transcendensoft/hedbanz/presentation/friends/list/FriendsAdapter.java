@@ -21,6 +21,7 @@ import com.transcendensoft.hedbanz.domain.entity.Friend;
 import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
 import com.transcendensoft.hedbanz.presentation.friends.list.delegates.AcceptedFriendAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.friends.list.delegates.NotAcceptedFriendAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.friends.list.delegates.PendingFriendAdapterDelegate;
 
 import javax.inject.Inject;
 
@@ -33,30 +34,35 @@ import io.reactivex.Observable;
  * Developed by <u>Transcendensoft</u>
  */
 public class FriendsAdapter extends RecyclerDelegationAdapter<Friend> {
-    @Inject AcceptedFriendAdapterDelegate mAcceptedFriendAdapterDelegate;
-    @Inject NotAcceptedFriendAdapterDelegate mNotAcceptedFriendAdapterDelegate;
+    private AcceptedFriendAdapterDelegate mAcceptedFriendAdapterDelegate;
+    private NotAcceptedFriendAdapterDelegate mNotAcceptedFriendAdapterDelegate;
 
     @Inject
-    public FriendsAdapter() {
+    public FriendsAdapter(AcceptedFriendAdapterDelegate acceptedFriendAdapterDelegate,
+                          NotAcceptedFriendAdapterDelegate notAcceptedFriendAdapterDelegate,
+                          PendingFriendAdapterDelegate pendingFriendAdapterDelegate) {
         super();
+        this.mAcceptedFriendAdapterDelegate = acceptedFriendAdapterDelegate;
+        this.mNotAcceptedFriendAdapterDelegate = notAcceptedFriendAdapterDelegate;
 
         delegatesManager
-                .addDelegate(mAcceptedFriendAdapterDelegate)
-                .addDelegate(mNotAcceptedFriendAdapterDelegate);
+                .addDelegate(acceptedFriendAdapterDelegate)
+                .addDelegate(notAcceptedFriendAdapterDelegate)
+                .addDelegate(pendingFriendAdapterDelegate);
     }
 
     @NonNull
-    public Observable<Friend> acceptFriendObservable(){
+    public Observable<Friend> acceptFriendObservable() {
         return mNotAcceptedFriendAdapterDelegate.getAcceptSubject();
     }
 
     @NonNull
-    public Observable<Friend> declineFriendObservable(){
+    public Observable<Friend> declineFriendObservable() {
         return mNotAcceptedFriendAdapterDelegate.getDeclineSubject();
     }
 
     @NonNull
-    public Observable<Friend> deleteFriendObservable(){
+    public Observable<Friend> deleteFriendObservable() {
         return mAcceptedFriendAdapterDelegate.getRemoveFriendSubject();
     }
 }

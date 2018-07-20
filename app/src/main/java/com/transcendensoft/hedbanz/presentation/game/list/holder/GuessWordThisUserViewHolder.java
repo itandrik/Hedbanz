@@ -78,6 +78,8 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
     public void bindText(String text) {
         if (!TextUtils.isEmpty(text)) {
             mTietGuessWord.setText(text);
+        } else {
+            mTietGuessWord.setText("");
         }
     }
 
