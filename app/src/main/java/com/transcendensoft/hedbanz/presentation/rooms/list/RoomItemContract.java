@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 public interface RoomItemContract {
 
     interface View {
-        void setIcon(@DrawableRes int icon);
+        void setIcon(@DrawableRes int icon, @DrawableRes int stickerBg);
 
         void setName(String name);
 
