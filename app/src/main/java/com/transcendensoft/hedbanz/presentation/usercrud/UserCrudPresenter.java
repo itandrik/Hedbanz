@@ -30,6 +30,7 @@ import com.transcendensoft.hedbanz.domain.interactor.user.exception.UserCredenti
 import com.transcendensoft.hedbanz.domain.validation.UserCrudValidator;
 import com.transcendensoft.hedbanz.domain.validation.UserError;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
+import com.transcendensoft.hedbanz.utils.RxUtils;
 
 import java.net.ConnectException;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +44,7 @@ import timber.log.Timber;
  * methods to process register work with repository
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 @ActivityScope
 public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View>
@@ -163,7 +164,18 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
      *------------------------------------*/
     @Override
     public void initAnimEditTextListener(EditText editText) {
-        addDisposable(RxTextView.textChanges(editText)
+        addDisposable(
+                RxTextView.textChanges(editText)
+                        .skip(1)
+                        .filter(text -> !TextUtils.isEmpty(text))
+                        .compose(RxUtils.debounceFirst(500, TimeUnit.MILLISECONDS))
+                        .doOnNext(text -> view().startSmileAnimation())
+                        .mergeWith(RxTextView.textChanges(editText)
+                                .skip(1)
+                                .debounce(500, TimeUnit.MILLISECONDS)
+                                .doOnNext(text -> view().stopSmileAnimation()))
+                        .subscribe());
+        /*addDisposable(RxTextView.textChanges(editText)
                 .skip(1)
                 .doOnEach(text -> {
                     view().startSmileAnimation();
@@ -176,7 +188,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
                         err -> {
                             Timber.e("Error while setting start/stop smile animation. " +
                                     "Message : " + err.getMessage());
-                        }));
+                        }));*/
     }
 
     /*------------------------------------*
@@ -197,7 +209,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
     }
 
     private void processLoginAvailability(Boolean isLoginAvailable) {
-        if(view() != null) {
+        if (view() != null) {
             if (isLoginAvailable) {
                 view().showLoginAvailable();
             } else {
@@ -207,7 +219,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
     }
 
     private void processLoginAvailabilityError(Throwable err) {
-        if(view() != null) {
+        if (view() != null) {
             if (err instanceof ConnectException) {
                 view().showNetworkError();
             } else {
@@ -220,7 +232,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
         User currentUser = mPreferenceManager.getUser();
 
         String currentUserLogin = "";
-        if(currentUser != null){
+        if (currentUser != null) {
             currentUserLogin = currentUser.getLogin();
         }
 

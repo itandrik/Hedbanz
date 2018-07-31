@@ -35,6 +35,7 @@ import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
+import com.transcendensoft.hedbanz.presentation.restorepwd.RestorePasswordActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.RegisterActivity;
 
 import javax.inject.Inject;
@@ -125,6 +126,16 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
         startActivity(intent);
         if(mActivity != null) {
             mActivity.overridePendingTransition(R.anim.login_page_right_in, R.anim.login_page_right_out);
+        }
+    }
+
+    @OnClick(R.id.tvPasswordRecovery)
+    protected void onRecoveryClicked() {
+        hideAll();
+        Intent intent = new Intent(mActivity, RestorePasswordActivity.class);
+        startActivity(intent);
+        if(mActivity != null) {
+            mActivity.overridePendingTransition(R.anim.login_page_left_in, R.anim.login_page_left_out);
         }
     }
 

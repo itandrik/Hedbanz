@@ -8,13 +8,13 @@
 
     <application
         android:name=".HedbanzApplication"
-        tools:replace="android:allowBackup"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:allowBackup">
 
         <!-- Meta data -->
         <meta-data
@@ -30,6 +30,7 @@
         <!-- Activities -->
         <activity
             android:name=".presentation.StartActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/ThemeMainTranslucentToolbar"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -63,12 +64,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/ThemeMain"
             android:windowSoftInputMode="adjustPan" />
-
+        <activity
+            android:name=".presentation.restorepwd.RestorePasswordActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ThemeRegister"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".presentation.intro.IntroActivity" />
 
         <!-- Service -->
-
-
         <!-- Firebase Notifications -->
         <service android:name=".data.network.service.firebase.HedbanzFirebaseMessagingService">
             <intent-filter>
@@ -81,10 +84,8 @@
             </intent-filter>
         </service>
 
-        <service android:name=".data.repository.GameDataRepositoryImpl" />
         <!-- Receivers -->
+
         <!-- Providers -->
-
     </application>
-
 </manifest>

@@ -65,7 +65,7 @@ public class UserApiDataSource extends ApiDataSource implements UserDataSource{
     public Completable forgotPassword(String login, String locale) {
         HashMap<String, Object> body = new HashMap<>();
         body.put("login", login);
-        body.put("language", locale);
+        body.put("locale", locale);
 
         return mService.forgotPassword(body);
     }

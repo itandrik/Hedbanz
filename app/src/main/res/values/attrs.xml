@@ -3,4 +3,11 @@
     <declare-styleable name="StickerLayout">
         <attr name="text" format="string"/>
     </declare-styleable>
+    <declare-styleable name="BlockEditText">
+        <attr name="bet_inputType" format="enum">
+            <enum name="Text" value="1" />
+            <enum name="Integer" value="2"/>
+            <enum name="TextCapCharacters" value="8" />
+        </attr>
+    </declare-styleable>
 </resources>

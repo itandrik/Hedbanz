@@ -15,9 +15,14 @@ package com.transcendensoft.hedbanz.domain.interactor.changepwd;
  * limitations under the License.
  */
 
+import android.text.TextUtils;
+
+import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
 import com.transcendensoft.hedbanz.data.repository.UserDataRepositoryImpl;
 import com.transcendensoft.hedbanz.domain.CompletableUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.changepwd.exception.PasswordResetException;
 import com.transcendensoft.hedbanz.domain.repository.UserDataRepository;
+import com.transcendensoft.hedbanz.domain.validation.PasswordResetError;
 
 import javax.inject.Inject;
 
@@ -34,6 +39,7 @@ import io.reactivex.disposables.CompositeDisposable;
  */
 public class CheckKeywordUseCase extends CompletableUseCase<CheckKeywordUseCase.Param> {
     private UserDataRepository mUserDataRepository;
+    private PasswordResetException mException;
 
     @Inject
     public CheckKeywordUseCase(CompletableTransformer completableTransformer,
@@ -45,7 +51,36 @@ public class CheckKeywordUseCase extends CompletableUseCase<CheckKeywordUseCase.
 
     @Override
     protected Completable buildUseCaseCompletable(CheckKeywordUseCase.Param param) {
-        return mUserDataRepository.checkKeyword(param.login, param.keyword);
+        mException = new PasswordResetException();
+        if(isKeywordValid(param.keyword)) {
+            return mUserDataRepository.checkKeyword(param.login, param.keyword)
+                    .onErrorResumeNext(this::processOnError);
+        }
+        return Completable.error(mException);
+    }
+
+    private boolean isKeywordValid(String keyword){
+        if(TextUtils.isEmpty(keyword)){
+            mException.addError(PasswordResetError.EMPTY_KEY_WORD);
+            return false;
+        } else if(keyword.length() != 5) {
+            mException.addError(PasswordResetError.INCORRECT_KEY_WORD);
+            return false;
+        }
+        return true;
+    }
+
+    private Completable processOnError(Throwable throwable) {
+        if(throwable instanceof HedbanzApiException){
+            HedbanzApiException exception = (HedbanzApiException) throwable;
+            mException.addError(
+                    PasswordResetError.Companion.getErrorByCode(
+                            exception.getServerErrorCode()));
+        } else {
+            mException.addError(PasswordResetError.UNDEFINED_ERROR);
+        }
+
+        return Completable.error(mException);
     }
 
     public static class Param{

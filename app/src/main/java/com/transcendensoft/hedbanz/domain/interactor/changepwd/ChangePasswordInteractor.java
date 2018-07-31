@@ -44,11 +44,8 @@ public class ChangePasswordInteractor {
 
     public void sendEmailToGetKeyword(String login, Action onComplete,
                                       Consumer<? super Throwable> onError) {
-        ForgotPasswordUseCase.Param param = new ForgotPasswordUseCase.Param(login,
-                mPreferenceManager.getLocale());
-
         mLogin = login;
-        mForgotPasswordUseCase.execute(param, onComplete, onError);
+        mForgotPasswordUseCase.execute(login, onComplete, onError);
     }
 
     public void isKeywordCorrect(String keyword, Action onComplete,
@@ -59,10 +56,10 @@ public class ChangePasswordInteractor {
         mCheckKeywordUseCase.execute(param, onComplete, onError);
     }
 
-    public void resetPassword(String password, Action onComplete,
+    public void resetPassword(String password, String confirmPassword, Action onComplete,
                               Consumer<? super Throwable> onError){
         ResetPasswordUseCase.Param param = new ResetPasswordUseCase.Param(
-                mLogin, mKeyword, password);
+                mLogin, mKeyword, password, confirmPassword);
 
         mResetPasswordUseCase.execute(param, onComplete, onError);
     }
