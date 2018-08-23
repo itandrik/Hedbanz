@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableTransformer;
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
@@ -62,8 +63,9 @@ public class ForgotPasswordUseCase extends CompletableUseCase<String> {
         if (isLoginCorrect(login)) {
             String locale = mPreferenceManager.getLocale();
             Timber.i("LOCALE: " + locale);
-            return mUserDataRepository.forgotPassword(login, locale)
-                    .onErrorResumeNext(this::processOnError);
+            return Completable.fromObservable(
+                    mUserDataRepository.forgotPassword(login, locale)
+                            .onErrorResumeNext(this::processOnError));
         }
         return Completable.error(mException);
     }
@@ -84,8 +86,8 @@ public class ForgotPasswordUseCase extends CompletableUseCase<String> {
         return true;
     }
 
-    private Completable processOnError(Throwable throwable) {
-        if(throwable instanceof HedbanzApiException){
+    private Observable processOnError(Throwable throwable) {
+        if (throwable instanceof HedbanzApiException) {
             HedbanzApiException exception = (HedbanzApiException) throwable;
             mException.addError(
                     PasswordResetError.Companion.getErrorByCode(
@@ -94,6 +96,6 @@ public class ForgotPasswordUseCase extends CompletableUseCase<String> {
             mException.addError(PasswordResetError.UNDEFINED_ERROR);
         }
 
-        return Completable.error(mException);
+        return Observable.error(mException);
     }
 }

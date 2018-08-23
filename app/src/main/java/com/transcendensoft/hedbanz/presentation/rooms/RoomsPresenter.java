@@ -15,6 +15,9 @@ package com.transcendensoft.hedbanz.presentation.rooms;
  * limitations under the License.
  */
 
+import android.support.annotation.NonNull;
+
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.PaginationState;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
@@ -46,12 +49,15 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
 
     private FilterRoomsInteractor mFilterRoomsInteractor;
     private GetRoomsInteractor mGetRoomsInteractor;
+    private PreferenceManager mPreferenceManager;
 
     @Inject
     public RoomsPresenter(FilterRoomsInteractor filterRoomsInteractor,
-                          GetRoomsInteractor getRoomsInteractor) {
+                          GetRoomsInteractor getRoomsInteractor,
+                          PreferenceManager preferenceManager) {
         this.mFilterRoomsInteractor = filterRoomsInteractor;
         this.mGetRoomsInteractor = getRoomsInteractor;
+        this.mPreferenceManager = preferenceManager;
     }
 
     @Override
@@ -63,6 +69,13 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
             view().clearRooms();
             view().addRoomsToRecycler(model.getRooms());
         }
+    }
+
+    @Override
+    public void bindView(@NonNull RoomsContract.View view) {
+        super.bindView(view);
+        mPreferenceManager.setIsUserKicked(false);
+        mPreferenceManager.setIsLastUser(false);
     }
 
     @Override

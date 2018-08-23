@@ -20,7 +20,6 @@ import com.transcendensoft.hedbanz.domain.entity.User;
 
 import org.json.JSONObject;
 
-import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 /**
@@ -38,11 +37,11 @@ public interface UserDataRepository {
     Observable<User> updateUser(long id, String newLogin,
                                 String oldPassword, String newPassword, DataPolicy dataPolicy);
 
-    Completable forgotPassword(String login, String locale);
+    Observable<?> forgotPassword(String login, String locale);
 
-    Completable checkKeyword(String login, String keyword);
+    Observable<?> checkKeyword(String login, String keyword);
 
-    Completable resetPassword(String login, String keyword, String password);
+    Observable<?> resetPassword(String login, String keyword, String password);
 
     void connectIsLoginAvailable();
 

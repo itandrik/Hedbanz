@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableTransformer;
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
@@ -53,8 +54,8 @@ public class CheckKeywordUseCase extends CompletableUseCase<CheckKeywordUseCase.
     protected Completable buildUseCaseCompletable(CheckKeywordUseCase.Param param) {
         mException = new PasswordResetException();
         if(isKeywordValid(param.keyword)) {
-            return mUserDataRepository.checkKeyword(param.login, param.keyword)
-                    .onErrorResumeNext(this::processOnError);
+            return Completable.fromObservable(mUserDataRepository.checkKeyword(param.login, param.keyword)
+                    .onErrorResumeNext(this::processOnError));
         }
         return Completable.error(mException);
     }
@@ -70,7 +71,7 @@ public class CheckKeywordUseCase extends CompletableUseCase<CheckKeywordUseCase.
         return true;
     }
 
-    private Completable processOnError(Throwable throwable) {
+    private Observable processOnError(Throwable throwable) {
         if(throwable instanceof HedbanzApiException){
             HedbanzApiException exception = (HedbanzApiException) throwable;
             mException.addError(
@@ -80,7 +81,7 @@ public class CheckKeywordUseCase extends CompletableUseCase<CheckKeywordUseCase.
             mException.addError(PasswordResetError.UNDEFINED_ERROR);
         }
 
-        return Completable.error(mException);
+        return Observable.error(mException);
     }
 
     public static class Param{

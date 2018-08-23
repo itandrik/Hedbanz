@@ -29,6 +29,7 @@ import java.util.List;
 public class RoomDTO {
     public static final String ROOM_ID_KEY = "roomId";
     public static final String PASSWORD_KEY = "password";
+    public static final String TOKEN_KEY = "securityToken";
 
     @SerializedName("id")
     @Expose

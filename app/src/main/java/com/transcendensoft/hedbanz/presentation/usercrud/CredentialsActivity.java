@@ -138,6 +138,7 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
      *------------------------------------*/
     @Override
     public void crudOperationSuccess() {
+        hideLoadingDialog();
         mEtNewPassword.setText("");
         mEtConfirmPassword.setText("");
         mEtOldPassword.setText("");

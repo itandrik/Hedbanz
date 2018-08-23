@@ -50,6 +50,7 @@ public class MessageDTO {
     @SerializedName("senderUser")
     @Expose
     private UserDTO senderUser;
+    private String securityToken;
 
     MessageDTO(long id, long senderId, long roomId, String text, int type, Long createDate, long clientMessageId, UserDTO senderUser) {
         this.id = id;
@@ -124,6 +125,14 @@ public class MessageDTO {
 
     public void setSenderUser(UserDTO senderUser) {
         this.senderUser = senderUser;
+    }
+
+    public String getSecurityToken() {
+        return securityToken;
+    }
+
+    public void setSecurityToken(String securityToken) {
+        this.securityToken = securityToken;
     }
 
     @Override

@@ -287,6 +287,7 @@ public class RegisterActivity extends BaseActivity implements UserCrudContract.V
     @Override
     public void hideAll() {
         hideLoading();
+        hideLoadingDialog();
         mTvConfirmPasswordError.setVisibility(GONE);
         mTvEmailError.setVisibility(GONE);
         mTvLoginError.setVisibility(GONE);

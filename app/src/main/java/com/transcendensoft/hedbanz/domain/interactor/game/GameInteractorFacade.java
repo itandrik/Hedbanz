@@ -58,6 +58,7 @@ import com.transcendensoft.hedbanz.domain.interactor.game.usecases.word.WordSett
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
 import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
+import com.transcendensoft.hedbanz.presentation.notification.NotificationManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -117,6 +118,7 @@ public class GameInteractorFacade {
 
     @Inject @SchedulerIO Scheduler mIoScheduler;
     @Inject RxRoom mCurrentRoom;
+    @Inject NotificationManager mNotificationManager;
 
     @Inject
     public GameInteractorFacade(PreferenceManager preferenceManager,
@@ -190,8 +192,13 @@ public class GameInteractorFacade {
                     }
                     user.setPlayerStatus(PlayerStatus.ACTIVE);
                 }
+                if(mPreferenceManger.getUser().equals(user)){
+                    mNotificationManager.cancelKickNotification();
+                }
             }
         };
+
+
         mUserReturnedUseCase.execute(null, onNext, onError, doOnNext);
     }
 
@@ -273,7 +280,7 @@ public class GameInteractorFacade {
     }
 
     public void onPlayersInfoUseCase(Consumer<? super List<User>> onNext,
-                                     Consumer<? super Throwable> onError){
+                                     Consumer<? super Throwable> onError) {
         Consumer<? super List<User>> doOnNext = users -> {
             mCurrentRoom.getRoom().setPlayers(users);
             this.mCurrentRoom.setRoom(mCurrentRoom.getRoom());
@@ -393,7 +400,9 @@ public class GameInteractorFacade {
 
     public void connectSocketToServer(long roomId) {
         User currentUser = mPreferenceManger.getUser();
-        mRepository.connect(currentUser.getId(), roomId);
+        String token = mPreferenceManger.getAuthorizationToken();
+
+        mRepository.connect(currentUser.getId(), roomId, token);
     }
 
     public void joinToRoom(String password) {

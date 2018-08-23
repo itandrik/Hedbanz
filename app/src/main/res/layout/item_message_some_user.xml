@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rlSomeMessageContainer"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
@@ -25,19 +26,19 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp" />
 
-    <TextView
+    <com.vanniktech.emoji.EmojiTextView
         android:id="@+id/tvMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvLogin"
         android:layout_marginLeft="8dp"
-        android:includeFontPadding="false"
-        android:lineSpacingExtra="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_toEndOf="@id/ivUserImage"
         android:layout_toRightOf="@id/ivUserImage"
         android:background="@drawable/message_other_user"
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="0dp"
         android:maxWidth="300dp"
         android:padding="12dp"
         android:textColor="@color/textPrimary"
@@ -48,37 +49,47 @@
         android:layout_width="wrap_content"
         android:layout_height="56dp"
         android:layout_marginTop="-16dp"
+        android:layout_toRightOf="@id/tvLogin"
         android:background="@drawable/button_background"
         android:ellipsize="end"
         android:fontFamily="@font/open_sans_light"
         android:gravity="left|center_vertical"
-        android:paddingRight="20dp"
         android:maxLines="1"
         android:paddingLeft="40dp"
+        android:paddingRight="20dp"
         android:singleLine="true"
         android:textColor="@color/textPrimary"
-        android:textSize="14sp"
-        android:layout_toRightOf="@id/tvLogin" />
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/ivWinIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:visibility="visible"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="-4dp"
+        android:layout_toRightOf="@id/tvLogin"
+        app:srcCompat="@drawable/ic_win" />
 
     <TextView
         android:id="@+id/tvTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/tvMessage"
         android:layout_alignBottom="@id/tvMessage"
         android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@id/tvMessage"
         android:textColor="@color/textSecondary"
         android:textSize="10sp" />
 
     <View
         android:id="@+id/separator"
         android:layout_width="2dp"
-        android:visibility="visible"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_alignBottom="@id/tvMessage"
+        android:layout_alignParentTop="true"
         android:layout_marginBottom="-12dp"
-        android:layout_toLeftOf="@id/tvMessage"
         android:layout_marginRight="8dp"
-        android:background="@color/google_yellow" />
+        android:layout_toLeftOf="@id/tvMessage"
+        android:background="@color/google_yellow"
+        android:visibility="visible" />
 </RelativeLayout>

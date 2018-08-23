@@ -87,6 +87,7 @@ public class MessageUseCase extends ObservableUseCase<Message, List<RxUser>> {
                 RxUser rxUser = getRxUser(rxPlayers, message.getUserFrom().getId());
                 if (rxUser != null) {
                     message.getUserFrom().setWord(rxUser.getUser().getWord());
+                    message.getUserFrom().setWinner(rxUser.getUser().isWinner());
                 }
             }
         }

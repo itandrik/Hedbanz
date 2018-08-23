@@ -49,6 +49,7 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.separator) View mSeparator;
     @BindView(R.id.rlSomeMessageContainer) RelativeLayout mRlContainer;
     @BindView(R.id.tvUserWord) TextView mTvUserWord;
+    @BindView(R.id.ivWinIcon) ImageView mIvWin;
 
     private Context mContext;
 
@@ -140,6 +141,20 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
             mTvTime.setText(humanReadableTime);
         } else {
             mTvTime.setText("");
+        }
+    }
+
+    public void bindIsWinner(boolean isWinner){
+        if(isWinner){
+            mIvWin.setVisibility(View.VISIBLE);
+            mTvUserWord.setVisibility(View.GONE);
+        } else {
+            mIvWin.setVisibility(View.GONE);
+            if(TextUtils.isEmpty(mTvUserWord.getText())){
+                mTvUserWord.setVisibility(View.GONE);
+            } else {
+                mTvUserWord.setVisibility(View.VISIBLE);
+            }
         }
     }
 }

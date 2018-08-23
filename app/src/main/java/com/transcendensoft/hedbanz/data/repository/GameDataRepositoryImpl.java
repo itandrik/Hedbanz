@@ -120,6 +120,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private Socket mSocket;
     private long mUserId;
     private long mRoomId;
+    private String mSecurityToken;
 
     private MessageModelDataMapper mMessageMapper;
     private RoomModelDataMapper mRoomMapper;
@@ -678,6 +679,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         QuestionDTO questionDTO = mQuestionMapper.convert(question);
         questionDTO.setSenderId(mUserId);
         questionDTO.setRoomId(mRoomId);
+        questionDTO.setSecurityToken(mSecurityToken);
 
         String json = mGson.toJson(questionDTO);
 
@@ -691,6 +693,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         QuestionDTO questionDTO = mQuestionMapper.convert(question);
         questionDTO.setSenderId(mUserId);
         questionDTO.setRoomId(mRoomId);
+        questionDTO.setSecurityToken(mSecurityToken);
 
         String json = mGson.toJson(questionDTO);
 
@@ -705,6 +708,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         setWordObject.put(UserDTO.SENDER_ID_KEY, mUserId);
         setWordObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
         setWordObject.put("word", word.getWord());
+        setWordObject.put(RoomDTO.TOKEN_KEY, mSecurityToken);
 
         String json = mGson.toJson(setWordObject);
 
@@ -737,6 +741,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 .setType(MessageType.SIMPLE_MESSAGE.getId())
                 .setClientMessageId(message.getClientMessageId())
                 .build();
+        messageDTO.setSecurityToken(mSecurityToken);
 
         String json = mGson.toJson(messageDTO);
 
@@ -750,6 +755,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
         joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
         joinRoomObject.put(RoomDTO.PASSWORD_KEY, password);
+        joinRoomObject.put(RoomDTO.TOKEN_KEY, mSecurityToken);
 
         String json = mGson.toJson(joinRoomObject);
 
@@ -758,14 +764,17 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
-    public void connect(long userId, long roomId) {
+    public void connect(long userId, long roomId, String securityToken) {
         this.mUserId = userId;
         this.mRoomId = roomId;
+        this.mSecurityToken = securityToken;
+
         mSocket.connect();
 
-        LinkedHashMap<String, Long> joinRoomObject = new LinkedHashMap<>();
+        LinkedHashMap<String, Object> joinRoomObject = new LinkedHashMap<>();
         joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
         joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
+        joinRoomObject.put(RoomDTO.TOKEN_KEY, mSecurityToken);
 
         mRoomToUserJson = mGson.toJson(joinRoomObject);
     }

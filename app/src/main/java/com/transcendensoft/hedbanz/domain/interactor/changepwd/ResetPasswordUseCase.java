@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableTransformer;
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
@@ -57,8 +58,8 @@ public class ResetPasswordUseCase extends CompletableUseCase<ResetPasswordUseCas
         if (isDataCorrect(param)) {
             param.setPassword(SecurityUtils.hash(param.getPassword()));
 
-            return mUserDataRepository.resetPassword(param.login, param.keyword, param.password)
-                    .onErrorResumeNext(this::processOnError);
+            return Completable.fromObservable(mUserDataRepository.resetPassword(param.login, param.keyword, param.password)
+                    .onErrorResumeNext(this::processOnError));
         }
         return Completable.error(mException);
     }
@@ -89,7 +90,7 @@ public class ResetPasswordUseCase extends CompletableUseCase<ResetPasswordUseCas
         return result;
     }
 
-    private Completable processOnError(Throwable throwable) {
+    private Observable processOnError(Throwable throwable) {
         if(throwable instanceof HedbanzApiException){
             HedbanzApiException exception = (HedbanzApiException) throwable;
             mException.addError(
@@ -99,7 +100,7 @@ public class ResetPasswordUseCase extends CompletableUseCase<ResetPasswordUseCas
             mException.addError(PasswordResetError.UNDEFINED_ERROR);
         }
 
-        return Completable.error(mException);
+        return Observable.error(mException);
     }
 
     public static class Param{

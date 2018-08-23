@@ -21,6 +21,8 @@ import com.crashlytics.android.Crashlytics;
 import com.squareup.leakcanary.LeakCanary;
 import com.transcendensoft.hedbanz.di.component.DaggerAppComponent;
 import com.transcendensoft.hedbanz.utils.logging.CrashReportingTree;
+import com.vanniktech.emoji.EmojiManager;
+import com.vanniktech.emoji.ios.IosEmojiProvider;
 
 import javax.inject.Inject;
 
@@ -63,6 +65,7 @@ public class HedbanzApplication extends DaggerApplication implements HasServiceI
         } else {
            Timber.plant(mReleaseTimberTree);
         }
+        EmojiManager.install(new IosEmojiProvider());
     }
 
     @Override

@@ -53,12 +53,18 @@ public abstract class BaseActivity extends DaggerAppCompatActivity implements Ba
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        mProgressDialog.dismiss();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if(mViewCompositeDisposable != null && !mViewCompositeDisposable.isDisposed()) {
             mViewCompositeDisposable.dispose();
         }
-        mProgressDialog.hide();
+        mProgressDialog.dismiss();
         mProgressDialog = null;
     }
 
@@ -147,7 +153,7 @@ public abstract class BaseActivity extends DaggerAppCompatActivity implements Ba
     @Override
     public void hideLoadingDialog() {
         if (mProgressDialog != null) {
-            mProgressDialog.hide();
+            mProgressDialog.dismiss();
         }
     }
 

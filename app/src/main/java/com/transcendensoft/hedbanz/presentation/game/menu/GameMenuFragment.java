@@ -17,6 +17,7 @@ package com.transcendensoft.hedbanz.presentation.game.menu;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -58,6 +59,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * Fragment that shows sidebar menu with users.
@@ -144,9 +146,13 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     }
 
     private void initCollapsingToolbar() {
-        Typeface typeface = ResourcesCompat.getFont(mContext, R.font.open_sans_light);
-        mCollapsingToolbar.setCollapsedTitleTypeface(typeface);
-        mCollapsingToolbar.setExpandedTitleTypeface(typeface);
+        try {
+            Typeface typeface = ResourcesCompat.getFont(mContext, R.font.open_sans_light);
+            mCollapsingToolbar.setCollapsedTitleTypeface(typeface);
+            mCollapsingToolbar.setExpandedTitleTypeface(typeface);
+        }catch(Resources.NotFoundException e){
+            Timber.e(e);
+        }
     }
 
     /*------------------------------------*

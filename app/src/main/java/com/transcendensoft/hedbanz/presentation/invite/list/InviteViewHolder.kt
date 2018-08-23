@@ -82,8 +82,8 @@ class InviteViewHolder(private val mContext: Context,
 
     fun bindOnClick(friend: Friend) {
         mItemView.setOnClickListener {
-            mChbSelect?.isChecked = !mChbSelect?.isChecked!!
-            friend.isSelected = mChbSelect.isChecked
+            mChbSelect?.isSelected = !mChbSelect?.isSelected!!
+            friend.isSelected = mChbSelect.isSelected
         }
     }
 }

@@ -158,11 +158,14 @@
     <string name="game_action_resume_game">Продолжить</string>
     <string name="game_action_exit_game">Кидануть ребят</string>
     <string name="game_menu_this_user">Это вы</string>
-
+    <string name="game_kicked_title">Вы исключены из комнаты</string>
+    <string name="game_kicked_message">Вы не присутствовали в игре на этапе загадывания слов долгое время, по-этому вас исключили с комнаты. Вы можете создать другую комнату, либо присоединиться к другим игрокам.</string>
     <string name="game_toolbar_open_menu_content_description">Открыть меню</string>
     <string name="game_toolbar_close_menu_content_description">Закрыть меню</string>
     <string name="game_menu_friend">Друг</string>
     <string name="game_afk">AFK</string>
+    <string name="game_last_player_title">Вы последний игрок в комнате</string>
+    <string name="game_last_player_message">Так получилось, что все игроки покинули комнату. Эта комната закрывается, если вы хотите собрать новую команду, создайте новую комнату или присоединитесь к другой.</string>
 
     <string name="game_some_user_think_word_to_user">Сейчас будет спрашивать игрок %1$s.\n Попытка %2$d/3</string>
     <string name="game_some_user_think_word_to_user_error">Сейчас будет спрашивать какой-то игрок.\n Попытка %1$d/3</string>
@@ -188,7 +191,7 @@
     <string name="game_notification_kick_warning_title">Внимание! У вас есть 30 секунд чтобы вернуться в комнату</string>
     <string name="game_notification_kick_warning_message">Ваши друзья ждут вас в комнате %1$s при загадывании слов. Если вы не вернетесь в игру, то через 30 секунд будете исключены из нее. Уважайте время других игроков.</string>
     <string name="game_notification_kick_title">Вас исключили с комнаты %1$s</string>
-    <string name="game_notification_kick_message">Из-за того, что у вы не присутствовали в игре на этапе загадывания слов долгое время, вас исключили с комнаты. Попробуйте сыграть с другими ребятами.</string>
+    <string name="game_notification_kick_message">Из-за того, что вы не присутствовали в игре на этапе загадывания слов долгое время, вас исключили с комнаты. Попробуйте сыграть с другими ребятами.</string>
     <string name="game_notification_channel_title_friend">Друзья</string>
     <string name="game_notification_friend_title">Запрос в друзья</string>
     <string name="game_notification_friend_message">Игрок %1$s хочет дружить с вами</string>

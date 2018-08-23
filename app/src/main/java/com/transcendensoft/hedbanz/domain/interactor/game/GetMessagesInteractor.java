@@ -87,7 +87,7 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, GetMessage
                 // Question with guessing
                 PlayerGuessing playerGuessing = new PlayerGuessing.Builder()
                         .player(question.getUserFrom())
-                        .attempts(question.getUserFrom().getAttempts())
+                        .attempts(question.getAttempt())
                         .questionId(question.getQuestionId())
                         .build();
                 playerGuessing.setUserFrom(question.getUserFrom());

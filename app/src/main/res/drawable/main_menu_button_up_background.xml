@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+    <item android:state_pressed="true">
+        <ripple android:color="@color/loginRipple" tools:targetApi="lollipop">
+            <item>
+                <shape android:shape="rectangle">
+                    <stroke android:color="@color/textSecondary" android:width="0.5dp"/>
+                    <solid android:color="@color/textWhite" />
+                    <corners android:radius="54dp" />
+                </shape>
+            </item>
+        </ripple>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <stroke android:color="@color/textSecondary" android:width="0.5dp"/>
+            <solid android:color="@color/textWhite" />
+            <corners android:radius="54dp" />
+        </shape>
+    </item>
+</selector>

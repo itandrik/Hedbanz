@@ -79,7 +79,7 @@ public interface GameDataRepository {
     void sendConnectInfo();
     void restartGame();
 
-    void connect(long userId, long roomId);
+    void connect(long userId, long roomId, String securityToken);
     void disconnect();
     void stopSocket();
     void startSocket();

@@ -23,7 +23,6 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
-import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 /**
@@ -62,7 +61,7 @@ public class UserApiDataSource extends ApiDataSource implements UserDataSource{
     }
 
     @Override
-    public Completable forgotPassword(String login, String locale) {
+    public Observable<?> forgotPassword(String login, String locale) {
         HashMap<String, Object> body = new HashMap<>();
         body.put("login", login);
         body.put("locale", locale);
@@ -71,7 +70,7 @@ public class UserApiDataSource extends ApiDataSource implements UserDataSource{
     }
 
     @Override
-    public Completable checkKeyword(String login, String keyword) {
+    public Observable<?> checkKeyword(String login, String keyword) {
         HashMap<String, Object> body = new HashMap<>();
         body.put("login", login);
         body.put("keyWord", keyword);
@@ -80,7 +79,7 @@ public class UserApiDataSource extends ApiDataSource implements UserDataSource{
     }
 
     @Override
-    public Completable resetPassword(String login, String keyword, String password) {
+    public Observable<?> resetPassword(String login, String keyword, String password) {
         HashMap<String, Object> body = new HashMap<>();
         body.put("login", login);
         body.put("keyWord", keyword);

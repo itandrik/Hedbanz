@@ -61,7 +61,6 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
         private const val KICK_NOTIFICATION_ID = 6
         private const val GAME_OVER_NOTIFICATION_ID = 7
 
-
         private const val MESSAGE_NOTIFICATION_REQUEST_CODE = 100
         private const val SET_WORD_NOTIFICATION_REQUEST_CODE = 101
         private const val GUESS_WORD_NOTIFICATION_REQUEST_CODE = 102
@@ -405,5 +404,18 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
 
             notificationManager.createNotificationChannel(notificationChannel)
         }
+    }
+
+    fun cancelKickNotification(){
+        cancelNotification(KICK_NOTIFICATION_ID)
+    }
+
+    fun cancelGameOverNotification(){
+        cancelNotification(GAME_OVER_NOTIFICATION_ID)
+    }
+
+    private fun cancelNotification(notificationId: Int){
+        val notificationManager = mContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(notificationId)
     }
 }

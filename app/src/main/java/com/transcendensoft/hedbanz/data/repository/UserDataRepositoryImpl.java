@@ -31,7 +31,6 @@ import java.net.URISyntaxException;
 
 import javax.inject.Inject;
 
-import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -113,17 +112,17 @@ public class UserDataRepositoryImpl implements UserDataRepository {
     }
 
     @Override
-    public Completable forgotPassword(String login, String locale) {
+    public Observable<?> forgotPassword(String login, String locale) {
         return mUserApiDataSource.forgotPassword(login, locale);
     }
 
     @Override
-    public Completable checkKeyword(String login, String keyword) {
+    public Observable<?> checkKeyword(String login, String keyword) {
         return mUserApiDataSource.checkKeyword(login, keyword);
     }
 
     @Override
-    public Completable resetPassword(String login, String keyword, String password) {
+    public Observable<?> resetPassword(String login, String keyword, String password) {
         return mUserApiDataSource.resetPassword(login, keyword, password);
     }
 

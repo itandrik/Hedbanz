@@ -116,11 +116,11 @@ public interface ApiService {
 
     /*Forgot password*/
     @POST("forgot-password")
-    Completable forgotPassword(@Body HashMap<String, Object> body);
+    Observable<Object> forgotPassword(@Body HashMap<String, Object> body);
 
     @POST("check-key")
-    Completable checkKey(@Body HashMap<String, Object> body);
+    Observable<Object> checkKey(@Body HashMap<String, Object> body);
 
     @POST("reset-password")
-    Completable resetPassword(@Body HashMap<String, Object> body);
+    Observable<Object> resetPassword(@Body HashMap<String, Object> body);
 }

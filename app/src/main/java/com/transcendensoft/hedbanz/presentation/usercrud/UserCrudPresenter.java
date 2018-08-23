@@ -89,8 +89,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
         view().showLoadingDialog();
         mRegisterUserInteractorInteractor.execute(user,
                 this::processRegisterOnNext,
-                this::processRegisterOnError,
-                () -> view().crudOperationSuccess());
+                this::processRegisterOnError);
     }
 
     @Override
@@ -103,14 +102,15 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
         view().showLoadingDialog();
         mUpdateUserInteractorInteractor.execute(params,
                 this::processRegisterOnNext,
-                this::processRegisterOnError,
-                () -> view().crudOperationSuccess());
+                this::processRegisterOnError);
     }
 
     private void processRegisterOnNext(User user) {
         if (user != null) {
             Timber.tag(UserCrudPresenter.class.getName()).i("Current user = %s", user.toString());
             mPreferenceManager.setUser(user);
+            view().hideLoadingDialog();
+            view().crudOperationSuccess();
         } else {
             throw new HedbanzApiException("User comes NULL from server while login");
         }
@@ -146,6 +146,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
             case INVALID_PASSWORD:
                 view().showIncorrectPassword(userError.getErrorMessage());
                 break;
+            case EMPTY_OLD_PASSWORD:
             case INVALID_OLD_PASSWORD:
                 view().showIncorrectOldPassword(userError.getErrorMessage());
                 break;

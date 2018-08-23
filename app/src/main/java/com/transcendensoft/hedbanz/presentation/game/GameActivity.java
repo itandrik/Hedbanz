@@ -1,6 +1,10 @@
 package com.transcendensoft.hedbanz.presentation.game;
 
 import android.animation.Animator;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -18,7 +22,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -26,12 +29,18 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.data.network.service.firebase.HedbanzFirebaseMessagingService;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.game.list.GameListAdapter;
+import com.transcendensoft.hedbanz.presentation.notification.NotificationManager;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
+import com.transcendensoft.hedbanz.utils.extension.ViewExtensionsKt;
+import com.vanniktech.emoji.EmojiEditText;
+import com.vanniktech.emoji.EmojiPopup;
 
 import java.util.List;
 
@@ -43,14 +52,17 @@ import butterknife.OnClick;
 
 import static android.view.View.GONE;
 import static android.view.View.OVER_SCROLL_NEVER;
+import static com.transcendensoft.hedbanz.data.network.service.firebase.HedbanzFirebaseMessagingService.ACTION_LAST_USER;
 
 public class GameActivity extends BaseActivity implements GameContract.View {
     @Inject GamePresenter mPresenter;
     @Inject GameListAdapter mAdapter;
     @Inject Gson mGson;
+    @Inject NotificationManager mNotificationManager;
+    @Inject PreferenceManager mPreferenceManager;
 
     @BindView(R.id.rvGameList) RecyclerView mRecycler;
-    @BindView(R.id.etChatMessage) EditText mEtChatMessage;
+    @BindView(R.id.etChatMessage) EmojiEditText mEtChatMessage;
     @BindView(R.id.rlGameDataContainer) RelativeLayout mRlDataContainer;
     @BindView(R.id.rlErrorNetwork) RelativeLayout mRlErrorNetwork;
     @BindView(R.id.rlErrorServer) RelativeLayout mRlErrorServer;
@@ -62,7 +74,11 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @BindView(R.id.drawerLayout) DrawerLayout mDrawerLayout;
     @BindView(R.id.fabLogout) FloatingActionButton mFabLogout;
     @BindView(R.id.fabMenu) FloatingActionButton mFabMenu;
+    @BindView(R.id.parent) RelativeLayout mParentLayout;
+    @BindView(R.id.ivEmoji) ImageView mIvEmojiKeyboard;
 
+    private BroadcastReceiver mLastPlayerBroadcastReceiver;
+    private EmojiPopup mEmojiPopup;
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -70,8 +86,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_game);
         ButterKnife.bind(this, this);
+        ViewExtensionsKt.setupKeyboardHiding(mParentLayout, this);
 
         if (mPresenter != null && getIntent() != null) {
             long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
@@ -81,7 +99,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
             String roomIntentString = getIntent().getStringExtra(getString(R.string.bundle_room_data));
 
             Room room;
-            if(roomIntentString != null){
+            if (roomIntentString != null) {
                 room = mGson.fromJson(roomIntentString, Room.class);
                 // After room creation
             } else {
@@ -99,6 +117,8 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
         initNavDrawer();
         initRecycler();
+        initBroadcastReceivers();
+        initEmojiPopup();
 
         mPresenter.messageTextChanges(mEtChatMessage);
     }
@@ -114,6 +134,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 mRecycler.smoothScrollToPosition(mAdapter.getItems().size() - 1);
             }
         }
+        registerReceiver(mLastPlayerBroadcastReceiver, new IntentFilter(ACTION_LAST_USER));
     }
 
     @Override
@@ -122,6 +143,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         if (mPresenter != null) {
             mPresenter.unbindView();
         }
+        unregisterReceiver(mLastPlayerBroadcastReceiver);
     }
 
     @Override
@@ -210,6 +232,23 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         }
     }
 
+    private void initBroadcastReceivers() {
+        mLastPlayerBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent != null && intent.getAction() != null &&
+                        intent.getAction().equalsIgnoreCase(
+                                HedbanzFirebaseMessagingService.ACTION_LAST_USER)) {
+                    showLastUserDialog();
+                }
+            }
+        };
+    }
+
+    private void initEmojiPopup() {
+        mEmojiPopup = EmojiPopup.Builder.fromRootView(mParentLayout).build(mEtChatMessage);
+    }
+
     /*------------------------------------*
      *-------- On click listeners --------*
      *------------------------------------*/
@@ -251,6 +290,18 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     protected void onMenuClicked() {
         mDrawerLayout.openDrawer(GravityCompat.END);
         KeyboardUtils.hideSoftInput(this);
+    }
+
+    @OnClick(R.id.ivEmoji)
+    protected void onEmojiKeyboardClicked() {
+        mEmojiPopup.toggle();
+        Drawable imageDrawable = null;
+        if (mEmojiPopup.isShowing()) {
+            imageDrawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_keyboard, null);
+        } else {
+            imageDrawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_smile_keyboard, null);
+        }
+        mIvEmojiKeyboard.setImageDrawable(imageDrawable);
     }
 
     /*------------------------------------*
@@ -540,5 +591,43 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 showShortToastMessage(getString(R.string.game_user_returned, login));
             }
         }
+    }
+
+    @Override
+    public void showUserKicked() {
+        Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
+        new AlertDialog.Builder(this)
+                .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> {
+                    mNotificationManager.cancelKickNotification();
+                    mPreferenceManager.setIsUserKicked(false);
+                    finish();
+                })
+                .setOnDismissListener(dialog -> {
+                    mNotificationManager.cancelKickNotification();
+                    mPreferenceManager.setIsUserKicked(false);
+                    finish();
+                })
+                .setIcon(d)
+                .setTitle(getString(R.string.game_kicked_title))
+                .setMessage(getString(R.string.game_kicked_message))
+                .show();
+    }
+
+    @Override
+    public void showLastUserDialog() {
+        Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
+        new AlertDialog.Builder(this)
+                .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> {
+                    mPreferenceManager.setIsLastUser(false);
+                    finish();
+                })
+                .setOnDismissListener(dialog -> {
+                    mPreferenceManager.setIsLastUser(false);
+                    finish();
+                })
+                .setIcon(d)
+                .setTitle(getString(R.string.game_last_player_title))
+                .setMessage(getString(R.string.game_last_player_message))
+                .show();
     }
 }
