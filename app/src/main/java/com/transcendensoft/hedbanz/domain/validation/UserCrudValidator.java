@@ -110,7 +110,7 @@ public class UserCrudValidator implements Validator<User, UserError> {
 
     public boolean isOldPasswordValid(String oldPassword){
         if(TextUtils.isEmpty(oldPassword)){
-            mUserError = UserError.INVALID_OLD_PASSWORD;
+            mUserError = UserError.EMPTY_OLD_PASSWORD;
             return false;
         }
         return true;

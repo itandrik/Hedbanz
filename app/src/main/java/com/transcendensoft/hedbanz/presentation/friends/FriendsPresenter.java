@@ -58,6 +58,7 @@ public class FriendsPresenter extends BasePresenter<List<Friend>, FriendsContrac
         this.mAcceptFriendInteractor = acceptFriendInteractor;
         this.mRemoveFriendInteractor = removeFriendInteractor;
         this.mDeclineFriendInteractor = declineFriendInteractor;
+        this.mObservableTransformer = transformer;
     }
 
     @Override
@@ -104,7 +105,10 @@ public class FriendsPresenter extends BasePresenter<List<Friend>, FriendsContrac
         view().showLoadingDialog();
         RemoveFriend.Param param = new RemoveFriend.Param(DataPolicy.API, friend.getId());
         mRemoveFriendInteractor.execute(param,
-                () -> view().successDeleteFriend(friend),
+                () -> {
+                    view().successDeleteFriend(friend);
+                    getFriends();
+                },
                 err -> processFriendError(friend, err));
     }
 
@@ -113,7 +117,10 @@ public class FriendsPresenter extends BasePresenter<List<Friend>, FriendsContrac
         view().showLoadingDialog();
         AcceptFriend.Param param = new AcceptFriend.Param(DataPolicy.API, friend.getId());
         mAcceptFriendInteractor.execute(param,
-                () -> view().successAcceptFriend(friend),
+                () -> {
+                    view().successAcceptFriend(friend);
+                    getFriends();
+                },
                 err -> processFriendError(friend, err));
     }
 
@@ -122,7 +129,10 @@ public class FriendsPresenter extends BasePresenter<List<Friend>, FriendsContrac
         view().showLoadingDialog();
         DeclineFriend.Param param = new DeclineFriend.Param(DataPolicy.API, friend.getId());
         mDeclineFriendInteractor.execute(param,
-                () -> view().successDeclineFriend(friend),
+                () -> {
+                    view().successDeclineFriend(friend);
+                    getFriends();
+                },
                 err -> processFriendError(friend, err));
     }
 
@@ -136,7 +146,7 @@ public class FriendsPresenter extends BasePresenter<List<Friend>, FriendsContrac
         mGetFriendsInteractor.execute(DataPolicy.API,
                 this::processGetFriendsOnNext,
                 this::processOnError,
-                () -> view().showContent(),
+                () -> {},
                 (d) -> view().showLoading());
 
     }
@@ -155,6 +165,7 @@ public class FriendsPresenter extends BasePresenter<List<Friend>, FriendsContrac
                 }
             });
             view().addFriendsToRecycler(friends);
+            view().showContent();
         }
     }
 

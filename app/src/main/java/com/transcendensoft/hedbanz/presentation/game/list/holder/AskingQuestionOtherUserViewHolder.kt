@@ -171,6 +171,7 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
         if (usersThumbsUp.isEmpty()) {
             mTvPlayersThumbsUp?.visibility = View.GONE
             mThumbsUpPlayersDivider?.visibility = View.GONE
+            mPbThumbsUp?.progress = 0
         } else {
             mTvPlayersThumbsUp?.visibility = View.VISIBLE
             mThumbsUpPlayersDivider?.visibility = View.VISIBLE
@@ -184,6 +185,7 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
         if (usersThumbsDown.isEmpty()) {
             mTvPlayersThumbsDown?.visibility = View.GONE
             mThumbsDownPlayersDivider?.visibility = View.GONE
+            mPbThumbsDown?.progress = 0
         } else {
             mTvPlayersThumbsDown?.visibility = View.VISIBLE
             mThumbsDownPlayersDivider?.visibility = View.VISIBLE
@@ -199,6 +201,7 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
             mWinPlayersDivider?.visibility = View.GONE
             (mTvTotal?.layoutParams as RelativeLayout.LayoutParams)
                     .addRule(RelativeLayout.BELOW, R.id.tvPlayersWin)
+            mPbWin?.progress = 0
         } else {
             mTvPlayersWin?.visibility = View.VISIBLE
             mWinPlayersDivider?.visibility = View.VISIBLE

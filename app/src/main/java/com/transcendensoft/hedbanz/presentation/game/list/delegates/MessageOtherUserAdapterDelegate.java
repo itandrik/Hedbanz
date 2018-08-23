@@ -79,9 +79,12 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
 
             String login = null;
             String word = null;
+            boolean isWinner = false;
+
             if (userFrom != null) {
                 login = userFrom.getLogin();
                 word = userFrom.getWord();
+                isWinner = userFrom.isWinner();
             }
 
             boolean isHideLoginAndImage = false;
@@ -97,6 +100,7 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
             viewHolder.bindMessage(message.getMessage());
             viewHolder.bindUserImage(R.drawable.logo); //TODO change this shit
             viewHolder.bindTime(message.getCreateDate().getTime());
+            viewHolder.bindIsWinner(isWinner);
         }
     }
 }

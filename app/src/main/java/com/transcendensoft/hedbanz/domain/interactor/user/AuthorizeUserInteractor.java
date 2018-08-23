@@ -88,9 +88,6 @@ public class AuthorizeUserInteractor extends ObservableUseCase<User, User> {
             mUserException.addUserError(UserError.UNDEFINED_ERROR);
         }
 
-        if(1 == 2){
-
-        }
         return Observable.error(mUserException);
     }
 }

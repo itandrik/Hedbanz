@@ -43,17 +43,21 @@ public class QuestionDTO extends MessageDTO {
     @SerializedName("vote")
     @Expose
     private int voteId;
+    @SerializedName("attempt")
+    @Expose
+    private int attempt;
 
     public QuestionDTO(long id, long senderId, long roomId, String text, int type,
                        Long createDate, long clientMessageId, UserDTO senderUser,
                        long questionId, List<UserDTO> yesVoters, List<UserDTO> noVoters,
-                       List<UserDTO> winVoters, int voteId) {
+                       List<UserDTO> winVoters, int voteId, int attempt) {
         super(id, senderId, roomId, text, type, createDate, clientMessageId, senderUser);
         this.questionId = questionId;
         this.yesVoters = yesVoters;
         this.noVoters = noVoters;
         this.winVoters = winVoters;
         this.voteId = voteId;
+        this.attempt = attempt;
     }
 
     public long getQuestionId() {
@@ -96,6 +100,14 @@ public class QuestionDTO extends MessageDTO {
         this.voteId = voteId;
     }
 
+    public int getAttempt() {
+        return attempt;
+    }
+
+    public void setAttempt(int attempt) {
+        this.attempt = attempt;
+    }
+
     public static class Builder {
         private long id;
         private long senderId;
@@ -109,7 +121,7 @@ public class QuestionDTO extends MessageDTO {
         private List<UserDTO> yesVoters;
         private List<UserDTO> noVoters;
         private List<UserDTO> winVoters;
-
+        private int attempt;
         private int voteId;
 
         public QuestionDTO.Builder setId(long id) {
@@ -177,10 +189,15 @@ public class QuestionDTO extends MessageDTO {
             return this;
         }
 
+        public QuestionDTO.Builder setAttempt(int attempt) {
+            this.attempt = attempt;
+            return this;
+        }
+
         public QuestionDTO build() {
             return new QuestionDTO(id, senderId, roomId, text, type, createDate,
                     clientMessageId, senderUser, questionId, yesVoters, noVoters,
-                    winVoters, voteId);
+                    winVoters, voteId, attempt);
         }
     }
 }

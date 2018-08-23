@@ -53,6 +53,7 @@ import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainFragment;
 import com.transcendensoft.hedbanz.presentation.rooms.list.RoomsAdapter;
 import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
+import com.transcendensoft.hedbanz.utils.extension.ViewExtensionsKt;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -82,6 +83,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     @BindView(R.id.rlErrorNetwork) RelativeLayout mRlErrorNetwork;
     @BindView(R.id.rlErrorServer) RelativeLayout mRlErrorServer;
     @BindView(R.id.flLoadingContainer) FrameLayout mFlLoadingContainer;
+    @BindView(R.id.parent) RelativeLayout mParentLayout;
 
     /**
      * Searching and filters
@@ -120,6 +122,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         View view = inflater.inflate(R.layout.fragment_rooms, container, false);
 
         ButterKnife.bind(this, view);
+        ViewExtensionsKt.setupKeyboardHiding(mParentLayout, mActivity);
 
         mPresenter.setModel(mPresenterModel);
         initSwipeToRefresh();

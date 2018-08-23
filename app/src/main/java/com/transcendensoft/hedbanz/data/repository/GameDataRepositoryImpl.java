@@ -18,6 +18,7 @@ package com.transcendensoft.hedbanz.data.repository;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
 import com.transcendensoft.hedbanz.data.models.PlayerGuessingDTO;
 import com.transcendensoft.hedbanz.data.models.QuestionDTO;
@@ -42,6 +43,7 @@ import com.transcendensoft.hedbanz.domain.interactor.game.usecases.kick.KickUseC
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.kick.KickWarningUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.JoinedUserUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.LeftUserUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.PlayersInfoUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserAfkUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserReturnedUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserWinUseCase;
@@ -49,11 +51,13 @@ import com.transcendensoft.hedbanz.domain.interactor.game.usecases.word.WordSett
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.word.WordSettingUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -87,6 +91,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String ROOM_INFO_EVENT = "joined-room";
     private static final String JOINED_USER_EVENT = "joined-user";
     private static final String LEFT_USER_EVENT = "left-user";
+    private static final String SERVER_PLAYERS_INFO = "server-players-status";
     private static final String CLIENT_TYPING_EVENT = "client-start-typing";
     private static final String CLIENT_STOP_TYPING_EVENT = "client-stop-typing";
     private static final String CLIENT_MESSAGE_EVENT = "client-msg";
@@ -115,6 +120,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private Socket mSocket;
     private long mUserId;
     private long mRoomId;
+    private String mSecurityToken;
 
     private MessageModelDataMapper mMessageMapper;
     private RoomModelDataMapper mRoomMapper;
@@ -361,6 +367,33 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 }
             };
             mSocket.on(SERVER_USER_RETURNED, listener);
+        });
+    }
+
+    @Override
+    public Observable<List<User>> playersInfoObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                JSONArray data = (JSONArray) args[0];
+
+                if (data != null) {
+                    try {
+                        List<UserDTO> players = mGson.fromJson(data.toString(),
+                                new TypeToken<List<UserDTO>>(){}.getType());
+
+                        Timber.i("SOCKET <-- GET(%1$s) : %2$s",
+                                SERVER_PLAYERS_INFO, data.toString());
+                        emitter.onNext(mUserMapper.convertToUsers(players));
+                    } catch (JsonSyntaxException e) {
+                        emitter.onError(new IncorrectJsonException(
+                                data.toString(), PlayersInfoUseCase.class.getName()));
+                    }
+                } else {
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s",
+                            SERVER_PLAYERS_INFO, "null");
+                }
+            };
+            mSocket.on(SERVER_PLAYERS_INFO, listener);
         });
     }
 
@@ -646,6 +679,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         QuestionDTO questionDTO = mQuestionMapper.convert(question);
         questionDTO.setSenderId(mUserId);
         questionDTO.setRoomId(mRoomId);
+        questionDTO.setSecurityToken(mSecurityToken);
 
         String json = mGson.toJson(questionDTO);
 
@@ -659,6 +693,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         QuestionDTO questionDTO = mQuestionMapper.convert(question);
         questionDTO.setSenderId(mUserId);
         questionDTO.setRoomId(mRoomId);
+        questionDTO.setSecurityToken(mSecurityToken);
 
         String json = mGson.toJson(questionDTO);
 
@@ -673,6 +708,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         setWordObject.put(UserDTO.SENDER_ID_KEY, mUserId);
         setWordObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
         setWordObject.put("word", word.getWord());
+        setWordObject.put(RoomDTO.TOKEN_KEY, mSecurityToken);
 
         String json = mGson.toJson(setWordObject);
 
@@ -705,6 +741,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 .setType(MessageType.SIMPLE_MESSAGE.getId())
                 .setClientMessageId(message.getClientMessageId())
                 .build();
+        messageDTO.setSecurityToken(mSecurityToken);
 
         String json = mGson.toJson(messageDTO);
 
@@ -718,6 +755,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
         joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
         joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
         joinRoomObject.put(RoomDTO.PASSWORD_KEY, password);
+        joinRoomObject.put(RoomDTO.TOKEN_KEY, mSecurityToken);
 
         String json = mGson.toJson(joinRoomObject);
 
@@ -726,14 +764,17 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
-    public void connect(long userId, long roomId) {
+    public void connect(long userId, long roomId, String securityToken) {
         this.mUserId = userId;
         this.mRoomId = roomId;
+        this.mSecurityToken = securityToken;
+
         mSocket.connect();
 
-        LinkedHashMap<String, Long> joinRoomObject = new LinkedHashMap<>();
+        LinkedHashMap<String, Object> joinRoomObject = new LinkedHashMap<>();
         joinRoomObject.put(UserDTO.USER_ID_KEY, mUserId);
         joinRoomObject.put(RoomDTO.ROOM_ID_KEY, mRoomId);
+        joinRoomObject.put(RoomDTO.TOKEN_KEY, mSecurityToken);
 
         mRoomToUserJson = mGson.toJson(joinRoomObject);
     }
@@ -798,6 +839,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             mSocket.off(SERVER_RESTORE_ROOM);
             mSocket.off(SERVER_USER_AFK);
             mSocket.off(SERVER_USER_RETURNED);
+            mSocket.off(SERVER_PLAYERS_INFO);
 
             mSocket.off(SERVER_TYPING_EVENT);
             mSocket.off(SERVER_STOP_TYPING_EVENT);

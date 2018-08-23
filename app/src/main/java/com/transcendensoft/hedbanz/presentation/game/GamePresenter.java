@@ -63,6 +63,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     private List<User> mTypingUsers;
     private boolean isAfterRoomCreation;
     private boolean isLeaveFromRoom = false;
+    private boolean isUserKicked = false;
 
     @Inject
     public GamePresenter(GameInteractorFacade gameInteractor,
@@ -106,6 +107,13 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         if(mGameInteractor != null) {
             mGameInteractor.resumeSocket();
         }
+        if(mPreferenceManger.isUserKicked()){
+            view.showUserKicked();
+            return;
+        }
+        if(mPreferenceManger.isLastUser()){
+            view.showLastUserDialog();
+        }
     }
 
     @Override
@@ -132,13 +140,17 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     @Override
     public void onTopReached() {
         Timber.i("TOP reached");
+        GetMessagesInteractor.Param param = new GetMessagesInteractor.Param(
+                model.getId(), model.getPlayers().size());
         mGetMessagesInteractor.loadNextPage()
-                .execute(new MessageListObserver(view(), model), model.getId());
+                .execute(new MessageListObserver(view(), model), param);
     }
 
     private void refreshMessageHistory() {
+        GetMessagesInteractor.Param param = new GetMessagesInteractor.Param(
+                model.getId(), model.getPlayers().size());
         mGetMessagesInteractor.refresh(null)
-                .execute(new MessageListObserver(view(), model), model.getId());
+                .execute(new MessageListObserver(view(), model), param);
     }
 
     /*------------------------------------*
@@ -204,7 +216,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                     question.setAllUsersCount(model.getPlayers().size() - 1);
 
                     updateSettingQuestionViewParameters(question.getUserFrom(),
-                            false, true);
+                            false, true, questionFromView.getMessage());
 
                     model.getMessages().add(question);
                     view().addMessage(question);
@@ -213,11 +225,13 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         ));
     }
 
-    private void updateSettingQuestionViewParameters(User senderUser, boolean isFinished, boolean isLoading) {
+    private void updateSettingQuestionViewParameters(User senderUser, boolean isFinished,
+                                                     boolean isLoading, String messageText) {
         for (int i = model.getMessages().size() - 1; i >= 0; i--) {
             Message message = model.getMessages().get(i);
             if (message.getMessageType() == MessageType.GUESS_WORD_THIS_USER &&
                     mPreferenceManger.getUser().equals(senderUser)) {
+                message.setMessage(messageText);
                 message.setFinished(isFinished);
                 message.setLoading(isLoading);
                 view().setMessage(i, message);
@@ -352,6 +366,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         initLeftUserListener();
         initUserAfkListener();
         initUserReturnedListener();
+        initPlayersInfoListener();
         initUserWinListener();
         initMessageListeners();
         initWordSettingListeners();
@@ -388,26 +403,27 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                     if (!users.contains(user)) {
                         users.add(user);
                     }
-                    Message message = new Message.Builder()
-                            .setUserFrom(user)
-                            .setMessageType(MessageType.JOINED_USER)
-                            .build();
-                    model.getMessages().add(message);
-                    view().addMessage(message);
+                    if(!mPreferenceManger.getUser().equals(user)) {
+                        Message message = new Message.Builder()
+                                .setUserFrom(user)
+                                .setMessageType(MessageType.JOINED_USER)
+                                .build();
+                        model.getMessages().add(message);
+                        view().addMessage(message);
+                    }
                 },
                 this::processEventListenerOnError);
     }
 
     private void initUserAfkListener() {
         mGameInteractor.onUserAfkListener(user -> {
-            view().showUserAfk(true, user.getLogin());
+            //view().showUserAfk(true, user.getLogin());
         }, this::processEventListenerOnError);
     }
 
     private void initUserReturnedListener() {
         mGameInteractor.onUserReturnedListener(user -> {
             if (!mPreferenceManger.getUser().equals(user)) {
-                view().showUserAfk(false, user.getLogin());
                 for (int i = model.getMessages().size() - 1; i >= 0; i--) {
                     Message message = model.getMessages().get(i);
 
@@ -419,11 +435,18 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                     }
                 }
             } else {
-                model.setMessages(new ArrayList<>());
-                view().clearMessages();
-                view().showLoading();
-                refreshMessageHistory();
+                // Here was history loading
             }
+        }, this::processEventListenerOnError);
+    }
+
+    private void initPlayersInfoListener(){
+        mGameInteractor.onPlayersInfoUseCase(users -> {
+            model.setPlayers(users);
+            model.setMessages(new ArrayList<>());
+            view().clearMessages();
+            view().showLoading();
+            refreshMessageHistory();
         }, this::processEventListenerOnError);
     }
 
@@ -610,7 +633,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
 
             updateSettingQuestionViewParameters(
-                    question.getUserFrom(), true, false);
+                    question.getUserFrom(), true, false, question.getMessage());
 
             List<Message> messages = model.getMessages();
             for (int i = messages.size() - 1; i >= 0; i--) {

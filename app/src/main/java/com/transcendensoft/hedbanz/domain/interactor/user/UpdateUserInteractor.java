@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.domain.interactor.user;
  */
 
 import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.repository.UserDataRepositoryImpl;
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
@@ -24,6 +25,7 @@ import com.transcendensoft.hedbanz.domain.interactor.user.exception.UserCredenti
 import com.transcendensoft.hedbanz.domain.repository.UserDataRepository;
 import com.transcendensoft.hedbanz.domain.validation.UserCrudValidator;
 import com.transcendensoft.hedbanz.domain.validation.UserError;
+import com.transcendensoft.hedbanz.utils.SecurityUtils;
 
 import javax.inject.Inject;
 
@@ -43,13 +45,16 @@ import io.reactivex.disposables.CompositeDisposable;
 public class UpdateUserInteractor extends ObservableUseCase<User, UpdateUserInteractor.Params> {
     private UserCredentialsException mUserException;
     private UserDataRepository mUserRepository;
+    private PreferenceManager mPreferenceManager;
 
     @Inject
     public UpdateUserInteractor(ObservableTransformer mSchedulersTransformer,
                                 CompositeDisposable mCompositeDisposable,
-                                UserDataRepositoryImpl userRepository) {
+                                UserDataRepositoryImpl userRepository,
+                                PreferenceManager preferenceManager) {
         super(mSchedulersTransformer, mCompositeDisposable);
         mUserRepository = userRepository;
+        mPreferenceManager = preferenceManager;
     }
 
     @Override
@@ -58,8 +63,12 @@ public class UpdateUserInteractor extends ObservableUseCase<User, UpdateUserInte
 
         User user = params.getUser();
         String oldPassword = params.getOldPassword();
+        user.setId(mPreferenceManager.getUser().getId());
 
-        if (isUserValid(user) && isOldPasswordValid(oldPassword)) {
+        if (isUserValid(user) & isOldPasswordValid(oldPassword)) { // needs to check both states
+            user.setPassword(SecurityUtils.hash(user.getPassword()));
+            oldPassword = SecurityUtils.hash(oldPassword);
+
             return mUserRepository.updateUser(user.getId(), user.getLogin(),
                     oldPassword, user.getPassword(), DataPolicy.API)
                     .onErrorResumeNext(this::processUpdateUserOnError);

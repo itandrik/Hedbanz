@@ -18,6 +18,7 @@ package com.transcendensoft.hedbanz.presentation.rooms.list;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -26,6 +27,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -34,43 +36,39 @@ import android.widget.TextView;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.presentation.base.MvpViewHolder;
 import com.transcendensoft.hedbanz.presentation.rooms.RoomsPresenter;
+import com.transcendensoft.hedbanz.utils.ViewUtils;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * View holder realization for concrete room.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 
 public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> implements RoomItemContract.View {
-    private TextView mTvName;
-    private ImageView mIvIcon;
-    private ImageView mIvProtected;
-    private TextView mTvCurAndMaxPlayers;
-    private CardView mCardContainer;
-    private LinearLayout mLlError;
-    private TextView mTvErrorText;
-    private Button mBtnRetryError;
-    private ProgressBar mPbLoading;
-    private ProgressDialog mProgressDialog;
-    private TextView mTvActive;
+    @BindView(R.id.tvRoomName) TextView mTvName;
+    @BindView(R.id.ivRoomIcon) ImageView mIvIcon;
+    @BindView(R.id.ivRoomLocked) ImageView mIvProtected;
+    @BindView(R.id.roomCard) CardView mCardContainer;
+    @BindView(R.id.llErrorContainer) LinearLayout mLlError;
+    @BindView(R.id.tvRoomsErrorText) TextView mTvErrorText;
+    @BindView(R.id.btnReload) Button mBtnRetryError;
+    @BindView(R.id.pbRoomLoading) ProgressBar mPbLoading;
+    @BindView(R.id.tvActive) TextView mTvActive;
+    @BindView(R.id.flRoomIconContainer) FrameLayout mFlRoomIconContainer;
+    @BindView(R.id.llUsersContainer) LinearLayout mLlUsersContainer;
 
+    private ProgressDialog mProgressDialog;
     private Context mContext;
     private RoomsPresenter mCallbackPresenter;
 
     public RoomItemViewHolder(Context context, View itemView, RoomsPresenter callbackPresenter) {
         super(itemView);
 
-        //TODO try butterKnife
-        mTvName = itemView.findViewById(R.id.tvRoomName);
-        mIvIcon = itemView.findViewById(R.id.ivRoomIcon);
-        mIvProtected = itemView.findViewById(R.id.ivRoomLocked);
-        mPbLoading = itemView.findViewById(R.id.pbRoomLoading);
-        mCardContainer = itemView.findViewById(R.id.roomCard);
-        mLlError = itemView.findViewById(R.id.llErrorContainer);
-        mTvErrorText = itemView.findViewById(R.id.tvRoomsErrorText);
-        mBtnRetryError = itemView.findViewById(R.id.btnReload);
-        mTvActive = itemView.findViewById(R.id.tvActive);
+        ButterKnife.bind(this, itemView);
 
         mContext = context;
         this.mCallbackPresenter = callbackPresenter;
@@ -99,8 +97,12 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
     }
 
     @Override
-    public void setIcon(int icon) {
-        mIvIcon.setImageResource(icon);
+    public void setIcon(int icon, @DrawableRes int sticker) {
+        Drawable iconDrawable = VectorDrawableCompat.create(mContext.getResources(), icon, null);
+        Drawable stickerDrawable = VectorDrawableCompat.create(mContext.getResources(), sticker, null);
+
+        mIvIcon.setImageDrawable(iconDrawable);
+        mFlRoomIconContainer.setBackground(stickerDrawable);
     }
 
     @Override
@@ -114,7 +116,29 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
 
     @Override
     public void setCurAndMaxPlayers(int currentPlayers, int maxPlayers) {
+        mLlUsersContainer.removeAllViews();
 
+        int size = ViewUtils.dpToPx(mContext, 16);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(size, size);
+
+        for (int i = 0; i < currentPlayers; i++) {
+            Drawable d = VectorDrawableCompat.create(mContext.getResources(), R.drawable.ic_user, null);
+            ImageView image = new ImageView(mContext);
+            image.setImageDrawable(d);
+            image.setLayoutParams(params);
+
+            mLlUsersContainer.addView(image);
+        }
+
+        for (int i = 0; i < maxPlayers - currentPlayers; i++) {
+            Drawable d = VectorDrawableCompat.create(mContext.getResources(), R.drawable.ic_user, null);
+            ImageView image = new ImageView(mContext);
+            image.setImageDrawable(d);
+            image.setAlpha(0.5f);
+            image.setLayoutParams(params);
+
+            mLlUsersContainer.addView(image);
+        }
     }
 
     @Override
@@ -137,7 +161,7 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
 
     @Override
     public void setIsActive(boolean isActive) {
-        if(isActive){
+        if (isActive) {
             mTvActive.setVisibility(View.VISIBLE);
         } else {
             mTvActive.setVisibility(View.GONE);
@@ -188,14 +212,14 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
 
     @Override
     public void showLoadingDialog() {
-        if(mProgressDialog != null){
+        if (mProgressDialog != null) {
             mProgressDialog.show();
         }
     }
 
     @Override
     public void hideLoadingDialog() {
-        if(mProgressDialog != null){
+        if (mProgressDialog != null) {
             mProgressDialog.hide();
         }
     }

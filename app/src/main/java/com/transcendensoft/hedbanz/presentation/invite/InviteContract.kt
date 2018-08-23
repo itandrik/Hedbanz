@@ -35,6 +35,7 @@ interface InviteContract {
         fun showNetworkError()
         fun setFriends(friends: List<Friend>)
         fun showNoUsersSelected()
+        fun showEmptyFriendsList()
         fun showLoadingDialog()
         fun hideLoadingDialog()
         fun showInviteSuccess()

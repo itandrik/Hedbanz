@@ -17,6 +17,9 @@
     <!-- Tags -->
     <string name="tag_fragment_user_details">tag_fragment_user_details</string>
     <string name="tag_fragment_invite">tag_fragment_invite</string>
+    <string name="tag_fragment_forgot_password">tag_fragment_forgot_password</string>
+    <string name="tag_fragment_check_keyword">tag_fragment_check_keyword</string>
+    <string name="tag_fragment_reset_password">tag_fragment_reset_password</string>
 
     <!-- Actions -->
     <string name="action_enter">Войти</string>
@@ -96,6 +99,7 @@
     <string name="room_creation_error_password_incorrect">Это некорректный пароль. Допустимая длина от 6 до 14 символов.</string>
     <string name="room_creation_error_password_empty">Введите пароль от комнаты</string>
     <string name="room_creation_error_name_empty">Введите имя комнаты</string>
+    <string name="room_creation_error_name_already_exist">Комната с таким именем уже существует</string>
 
     <!-- Menu fragment -->
     <string name="menu_games_played">Игр сыграно</string>
@@ -154,12 +158,15 @@
     <string name="game_action_resume_game">Продолжить</string>
     <string name="game_action_exit_game">Кидануть ребят</string>
     <string name="game_menu_this_user">Это вы</string>
-
+    <string name="game_kicked_title">Вы исключены из комнаты</string>
+    <string name="game_kicked_message">Вы не присутствовали в игре на этапе загадывания слов долгое время, по-этому вас исключили с комнаты. Вы можете создать другую комнату, либо присоединиться к другим игрокам.</string>
     <string name="game_toolbar_open_menu_content_description">Открыть меню</string>
     <string name="game_toolbar_close_menu_content_description">Закрыть меню</string>
     <string name="game_menu_friend">Друг</string>
     <string name="game_afk">AFK</string>
-    
+    <string name="game_last_player_title">Вы последний игрок в комнате</string>
+    <string name="game_last_player_message">Так получилось, что все игроки покинули комнату. Эта комната закрывается, если вы хотите собрать новую команду, создайте новую комнату или присоединитесь к другой.</string>
+
     <string name="game_some_user_think_word_to_user">Сейчас будет спрашивать игрок %1$s.\n Попытка %2$d/3</string>
     <string name="game_some_user_think_word_to_user_error">Сейчас будет спрашивать какой-то игрок.\n Попытка %1$d/3</string>
     <string name="game_this_user_think_word_to_user">Задайте вопрос о том кто вы. Попытка %1$d/3</string>
@@ -173,6 +180,8 @@
     <string name="game_error_user_wins">Какой-то игрок угадал загаданное ему слово!</string>
     <string name="game_over_title">Игра окончена.\n Все игроки угадали свои слова.</string>
     <string name="game_restart_question">Вы хотите повторить игру с этой командой?</string>
+    <string name="game_win_user_alert_message">Поздравляем вас, вы угадали свое слово и выиграли игру! Вы можете понаблюдать за игрой ваших товарищей, пообщаться с ними, помочь в отгадывании. Если вам надоест вы всегда можете уйти с комнаты.</string>
+    <string name="game_win_user_alert_title">Победа!</string>
 
     <!-- Game notification -->
     <string name="game_notification_title">%1$s с комнаты %2$s</string>
@@ -182,7 +191,7 @@
     <string name="game_notification_kick_warning_title">Внимание! У вас есть 30 секунд чтобы вернуться в комнату</string>
     <string name="game_notification_kick_warning_message">Ваши друзья ждут вас в комнате %1$s при загадывании слов. Если вы не вернетесь в игру, то через 30 секунд будете исключены из нее. Уважайте время других игроков.</string>
     <string name="game_notification_kick_title">Вас исключили с комнаты %1$s</string>
-    <string name="game_notification_kick_message">Из-за того, что у вы не присутствовали в игре на этапе загадывания слов долгое время, вас исключили с комнаты. Попробуйте сыграть с другими ребятами.</string>
+    <string name="game_notification_kick_message">Из-за того, что вы не присутствовали в игре на этапе загадывания слов долгое время, вас исключили с комнаты. Попробуйте сыграть с другими ребятами.</string>
     <string name="game_notification_channel_title_friend">Друзья</string>
     <string name="game_notification_friend_title">Запрос в друзья</string>
     <string name="game_notification_friend_message">Игрок %1$s хочет дружить с вами</string>
@@ -228,4 +237,17 @@
     <string name="invite_already_invited">Приглашен</string>
     <string name="invite_already_in_game">В игре</string>
 
+    <!-- Restore password -->
+    <string name="restore_pwd_forgot_title">Восстановление\nпароля</string>
+    <string name="restore_pwd_action_restore">Восстановить</string>
+    <string name="restore_pwd_secret_key_title">Секретный код</string>
+    <string name="restore_pwd_sent_email_text">На ваш почтовый ящик, который вы указали при регистрации был отправлен секретный код. Для того, чтобы восстановить пароль от вашего аккаунта, введите код ниже.</string>
+    <string name="restore_pwd_reset_password_text">Отлично! Теперь придумайте новый пароль к вашему аккаунту.</string>
+    <string name="restore_pwd_action_save">Сохранить</string>
+    <string name="restore_pwd_new_password">Новый пароль</string>
+    <string name="restore_pwd_error_incorrect_keyword">Неправильный секретный код.</string>
+    <string name="restore_pwd_error_incorrect_locale">Отправлена некорректная локализация.</string>
+    <string name="restore_pwd_error_keyword_expired">Секретный код устарел. Отправьте еще одно сообщение.</string>
+    <string name="restore_password_finish_title">У вас получилось!</string>
+    <string name="restore_password_finish_message">Вы успешно изменили пароль, теперь ввойдите в ваш аккаунт с новыми данными.</string>
 </resources>

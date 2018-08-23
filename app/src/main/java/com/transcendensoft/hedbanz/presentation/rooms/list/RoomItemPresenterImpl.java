@@ -32,6 +32,8 @@ import com.transcendensoft.hedbanz.domain.interactor.rooms.exception.RoomCreatio
 import com.transcendensoft.hedbanz.domain.validation.RoomError;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.game.GameActivity;
+import com.transcendensoft.hedbanz.presentation.roomcreation.models.RoomIcons;
+import com.transcendensoft.hedbanz.presentation.roomcreation.models.StickerIcons;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 
 import javax.inject.Inject;
@@ -64,8 +66,8 @@ public class RoomItemPresenterImpl extends BasePresenter<Room, RoomItemContract.
                 view().setName(model.getName());
                 view().setIsProtected(model.isWithPassword());
                 view().setIsActive(model.isActive());
-                //TODO change icon of room
-                view().setIcon(R.drawable.ic_room);
+                view().setIcon(RoomIcons.Companion.getIconByServerId(model.getIconId()),
+                        StickerIcons.Companion.getIconByServerId(model.getStickerId()));
                 view().showCard();
             } else {
                 view().showLoadingItem();

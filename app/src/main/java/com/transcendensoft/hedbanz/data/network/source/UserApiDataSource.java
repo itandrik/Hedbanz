@@ -59,4 +59,32 @@ public class UserApiDataSource extends ApiDataSource implements UserDataSource{
 
         return mService.updateUser(result);
     }
+
+    @Override
+    public Observable<?> forgotPassword(String login, String locale) {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("login", login);
+        body.put("locale", locale);
+
+        return mService.forgotPassword(body);
+    }
+
+    @Override
+    public Observable<?> checkKeyword(String login, String keyword) {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("login", login);
+        body.put("keyWord", keyword);
+
+        return mService.checkKey(body);
+    }
+
+    @Override
+    public Observable<?> resetPassword(String login, String keyword, String password) {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("login", login);
+        body.put("keyWord", keyword);
+        body.put("password", password);
+
+        return mService.resetPassword(body);
+    }
 }

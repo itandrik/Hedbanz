@@ -46,7 +46,7 @@ import io.reactivex.disposables.CompositeDisposable;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-public class GetMessagesInteractor extends PaginationUseCase<Message, Long, Void> {
+public class GetMessagesInteractor extends PaginationUseCase<Message, GetMessagesInteractor.Param, Void> {
     private MessagesDataRepository mDataRepository;
     private PreferenceManager mPreferenceManager;
 
@@ -61,15 +61,15 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, Long, Void
     }
 
     @Override
-    protected Observable<PaginationState<Message>> buildUseCaseObservable(Long roomId) {
-        return mDataRepository.getMessages(roomId, mCurrentPage, DataPolicy.API)
-                .map(this::mapSetMessageUserAndType)
+    protected Observable<PaginationState<Message>> buildUseCaseObservable(GetMessagesInteractor.Param param) {
+        return mDataRepository.getMessages(param.roomId, mCurrentPage, DataPolicy.API)
+                .map(messages -> mapSetMessageUserAndType(messages, param.playersCount))
                 .flatMap(this::convertEntitiesToPagingResult)
                 .onErrorReturn(this::mapPaginationStateBasedOnError);
     }
 
     @NonNull
-    private List<Message> mapSetMessageUserAndType(List<Message> messages) {
+    private List<Message> mapSetMessageUserAndType(List<Message> messages, int playersCount) {
         User currentUser = mPreferenceManager.getUser();
         for (int i = 0; i < messages.size(); i++) {
             Message message = messages.get(i);
@@ -87,7 +87,7 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, Long, Void
                 // Question with guessing
                 PlayerGuessing playerGuessing = new PlayerGuessing.Builder()
                         .player(question.getUserFrom())
-                        .attempts(question.getUserFrom().getAttempts())
+                        .attempts(question.getAttempt())
                         .questionId(question.getQuestionId())
                         .build();
                 playerGuessing.setUserFrom(question.getUserFrom());
@@ -114,6 +114,7 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, Long, Void
                     } else {
                         askingQuestion.setMessageType(MessageType.ASKING_QUESTION_OTHER_USER);
                     }
+                    askingQuestion.setAllUsersCount(playersCount - 1);
                     askingQuestion.setFinished(true);
                     askingQuestion.setLoading(false);
                 }
@@ -164,5 +165,31 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, Long, Void
             }
         }
         return messages;
+    }
+
+    public static class Param{
+        private Long roomId;
+        private int playersCount;
+
+        public Param(Long roomId, int playersCount) {
+            this.roomId = roomId;
+            this.playersCount = playersCount;
+        }
+
+        public Long getRoomId() {
+            return roomId;
+        }
+
+        public void setRoomId(Long roomId) {
+            this.roomId = roomId;
+        }
+
+        public int getPlayersCount() {
+            return playersCount;
+        }
+
+        public void setPlayersCount(int playersCount) {
+            this.playersCount = playersCount;
+        }
     }
 }

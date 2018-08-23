@@ -62,6 +62,7 @@ public class RxRoom {
     }
 
     public void setRoom(Room room) {
+        mPlayers.clear();
         this.mRoom = room;
         for (User user : room.getPlayers()) {
             RxUser rxUser = new RxUser(user);

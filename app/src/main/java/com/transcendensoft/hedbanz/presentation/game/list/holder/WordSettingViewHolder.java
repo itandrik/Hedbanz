@@ -63,6 +63,14 @@ public class WordSettingViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    public void bindText(String text){
+        if(!TextUtils.isEmpty(text)) {
+            mTietSetWord.setText(text);
+        } else {
+            mTietSetWord.setText("");
+        }
+    }
+
     public void bindLoading(boolean isLoading, boolean isFinished) {
         if (isLoading && !isFinished) {
             mIvSetWord.setVisibility(View.GONE);

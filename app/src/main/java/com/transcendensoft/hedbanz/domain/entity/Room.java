@@ -36,10 +36,12 @@ public class Room {
     private boolean isWithPassword;
     private List<Message> messages;
     private boolean isActive;
+    private int stickerId;
+    private int iconId;
 
     private Room(long id, String password, byte maxPlayers, List<User> players,
                  String name, byte currentPlayersNumber, long startDate, long endDate,
-                 boolean isWithPassword, boolean isActive) {
+                 boolean isWithPassword, boolean isActive, int stickerId, int iconId) {
         this.id = id;
         this.password = password;
         this.maxPlayers = maxPlayers;
@@ -49,6 +51,9 @@ public class Room {
         this.endDate = endDate;
         this.name = name;
         this.isWithPassword = isWithPassword;
+        this.stickerId = stickerId;
+        this.iconId = iconId;
+
         messages = new ArrayList<>();
         if (this.players == null) {
             this.players = new ArrayList<>();
@@ -147,6 +152,22 @@ public class Room {
         isActive = active;
     }
 
+    public int getStickerId() {
+        return stickerId;
+    }
+
+    public void setStickerId(int stickerId) {
+        this.stickerId = stickerId;
+    }
+
+    public int getIconId() {
+        return iconId;
+    }
+
+    public void setIconId(int iconId) {
+        this.iconId = iconId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -174,6 +195,10 @@ public class Room {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", isWithPassword=" + isWithPassword +
+                ", messages=" + messages +
+                ", isActive=" + isActive +
+                ", stickerId=" + stickerId +
+                ", iconId=" + iconId +
                 '}';
     }
 
@@ -188,6 +213,8 @@ public class Room {
         private long endDate;
         private boolean isWithPassword;
         private boolean isActive;
+        private int stickerId;
+        private int iconId;
 
         public Room.Builder setId(long id) {
             this.id = id;
@@ -239,9 +266,19 @@ public class Room {
             return this;
         }
 
+        public Room.Builder setStickerId(int stickerId) {
+            this.stickerId = stickerId;
+            return this;
+        }
+
+        public Room.Builder setIconId(int iconId) {
+            this.iconId = iconId;
+            return this;
+        }
+
         public Room build() {
             return new Room(id, password, maxPlayers, players, name, currentPlayersNumber,
-                    startDate, endDate, isWithPassword, isActive);
+                    startDate, endDate, isWithPassword, isActive, stickerId, iconId);
         }
     }
 }

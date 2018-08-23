@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
@@ -35,7 +36,9 @@ import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
+import com.transcendensoft.hedbanz.presentation.restorepwd.RestorePasswordActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.RegisterActivity;
+import com.transcendensoft.hedbanz.utils.extension.ViewExtensionsKt;
 
 import javax.inject.Inject;
 
@@ -57,6 +60,7 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
     @BindView(R.id.etPassword) EditText mEtPassword;
     @BindView(R.id.tvErrorLogin) TextView mTvLoginError;
     @BindView(R.id.tvErrorPassword) TextView mTvPasswordError;
+    @BindView(R.id.parent) ScrollView mParentLayout;
 
     @Inject LoginPresenter mPresenter;
     @Inject StartActivity mActivity;
@@ -76,6 +80,8 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         ButterKnife.bind(this, view);
+        ViewExtensionsKt.setupKeyboardHiding(mParentLayout, mActivity);
+
         initPasswordIcon();
 
         return view;
@@ -125,6 +131,16 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
         startActivity(intent);
         if(mActivity != null) {
             mActivity.overridePendingTransition(R.anim.login_page_right_in, R.anim.login_page_right_out);
+        }
+    }
+
+    @OnClick(R.id.tvPasswordRecovery)
+    protected void onRecoveryClicked() {
+        hideAll();
+        Intent intent = new Intent(mActivity, RestorePasswordActivity.class);
+        startActivity(intent);
+        if(mActivity != null) {
+            mActivity.overridePendingTransition(R.anim.login_page_left_in, R.anim.login_page_left_out);
         }
     }
 

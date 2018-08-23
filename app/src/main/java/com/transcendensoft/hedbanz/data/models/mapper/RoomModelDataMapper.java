@@ -56,6 +56,8 @@ public class RoomModelDataMapper {
                     .setWithPassword(roomDTO.isPrivate())
                     .setPlayers(mUserModelDataMapper.convertToUsers(roomDTO.getUsers()))
                     .setIsActive(roomDTO.isActive())
+                    .setStickerId(roomDTO.getStickerId())
+                    .setIconId(roomDTO.getIconId())
                     .build();
         }
         return roomResult;
@@ -75,6 +77,8 @@ public class RoomModelDataMapper {
                     .setIsPrivate(room.isWithPassword())
                     .setIsActive(room.isActive())
                     .setUsers(mUserModelDataMapper.convertToDtoUsers(room.getPlayers()))
+                    .setStickerId(room.getStickerId())
+                    .setIconId(room.getIconId())
                     .build();
         }
         return roomResult;

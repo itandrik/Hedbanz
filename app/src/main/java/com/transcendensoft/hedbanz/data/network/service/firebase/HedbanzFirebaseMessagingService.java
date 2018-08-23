@@ -50,6 +50,8 @@ public class HedbanzFirebaseMessagingService extends FirebaseMessagingService im
     public static final String ACTION_ADD_NEW_ROOM = "com.hedbanz.ACTION_ADD_NEW_ROOM";
     public static final String ACTION_NEW_VERSION_AVAILABLE =
             "com.hedbanz.ACTION_NEW_VERSION_AVAILABLE";
+    public static final String ACTION_LAST_USER =
+            "com.hedbanz.ACTION_LAST_USER_IN_ROOM";
 
     @Inject DispatchingAndroidInjector<Service> serviceDispatchingAndroidInjector;
     @Inject Gson mGson;
@@ -111,12 +113,15 @@ public class HedbanzFirebaseMessagingService extends FirebaseMessagingService im
             case KICKED:
                 mNotificationManger.notifyKick(notificationMessage);
                 mPreferenceManager.setCurrentRoomId(-1);
+                mPreferenceManager.setIsUserKicked(true);
                 break;
             case GAME_OVER:
                 mNotificationManger.notifyGameOver(notificationMessage);
                 break;
             case LAST_PLAYER:
-
+                mPreferenceManager.setIsLastUser(true);
+                Intent lastPlayerIntent = new Intent(ACTION_LAST_USER);
+                sendBroadcast(lastPlayerIntent);
                 break;
             case NEW_ROOM_CREATED:
                 Intent roomCreatedIntent = new Intent(ACTION_ADD_NEW_ROOM);

@@ -24,6 +24,8 @@ import com.transcendensoft.hedbanz.domain.entity.Word;
 
 import org.json.JSONObject;
 
+import java.util.List;
+
 import io.reactivex.Observable;
 
 /**
@@ -46,6 +48,7 @@ public interface GameDataRepository {
     Observable<User> leftUserObservable();
     Observable<User> userAfkObservable();
     Observable<User> userReturnedObservable();
+    Observable<List<User>> playersInfoObservable();
     Observable<Room> restoreRoomObservable();
     Observable<User> userWin();
 
@@ -76,7 +79,7 @@ public interface GameDataRepository {
     void sendConnectInfo();
     void restartGame();
 
-    void connect(long userId, long roomId);
+    void connect(long userId, long roomId, String securityToken);
     void disconnect();
     void stopSocket();
     void startSocket();

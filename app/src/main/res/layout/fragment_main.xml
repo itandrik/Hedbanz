@@ -2,8 +2,8 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@color/windowBackground"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/windowBackground">
 
     <RelativeLayout
         android:id="@+id/rlContent"
@@ -15,6 +15,7 @@
             layout="@layout/toolbar_main"
             android:layout_width="match_parent"
             android:layout_height="56dp" />
+
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/tabs"
@@ -42,39 +43,22 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/tabs"
             android:layout_below="@id/toolbar" />
-        <!--<android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/fab"
-            android:layout_width="64dp"
+        <FrameLayout
+            android:id="@+id/cvUp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/main_menu_button_up_background"
             android:clickable="true"
-            android:focusable="true"
-            android:layout_height="64dp"
-            android:elevation="100dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            app:srcCompat="@drawable/ic_arrow_up"
-            android:background="@drawable/fab_bg" />-->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/fab_bg"
-            android:elevation="80dp"
-            android:padding="0.3dp">
+            android:elevation="4dp"
+            android:padding="14dp">
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/fab_bg"
-                app:backgroundTint="@color/white"
-                app:borderWidth="2dp"
-                app:elevation="80dp"
-                app:fabSize="mini"
-                app:srcCompat="@drawable/ic_arrow_up"
-                app:pressedTranslationZ="12dp" />
-        </LinearLayout>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/ic_arrow_up" />
+        </FrameLayout>
     </RelativeLayout>
-
 </android.support.design.widget.CoordinatorLayout>

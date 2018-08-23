@@ -31,19 +31,22 @@ data class Question(
         var vote: Vote? = null,
         var allUsersCount: Int = 0,
         var messageParent: Message = Message(),
-        var isWin: Boolean = false
+        var isWin: Boolean = false,
+        var attempt: Int = 0
 ) : Message(messageParent.id, messageParent.message, messageParent.userFrom,
         messageParent.messageType, messageParent.createDate, messageParent.clientMessageId), Cloneable {
 
     private constructor(builder: Builder) : this(builder.questionId, builder.yesVoters,
-            builder.noVoters, builder.winVoters, builder.vote, builder.allUsersCount, builder.message)
+            builder.noVoters, builder.winVoters, builder.vote, builder.allUsersCount,
+            builder.message, builder.isWin, builder.attempt)
 
     override fun clone(): Question {
         super.clone()
         return copy(questionId = this.questionId,
                 yesVoters = this.yesVoters, noVoters = this.noVoters,
                 vote = this.vote, allUsersCount = this.allUsersCount,
-                messageParent = this.messageParent, isWin = this.isWin)
+                messageParent = this.messageParent, isWin = this.isWin,
+                attempt = this.attempt)
     }
 
     class Builder {
@@ -65,6 +68,12 @@ data class Question(
         var allUsersCount: Int = 0
             private set
 
+        var attempt: Int = 0
+            private set
+
+        var isWin: Boolean = false
+            private set
+
         var message: Message = Message()
             private set
 
@@ -78,7 +87,11 @@ data class Question(
 
         fun vote(vote: Vote?) = apply { this.vote = vote }
 
+        fun attempt(attempt: Int) = apply { this.attempt = attempt }
+
         fun allUsersCount(allUsersCount: Int) = apply { this.allUsersCount = allUsersCount }
+
+        fun isWin(isWin: Boolean) = apply { this.isWin = isWin }
 
         fun message(message: Message) = apply { this.message = message }
 

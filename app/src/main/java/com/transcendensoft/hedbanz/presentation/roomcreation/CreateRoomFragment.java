@@ -44,9 +44,11 @@ import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.game.GameActivity;
+import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
+import com.transcendensoft.hedbanz.utils.extension.ViewExtensionsKt;
 import com.warkiz.widget.IndicatorSeekBar;
 
 import javax.inject.Inject;
@@ -76,6 +78,7 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
 
     @Inject CreateRoomPresenter mPresenter;
     @Inject @ActivityContext Context mContext;
+    @Inject MainActivity mActivity;
     @Inject RoomList mPresenterModel;
     @Inject Gson mGson;
 
@@ -93,6 +96,7 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
         View view = inflater.inflate(R.layout.fragment_room_creation, container, false);
 
         ButterKnife.bind(this, view);
+        ViewExtensionsKt.setupKeyboardHiding(mSvContainer, mActivity);
 
         mPresenter.setModel(mPresenterModel);
         initPasswordCheckBox();
@@ -206,7 +210,7 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
         hideLoadingDialog();
         mEtRoomName.setText("");
         mEtRoomPassword.setText("");
-        AndroidUtils.showShortToast(getActivity(), "Room created successfully");
+        //AndroidUtils.showShortToast(getActivity(), "Room created successfully");
 
         Intent intent = new Intent(mContext, GameActivity.class);
 

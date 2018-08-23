@@ -38,10 +38,12 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_marginRight="8dp"
                 app:srcCompat="@drawable/ic_dismiss_friend" />
             <ImageView
                 android:id="@+id/ivAcceptFriend"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
                 android:layout_toLeftOf="@id/ivDismissFriend"

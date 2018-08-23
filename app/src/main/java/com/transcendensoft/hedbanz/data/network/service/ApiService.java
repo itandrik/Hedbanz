@@ -113,4 +113,14 @@ public interface ApiService {
     @PATCH("user/{userId}/friends/{friendId}")
     Completable declineFriend(@Path("userId") long userId,
                           @Path("friendId") long friendId);
+
+    /*Forgot password*/
+    @POST("forgot-password")
+    Observable<Object> forgotPassword(@Body HashMap<String, Object> body);
+
+    @POST("check-key")
+    Observable<Object> checkKey(@Body HashMap<String, Object> body);
+
+    @POST("reset-password")
+    Observable<Object> resetPassword(@Body HashMap<String, Object> body);
 }

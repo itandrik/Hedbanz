@@ -35,13 +35,13 @@ class PendingFriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
 
     fun bindName(name: String) {
         if (!TextUtils.isEmpty(name)) {
-            mTvFriendName!!.text = name
+            mTvFriendName?.text = name
         } else {
-            mTvFriendName!!.text = ""
+            mTvFriendName?.text = ""
         }
     }
 
     fun bindIcon(@DrawableRes drawableIcon: Int) {
-        mIvIcon!!.setImageResource(drawableIcon)
+        mIvIcon?.setImageResource(drawableIcon)
     }
 }

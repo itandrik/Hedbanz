@@ -62,6 +62,7 @@ public class QuestionModelDataMapper {
                     .setWinVoters(mUserModelDataMapper.convertToDtoUsers(question.getWinVoters()))
                     .setVoteId(voteId)
                     .setQuestionId(question.getQuestionId())
+                    .setAttempt(question.getAttempt())
                     .build();
         }
         return questionDTO;
@@ -91,6 +92,7 @@ public class QuestionModelDataMapper {
                     .winVoters(mUserModelDataMapper.convertToUsers(questionDTO.getWinVoters()))
                     .vote(Question.Vote.Companion.getVoteById(questionDTO.getVoteId()))
                     .message(message)
+                    .attempt(questionDTO.getAttempt())
                     .build();
         }
         return question;

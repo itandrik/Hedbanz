@@ -39,6 +39,7 @@ public interface GameMenuContract {
         void setCurrentPlayersCount(int currentPlayersCount);
         void setMaxPlayersCount(int maxPlayersCount);
         void onPlayerClicked(User user);
+        void setInviteEnabled(boolean isEnabled);
     }
 
     interface Presenter {

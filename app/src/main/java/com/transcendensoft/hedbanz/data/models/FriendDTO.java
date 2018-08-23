@@ -32,15 +32,24 @@ public class FriendDTO extends UserDTO {
     @SerializedName("isPending")
     @Expose
     private boolean isPending;
+    @SerializedName("isInRoom")
+    @Expose
+    private boolean isInGame;
+    @SerializedName("isInvited")
+    @Expose
+    private boolean isInvited;
 
     private FriendDTO(long id, String email, String password, long money,
                       Long registrationDate, String login, int status,
                       boolean isAccepted, boolean isPending, boolean isFriend,
-                      String word, Long userId, int attempts, boolean isWinner) {
+                      String word, Long userId, int attempts, boolean isWinner,
+                      boolean isInGame, boolean isInvited) {
         super(id, email, password, money, registrationDate, login,
                 status, isFriend, word, userId, attempts, isWinner);
         this.isAccepted = isAccepted;
         this.isPending = isPending;
+        this.isInGame = isInGame;
+        this.isInvited = isInvited;
     }
 
     public boolean isAccepted() {
@@ -59,6 +68,22 @@ public class FriendDTO extends UserDTO {
         isPending = pending;
     }
 
+    public boolean isInGame() {
+        return isInGame;
+    }
+
+    public void setInGame(boolean inGame) {
+        isInGame = inGame;
+    }
+
+    public boolean isInvited() {
+        return isInvited;
+    }
+
+    public void setInvited(boolean invited) {
+        isInvited = invited;
+    }
+
     public static class Builder {
         private long id;
         private String email;
@@ -74,6 +99,8 @@ public class FriendDTO extends UserDTO {
         private Long userId;
         private int attempts;
         private boolean isWinner;
+        private boolean isInGame;
+        private boolean isInvited;
 
         public FriendDTO.Builder setId(long id) {
             this.id = id;
@@ -145,10 +172,20 @@ public class FriendDTO extends UserDTO {
             return this;
         }
 
+        public FriendDTO.Builder setIsInGame(boolean isInGame) {
+            this.isInGame = isInGame;
+            return this;
+        }
+
+        public FriendDTO.Builder setIsInvited(boolean isInvited) {
+            this.isInvited = isInvited;
+            return this;
+        }
+
         public FriendDTO build() {
             return new FriendDTO(id, email, password, money, registrationDate,
                     login, status, isAccepted, isPending, isFriend, word, userId, attempts,
-                    isWinner);
+                    isWinner, isInGame, isInvited);
         }
     }
 }

@@ -2,9 +2,9 @@ package com.transcendensoft.hedbanz.presentation.invite.list
 
 import android.content.Context
 import android.support.annotation.DrawableRes
+import android.support.v7.widget.AppCompatCheckBox
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -41,7 +41,7 @@ class InviteViewHolder(private val mContext: Context,
     private val mIvIcon: ImageView? = mItemView.ivFriendIcon
     private val mTvFriendName: TextView? = mItemView.tvFriendName
     private val mTvSystemText: TextView? = mItemView.tvSystemText
-    private val mChbSelect: CheckBox? = mItemView.chbFriendSelected
+    private val mChbSelect: AppCompatCheckBox? = mItemView.chbFriendSelected
 
     fun bindFriendIcon(@DrawableRes drawable: Int){
         mIvIcon?.setImageResource(drawable)
@@ -56,30 +56,34 @@ class InviteViewHolder(private val mContext: Context,
     }
 
     fun bindFlags(isInGame: Boolean, isInvited: Boolean){
-        if(isInGame){
-            mTvSystemText?.text = mContext.getString(R.string.invite_already_in_game)
-            mTvSystemText?.visibility = View.VISIBLE
-            mChbSelect?.visibility = View.GONE
-            (mTvFriendName?.layoutParams as RelativeLayout.LayoutParams)
-                    .addRule(RelativeLayout.LEFT_OF, R.id.tvSystemText)
-        } else if(isInvited) {
-            mTvSystemText?.text = mContext.getString(R.string.invite_already_invited)
-            mTvSystemText?.visibility = View.VISIBLE
-            mChbSelect?.visibility = View.GONE
-            (mTvFriendName?.layoutParams as RelativeLayout.LayoutParams)
-                    .addRule(RelativeLayout.LEFT_OF, R.id.tvSystemText)
-        } else {
-            mTvSystemText?.visibility = View.GONE
-            mChbSelect?.visibility = View.VISIBLE
-            (mTvFriendName?.layoutParams as RelativeLayout.LayoutParams)
-                    .addRule(RelativeLayout.LEFT_OF, R.id.chbFriendSelected)
+        when {
+            isInGame -> {
+                mTvSystemText?.text = mContext.getString(R.string.invite_already_in_game)
+                mTvSystemText?.visibility = View.VISIBLE
+                mChbSelect?.visibility = View.GONE
+                (mTvFriendName?.layoutParams as RelativeLayout.LayoutParams)
+                        .addRule(RelativeLayout.LEFT_OF, R.id.tvSystemText)
+            }
+            isInvited -> {
+                mTvSystemText?.text = mContext.getString(R.string.invite_already_invited)
+                mTvSystemText?.visibility = View.VISIBLE
+                mChbSelect?.visibility = View.GONE
+                (mTvFriendName?.layoutParams as RelativeLayout.LayoutParams)
+                        .addRule(RelativeLayout.LEFT_OF, R.id.tvSystemText)
+            }
+            else -> {
+                mTvSystemText?.visibility = View.GONE
+                mChbSelect?.visibility = View.VISIBLE
+                (mTvFriendName?.layoutParams as RelativeLayout.LayoutParams)
+                        .addRule(RelativeLayout.LEFT_OF, R.id.chbFriendSelected)
+            }
         }
     }
 
     fun bindOnClick(friend: Friend) {
         mItemView.setOnClickListener {
-            mChbSelect?.isChecked = !mChbSelect?.isChecked!!
-            friend.isSelected = mChbSelect.isChecked
+            mChbSelect?.isSelected = !mChbSelect?.isSelected!!
+            friend.isSelected = mChbSelect.isSelected
         }
     }
 }

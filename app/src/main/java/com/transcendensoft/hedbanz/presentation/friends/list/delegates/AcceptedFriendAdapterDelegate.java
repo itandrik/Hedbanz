@@ -53,7 +53,7 @@ public class AcceptedFriendAdapterDelegate extends AdapterDelegate<List<Friend>>
 
     @Override
     protected boolean isForViewType(@NonNull List<Friend> items, int position) {
-        return items.get(position).isAccepted();
+        return items.get(position).isAccepted() && !items.get(position).isPending();
     }
 
     @NonNull

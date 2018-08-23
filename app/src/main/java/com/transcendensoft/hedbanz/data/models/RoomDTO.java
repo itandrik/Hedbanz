@@ -24,11 +24,12 @@ import java.util.List;
  * Entity that describes room
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class RoomDTO {
     public static final String ROOM_ID_KEY = "roomId";
     public static final String PASSWORD_KEY = "password";
+    public static final String TOKEN_KEY = "securityToken";
 
     @SerializedName("id")
     @Expose
@@ -54,10 +55,16 @@ public class RoomDTO {
     @Expose
     private boolean isPrivate;
     private boolean isActive;
+    @SerializedName("stickerId")
+    @Expose
+    private int stickerId;
+    @SerializedName("iconId")
+    @Expose
+    private int iconId;
 
     private RoomDTO(long id, String password, byte maxPlayers, List<UserDTO> users,
                     String name, byte currentPlayersNumber, long startDate, long endDate,
-                    boolean isPrivate, boolean isActive) {
+                    boolean isPrivate, boolean isActive, int stickerId, int iconId) {
         this.id = id;
         this.password = password;
         this.maxPlayers = maxPlayers;
@@ -68,6 +75,8 @@ public class RoomDTO {
         this.name = name;
         this.isPrivate = isPrivate;
         this.isActive = isActive;
+        this.stickerId = stickerId;
+        this.iconId = iconId;
     }
 
     public long getId() {
@@ -150,6 +159,22 @@ public class RoomDTO {
         isActive = active;
     }
 
+    public int getStickerId() {
+        return stickerId;
+    }
+
+    public void setStickerId(int stickerId) {
+        this.stickerId = stickerId;
+    }
+
+    public int getIconId() {
+        return iconId;
+    }
+
+    public void setIconId(int iconId) {
+        this.iconId = iconId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -176,6 +201,8 @@ public class RoomDTO {
         private long endDate;
         private boolean isPrivate;
         private boolean isActive;
+        private int stickerId;
+        private int iconId;
 
         public Builder setId(long id) {
             this.id = id;
@@ -217,19 +244,30 @@ public class RoomDTO {
             return this;
         }
 
-        public Builder setIsPrivate(boolean isPrivate){
+        public Builder setIsPrivate(boolean isPrivate) {
             this.isPrivate = isPrivate;
             return this;
         }
 
-        public Builder setIsActive(boolean isActive){
+        public Builder setIsActive(boolean isActive) {
             this.isActive = isActive;
+            return this;
+        }
+
+        public Builder setStickerId(int stickerId) {
+            this.stickerId = stickerId;
+            return this;
+        }
+
+        public Builder setIconId(int iconId) {
+            this.iconId = iconId;
             return this;
         }
 
         public RoomDTO build() {
             return new RoomDTO(id, password, maxPlayers, users, name,
-                    currentPlayersNumber, startDate, endDate, isPrivate, isActive);
+                    currentPlayersNumber, startDate, endDate, isPrivate,
+                    isActive, stickerId, iconId);
         }
     }
 }

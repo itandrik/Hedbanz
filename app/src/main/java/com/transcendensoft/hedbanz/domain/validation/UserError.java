@@ -41,6 +41,7 @@ public enum UserError {
     INVALID_EMAIL(10, R.string.register_validate_email),
     INVALID_OLD_PASSWORD(11, R.string.credentials_error_confirm_password),
     EMPTY_PASSWORD_CONFIRMATION(12, R.string.login_error_empty_field),
+    EMPTY_OLD_PASSWORD(13, R.string.login_error_empty_field),
     UNDEFINED_ERROR(100, R.string.error_undefined_error);
 
     private int errorCode;

@@ -210,7 +210,7 @@ public class MainFragment extends DaggerFragment implements ViewPager.OnPageChan
 
     }
 
-    @OnClick(R.id.fab)
+    @OnClick(R.id.cvUp)
     protected void onMenuOpen(){
         if(getActivity() != null) {
             ((MainActivity) getActivity()).openMenu();

@@ -112,6 +112,21 @@ public class UserDataRepositoryImpl implements UserDataRepository {
     }
 
     @Override
+    public Observable<?> forgotPassword(String login, String locale) {
+        return mUserApiDataSource.forgotPassword(login, locale);
+    }
+
+    @Override
+    public Observable<?> checkKeyword(String login, String keyword) {
+        return mUserApiDataSource.checkKeyword(login, keyword);
+    }
+
+    @Override
+    public Observable<?> resetPassword(String login, String keyword, String password) {
+        return mUserApiDataSource.resetPassword(login, keyword, password);
+    }
+
+    @Override
     public void connectIsLoginAvailable() {
         try {
             //IO.Options opts = new IO.Options();

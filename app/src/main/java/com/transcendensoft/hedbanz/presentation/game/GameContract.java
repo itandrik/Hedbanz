@@ -51,6 +51,8 @@ public interface GameContract {
         void showFooterReconnecting();
         void showFooterReconnected();
         void showUserAfk(boolean isAfk, String login);
+        void showLastUserDialog();
+        void showUserKicked();
         void showRestoreRoom();
         void showWinDialog();
         void onBackPressed();
