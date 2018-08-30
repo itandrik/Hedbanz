@@ -1,5 +1,6 @@
 package com.transcendensoft.hedbanz.presentation.menu
 
+import com.transcendensoft.hedbanz.domain.entity.User
 import com.transcendensoft.hedbanz.presentation.base.BaseView
 
 /**
@@ -29,6 +30,8 @@ interface MenuFragmentContract {
         fun showLogoutServerError()
         fun showLogoutNetworkError()
         fun showLogoutSuccess()
+        fun showUserDataLoading()
+        fun setUserData(user: User)
     }
 
     interface Presenter {

@@ -4,6 +4,7 @@ import com.transcendensoft.hedbanz.data.prefs.PreferenceManager
 import com.transcendensoft.hedbanz.domain.entity.User
 import com.transcendensoft.hedbanz.domain.interactor.firebase.FirebaseBindTokenInteractor
 import com.transcendensoft.hedbanz.domain.interactor.firebase.FirebaseUnbindTokenInteractor
+import com.transcendensoft.hedbanz.domain.interactor.user.GetUserInteractor
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter
 import timber.log.Timber
 import java.net.ConnectException
@@ -35,6 +36,7 @@ import javax.inject.Inject
 class MenuFragmentPresenter @Inject constructor(
         private val mFirebaseBindTokenInteractor: FirebaseBindTokenInteractor,
         private val mFirebaseUnbindTokenInteractor: FirebaseUnbindTokenInteractor,
+        private val mGetUserInteractor: GetUserInteractor,
         private val mPreferenceManager: PreferenceManager
 ) : BasePresenter<User, MenuFragment>(), MenuFragmentContract.Presenter {
 
@@ -44,6 +46,7 @@ class MenuFragmentPresenter @Inject constructor(
         }
 
         bindFirebaseToken()
+        updateUserInfo()
     }
 
     override fun destroy() {
@@ -87,4 +90,16 @@ class MenuFragmentPresenter @Inject constructor(
         }
     }
 
+    private fun updateUserInfo() {
+        val currentUser = mPreferenceManager.user
+        view()?.showUserDataLoading()
+        mGetUserInteractor.execute(currentUser?.id,
+                {
+                    mPreferenceManager.user = it
+                    view()?.setUserData(it)
+                },
+                {
+                    view()?.setUserData(currentUser)
+                })
+    }
 }

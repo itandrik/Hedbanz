@@ -35,10 +35,13 @@ public class User {
     private String word;
     private int attempts;
     private boolean isWinner;
+    private int gamesNumber;
+    private int friendsNumber;
 
     protected User(long id, String email, String password, String confirmPassword,
                    long money, Long registrationDate, String login, PlayerStatus playerStatus,
-                   boolean isFriend, String word, int attempts, boolean isWinner) {
+                   boolean isFriend, String word, int attempts, boolean isWinner,
+                   int gamesNumber, int friendsNumber) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -51,6 +54,8 @@ public class User {
         this.attempts = attempts;
         this.word = word;
         this.isWinner = isWinner;
+        this.gamesNumber = gamesNumber;
+        this.friendsNumber = friendsNumber;
     }
 
     public User() {
@@ -162,6 +167,22 @@ public class User {
         return id == user.id;
     }
 
+    public int getGamesNumber() {
+        return gamesNumber;
+    }
+
+    public void setGamesNumber(int gamesNumber) {
+        this.gamesNumber = gamesNumber;
+    }
+
+    public int getFriendsNumber() {
+        return friendsNumber;
+    }
+
+    public void setFriendsNumber(int friendsNumber) {
+        this.friendsNumber = friendsNumber;
+    }
+
     @Override
     public int hashCode() {
         return (int) (id ^ (id >>> 32));
@@ -182,6 +203,8 @@ public class User {
                 ", word='" + word + '\'' +
                 ", attempts=" + attempts +
                 ", isWinner=" + isWinner +
+                ", gamesNumber=" + gamesNumber +
+                ", friendsNumber=" + friendsNumber +
                 '}';
     }
 
@@ -198,6 +221,8 @@ public class User {
         private String word;
         private int attempts;
         private boolean isWinner;
+        private int gamesNumber;
+        private int friendsNumber;
 
         public User.Builder setId(long id) {
             this.id = id;
@@ -259,10 +284,20 @@ public class User {
             return this;
         }
 
+        public User.Builder setGamesNumber(int gamesNumber) {
+            this.gamesNumber = gamesNumber;
+            return this;
+        }
+
+        public User.Builder setFriendsNumber(int friendsNumber) {
+            this.friendsNumber = friendsNumber;
+            return this;
+        }
+
         public User build() {
             return new User(id, email, password, confirmPassword, money,
                     registrationDate, login, playerStatus, isFriend,
-                    word, attempts, isWinner);
+                    word, attempts, isWinner, gamesNumber, friendsNumber);
         }
     }
 }

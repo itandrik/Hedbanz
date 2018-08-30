@@ -61,6 +61,8 @@ public class UserModelDataMapper {
                     .setWord(userDTO.getWord())
                     .setIsWinner(userDTO.isWinner())
                     .setAttempts(userDTO.getAttempts())
+                    .setGamesNumber(userDTO.getGamesNumber())
+                    .setFriendsNumber(userDTO.getFriendsNumber())
                     .build();
         }
         return userResult;
@@ -82,6 +84,8 @@ public class UserModelDataMapper {
                     .setWord(user.getWord())
                     .setAttempts(user.getAttempts())
                     .setIsWinner(user.isWinner())
+                    .setGamesNumber(user.getGamesNumber())
+                    .setFriendsNumber(user.getGamesNumber())
                     .build();
         }
         return userResult;

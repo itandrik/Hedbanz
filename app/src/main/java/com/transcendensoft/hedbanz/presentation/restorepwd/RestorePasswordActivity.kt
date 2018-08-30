@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog
 import android.view.WindowManager
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity
+import com.transcendensoft.hedbanz.utils.KeyboardUtils
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -50,7 +51,7 @@ class RestorePasswordActivity : BaseActivity(), RestorePasswordContract.View {
     /*------------------------------------*
      *------------ Navigation ------------*
      *------------------------------------*/
-    private fun initPresenterForFragments(){
+    private fun initPresenterForFragments() {
         mForgotPasswordFragment.mPresenter = this.mPresenter
         mCheckKeywordFragment.mPresenter = this.mPresenter
         mResetPasswordFragment.mPresenter = this.mPresenter
@@ -105,8 +106,14 @@ class RestorePasswordActivity : BaseActivity(), RestorePasswordContract.View {
                 .setIcon(R.drawable.thumbs_up)
                 .setPositiveButton(getString(R.string.action_ok)) { dialog, v -> dialog.dismiss() }
                 .setCancelable(true)
-                .setOnCancelListener { finish() }
-                .setOnDismissListener { finish() }
+                .setOnCancelListener {
+                    KeyboardUtils.hideSoftInput(this)
+                    finish()
+                }
+                .setOnDismissListener {
+                    KeyboardUtils.hideSoftInput(this)
+                    finish()
+                }
                 .show()
     }
 

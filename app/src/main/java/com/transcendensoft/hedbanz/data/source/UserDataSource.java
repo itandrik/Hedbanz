@@ -35,6 +35,8 @@ public interface UserDataSource {
     Observable<UserDTO> updateUser(long id, String newLogin,
                                    String oldPassword, String newPassword);
 
+    Observable<UserDTO> getUser(long id);
+
     Observable<?> forgotPassword(String login, String locale);
 
     Observable<?> checkKeyword(String login, String keyword);

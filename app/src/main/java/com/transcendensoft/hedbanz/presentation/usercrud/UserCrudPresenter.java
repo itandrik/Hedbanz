@@ -150,6 +150,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
                 break;
             case EMPTY_OLD_PASSWORD:
             case INVALID_OLD_PASSWORD:
+            case INCORRECT_CREDENTIALS:
                 view().showIncorrectOldPassword(userError.getErrorMessage());
                 break;
             case INVALID_PASSWORD_CONFIRMATION:

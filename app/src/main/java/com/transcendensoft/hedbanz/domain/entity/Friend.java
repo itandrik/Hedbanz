@@ -31,9 +31,10 @@ public class Friend extends User {
     private Friend(long id, String email, String password, String confirmPassword,
                    long money, Long registrationDate, String login, PlayerStatus playerStatus,
                    boolean isAccepted, boolean isPending, boolean isFriend,
-                   String word, int attempts, boolean isWinner, boolean isInvited, boolean isInGame) {
+                   String word, int attempts, boolean isWinner, boolean isInvited, boolean isInGame,
+                   int gamesNumber, int friendsNumber) {
         super(id, email, password, confirmPassword, money, registrationDate,
-                login, playerStatus, isFriend, word, attempts, isWinner);
+                login, playerStatus, isFriend, word, attempts, isWinner, gamesNumber, friendsNumber);
         this.isAccepted = isAccepted;
         this.isPending = isPending;
         this.isInvited = isInvited;
@@ -97,6 +98,8 @@ public class Friend extends User {
         private boolean isPending;
         private boolean isInvited;
         private boolean isInGame;
+        private int gamesNumber;
+        private int friendsNumber;
 
         public Builder setId(long id) {
             this.id = id;
@@ -178,10 +181,20 @@ public class Friend extends User {
             return this;
         }
 
+        public Builder setGamesNumber(int gamesNumber) {
+            this.gamesNumber = gamesNumber;
+            return this;
+        }
+
+        public Builder setFriendsNumber(int friendsNumber) {
+            this.friendsNumber = friendsNumber;
+            return this;
+        }
+
         public Friend build() {
             return new Friend(id, email, password, confirmPassword, money,
                     registrationDate, login, playerStatus, isAccepted, isPending,
-                    isFriend, word, attempts, isWinner, isInvited, isInGame);
+                    isFriend, word, attempts, isWinner, isInvited, isInGame, gamesNumber, friendsNumber);
         }
     }
 }

@@ -179,7 +179,7 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
                             view().forceLogout();
                         }
                     });
-        } else {
+        } else if(view() != null){
             view().forceLogout();
         }
     }

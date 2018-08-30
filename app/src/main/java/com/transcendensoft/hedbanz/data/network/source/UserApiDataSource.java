@@ -49,6 +49,11 @@ public class UserApiDataSource extends ApiDataSource implements UserDataSource{
     }
 
     @Override
+    public Observable<UserDTO> getUser(long id) {
+        return mService.getUser(id);
+    }
+
+    @Override
     public Observable<UserDTO> updateUser(long id, String newLogin,
                                                         String oldPassword, String newPassword){
         HashMap<String, Object> result = new HashMap<>();

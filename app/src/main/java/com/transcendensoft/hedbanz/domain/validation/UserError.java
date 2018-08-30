@@ -39,6 +39,7 @@ public enum UserError {
     INVALID_PASSWORD_CONFIRMATION(1002, R.string.register_validate_confirm_password),//+
     INVALID_LOGIN(7, R.string.register_validate_login),  //+
     INVALID_EMAIL(8, R.string.register_validate_email),      //+
+    INCORRECT_CREDENTIALS(9, R.string.login_error_incorrect_password),
     INVALID_OLD_PASSWORD(1005, R.string.credentials_error_confirm_password),         //+
     EMPTY_PASSWORD_CONFIRMATION(1004, R.string.login_error_empty_field),             //+
     EMPTY_OLD_PASSWORD(1003, R.string.login_error_empty_field),                     //+
