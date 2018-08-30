@@ -27,16 +27,16 @@ import com.transcendensoft.hedbanz.R
  *         Developed by <u>Transcendensoft</u>
  */
 enum class PasswordResetError(val id: Int, @StringRes val messageId: Int) {
-    EMPTY_LOGIN(1, R.string.login_error_empty_field),
-    EMPTY_PASSWORD(2, R.string.login_error_empty_field),
-    EMPTY_KEY_WORD(3, R.string.login_error_empty_field),
-    EMPTY_LOCALE(4, R.string.login_error_empty_field),
-    INCORRECT_LOGIN(5, R.string.register_validate_login),
+    EMPTY_LOGIN(2, R.string.login_error_empty_field),
+    EMPTY_PASSWORD(3, R.string.login_error_empty_field),
+    EMPTY_KEY_WORD(22, R.string.login_error_empty_field),
+    EMPTY_LOCALE(23, R.string.login_error_empty_field),
+    INCORRECT_LOGIN(7, R.string.register_validate_login),
     INCORRECT_PASSWORD(6, R.string.register_validate_password),
-    INCORRECT_KEY_WORD(7, R.string.restore_pwd_error_incorrect_keyword),
-    INCORRECT_LOCALE(8, R.string.restore_pwd_error_incorrect_locale),
-    KEY_WORD_IS_EXPIRED(9, R.string.restore_pwd_error_keyword_expired),
-    NO_SUCH_USER(10, R.string.login_error_no_such_login),
+    INCORRECT_KEY_WORD(24, R.string.restore_pwd_error_incorrect_keyword),
+    INCORRECT_LOCALE(25, R.string.restore_pwd_error_incorrect_locale),
+    KEY_WORD_IS_EXPIRED(251, R.string.restore_pwd_error_keyword_expired),
+    NO_SUCH_USER(103, R.string.login_error_no_such_login),
     INCORRECT_PASSWORD_CONFIRMATION(11, R.string.register_validate_confirm_password),
     EMPTY_PASSWORD_CONFIRMATION(12, R.string.register_validate_empty_field),
     UNDEFINED_ERROR(100, R.string.error_undefined_error);

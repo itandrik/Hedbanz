@@ -28,20 +28,23 @@ import com.transcendensoft.hedbanz.R;
  */
 
 public enum UserError {
-    NO_SUCH_USER(1, R.string.login_error_no_such_login),
-    INCORRECT_PASSWORD(2, R.string.login_error_incorrect_password),
-    EMPTY_LOGIN(3, R.string.login_error_empty_field),
-    EMPTY_PASSWORD(4, R.string.login_error_empty_field),
-    EMPTY_EMAIL(5, R.string.login_error_empty_field),
-    SUCH_LOGIN_ALREADY_EXIST(6, R.string.login_error_login_not_available),
-    SUCH_EMAIL_ALREADY_USING(7, R.string.login_error_email_not_available),
-    INVALID_PASSWORD(8, R.string.register_validate_password),
-    INVALID_PASSWORD_CONFIRMATION(8, R.string.register_validate_confirm_password),
-    INVALID_LOGIN(9, R.string.register_validate_login),
-    INVALID_EMAIL(10, R.string.register_validate_email),
-    INVALID_OLD_PASSWORD(11, R.string.credentials_error_confirm_password),
-    EMPTY_PASSWORD_CONFIRMATION(12, R.string.login_error_empty_field),
-    EMPTY_OLD_PASSWORD(13, R.string.login_error_empty_field),
+    NO_SUCH_USER(103, R.string.login_error_no_such_login),      //+
+    INCORRECT_PASSWORD(6, R.string.login_error_incorrect_password),          //+
+    EMPTY_LOGIN(2, R.string.login_error_empty_field),                        //+
+    EMPTY_PASSWORD(3, R.string.login_error_empty_field),                      //+
+    EMPTY_EMAIL(4, R.string.login_error_empty_field),                         //+
+    SUCH_LOGIN_ALREADY_EXIST(351, R.string.login_error_login_not_available),    //+
+    SUCH_EMAIL_ALREADY_USING(352, R.string.login_error_email_not_available),    //+
+    INVALID_PASSWORD(1001, R.string.register_validate_password),                     //+
+    INVALID_PASSWORD_CONFIRMATION(1002, R.string.register_validate_confirm_password),//+
+    INVALID_LOGIN(7, R.string.register_validate_login),  //+
+    INVALID_EMAIL(8, R.string.register_validate_email),      //+
+    INVALID_OLD_PASSWORD(1005, R.string.credentials_error_confirm_password),         //+
+    EMPTY_PASSWORD_CONFIRMATION(1004, R.string.login_error_empty_field),             //+
+    EMPTY_OLD_PASSWORD(1003, R.string.login_error_empty_field),                     //+
+    CANT_SEND_FRIENDSHIP_REQUEST(353, R.string.friends_cant_send_friendship_request),
+    ALREADY_FRIENDS(354, R.string.friends_already_friends),
+    NOT_FRIENDS(355, R.string.friends_not_friends),
     UNDEFINED_ERROR(100, R.string.error_undefined_error);
 
     private int errorCode;

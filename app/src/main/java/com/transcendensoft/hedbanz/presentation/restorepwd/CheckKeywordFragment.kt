@@ -77,6 +77,11 @@ class CheckKeywordFragment @Inject constructor(): BaseFragment() {
         mPresenter.checkKeyword(betKeyword.text)
     }
 
+    @OnClick(R.id.tvResendPassword)
+    fun onResendPasswordClicked() {
+        mPresenter.resendKeyword()
+    }
+
     fun showKeywordError(@StringRes messageId: Int){
         hideAll()
         tvErrorKeyword.visibility = View.VISIBLE

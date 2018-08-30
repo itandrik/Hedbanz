@@ -182,6 +182,10 @@ public class UserDataRepositoryImpl implements UserDataRepository {
         if (mSocket != null && mSocket.connected()) {
             mSocket.disconnect();
             mSocket.off(LOGIN_RESULT_LISTENER);
+            mSocket.off(Socket.EVENT_CONNECT);
+            mSocket.off(Socket.EVENT_DISCONNECT);
+            mSocket.off(Socket.EVENT_ERROR);
+            mSocket.off(Socket.EVENT_CONNECT_ERROR);
         }
     }
 }

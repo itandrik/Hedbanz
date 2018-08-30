@@ -88,6 +88,16 @@ class RestorePasswordActivity : BaseActivity(), RestorePasswordContract.View {
                 .commit()
     }
 
+    override fun showPasswordResendSuccessful() {
+        AlertDialog.Builder(this)
+                .setTitle(getString(R.string.restore_pwd_keyword_resent_title))
+                .setMessage(getString(R.string.restore_pwd_keyword_resent_message))
+                .setIcon(R.drawable.ic_win_happy)
+                .setPositiveButton(getString(R.string.action_ok)) { dialog, v -> dialog.dismiss() }
+                .setCancelable(true)
+                .show()
+    }
+
     override fun finishResetingPassword() {
         AlertDialog.Builder(this)
                 .setTitle(getString(R.string.restore_password_finish_title))

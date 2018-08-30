@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.presentation.game;
  * limitations under the License.
  */
 
+import android.support.annotation.StringRes;
 import android.widget.EditText;
 
 import com.transcendensoft.hedbanz.domain.entity.Message;
@@ -55,6 +56,7 @@ public interface GameContract {
         void showUserKicked();
         void showRestoreRoom();
         void showWinDialog();
+        void showErrorDialog(@StringRes int message);
         void onBackPressed();
 
         void showEmptyList();

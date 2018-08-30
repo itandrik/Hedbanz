@@ -41,6 +41,7 @@ class RestorePasswordPresenter @Inject constructor(
         private val restorePasswordInteractor: ChangePasswordInteractor
 ) : BasePresenter<User, RestorePasswordContract.View>(), RestorePasswordContract.Presenter {
     private var isError = false
+    private var login = ""
 
     override fun updateView() {
         // Stub
@@ -53,11 +54,27 @@ class RestorePasswordPresenter @Inject constructor(
     override fun forgotPassword(login: String) {
         view()?.showLoadingDialog()
         isError = false
+        this.login = login
+
         restorePasswordInteractor.sendEmailToGetKeyword(login,
                 {
                     if (!isError) {
                         view()?.hideLoadingDialog()
                         view()?.goToCheckKeywordFragment()
+                    }
+                },
+                this::processOnError)
+    }
+
+    override fun resendKeyword() {
+        view()?.showLoadingDialog()
+        isError = false
+
+        restorePasswordInteractor.sendEmailToGetKeyword(login,
+                {
+                    if (!isError) {
+                        view()?.hideLoadingDialog()
+                        view()?.showPasswordResendSuccessful()
                     }
                 },
                 this::processOnError)

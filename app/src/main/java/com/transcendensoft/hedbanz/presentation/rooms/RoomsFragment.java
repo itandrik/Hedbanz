@@ -20,12 +20,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,8 +48,10 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
+import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.custom.widget.rangeseekbar.RangeSeekBar;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
@@ -74,7 +79,7 @@ import static com.transcendensoft.hedbanz.data.network.service.firebase.HedbanzF
  * Fragment that shows room list.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     @BindView(R.id.swipeRefreshLayout) SwipeRefreshLayout mRefreshLayout;
@@ -107,6 +112,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     @Inject RoomList mPresenterModel;
     @Inject RoomsAdapter mAdapter;
     @Inject MainActivity mActivity;
+    @Inject PreferenceManager mPreferenceManager;
 
     @Inject
     public RoomsFragment() {
@@ -160,7 +166,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
 
     @Override
     public void setPresenterModel(RoomList model) {
-        if(mPresenter != null){
+        if (mPresenter != null) {
             mPresenter.setModel(model);
         }
     }
@@ -173,7 +179,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         mRefreshLayout.setOnRefreshListener(() -> {
             if (mPresenter != null) {
                 String searchText = mSvRoomSearch.getQuery().toString();
-                if(!mChbApplyFilters.isChecked() && TextUtils.isEmpty(searchText)){
+                if (!mChbApplyFilters.isChecked() && TextUtils.isEmpty(searchText)) {
                     mPresenter.refreshRooms();
                 } else {
                     mPresenter.updateFilter(null); //filter with old filters
@@ -313,13 +319,13 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         });
     }
 
-    private void initRoomsReceiver(){
+    private void initRoomsReceiver() {
         mRoomsReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if((intent != null) && (intent.getAction() != null) &&
+                if ((intent != null) && (intent.getAction() != null) &&
                         intent.getAction().equalsIgnoreCase(ACTION_ADD_NEW_ROOM) &&
-                        mRecycler.getScrollY() <= 0){
+                        mRecycler.getScrollY() <= 0) {
                     mPresenter.refreshRooms();
                 }
             }
@@ -406,13 +412,13 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         mPresenter.refreshRooms();
     }
 
-    public void hideFilters(){
+    public void hideFilters() {
         try {
             mTvToolbarTitle.setVisibility(View.VISIBLE);
             mRlSearchContainer.setVisibility(View.GONE);
             mCvFilters.setVisibility(GONE);
             mFabSearch.show();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Timber.e(e);
         }
     }
@@ -448,6 +454,34 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     public void showEmptyList() {
         hideAll();
         mRlEmptyList.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showUnauthorizedError() {
+        Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
+        new AlertDialog.Builder(mActivity)
+                .setPositiveButton(getString(R.string.action_ok),
+                        (dialog, which) -> mPresenter.unbindFirebaseToken())
+                .setOnDismissListener(dialog -> mPresenter.unbindFirebaseToken())
+                .setOnCancelListener(dialog -> mPresenter.unbindFirebaseToken())
+                .setIcon(d)
+                .setTitle(getString(R.string.game_error_title))
+                .setMessage(getString(R.string.rooms_unauthorized_user))
+                .show();
+    }
+
+    @Override
+    public void forceLogout() {
+        hideLoadingDialog();
+
+        mPreferenceManager.setIsAuthorised(false);
+        mPreferenceManager.setUser(null);
+        mPreferenceManager.setFirebaseTokenBinded(false);
+
+        Intent intent = new Intent(getActivity(), StartActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(intent);
     }
 
     @Override

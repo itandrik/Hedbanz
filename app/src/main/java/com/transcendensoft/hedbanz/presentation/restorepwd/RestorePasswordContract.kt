@@ -32,6 +32,7 @@ interface RestorePasswordContract {
         fun goToForgotPasswordFragment()
         fun goToCheckKeywordFragment()
         fun goToResetPasswordFragment()
+        fun showPasswordResendSuccessful()
         fun finishResetingPassword()
 
         fun showLoginError(@StringRes stringRes: Int)
@@ -46,6 +47,7 @@ interface RestorePasswordContract {
 
     interface Presenter {
         fun forgotPassword(login: String)
+        fun resendKeyword()
         fun checkKeyword(keyword: String)
         fun resetPassword(password: String, confirmPassword: String)
         fun initAnimEditTextListener(editText: EditText)

@@ -90,4 +90,10 @@ public class AuthorizeUserInteractor extends ObservableUseCase<User, User> {
 
         return Observable.error(mUserException);
     }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        mUserRepository.disconnectIsLoginAvailable();
+    }
 }

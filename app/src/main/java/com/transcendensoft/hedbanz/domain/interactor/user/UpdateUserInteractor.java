@@ -25,7 +25,6 @@ import com.transcendensoft.hedbanz.domain.interactor.user.exception.UserCredenti
 import com.transcendensoft.hedbanz.domain.repository.UserDataRepository;
 import com.transcendensoft.hedbanz.domain.validation.UserCrudValidator;
 import com.transcendensoft.hedbanz.domain.validation.UserError;
-import com.transcendensoft.hedbanz.utils.SecurityUtils;
 
 import javax.inject.Inject;
 
@@ -66,8 +65,8 @@ public class UpdateUserInteractor extends ObservableUseCase<User, UpdateUserInte
         user.setId(mPreferenceManager.getUser().getId());
 
         if (isUserValid(user) & isOldPasswordValid(oldPassword)) { // needs to check both states
-            user.setPassword(SecurityUtils.hash(user.getPassword()));
-            oldPassword = SecurityUtils.hash(oldPassword);
+            //user.setPassword(SecurityUtils.hash(user.getPassword()));
+            //oldPassword = SecurityUtils.hash(oldPassword);
 
             return mUserRepository.updateUser(user.getId(), user.getLogin(),
                     oldPassword, user.getPassword(), DataPolicy.API)
@@ -145,5 +144,11 @@ public class UpdateUserInteractor extends ObservableUseCase<User, UpdateUserInte
             this.oldPassword = oldPassword;
             return this;
         }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        mUserRepository.disconnectIsLoginAvailable();
     }
 }

@@ -21,6 +21,7 @@ import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.PaginationState;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
+import com.transcendensoft.hedbanz.domain.interactor.firebase.FirebaseUnbindTokenInteractor;
 import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.FilterRoomsInteractor;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.GetRoomsInteractor;
@@ -40,7 +41,7 @@ import io.reactivex.observers.DisposableObserver;
  * methods show all available rooms
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
         implements RoomsContract.Presenter, MvpRecyclerAdapter.OnBottomReachedListener {
@@ -49,15 +50,18 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
 
     private FilterRoomsInteractor mFilterRoomsInteractor;
     private GetRoomsInteractor mGetRoomsInteractor;
+    private FirebaseUnbindTokenInteractor mFirebaseUnbindTokenInteractor;
     private PreferenceManager mPreferenceManager;
 
     @Inject
     public RoomsPresenter(FilterRoomsInteractor filterRoomsInteractor,
                           GetRoomsInteractor getRoomsInteractor,
-                          PreferenceManager preferenceManager) {
+                          PreferenceManager preferenceManager,
+                          FirebaseUnbindTokenInteractor firebaseUnbindTokenInteractor) {
         this.mFilterRoomsInteractor = filterRoomsInteractor;
         this.mGetRoomsInteractor = getRoomsInteractor;
         this.mPreferenceManager = preferenceManager;
+        this.mFirebaseUnbindTokenInteractor = firebaseUnbindTokenInteractor;
     }
 
     @Override
@@ -115,7 +119,7 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
     public void filterRooms(RoomFilter roomFilter) {
         mRoomFilter = roomFilter;
         view().clearRooms();
-        if(mRoomFilter == null){
+        if (mRoomFilter == null) {
             mRoomFilter = new RoomFilter.Builder().build();
         }
         model.clearRooms();
@@ -125,7 +129,7 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
 
     @Override
     public void updateFilter(RoomFilter roomFilter) {
-        if(roomFilter != null) {
+        if (roomFilter != null) {
             if (mRoomFilter == null) {
                 mRoomFilter = roomFilter;
             } else {
@@ -153,8 +157,30 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
 
     @Override
     public void clearTextFilter() {
-        if(mRoomFilter != null){
+        if (mRoomFilter != null) {
             mRoomFilter.setRoomName("");
+        }
+    }
+
+    @Override
+    public void unbindFirebaseToken() {
+        boolean firebaseTokenBinded = mPreferenceManager.getFirebaseTokenBinded();
+
+        if (firebaseTokenBinded) {
+            view().showLoadingDialog();
+            mFirebaseUnbindTokenInteractor.execute(null,
+                    () -> {
+                        if (view() != null) {
+                            view().forceLogout();
+                        }
+                    },
+                    err -> {
+                        if (view() != null) {
+                            view().forceLogout();
+                        }
+                    });
+        } else {
+            view().forceLogout();
         }
     }
 
@@ -162,7 +188,7 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
         @Override
         public void onNext(PaginationState<Room> roomPaginationState) {
             if (roomPaginationState != null) {
-                if(processErrors(roomPaginationState)){
+                if (processErrors(roomPaginationState)) {
                     return;
                 }
 
@@ -177,12 +203,16 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
 
         private boolean processErrors(PaginationState<Room> roomPaginationState) {
             boolean hasErrors = false;
-            if(roomPaginationState.isHasInternetError()){
+            if (roomPaginationState.isHasInternetError()) {
                 processNetworkError(roomPaginationState);
                 hasErrors = true;
             }
-            if(roomPaginationState.isHasServerError()){
+            if (roomPaginationState.isHasServerError()) {
                 processServerError(roomPaginationState);
+                hasErrors = true;
+            }
+            if (roomPaginationState.isHasUnauthorizedError()) {
+                processUnauthorizedError();
                 hasErrors = true;
             }
             return hasErrors;
@@ -197,7 +227,7 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
         }
 
         private void processServerError(PaginationState<Room> roomPaginationState) {
-            if(view() != null) {
+            if (view() != null) {
                 if (roomPaginationState.isRefreshed()) {
                     view().showServerError();
                 } else {
@@ -206,14 +236,20 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
             }
         }
 
+        private void processUnauthorizedError() {
+            if (view() != null) {
+                view().showUnauthorizedError();
+            }
+        }
+
         private void processEmptyRoomList(PaginationState<Room> roomPaginationState) {
             if (roomPaginationState.isRefreshed()) {
                 view().showEmptyList();
             } else {
                 Room lastRoom = model.getRooms().get(model.getRooms().size() - 1);
-                if(lastRoom.getId() == -1) {
+                if (lastRoom.getId() == -1) {
                     model.getRooms().remove(model.getRooms().size() - 1);
-                    if(view() != null) {
+                    if (view() != null) {
                         view().removeLastRoom();
                     }
                 }
@@ -228,7 +264,7 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
 
             rooms.add(new Room.Builder().setId(-1).build()); //ProgressBar view
 
-            if(view() != null) {
+            if (view() != null) {
                 view().addRoomsToRecycler(rooms);
                 view().showContent();
                 model.addAllRooms(rooms);
@@ -251,7 +287,7 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
 
         @Override
         protected void onStart() {
-            if(model == null || model.isEmpty() && view() != null) {
+            if (model == null || model.isEmpty() && view() != null) {
                 view().showLoading();
             }
         }

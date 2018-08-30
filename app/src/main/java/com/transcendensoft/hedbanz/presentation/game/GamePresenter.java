@@ -33,6 +33,7 @@ import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.domain.interactor.game.GameInteractorFacade;
 import com.transcendensoft.hedbanz.domain.interactor.game.GetMessagesInteractor;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
+import com.transcendensoft.hedbanz.domain.validation.RoomError;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
 import com.transcendensoft.hedbanz.utils.RxUtils;
@@ -64,6 +65,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     private boolean isAfterRoomCreation;
     private boolean isLeaveFromRoom = false;
     private boolean isUserKicked = false;
+    private boolean isSocketInititalized = false;
 
     @Inject
     public GamePresenter(GameInteractorFacade gameInteractor,
@@ -88,7 +90,10 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         if (model.getMessages() == null || model.getMessages().isEmpty()) {
             model.setMessages(new ArrayList<>());
             view().showLoading();
-            initSockets();
+            if(!isSocketInititalized) {
+                initSockets();
+                isSocketInititalized = true;
+            }
         } else {
             view().clearMessages();
             view().addMessages(model.getMessages());
@@ -104,14 +109,14 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     @Override
     public void bindView(@NonNull GameContract.View view) {
         super.bindView(view);
-        if(mGameInteractor != null) {
+        if (mGameInteractor != null) {
             mGameInteractor.resumeSocket();
         }
-        if(mPreferenceManger.isUserKicked()){
+        if (mPreferenceManger.isUserKicked()) {
             view.showUserKicked();
             return;
         }
-        if(mPreferenceManger.isLastUser()){
+        if (mPreferenceManger.isLastUser()) {
             view.showLastUserDialog();
         }
     }
@@ -119,7 +124,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     @Override
     public void unbindView() {
         super.unbindView();
-        if(mGameInteractor != null && !isLeaveFromRoom) {
+        if (mGameInteractor != null && !isLeaveFromRoom) {
             mGameInteractor.stopSocket();
         }
     }
@@ -352,10 +357,9 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         mGameInteractor.onRoomRestoredListener(
                 this::initRoom,
                 this::processEventListenerOnError);
-        mGameInteractor.onErrorListener(error -> {
-            Timber.e("Error from server from socket. Code : %d; Message: %s",
-                    error.getErrorCode(), error.getErrorMessage());
-        }, this::processEventListenerOnError);
+        mGameInteractor.onErrorListener(
+                this::processRoomError,
+                this::processEventListenerOnError);
     }
 
     private void initRoom(Room room) {
@@ -403,7 +407,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                     if (!users.contains(user)) {
                         users.add(user);
                     }
-                    if(!mPreferenceManger.getUser().equals(user)) {
+                    if (!mPreferenceManger.getUser().equals(user)) {
                         Message message = new Message.Builder()
                                 .setUserFrom(user)
                                 .setMessageType(MessageType.JOINED_USER)
@@ -440,7 +444,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         }, this::processEventListenerOnError);
     }
 
-    private void initPlayersInfoListener(){
+    private void initPlayersInfoListener() {
         mGameInteractor.onPlayersInfoUseCase(users -> {
             model.setPlayers(users);
             model.setMessages(new ArrayList<>());
@@ -563,6 +567,11 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 this::processGameOverEvent,
                 this::processEventListenerOnError
         );
+    }
+
+    private void processRoomError(RoomError roomError) {
+        Timber.e("Room error from server. Code: " + roomError.getErrorCode());
+        view().showErrorDialog(roomError.getErrorMessage());
     }
 
     private void processSimpleMessage(Message message) {

@@ -5,9 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Rect;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.Animatable2Compat;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
@@ -22,6 +24,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -79,6 +82,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
     private BroadcastReceiver mLastPlayerBroadcastReceiver;
     private EmojiPopup mEmojiPopup;
+    private boolean isKeyboardOpened = false;
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -118,6 +122,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         initNavDrawer();
         initRecycler();
         initBroadcastReceivers();
+        initKeyboardListener();
         initEmojiPopup();
 
         mPresenter.messageTextChanges(mEtChatMessage);
@@ -245,6 +250,32 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         };
     }
 
+    private void initKeyboardListener() {
+        mParentLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                Rect r = new Rect();
+                mParentLayout.getWindowVisibleDisplayFrame(r);
+                int screenHeight = mParentLayout.getRootView().getHeight();
+
+                // r.bottom is the position above soft keypad or device button.
+                // if keypad is shown, the r.bottom is smaller than that before.
+                int keypadHeight = screenHeight - r.bottom;
+
+                if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
+                    isKeyboardOpened = true;
+                } else {
+                    isKeyboardOpened = false;
+                    mEmojiPopup.dismiss();
+                    Drawable imageDrawable = VectorDrawableCompat.create(
+                            getResources(), R.drawable.ic_smile_keyboard, null);
+                    mIvEmojiKeyboard.setImageDrawable(imageDrawable);
+                }
+            }
+        });
+    }
+
     private void initEmojiPopup() {
         mEmojiPopup = EmojiPopup.Builder.fromRootView(mParentLayout).build(mEtChatMessage);
     }
@@ -296,7 +327,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     protected void onEmojiKeyboardClicked() {
         mEmojiPopup.toggle();
         Drawable imageDrawable = null;
-        if (mEmojiPopup.isShowing()) {
+        if (mEmojiPopup.isShowing() || !isKeyboardOpened) {
             imageDrawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_keyboard, null);
         } else {
             imageDrawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_smile_keyboard, null);
@@ -628,6 +659,18 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 .setIcon(d)
                 .setTitle(getString(R.string.game_last_player_title))
                 .setMessage(getString(R.string.game_last_player_message))
+                .show();
+    }
+
+    @Override
+    public void showErrorDialog(@StringRes int message) {
+        Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
+        new AlertDialog.Builder(this)
+                .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> finish())
+                .setOnDismissListener(dialog -> finish())
+                .setIcon(d)
+                .setTitle(getString(R.string.game_error_title))
+                .setMessage(getString(message))
                 .show();
     }
 }

@@ -72,13 +72,13 @@ class MenuFragmentPresenter @Inject constructor(
                         view()?.showLogoutSuccess()
                         mPreferenceManager.firebaseTokenBinded = false
                     },
-                    this::processCreateRoomOnError)
+                    this::processLogoutOnError)
         } else {
             view()?.showLogoutSuccess()
         }
     }
 
-    private fun processCreateRoomOnError(err: Throwable) {
+    private fun processLogoutOnError(err: Throwable) {
         if (err is ConnectException) {
             view()?.showLogoutNetworkError()
         } else {

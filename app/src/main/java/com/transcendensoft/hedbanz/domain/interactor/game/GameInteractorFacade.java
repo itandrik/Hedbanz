@@ -17,7 +17,6 @@ package com.transcendensoft.hedbanz.domain.interactor.game;
 
 import android.annotation.SuppressLint;
 
-import com.transcendensoft.hedbanz.data.models.common.ServerError;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.qualifier.SchedulerIO;
 import com.transcendensoft.hedbanz.domain.entity.Message;
@@ -56,6 +55,7 @@ import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UserWinU
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.word.WordSettedUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.word.WordSettingUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
+import com.transcendensoft.hedbanz.domain.validation.RoomError;
 import com.transcendensoft.hedbanz.presentation.game.models.RxRoom;
 import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
 import com.transcendensoft.hedbanz.presentation.notification.NotificationManager;
@@ -288,7 +288,7 @@ public class GameInteractorFacade {
         mPlayersInfoUseCase.execute(null, onNext, onError, doOnNext);
     }
 
-    public void onErrorListener(Consumer<? super ServerError> onNext,
+    public void onErrorListener(Consumer<? super RoomError> onNext,
                                 Consumer<? super Throwable> onError) {
         mErrorUseCase.execute(null, onNext, onError);
     }
