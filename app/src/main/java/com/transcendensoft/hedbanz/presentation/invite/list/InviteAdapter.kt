@@ -48,7 +48,7 @@ class InviteAdapter @Inject constructor() : RecyclerView.Adapter<InviteViewHolde
     override fun onBindViewHolder(holder: InviteViewHolder, position: Int) {
         val friend = items[position]
 
-        holder.bindFriendIcon(R.drawable.logo) // TODO change this shit
+        holder.bindFriendIcon(friend.iconId)
         holder.bindFriendName(friend.login)
         holder.bindFlags(friend.isInGame, friend.isInvited)
         holder.bindOnClick(friend)

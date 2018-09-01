@@ -65,10 +65,17 @@ public class UpdateUserInteractor extends ObservableUseCase<User, UpdateUserInte
         String oldPassword = params.getOldPassword();
         user.setId(mPreferenceManager.getUser().getId());
 
-        if (isUserValid(user) & isOldPasswordValid(oldPassword)) { // needs to check both states
-            user.setPassword(SecurityUtils.hash(user.getPassword()));
-            oldPassword = SecurityUtils.hash(oldPassword);
+        if(params.isUpdateOldPassword) {
+            if (isUserValid(user) & isOldPasswordValid(oldPassword)) { // needs to check both states
+                user.setPassword(SecurityUtils.hash(user.getPassword()));
+                oldPassword = SecurityUtils.hash(oldPassword);
 
+                return mUserRepository.updateUser(user.getId(), user.getLogin(),
+                        oldPassword, user.getPassword(), DataPolicy.API)
+                        .onErrorResumeNext(this::processUpdateUserOnError);
+            }
+        } else {
+            //TODO change to another API request
             return mUserRepository.updateUser(user.getId(), user.getLogin(),
                     oldPassword, user.getPassword(), DataPolicy.API)
                     .onErrorResumeNext(this::processUpdateUserOnError);
@@ -124,6 +131,7 @@ public class UpdateUserInteractor extends ObservableUseCase<User, UpdateUserInte
     public static final class Params {
         private User user;
         private String oldPassword;
+        private boolean isUpdateOldPassword;
 
         public Params() {
         }
@@ -145,5 +153,20 @@ public class UpdateUserInteractor extends ObservableUseCase<User, UpdateUserInte
             this.oldPassword = oldPassword;
             return this;
         }
+
+        public boolean isUpdateOldPassword() {
+            return isUpdateOldPassword;
+        }
+
+        public Params setUpdateOldPassword(boolean updateOldPassword) {
+            isUpdateOldPassword = updateOldPassword;
+            return this;
+        }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        mUserRepository.disconnectIsLoginAvailable();
     }
 }

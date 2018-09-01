@@ -98,4 +98,10 @@ public class RegisterUserInteractor extends ObservableUseCase<User, User> {
         }
         return Observable.error(mUserException);
     }
+
+    @Override
+    public void dispose() {
+        mUserRepository.disconnectIsLoginAvailable();
+        super.dispose();
+    }
 }

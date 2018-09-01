@@ -27,11 +27,20 @@ import com.transcendensoft.hedbanz.R;
  */
 
 public enum RoomError {
-    NO_SUCH_USER(1, R.string.error_server),
-    EMPTY_NAME(2, R.string.room_creation_error_name_empty),
+    NO_SUCH_USER(103, R.string.login_error_no_such_login),
+    INVALID_PASSWORD(301, R.string.room_creation_error_password_incorrect),
+    ROOM_IS_FULL(302, R.string.room_is_full),
+    CANT_START_GAME(303, R.string.room_cant_start_game),
+    GAME_HAS_BEEN_ALREADY_STARTED(304, R.string.room_game_already_started),
+    USER_HAS_MAX_ACTIVE_ROOMS_NUMBER(305, R.string.room_user_has_max_active_rooms_number),
+    ROOM_ALREADY_EXIST(306, R.string.room_creation_error_name_already_exist),
+    SUCH_PLAYER_ALREADY_IN_ROOM(307,  R.string.room_user_already_in_room),
+    UNAUTHORIZED_PLAYER(401, R.string.room_unauthorized_player),
+
+    EMPTY_ROOM_ID(10, R.string.error_server),
+    EMPTY_NAME(11, R.string.room_creation_error_name_empty),
+    INVALID_ROOM_ID(14, R.string.error_server),
     EMPTY_PASSWORD(3, R.string.room_creation_error_password_empty),
-    INVALID_PASSWORD(4, R.string.room_creation_error_password_incorrect),
-    ROOM_ALREADY_EXIST(17, R.string.room_creation_error_name_already_exist),
     UNDEFINED_ERROR(100, R.string.error_undefined_error);
 
     private int errorCode;

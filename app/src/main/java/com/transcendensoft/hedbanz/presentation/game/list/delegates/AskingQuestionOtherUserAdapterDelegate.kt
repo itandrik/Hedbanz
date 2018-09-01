@@ -75,7 +75,7 @@ class AskingQuestionOtherUserAdapterDelegate @Inject constructor() :
             holder.bindShowHideLoginAndImage(false)
             holder.bindUserLogin(login)
             holder.bindMessage(question.message)
-            holder.bindUserImage(R.drawable.logo) //TODO change this shit
+            holder.bindUserImage(userFrom.iconId)
             holder.bindTime(question.createDate.time)
 
             holder.bindProgress(question.yesVoters, question.noVoters, question.winVoters, question.allUsersCount)

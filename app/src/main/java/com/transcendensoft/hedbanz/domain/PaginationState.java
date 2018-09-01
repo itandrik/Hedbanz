@@ -29,6 +29,7 @@ public class PaginationState<T> {
     private List<T> data;
     private boolean hasServerError;
     private boolean hasInternetError;
+    private boolean hasUnauthorizedError;
     private boolean isRefreshed;
 
     public List<T> getData() {
@@ -55,6 +56,15 @@ public class PaginationState<T> {
 
     public PaginationState<T> setHasInternetError(boolean hasInternetError) {
         this.hasInternetError = hasInternetError;
+        return this;
+    }
+
+    public boolean isHasUnauthorizedError() {
+        return hasUnauthorizedError;
+    }
+
+    public PaginationState<T> setHasUnauthorizedError(boolean hasUnauthorizedError) {
+        this.hasUnauthorizedError = hasUnauthorizedError;
         return this;
     }
 

@@ -15,6 +15,8 @@ package com.transcendensoft.hedbanz.domain.entity;
  * limitations under the License.
  */
 
+import android.support.annotation.DrawableRes;
+
 /**
  * Entity that describes Friend of some User
  *
@@ -27,13 +29,16 @@ public class Friend extends User {
     private boolean isInvited;
     private boolean isInGame;
     private boolean isSelected;
+    private @DrawableRes int iconId;
 
     private Friend(long id, String email, String password, String confirmPassword,
                    long money, Long registrationDate, String login, PlayerStatus playerStatus,
                    boolean isAccepted, boolean isPending, boolean isFriend,
-                   String word, int attempts, boolean isWinner, boolean isInvited, boolean isInGame) {
+                   String word, int attempts, boolean isWinner, boolean isInvited, boolean isInGame,
+                   int gamesNumber, int friendsNumber, int iconId) {
         super(id, email, password, confirmPassword, money, registrationDate,
-                login, playerStatus, isFriend, word, attempts, isWinner);
+                login, playerStatus, isFriend, word, attempts, isWinner,
+                gamesNumber, friendsNumber, iconId);
         this.isAccepted = isAccepted;
         this.isPending = isPending;
         this.isInvited = isInvited;
@@ -80,6 +85,16 @@ public class Friend extends User {
         isSelected = selected;
     }
 
+    @Override
+    public int getIconId() {
+        return iconId;
+    }
+
+    @Override
+    public void setIconId(int iconId) {
+        this.iconId = iconId;
+    }
+
     public static class Builder {
         private long id;
         private String email;
@@ -97,6 +112,9 @@ public class Friend extends User {
         private boolean isPending;
         private boolean isInvited;
         private boolean isInGame;
+        private int gamesNumber;
+        private int friendsNumber;
+        private int iconId;
 
         public Builder setId(long id) {
             this.id = id;
@@ -178,10 +196,26 @@ public class Friend extends User {
             return this;
         }
 
+        public Builder setGamesNumber(int gamesNumber) {
+            this.gamesNumber = gamesNumber;
+            return this;
+        }
+
+        public Builder setFriendsNumber(int friendsNumber) {
+            this.friendsNumber = friendsNumber;
+            return this;
+        }
+
+        public Builder setIconId(int iconId) {
+            this.iconId = iconId;
+            return this;
+        }
+
         public Friend build() {
             return new Friend(id, email, password, confirmPassword, money,
                     registrationDate, login, playerStatus, isAccepted, isPending,
-                    isFriend, word, attempts, isWinner, isInvited, isInGame);
+                    isFriend, word, attempts, isWinner, isInvited, isInGame,
+                    gamesNumber, friendsNumber, iconId);
         }
     }
 }

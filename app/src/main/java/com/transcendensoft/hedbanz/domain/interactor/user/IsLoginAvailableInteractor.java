@@ -26,6 +26,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subjects.PublishSubject;
+import timber.log.Timber;
 
 /**
  * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
@@ -52,7 +53,10 @@ public class IsLoginAvailableInteractor extends ObservableUseCase<Boolean, Strin
         Observable<Boolean> isLoginAvailableObservable = mUserDataRepository.isLoginAvailableObservable()
                 .flatMap(jsonObject -> {
                     try {
-                        return Observable.just(jsonObject.getBoolean(IS_LOGIN_AVAILABLE));
+                        boolean isLoginAvailable = jsonObject.getBoolean(IS_LOGIN_AVAILABLE);
+                        Timber.i("SOCKET. IsLoginAvailable: " + isLoginAvailable);
+
+                        return Observable.just(isLoginAvailable);
                     } catch (JSONException e) {
                         throw new RuntimeException("Error parsing JSONObject" +
                                 "while getting isLoginAvailable from server");

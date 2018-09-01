@@ -17,6 +17,7 @@ package com.transcendensoft.hedbanz.data.models.mapper;
 
 import com.transcendensoft.hedbanz.data.models.FriendDTO;
 import com.transcendensoft.hedbanz.domain.entity.Friend;
+import com.transcendensoft.hedbanz.domain.entity.UserIcon;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,6 +54,9 @@ public class FriendModelDataMapper {
                     .setIsWinner(friendDTO.isWinner())
                     .setIsInGame(friendDTO.isInGame())
                     .setIsInvited(friendDTO.isInvited())
+                    .setGamesNumber(friendDTO.getGamesNumber())
+                    .setFriendsNumber(friendDTO.getFriendsNumber())
+                    .setIconId(UserIcon.Companion.getResourceById(friendDTO.getIconId()))
                     .build();
         }
         return friendResult;

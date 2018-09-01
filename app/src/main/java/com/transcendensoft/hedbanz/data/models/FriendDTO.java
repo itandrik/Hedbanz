@@ -43,9 +43,12 @@ public class FriendDTO extends UserDTO {
                       Long registrationDate, String login, int status,
                       boolean isAccepted, boolean isPending, boolean isFriend,
                       String word, Long userId, int attempts, boolean isWinner,
-                      boolean isInGame, boolean isInvited) {
+                      boolean isInGame, boolean isInvited, int gamesNumber,
+                      int friendsNumber, int iconId
+    ) {
         super(id, email, password, money, registrationDate, login,
-                status, isFriend, word, userId, attempts, isWinner);
+                status, isFriend, word, userId, attempts, isWinner,
+                gamesNumber, friendsNumber, iconId);
         this.isAccepted = isAccepted;
         this.isPending = isPending;
         this.isInGame = isInGame;
@@ -101,6 +104,9 @@ public class FriendDTO extends UserDTO {
         private boolean isWinner;
         private boolean isInGame;
         private boolean isInvited;
+        private int gamesNumber;
+        private int friendsNumber;
+        private int iconId;
 
         public FriendDTO.Builder setId(long id) {
             this.id = id;
@@ -182,10 +188,25 @@ public class FriendDTO extends UserDTO {
             return this;
         }
 
+        public FriendDTO.Builder setGamesNumber(int gamesNumber) {
+            this.gamesNumber = gamesNumber;
+            return this;
+        }
+
+        public FriendDTO.Builder setFriendsNumber(int friendsNumber) {
+            this.friendsNumber = friendsNumber;
+            return this;
+        }
+
+        public FriendDTO.Builder setIconId(int iconId) {
+            this.iconId = iconId;
+            return this;
+        }
+
         public FriendDTO build() {
             return new FriendDTO(id, email, password, money, registrationDate,
                     login, status, isAccepted, isPending, isFriend, word, userId, attempts,
-                    isWinner, isInGame, isInvited);
+                    isWinner, isInGame, isInvited, gamesNumber, friendsNumber, iconId);
         }
     }
 }

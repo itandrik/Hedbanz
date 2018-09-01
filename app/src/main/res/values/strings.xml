@@ -86,6 +86,13 @@
     <string name="rooms_with_password">С паролем</string>
     <string name="rooms_password_title">Введите пароль от комнаты</string>
     <string name="rooms_active">Активная</string>
+    <string name="room_is_full">Комната заполнена. Попробуйте зайти в другую комнату.</string>
+    <string name="room_cant_start_game">Невозможно начать игру. Проблема с сервером.</string>
+    <string name="room_game_already_started">Невозможно присоединиться к игрокам. Игра уже началась</string>
+    <string name="room_user_has_max_active_rooms_number">Вы достигли максимально допустимого количества одновременных активных игр. Завершите их сначала.</string>
+    <string name="room_user_already_in_room">Ошибка сервера, попробуйте попытку позже.</string>
+    <string name="room_unauthorized_player">Вы не являетесь авторизованным пользователем.</string>
+    <string name="rooms_unauthorized_user">Вы не являетесь авторизованным пользователем. Войдите в ваш аккаунт снова</string>
 
     <!-- Create room fragment -->
     <string name="room_creation_title">Создать комнату</string>
@@ -100,6 +107,7 @@
     <string name="room_creation_error_password_empty">Введите пароль от комнаты</string>
     <string name="room_creation_error_name_empty">Введите имя комнаты</string>
     <string name="room_creation_error_name_already_exist">Комната с таким именем уже существует</string>
+    <string name="room_creation_error_creating">Не получилось создать комнату. Ошибка сервера. Попробуйте позже.</string>
 
     <!-- Menu fragment -->
     <string name="menu_games_played">Игр сыграно</string>
@@ -166,6 +174,7 @@
     <string name="game_afk">AFK</string>
     <string name="game_last_player_title">Вы последний игрок в комнате</string>
     <string name="game_last_player_message">Так получилось, что все игроки покинули комнату. Эта комната закрывается, если вы хотите собрать новую команду, создайте новую комнату или присоединитесь к другой.</string>
+    <string name="game_error_title">Ошибка</string>
 
     <string name="game_some_user_think_word_to_user">Сейчас будет спрашивать игрок %1$s.\n Попытка %2$d/3</string>
     <string name="game_some_user_think_word_to_user_error">Сейчас будет спрашивать какой-то игрок.\n Попытка %1$d/3</string>
@@ -224,6 +233,9 @@
     <string name="friends_error_title">Что-то пошло не так</string>
     <string name="friends_error_message">Произошла ошибка, повторите действие позже.</string>
     <string name="friends_pending">Ожидает подтверждения</string>
+    <string name="friends_cant_send_friendship_request">Невозможно добавить в друзья. Ошибка сервера.</string>
+    <string name="friends_already_friends">Этот пользователь уже в вашем списке друзей</string>
+    <string name="friends_not_friends">Этот пользователь не является вашим другом</string>
 
     <!-- User details -->
     <string name="user_details_add_friend">Предложить дружбу</string>
@@ -250,4 +262,15 @@
     <string name="restore_pwd_error_keyword_expired">Секретный код устарел. Отправьте еще одно сообщение.</string>
     <string name="restore_password_finish_title">У вас получилось!</string>
     <string name="restore_password_finish_message">Вы успешно изменили пароль, теперь ввойдите в ваш аккаунт с новыми данными.</string>
+    <string name="restore_pwd_resend_keyword">Не пришло письмо</string>
+    <string name="restore_pwd_keyword_resent_title">Секретный код отправлен</string>
+    <string name="restore_pwd_keyword_resent_message">Проверьте почту, вам только что был выслан новый секретный код.</string>
+
+    <!-- Change user icon -->
+    <string name="change_icon_submit">Выбрать</string>
+    <string name="change_icon_choose_avatar">Выберите аватар</string>
+    <string name="change_icon_success_title">У вас получилось!</string>
+    <string name="change_icon_success_message">Вы успешно изменили ваш аватар. </string>
+    <string name="change_icon_error_title">Ошибка</string>
+    <string name="change_icon_error_message">Не получается изменить ваш аватар. Проблемы с сервером. Попробуйте повторить операцию позже.</string>
 </resources>

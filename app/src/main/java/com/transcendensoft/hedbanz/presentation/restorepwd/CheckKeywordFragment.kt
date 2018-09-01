@@ -14,6 +14,7 @@ import butterknife.OnClick
 import com.infideap.blockedittext.BlockEditText
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment
+import com.transcendensoft.hedbanz.utils.KeyboardUtils
 import javax.inject.Inject
 
 /**
@@ -75,6 +76,12 @@ class CheckKeywordFragment @Inject constructor(): BaseFragment() {
     @OnClick(R.id.btnSubmit)
     fun onSubmitClicked() {
         mPresenter.checkKeyword(betKeyword.text)
+        KeyboardUtils.hideSoftInput(activity)
+    }
+
+    @OnClick(R.id.tvResendPassword)
+    fun onResendPasswordClicked() {
+        mPresenter.resendKeyword()
     }
 
     fun showKeywordError(@StringRes messageId: Int){

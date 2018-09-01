@@ -26,7 +26,7 @@ import java.util.List;
  * View and Presenter interfaces contract for rooms presentation
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 
 public class RoomsContract {
@@ -45,6 +45,10 @@ public class RoomsContract {
         void closeSearchAndRefresh();
 
         void stopRefreshingBar();
+
+        void showUnauthorizedError();
+
+        void forceLogout();
     }
 
     public interface Presenter {
@@ -59,5 +63,7 @@ public class RoomsContract {
         void clearFilters();
 
         void clearTextFilter();
+
+        void unbindFirebaseToken();
     }
 }

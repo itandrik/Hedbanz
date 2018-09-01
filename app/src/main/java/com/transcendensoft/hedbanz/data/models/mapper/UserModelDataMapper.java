@@ -19,6 +19,7 @@ import com.transcendensoft.hedbanz.data.models.UserDTO;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 import com.transcendensoft.hedbanz.domain.entity.PlayerStatus;
 import com.transcendensoft.hedbanz.domain.entity.User;
+import com.transcendensoft.hedbanz.domain.entity.UserIcon;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,6 +62,9 @@ public class UserModelDataMapper {
                     .setWord(userDTO.getWord())
                     .setIsWinner(userDTO.isWinner())
                     .setAttempts(userDTO.getAttempts())
+                    .setGamesNumber(userDTO.getGamesNumber())
+                    .setFriendsNumber(userDTO.getFriendsNumber())
+                    .setIconId(UserIcon.Companion.getResourceById(userDTO.getIconId()))
                     .build();
         }
         return userResult;
@@ -82,6 +86,9 @@ public class UserModelDataMapper {
                     .setWord(user.getWord())
                     .setAttempts(user.getAttempts())
                     .setIsWinner(user.isWinner())
+                    .setGamesNumber(user.getGamesNumber())
+                    .setFriendsNumber(user.getGamesNumber())
+                    .setIconId(UserIcon.Companion.getIdByResource(user.getIconId()))
                     .build();
         }
         return userResult;

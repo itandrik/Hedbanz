@@ -26,16 +26,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
+import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconActivity;
 import com.transcendensoft.hedbanz.presentation.friends.FriendsActivity;
 import com.transcendensoft.hedbanz.presentation.intro.IntroActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.CredentialsActivity;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 
@@ -54,8 +58,12 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
     @BindView(R.id.tvFriends) TextView mTvFriends;
     @BindView(R.id.tvGamesPlayed) TextView mTvGamesPlayed;
     @BindView(R.id.tvMoney) TextView mTvMoney;
+    @BindView(R.id.tvFriendsTitle) TextView mTvFriendsTitle;
+    @BindView(R.id.tvGamesPlayedTitle) TextView mTvGamesPlayedTitle;
+    @BindView(R.id.tvMoneyTitle) TextView mTvMoneyTitle;
     @BindView(R.id.tvUsername) TextView mTvUsername;
     @BindView(R.id.ivUserImage) ImageView mIvImage;
+    @BindView(R.id.shimmerLayout) ShimmerFrameLayout mShimmerFrameLayout;
 
     @Inject PreferenceManager mPreferenceManager;
     @Inject MainActivity mActivity;
@@ -74,7 +82,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
         ButterKnife.bind(this, view);
         initUserData();
 
-        if(mPresenter != null) {
+        if (mPresenter != null) {
             mPresenter.setModel(new User());
         }
 
@@ -84,7 +92,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
     @Override
     public void onResume() {
         super.onResume();
-        if(mPresenter != null){
+        if (mPresenter != null) {
             mPresenter.bindView(this);
         }
     }
@@ -115,6 +123,11 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
     @OnClick(R.id.btnCredentials)
     protected void onCredentialsClicked() {
         startActivity(new Intent(getActivity(), CredentialsActivity.class));
+    }
+
+    @OnClick(R.id.ivUserImage)
+    protected void onUserImageClicked(){
+        startActivity(new Intent(getActivity(), ChangeIconActivity.class));
     }
 
     @OnClick(R.id.tvFriends)
@@ -150,7 +163,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
 
     @OnClick(R.id.btnExit)
     protected void onLogoutClicked() {
-        if(mPresenter != null){
+        if (mPresenter != null) {
             mPresenter.unbindFirebaseToken();
         }
     }
@@ -199,6 +212,40 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
                 .setPositiveButton(getString(R.string.action_ok), (dialog, v) -> dialog.dismiss())
                 .setCancelable(true)
                 .show();
+    }
+
+    @Override
+    public void showUserDataLoading() {
+        mTvFriends.setVisibility(View.GONE);
+        mTvGamesPlayed.setVisibility(View.GONE);
+        mTvMoney.setVisibility(View.GONE);
+        mTvFriendsTitle.setVisibility(View.GONE);
+        mTvGamesPlayedTitle.setVisibility(View.GONE);
+        mTvMoneyTitle.setVisibility(View.GONE);
+        mTvUsername.setVisibility(View.GONE);
+        mIvImage.setVisibility(View.GONE);
+
+        mShimmerFrameLayout.setVisibility(View.VISIBLE);
+        mShimmerFrameLayout.startShimmerAnimation();
+    }
+
+    @Override
+    public void setUserData(@NotNull User user) {
+        mTvFriends.setVisibility(View.VISIBLE);
+        mTvGamesPlayed.setVisibility(View.VISIBLE);
+        mTvMoney.setVisibility(View.VISIBLE);
+        mTvFriendsTitle.setVisibility(View.VISIBLE);
+        mTvGamesPlayedTitle.setVisibility(View.VISIBLE);
+        mTvMoneyTitle.setVisibility(View.VISIBLE);
+        mTvUsername.setVisibility(View.VISIBLE);
+        mIvImage.setVisibility(View.VISIBLE);
+
+        mShimmerFrameLayout.setVisibility(View.GONE);
+        mShimmerFrameLayout.stopShimmerAnimation();
+
+        mTvMoney.setText(String.valueOf(user.getMoney()));
+        mTvFriends.setText(String.valueOf(user.getFriendsNumber()));
+        mTvGamesPlayed.setText(String.valueOf(user.getFriendsNumber()));
     }
 
     @Override

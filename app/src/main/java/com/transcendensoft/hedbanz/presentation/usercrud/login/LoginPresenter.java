@@ -98,6 +98,7 @@ public class LoginPresenter extends BasePresenter<User, LoginContract.View>
             case INVALID_PASSWORD:
             case INCORRECT_PASSWORD:
             case EMPTY_PASSWORD:
+            case INCORRECT_CREDENTIALS:
                 view().showPasswordError(userError.getErrorMessage());
                 break;
             default:

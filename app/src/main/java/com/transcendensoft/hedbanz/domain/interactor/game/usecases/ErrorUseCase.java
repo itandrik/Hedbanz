@@ -22,6 +22,7 @@ import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.room.RoomInfoUseCase;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
+import com.transcendensoft.hedbanz.domain.validation.RoomError;
 
 import javax.inject.Inject;
 
@@ -38,8 +39,8 @@ import io.reactivex.subjects.PublishSubject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class ErrorUseCase extends ObservableUseCase<ServerError, Void> {
-    private PublishSubject<ServerError> mSubject;
+public class ErrorUseCase extends ObservableUseCase<RoomError, Void> {
+    private PublishSubject<RoomError> mSubject;
 
     @Inject
     public ErrorUseCase(ObservableTransformer observableTransformer,
@@ -52,7 +53,8 @@ public class ErrorUseCase extends ObservableUseCase<ServerError, Void> {
     }
 
     private void initSubject(GameDataRepository gameDataRepository, Gson gson) {
-        Observable<ServerError> observable = getObservable(gameDataRepository, gson);
+        Observable<RoomError> observable = getObservable(gameDataRepository, gson)
+                .map(serverError -> RoomError.getRoomErrorByCode(serverError.getErrorCode()));
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
     }
@@ -71,7 +73,7 @@ public class ErrorUseCase extends ObservableUseCase<ServerError, Void> {
     }
 
     @Override
-    protected Observable<ServerError> buildUseCaseObservable(Void params) {
+    protected Observable<RoomError> buildUseCaseObservable(Void params) {
         return mSubject;
     }
 }

@@ -38,6 +38,8 @@ public interface CreateRoomContract {
 
         void createRoomError();
 
+        void showMaxActiveRoomsError();
+
         void setPresenterModel(RoomList model);
     }
 

@@ -97,6 +97,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
         setModel(user);
         UpdateUserInteractor.Params params = new UpdateUserInteractor.Params()
                 .setUser(user)
+                .setUpdateOldPassword(true)
                 .setOldPassword(oldPassword);
 
         view().showLoadingDialog();
@@ -140,14 +141,17 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
                 break;
             case EMPTY_LOGIN:
             case INVALID_LOGIN:
+            case NO_SUCH_USER:
                 view().showIncorrectLogin(userError.getErrorMessage());
                 break;
             case EMPTY_PASSWORD:
             case INVALID_PASSWORD:
+            case INCORRECT_PASSWORD:
                 view().showIncorrectPassword(userError.getErrorMessage());
                 break;
             case EMPTY_OLD_PASSWORD:
             case INVALID_OLD_PASSWORD:
+            case INCORRECT_CREDENTIALS:
                 view().showIncorrectOldPassword(userError.getErrorMessage());
                 break;
             case INVALID_PASSWORD_CONFIRMATION:

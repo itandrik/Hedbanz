@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog
 import android.view.WindowManager
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity
+import com.transcendensoft.hedbanz.utils.KeyboardUtils
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -50,7 +51,7 @@ class RestorePasswordActivity : BaseActivity(), RestorePasswordContract.View {
     /*------------------------------------*
      *------------ Navigation ------------*
      *------------------------------------*/
-    private fun initPresenterForFragments(){
+    private fun initPresenterForFragments() {
         mForgotPasswordFragment.mPresenter = this.mPresenter
         mCheckKeywordFragment.mPresenter = this.mPresenter
         mResetPasswordFragment.mPresenter = this.mPresenter
@@ -88,6 +89,16 @@ class RestorePasswordActivity : BaseActivity(), RestorePasswordContract.View {
                 .commit()
     }
 
+    override fun showPasswordResendSuccessful() {
+        AlertDialog.Builder(this)
+                .setTitle(getString(R.string.restore_pwd_keyword_resent_title))
+                .setMessage(getString(R.string.restore_pwd_keyword_resent_message))
+                .setIcon(R.drawable.ic_win_happy)
+                .setPositiveButton(getString(R.string.action_ok)) { dialog, v -> dialog.dismiss() }
+                .setCancelable(true)
+                .show()
+    }
+
     override fun finishResetingPassword() {
         AlertDialog.Builder(this)
                 .setTitle(getString(R.string.restore_password_finish_title))
@@ -95,8 +106,14 @@ class RestorePasswordActivity : BaseActivity(), RestorePasswordContract.View {
                 .setIcon(R.drawable.thumbs_up)
                 .setPositiveButton(getString(R.string.action_ok)) { dialog, v -> dialog.dismiss() }
                 .setCancelable(true)
-                .setOnCancelListener { finish() }
-                .setOnDismissListener { finish() }
+                .setOnCancelListener {
+                    KeyboardUtils.hideSoftInput(this)
+                    finish()
+                }
+                .setOnDismissListener {
+                    KeyboardUtils.hideSoftInput(this)
+                    finish()
+                }
                 .show()
     }
 

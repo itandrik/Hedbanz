@@ -22,6 +22,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
+import retrofit2.HttpException;
 import timber.log.Timber;
 
 /**
@@ -75,10 +76,18 @@ public abstract class PaginationUseCase<T, ParamUseCase, ParamPaginator>
         if (throwable instanceof ConnectException) {
             paginationState
                     .setHasServerError(false)
+                    .setHasUnauthorizedError(false)
                     .setHasInternetError(true);
+        } else if(throwable instanceof HttpException && (((HttpException)throwable).code() == 401 ||
+                ((HttpException)throwable).code() == 403 )) {
+            paginationState
+                    .setHasServerError(false)
+                    .setHasUnauthorizedError(true)
+                    .setHasInternetError(false);
         } else {
             paginationState
                     .setHasServerError(true)
+                    .setHasUnauthorizedError(false)
                     .setHasInternetError(false);
         }
 

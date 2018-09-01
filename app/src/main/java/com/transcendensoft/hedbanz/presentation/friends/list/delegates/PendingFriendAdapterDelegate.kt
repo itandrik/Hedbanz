@@ -57,7 +57,7 @@ class PendingFriendAdapterDelegate @Inject constructor():
         val friend = items[position]
         if(holder is PendingFriendViewHolder) {
             holder.bindName(friend.login)
-            holder.bindIcon(R.drawable.logo) //TODO change this
+            holder.bindIcon(friend.iconId)
         }
     }
 }

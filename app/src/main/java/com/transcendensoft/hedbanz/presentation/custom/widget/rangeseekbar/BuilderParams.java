@@ -24,12 +24,11 @@ import android.view.View;
 import com.transcendensoft.hedbanz.utils.ViewUtils;
 
 /**
- * //TODO add class description
+ * Class for seekbar builder params
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-
 public class BuilderParams{
     Context mContext;
     //seekBar

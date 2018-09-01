@@ -112,6 +112,17 @@ public class UserDataRepositoryImpl implements UserDataRepository {
     }
 
     @Override
+    public Observable<User> getUser(long id, DataPolicy dataPolicy) {
+        if (dataPolicy == DataPolicy.API) {
+            return mUserApiDataSource.getUser(id)
+                    .map(mUserModelDataMapper::convert);
+        } else if (dataPolicy == DataPolicy.DB) {
+            return Observable.just(mPreferenceManager.getUser());
+        }
+        return Observable.error(new UnsupportedOperationException());
+    }
+
+    @Override
     public Observable<?> forgotPassword(String login, String locale) {
         return mUserApiDataSource.forgotPassword(login, locale);
     }
@@ -182,6 +193,10 @@ public class UserDataRepositoryImpl implements UserDataRepository {
         if (mSocket != null && mSocket.connected()) {
             mSocket.disconnect();
             mSocket.off(LOGIN_RESULT_LISTENER);
+            mSocket.off(Socket.EVENT_CONNECT);
+            mSocket.off(Socket.EVENT_DISCONNECT);
+            mSocket.off(Socket.EVENT_ERROR);
+            mSocket.off(Socket.EVENT_CONNECT_ERROR);
         }
     }
 }

@@ -37,6 +37,8 @@ public interface UserDataRepository {
     Observable<User> updateUser(long id, String newLogin,
                                 String oldPassword, String newPassword, DataPolicy dataPolicy);
 
+    Observable<User> getUser(long id, DataPolicy dataPolicy);
+
     Observable<?> forgotPassword(String login, String locale);
 
     Observable<?> checkKeyword(String login, String keyword);

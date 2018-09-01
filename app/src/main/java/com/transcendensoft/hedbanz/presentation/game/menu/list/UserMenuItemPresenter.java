@@ -15,7 +15,6 @@ package com.transcendensoft.hedbanz.presentation.game.menu.list;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
@@ -58,8 +57,7 @@ public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemCon
     }
 
     private void updateUserView() {
-        //TODO change this shit
-        view().setIcon(R.drawable.logo);
+        view().setIcon(model.getUser().getIconId());
         view().setStatus(model.getUser().getPlayerStatus());
         view().setIsFriend(model.getUser().isFriend());
         view().setName(model.getUser().getLogin());
