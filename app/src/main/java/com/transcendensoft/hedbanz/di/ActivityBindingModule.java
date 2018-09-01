@@ -24,6 +24,8 @@ import com.transcendensoft.hedbanz.di.scope.ServiceScope;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.StartActivityModule;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
+import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconActivity;
+import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconModule;
 import com.transcendensoft.hedbanz.presentation.friends.FriendsActivity;
 import com.transcendensoft.hedbanz.presentation.friends.FriendsModule;
 import com.transcendensoft.hedbanz.presentation.game.GameActivity;
@@ -43,7 +45,7 @@ import dagger.android.ContributesAndroidInjector;
  * Dagger-Android module that binds all needed activities
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 @Module
 public interface ActivityBindingModule {
@@ -86,4 +88,8 @@ public interface ActivityBindingModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = RestorePasswordModule.class)
     RestorePasswordActivity restorePasswordActivity();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = ChangeIconModule.class)
+    ChangeIconActivity changeIconActivity();
 }

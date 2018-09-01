@@ -293,7 +293,7 @@
             android:id="@+id/shimmerLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/guideline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -302,6 +302,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_gravity="center"
                 android:padding="16dp">
 
                 <View
@@ -313,36 +314,36 @@
                     android:layout_alignRight="@+id/ivImageShimmer"
                     android:background="@color/textSecondaryLight" />
 
-                <com.transcendensoft.hedbanz.presentation.custom.widget.SquareImageView
+                <View
                     android:id="@+id/ivImageShimmer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
                     android:layout_above="@id/TvNameShimmer"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/shimmer_filled_circle" />
 
-                <com.transcendensoft.hedbanz.presentation.custom.widget.SquareImageView
+                <View
                     android:id="@+id/ivShimmerCircle1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="56dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="18dp"
                     android:layout_toRightOf="@id/ivImageShimmer"
                     android:background="@drawable/shimmer_non_filled_circle" />
 
-                <com.transcendensoft.hedbanz.presentation.custom.widget.SquareImageView
+                <View
                     android:id="@+id/ivShimmerCircle2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="56dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="18dp"
                     android:layout_toRightOf="@id/ivShimmerCircle1"
                     android:background="@drawable/shimmer_non_filled_circle" />
 
-                <com.transcendensoft.hedbanz.presentation.custom.widget.SquareImageView
+                <View
                     android:id="@+id/ivShimmerCircle3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="56dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="18dp"
                     android:layout_toRightOf="@id/ivShimmerCircle2"
@@ -350,52 +351,58 @@
 
                 <View
                     android:id="@+id/shimmerLine1_1"
-                    android:layout_width="56dp"
+                    android:layout_width="48dp"
                     android:layout_height="8dp"
                     android:layout_alignLeft="@id/ivShimmerCircle1"
                     android:layout_alignRight="@id/ivShimmerCircle1"
                     android:layout_below="@id/ivShimmerCircle1"
+                    android:background="@color/textSecondaryLight"
                     android:layout_marginTop="8dp" />
 
                 <View
-                    android:layout_width="56dp"
+                    android:layout_width="48dp"
                     android:layout_height="8dp"
                     android:layout_alignLeft="@id/ivShimmerCircle1"
+                    android:background="@color/textSecondaryLight"
                     android:layout_alignRight="@id/ivShimmerCircle1"
                     android:layout_below="@id/shimmerLine1_1"
                     android:layout_marginTop="4dp" />
 
                 <View
                     android:id="@+id/shimmerLine2_1"
-                    android:layout_width="56dp"
+                    android:layout_width="48dp"
                     android:layout_height="8dp"
+                    android:background="@color/textSecondaryLight"
                     android:layout_alignLeft="@id/ivShimmerCircle2"
                     android:layout_alignRight="@id/ivShimmerCircle2"
                     android:layout_below="@id/ivShimmerCircle2"
                     android:layout_marginTop="8dp" />
 
                 <View
-                    android:layout_width="56dp"
+                    android:layout_width="48dp"
                     android:layout_height="8dp"
                     android:layout_alignLeft="@id/ivShimmerCircle2"
                     android:layout_alignRight="@id/ivShimmerCircle2"
+                    android:background="@color/textSecondaryLight"
                     android:layout_below="@id/shimmerLine2_1"
                     android:layout_marginTop="4dp" />
 
                 <View
                     android:id="@+id/shimmerLine3_1"
-                    android:layout_width="56dp"
+                    android:layout_width="48dp"
                     android:layout_height="8dp"
                     android:layout_alignLeft="@id/ivShimmerCircle3"
                     android:layout_alignRight="@id/ivShimmerCircle3"
+                    android:background="@color/textSecondaryLight"
                     android:layout_below="@id/ivShimmerCircle3"
                     android:layout_marginTop="8dp" />
 
                 <View
-                    android:layout_width="56dp"
+                    android:layout_width="48dp"
                     android:layout_height="8dp"
                     android:layout_alignLeft="@id/ivShimmerCircle3"
                     android:layout_alignRight="@id/ivShimmerCircle3"
+                    android:background="@color/textSecondaryLight"
                     android:layout_below="@id/shimmerLine3_1"
                     android:layout_marginTop="4dp" />
             </RelativeLayout>

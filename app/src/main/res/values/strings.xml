@@ -107,6 +107,7 @@
     <string name="room_creation_error_password_empty">Введите пароль от комнаты</string>
     <string name="room_creation_error_name_empty">Введите имя комнаты</string>
     <string name="room_creation_error_name_already_exist">Комната с таким именем уже существует</string>
+    <string name="room_creation_error_creating">Не получилось создать комнату. Ошибка сервера. Попробуйте позже.</string>
 
     <!-- Menu fragment -->
     <string name="menu_games_played">Игр сыграно</string>
@@ -264,4 +265,12 @@
     <string name="restore_pwd_resend_keyword">Не пришло письмо</string>
     <string name="restore_pwd_keyword_resent_title">Секретный код отправлен</string>
     <string name="restore_pwd_keyword_resent_message">Проверьте почту, вам только что был выслан новый секретный код.</string>
+
+    <!-- Change user icon -->
+    <string name="change_icon_submit">Выбрать</string>
+    <string name="change_icon_choose_avatar">Выберите аватар</string>
+    <string name="change_icon_success_title">У вас получилось!</string>
+    <string name="change_icon_success_message">Вы успешно изменили ваш аватар. </string>
+    <string name="change_icon_error_title">Ошибка</string>
+    <string name="change_icon_error_message">Не получается изменить ваш аватар. Проблемы с сервером. Попробуйте повторить операцию позже.</string>
 </resources>

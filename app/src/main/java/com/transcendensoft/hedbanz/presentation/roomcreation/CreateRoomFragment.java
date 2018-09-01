@@ -28,6 +28,7 @@ import android.support.annotation.StringRes;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
@@ -210,7 +211,8 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
         hideLoadingDialog();
         mEtRoomName.setText("");
         mEtRoomPassword.setText("");
-        //AndroidUtils.showShortToast(getActivity(), "Room created successfully");
+        mTvErrorRoomName.setVisibility(GONE);
+        mTvErrorRoomPassword.setVisibility(GONE);
 
         Intent intent = new Intent(mContext, GameActivity.class);
 
@@ -224,8 +226,7 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
     public void createRoomError() {
         hideLoadingDialog();
         mEtRoomPassword.setText("");
-        AndroidUtils.showShortToast(getActivity(), "Error while room creation");
-        //TODO show some message
+        AndroidUtils.showShortToast(getActivity(), R.string.room_creation_error_creating);
     }
 
     /*------------------------------------*
@@ -265,6 +266,21 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
         hideLoadingDialog();
         mTvErrorRoomPassword.setVisibility(View.VISIBLE);
         mTvErrorRoomPassword.setText(getString(errorMessage));
+    }
+
+    @Override
+    public void showMaxActiveRoomsError() {
+        Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
+        new AlertDialog.Builder(mActivity)
+                .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> dialog.dismiss())
+                .setOnDismissListener(dialog -> {
+                    mEtRoomPassword.setText("");
+                    mEtRoomName.setText("");
+                })
+                .setIcon(d)
+                .setTitle(getString(R.string.game_error_title))
+                .setMessage(getString(R.string.room_user_has_max_active_rooms_number))
+                .show();
     }
 
     @Override

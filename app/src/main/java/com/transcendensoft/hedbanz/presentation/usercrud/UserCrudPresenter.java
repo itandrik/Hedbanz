@@ -97,6 +97,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
         setModel(user);
         UpdateUserInteractor.Params params = new UpdateUserInteractor.Params()
                 .setUser(user)
+                .setUpdateOldPassword(true)
                 .setOldPassword(oldPassword);
 
         view().showLoadingDialog();

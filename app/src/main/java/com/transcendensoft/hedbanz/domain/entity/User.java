@@ -15,13 +15,14 @@ package com.transcendensoft.hedbanz.domain.entity;
  * limitations under the License.
  */
 
+import android.support.annotation.DrawableRes;
+
 /**
  * User entity that represents user business logic
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-
 public class User {
     private long id;
     private String email;
@@ -37,11 +38,12 @@ public class User {
     private boolean isWinner;
     private int gamesNumber;
     private int friendsNumber;
+    private @DrawableRes int iconId;
 
     protected User(long id, String email, String password, String confirmPassword,
                    long money, Long registrationDate, String login, PlayerStatus playerStatus,
                    boolean isFriend, String word, int attempts, boolean isWinner,
-                   int gamesNumber, int friendsNumber) {
+                   int gamesNumber, int friendsNumber, int iconId) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -56,6 +58,7 @@ public class User {
         this.isWinner = isWinner;
         this.gamesNumber = gamesNumber;
         this.friendsNumber = friendsNumber;
+        this.iconId = iconId;
     }
 
     public User() {
@@ -157,6 +160,14 @@ public class User {
         isWinner = winner;
     }
 
+    public int getIconId() {
+        return iconId;
+    }
+
+    public void setIconId(int iconId) {
+        this.iconId = iconId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -205,6 +216,7 @@ public class User {
                 ", isWinner=" + isWinner +
                 ", gamesNumber=" + gamesNumber +
                 ", friendsNumber=" + friendsNumber +
+                ", iconId=" + iconId +
                 '}';
     }
 
@@ -223,6 +235,7 @@ public class User {
         private boolean isWinner;
         private int gamesNumber;
         private int friendsNumber;
+        private int iconId;
 
         public User.Builder setId(long id) {
             this.id = id;
@@ -294,10 +307,15 @@ public class User {
             return this;
         }
 
+        public User.Builder setIconId(int iconId) {
+            this.iconId = iconId;
+            return this;
+        }
+
         public User build() {
             return new User(id, email, password, confirmPassword, money,
                     registrationDate, login, playerStatus, isFriend,
-                    word, attempts, isWinner, gamesNumber, friendsNumber);
+                    word, attempts, isWinner, gamesNumber, friendsNumber, iconId);
         }
     }
 }

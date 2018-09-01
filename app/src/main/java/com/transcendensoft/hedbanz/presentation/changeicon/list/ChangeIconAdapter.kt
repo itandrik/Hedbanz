@@ -1,10 +1,10 @@
-package com.transcendensoft.hedbanz.presentation.invite.list
+package com.transcendensoft.hedbanz.presentation.changeicon.list
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.transcendensoft.hedbanz.R
-import com.transcendensoft.hedbanz.domain.entity.Friend
+import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
 /**
@@ -24,35 +24,33 @@ import javax.inject.Inject
  *
  */
 /**
- * Adapter for invite friends recycler
+ * Adapter for change user icon recycler
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class InviteAdapter @Inject constructor() : RecyclerView.Adapter<InviteViewHolder>() {
-    var items: MutableList<Friend> = mutableListOf()
+class ChangeIconAdapter @Inject constructor(): RecyclerView.Adapter<ChangeIconViewHolder>() {
+    var items: MutableList<SelectableIcon> = mutableListOf()
         set(value) {
             field.clear()
             field.addAll(value)
             notifyDataSetChanged()
         }
+    val clickSubject = PublishSubject.create<Int>()
 
     override fun getItemCount(): Int = items.size
 
     override fun getItemId(position: Int): Long = position.toLong()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteViewHolder =
-            InviteViewHolder(parent.context, LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_friend_invite, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChangeIconViewHolder =
+            ChangeIconViewHolder(parent.context, LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_user_icon, parent, false))
 
-    override fun onBindViewHolder(holder: InviteViewHolder, position: Int) {
-        val friend = items[position]
+    override fun onBindViewHolder(holder: ChangeIconViewHolder, position: Int) {
+        val selectableIcon = items[position]
 
-        holder.bindFriendIcon(friend.iconId)
-        holder.bindFriendName(friend.login)
-        holder.bindFlags(friend.isInGame, friend.isInvited)
-        holder.bindOnClick(friend)
+        holder.bindUserIcon(selectableIcon.iconId)
+        holder.bindIconSelected(selectableIcon.isSelected)
+        holder.bindUserIconClickListener(selectableIcon).subscribe(clickSubject)
     }
-
-    fun getSelectedFriends(): List<Friend> = items.filter { it.isSelected }
 }

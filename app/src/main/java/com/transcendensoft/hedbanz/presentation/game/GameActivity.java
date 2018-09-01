@@ -600,7 +600,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     mPresenter.restoreRoom();
                 })
                 .setNegativeButton(getString(R.string.game_action_leave_room), (dialog, which) -> {
-                    finish();
+                    leaveFromRoom();
                 })
                 .setTitle(getString(R.string.game_restore_room_title))
                 .setMessage(getString(R.string.game_restore_room_message))
@@ -631,12 +631,12 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> {
                     mNotificationManager.cancelKickNotification();
                     mPreferenceManager.setIsUserKicked(false);
-                    finish();
+                    leaveFromRoom();
                 })
                 .setOnDismissListener(dialog -> {
                     mNotificationManager.cancelKickNotification();
                     mPreferenceManager.setIsUserKicked(false);
-                    finish();
+                    leaveFromRoom();
                 })
                 .setIcon(d)
                 .setTitle(getString(R.string.game_kicked_title))
@@ -650,11 +650,11 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         new AlertDialog.Builder(this)
                 .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> {
                     mPreferenceManager.setIsLastUser(false);
-                    finish();
+                    leaveFromRoom();
                 })
                 .setOnDismissListener(dialog -> {
                     mPreferenceManager.setIsLastUser(false);
-                    finish();
+                    leaveFromRoom();
                 })
                 .setIcon(d)
                 .setTitle(getString(R.string.game_last_player_title))
@@ -666,11 +666,16 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void showErrorDialog(@StringRes int message) {
         Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
         new AlertDialog.Builder(this)
-                .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> finish())
-                .setOnDismissListener(dialog -> finish())
+                .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> leaveFromRoom())
+                .setOnDismissListener(dialog -> leaveFromRoom())
                 .setIcon(d)
                 .setTitle(getString(R.string.game_error_title))
                 .setMessage(getString(message))
                 .show();
+    }
+
+    private void leaveFromRoom(){
+        mPresenter.destroy();
+        finish();
     }
 }

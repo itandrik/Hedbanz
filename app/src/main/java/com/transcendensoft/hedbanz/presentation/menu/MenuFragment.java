@@ -32,6 +32,7 @@ import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
+import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconActivity;
 import com.transcendensoft.hedbanz.presentation.friends.FriendsActivity;
 import com.transcendensoft.hedbanz.presentation.intro.IntroActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
@@ -122,6 +123,11 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
     @OnClick(R.id.btnCredentials)
     protected void onCredentialsClicked() {
         startActivity(new Intent(getActivity(), CredentialsActivity.class));
+    }
+
+    @OnClick(R.id.ivUserImage)
+    protected void onUserImageClicked(){
+        startActivity(new Intent(getActivity(), ChangeIconActivity.class));
     }
 
     @OnClick(R.id.tvFriends)

@@ -74,11 +74,14 @@ public class UserDTO {
     @SerializedName("friendsNumber")
     @Expose
     private int friendsNumber;
+    @SerializedName("iconId")
+    @Expose
+    private int iconId;
 
     protected UserDTO(long id, String email, String password, long money,
                       Long registrationDate, String login, int status,
                       boolean isFriend, String word, Long userId, int attempts,
-                      boolean isWinner, int gamesNumber, int friendsNumber) {
+                      boolean isWinner, int gamesNumber, int friendsNumber, int iconId) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -93,6 +96,7 @@ public class UserDTO {
         this.isWinner = isWinner;
         this.gamesNumber = gamesNumber;
         this.friendsNumber = friendsNumber;
+        this.iconId = iconId;
     }
 
     public UserDTO() {
@@ -220,6 +224,14 @@ public class UserDTO {
         return this;
     }
 
+    public int getIconId() {
+        return iconId;
+    }
+
+    public void setIconId(int iconId) {
+        this.iconId = iconId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -250,6 +262,7 @@ public class UserDTO {
         private boolean isWinner;
         private int gamesNumber;
         private int friendsNumber;
+        private int iconId;
 
         public Builder setId(long id) {
             this.id = id;
@@ -321,9 +334,15 @@ public class UserDTO {
             return this;
         }
 
+        public Builder setIconId(int iconId) {
+            this.iconId = iconId;
+            return this;
+        }
+
         public UserDTO build() {
             return new UserDTO(id, email, password, money, registrationDate, login,
-                    status, isFriend, word, userId, attempts, isWinner, gamesNumber, friendsNumber);
+                    status, isFriend, word, userId, attempts, isWinner, gamesNumber,
+                    friendsNumber, iconId);
         }
     }
 }
