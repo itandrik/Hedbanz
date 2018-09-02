@@ -196,6 +196,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
+            android:visibility="gone"
             android:layout_marginTop="8dp"
             android:background="@drawable/shop_btn_background"
             android:text="@string/menu_action_shop"
@@ -229,6 +230,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginLeft="16dp"
+            android:visibility="gone"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/settings_btn_background"
@@ -241,6 +243,40 @@
             app:layout_constraintTop_toBottomOf="@+id/btnHelp" />
 
         <Button
+            android:id="@+id/btnRate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rate_btn_background"
+            android:text="@string/menu_action_rate"
+            android:textColor="@color/textWhite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+
+        <Button
+            android:id="@+id/btnFeedback"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/feedback_btn_background"
+            android:text="@string/menu_action_feedback"
+            android:textColor="@color/textWhite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnRate" />
+
+        <Button
             android:id="@+id/btnExit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -248,6 +284,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/exit_btn_background"
             android:text="@string/menu_action_logout"
             android:textColor="@color/textWhite"
@@ -255,7 +292,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+            app:layout_constraintTop_toBottomOf="@+id/btnFeedback" />
 
         <ImageView
             android:id="@+id/ivSeparator"

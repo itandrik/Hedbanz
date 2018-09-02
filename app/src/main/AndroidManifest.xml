@@ -78,7 +78,10 @@
             android:name=".presentation.changeicon.ChangeIconActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ThemeMain" />
-
+        <activity
+            android:name=".presentation.feedback.FeedbackActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ThemeMain" />
         <!-- Service -->
         <!-- Firebase Notifications -->
         <service android:name=".data.network.service.firebase.HedbanzFirebaseMessagingService">

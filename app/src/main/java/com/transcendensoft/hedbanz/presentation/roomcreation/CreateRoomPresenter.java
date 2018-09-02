@@ -107,6 +107,9 @@ public class CreateRoomPresenter extends BasePresenter<RoomList, CreateRoomContr
             case INVALID_PASSWORD:
                 view().showIncorrectRoomPassword(roomError.getErrorMessage());
                 break;
+            case USER_HAS_MAX_ACTIVE_ROOMS_NUMBER:
+                view().showMaxActiveRoomsError();
+                break;
             default:
                 Timber.e(mContext.getString(roomError.getErrorMessage()));
                 view().showServerError();

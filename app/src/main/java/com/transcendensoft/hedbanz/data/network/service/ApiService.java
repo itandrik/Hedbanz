@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.data.network.service;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.models.FeedbackDTO;
 import com.transcendensoft.hedbanz.data.models.FriendDTO;
 import com.transcendensoft.hedbanz.data.models.InviteDTO;
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
@@ -59,6 +60,9 @@ public interface ApiService {
 
     @GET("user/{userId}")
     Observable<UserDTO> getUser(@Path("userId") long userId);
+
+    @POST("feedback")
+    Completable sendFeedback(@Body FeedbackDTO feedbackDTO);
 
     /* Firebase */
     @PUT("user/{userId}/token")

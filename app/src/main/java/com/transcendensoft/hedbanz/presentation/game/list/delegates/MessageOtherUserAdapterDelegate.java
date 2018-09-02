@@ -102,7 +102,7 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
             viewHolder.bindMessage(message.getMessage());
             viewHolder.bindUserImage(iconId);
             viewHolder.bindTime(message.getCreateDate().getTime());
-            viewHolder.bindIsWinner(isWinner);
+            viewHolder.bindIsWinner(isWinner, isHideLoginAndImage);
         }
     }
 }

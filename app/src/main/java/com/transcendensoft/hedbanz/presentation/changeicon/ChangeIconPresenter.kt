@@ -27,9 +27,8 @@ import javax.inject.Inject
  *
  */
 /**
- * Implementation of change user icon presenter.
- * Here are work with server by sockets and other like
- * processing game algorithm.
+ * Implementation of change icon presenter.
+ * Here are work with server to updating user info
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
@@ -76,11 +75,16 @@ class ChangeIconPresenter @Inject constructor(
                 .setUpdateOldPassword(false)
                 .setUser(currentUser)
 
+        view()?.showLoadingDialog()
         updateUserInteractor.execute(params,
                 {
                     preferenceManager.user = currentUser
                     view()?.showSuccessUpdateUserIcon()
+                    view()?.hideLoadingDialog()
                 },
-                { view()?.showErrorUpdateUserIcon() })
+                {
+                    view()?.showErrorUpdateUserIcon()
+                    view()?.hideLoadingDialog()
+                })
     }
 }

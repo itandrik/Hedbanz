@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.presentation.menu;
  */
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,6 +34,7 @@ import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconActivity;
+import com.transcendensoft.hedbanz.presentation.feedback.FeedbackActivity;
 import com.transcendensoft.hedbanz.presentation.friends.FriendsActivity;
 import com.transcendensoft.hedbanz.presentation.intro.IntroActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
@@ -159,6 +161,24 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
     @OnClick(R.id.btnSettings)
     protected void onSettingsClicked() {
         AndroidUtils.showShortToast(getActivity(), R.string.in_developing);
+    }
+
+    @OnClick(R.id.btnFeedback)
+    protected void onFeedbackClicked() {
+        startActivity(new Intent(getActivity(), FeedbackActivity.class));
+    }
+
+    @OnClick(R.id.btnSettings)
+    protected void onRateClicked() {
+        final String appPackageName = mActivity.getPackageName();
+
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("market://details?id=" + appPackageName)));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
     }
 
     @OnClick(R.id.btnExit)

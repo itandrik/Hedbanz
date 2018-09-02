@@ -17,8 +17,12 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.guess;
 
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.Question;
+import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
@@ -34,35 +38,48 @@ import io.reactivex.subjects.PublishSubject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class QuestionAskingUseCase extends ObservableUseCase<Question, Void> {
+public class QuestionAskingUseCase extends ObservableUseCase<Question, List<User>> {
     private PublishSubject<Question> mSubject;
-
+    private GameDataRepository mGameDataRepository;
     @Inject
     public QuestionAskingUseCase(ObservableTransformer schedulersTransformer,
                                  CompositeDisposable compositeDisposable,
                                  GameDataRepository gameDataRepository) {
         super(schedulersTransformer, compositeDisposable);
-
-        initSubject(gameDataRepository);
+        mGameDataRepository = gameDataRepository;
+        mSubject = PublishSubject.create();
     }
 
-    private void initSubject(GameDataRepository gameDataRepository) {
-        Observable<Question> observable = getObservable(gameDataRepository);
+    @Override
+    protected Observable<Question> buildUseCaseObservable(List<User> users) {
+        initSubject(users);
+        return mSubject;
+    }
+
+    private void initSubject(List<User> users) {
+        Observable<Question> observable = getObservable(users);
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
     }
 
-    private Observable<Question> getObservable(GameDataRepository gameDataRepository) {
-        return gameDataRepository.questionAskingObservable()
+    private Observable<Question> getObservable(List<User> users) {
+        return mGameDataRepository.questionAskingObservable()
                 .map(question -> {
+                    User userWithWord = getUserWithId(users, question.getUserFrom().getId());
+                    question.setUserFrom(userWithWord);
                     question.setLoading(false);
                     question.setFinished(true);
                     return question;
                 });
     }
 
-    @Override
-    protected Observable<Question> buildUseCaseObservable(Void params) {
-        return mSubject;
+    @Nullable
+    private User getUserWithId(List<User> users, long id) {
+        for (User user : users) {
+            if (user.getId() == id) {
+                return user;
+            }
+        }
+        return null;
     }
 }

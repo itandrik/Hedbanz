@@ -118,6 +118,8 @@
     <string name="menu_action_shop">Магазин</string>
     <string name="menu_action_help">Помощь</string>
     <string name="menu_action_settings">Настройки</string>
+    <string name="menu_action_rate">Оценить</string>
+    <string name="menu_action_feedback">Сообщить об ошибке</string>
     <string name="menu_action_logout">Выйти</string>
     <string name="menu_logout_error_title">Произошла ошибка</string>
     <string name="menu_logout_server_error">Похоже у нас проблемы с сервером. Попробуйте попытку позже.</string>
@@ -273,4 +275,14 @@
     <string name="change_icon_success_message">Вы успешно изменили ваш аватар. </string>
     <string name="change_icon_error_title">Ошибка</string>
     <string name="change_icon_error_message">Не получается изменить ваш аватар. Проблемы с сервером. Попробуйте повторить операцию позже.</string>
+
+    <!-- Feedback -->
+    <string name="feedback_title">Сообщить об ошибке</string>
+    <string name="feedback_confidentiality_text">Для того, чтобы как можно быстрее исправить ошибку мы используем только модель вашего устройства. Также, если нам нужно будет уточнить подробности об ошибке, мы свяжемся с вами по email, который вы указали при регистрации. Уверяем, больше никаких ваших данных наша команда не использует. Спасибо вам большое понимание и помощь в развитии проекта :)</string>
+    <string name="feedback_confidentiality_action">Политика конфиденциальности</string>
+    <string name="feedback_hint">Авторизация лагает не по детски</string>
+    <string name="feedback_submit">Отправить</string>
+    <string name="feedback_success_title">У вас получилось!</string>
+    <string name="feedback_success_message">Ваше сообщение успешно отправлено команде разработчиков. Большое спасибо вам за помощь в развитии проекта. Надеемся, что с помощью вашего сообщения мы сможем исправить ситуацию в скором времени.</string>
+
 </resources>

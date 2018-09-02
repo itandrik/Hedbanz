@@ -163,7 +163,7 @@ public abstract class BaseFragment extends DaggerFragment implements BaseView {
     @Override
     public void hideLoadingDialog() {
         if (mProgressDialog != null) {
-            mProgressDialog.hide();
+            mProgressDialog.dismiss();
         }
     }
 

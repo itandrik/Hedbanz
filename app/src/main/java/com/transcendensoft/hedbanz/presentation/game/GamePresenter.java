@@ -276,7 +276,10 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     @Override
     public void processRestartGameClick(Observable<View> clickObservable) {
         addDisposable(clickObservable
-                .subscribe(view -> mGameInteractor.restartGame(),
+                .subscribe(view -> {
+                            view().showLoadingDialog();
+                            mGameInteractor.restartGame();
+                        },
                         err -> Timber.e("Error while restart game click." +
                                 " Message : " + err.getMessage())));
 
@@ -502,6 +505,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         }, this::processEventListenerOnError);
 
         mGameInteractor.onWordSettingListener(wordReceiverUser -> {
+            view().hideLoadingDialog();
             Word word = new Word.Builder()
                     .setMessageType(MessageType.WORD_SETTING)
                     .setWordReceiverUser(wordReceiverUser)

@@ -57,6 +57,7 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
     private val mThumbsDownPlayersDivider = itemView?.dividerThumbsDownPlayers
     private val mWinPlayersDivider = itemView?.dividerWinPlayers
     private val mTvUserWord = itemView?.tvUserWord
+    private val mIvWinIcon = itemView?.ivWinIcon
     private val mTvMessage = itemView?.tvMessage
     private val mIvUserImage = itemView?.ivUserImage
     private val mTvLogin = itemView?.tvLogin
@@ -69,6 +70,7 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
 
 
     fun bindUserWord(word: String?) {
+        mIvWinIcon?.visibility = View.GONE
         if (word.isNullOrEmpty()) {
             mTvUserWord?.visibility = View.GONE
         } else {
