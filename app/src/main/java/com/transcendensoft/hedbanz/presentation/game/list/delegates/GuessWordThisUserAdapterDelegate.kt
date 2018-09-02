@@ -10,6 +10,7 @@ import com.transcendensoft.hedbanz.domain.entity.MessageType
 import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing
 import com.transcendensoft.hedbanz.domain.entity.Question
 import com.transcendensoft.hedbanz.presentation.game.list.holder.GuessWordThisUserViewHolder
+import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
@@ -75,6 +76,7 @@ class GuessWordThisUserAdapterDelegate @Inject constructor() :
 
             holder.submitWordObservable(message.questionId).subscribe(guessWordSubject)
             holder.helperStringsObservable(message.questionId).subscribe(helperStringSubject);
+
         }
     }
 

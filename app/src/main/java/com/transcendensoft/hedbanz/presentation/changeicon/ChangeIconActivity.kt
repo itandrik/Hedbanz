@@ -11,6 +11,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.transcendensoft.hedbanz.R
+import com.transcendensoft.hedbanz.domain.entity.User
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity
 import com.transcendensoft.hedbanz.presentation.changeicon.list.ChangeIconAdapter
 import com.transcendensoft.hedbanz.presentation.changeicon.list.SelectableIcon
@@ -54,6 +55,7 @@ class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
         setContentView(R.layout.activity_change_user_icon)
         ButterKnife.bind(this, this)
 
+        presenter.setModel(User())
         initRecycler()
         initToolbar()
     }
@@ -98,6 +100,11 @@ class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
         presenter.updateUserIcon()
     }
 
+    @OnClick(R.id.ivBack)
+    fun onBackClicked(){
+        onBackPressed()
+    }
+
     /*------------------------------------*
      *--------- Set data to view ---------*
      *------------------------------------*/
@@ -110,6 +117,7 @@ class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
             it.isSelected = it.iconId == iconId
             it
         }
+        adapter.notifyDataSetChanged()
     }
 
     /*------------------------------------*

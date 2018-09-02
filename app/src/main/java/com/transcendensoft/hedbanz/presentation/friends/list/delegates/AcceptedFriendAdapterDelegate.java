@@ -73,7 +73,7 @@ public class AcceptedFriendAdapterDelegate extends AdapterDelegate<List<Friend>>
         AcceptedFriendViewHolder acceptedFriendViewHolder = (AcceptedFriendViewHolder) holder;
 
         acceptedFriendViewHolder.bindName(friend.getLogin());
-        acceptedFriendViewHolder.bindIcon(R.drawable.logo);
+        acceptedFriendViewHolder.bindIcon(friend.getIconId().getResId());
         acceptedFriendViewHolder.removeFriendObservable(friend)
                 .subscribe(removeFriendSubject);
     }

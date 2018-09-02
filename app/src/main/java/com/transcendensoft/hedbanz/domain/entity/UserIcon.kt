@@ -45,5 +45,12 @@ enum class UserIcon(val id: Int, @DrawableRes val resId: Int) {
             }
             return UserIcon.LOGO_DEFAULT.id
         }
+
+        fun getUserIconById(id: Int): UserIcon {
+            UserIcon.values().forEach {
+                if (id == it.id) return it
+            }
+            return UserIcon.LOGO_DEFAULT
+        }
     }
 }

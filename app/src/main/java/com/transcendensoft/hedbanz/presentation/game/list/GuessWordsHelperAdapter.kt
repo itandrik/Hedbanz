@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.presentation.game.list.holder.GuessWordHelperViewHolder
+import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
@@ -30,7 +31,7 @@ import javax.inject.Inject
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class GuessWordsHelperAdapter @Inject constructor (private val helperStrings: List<String>):
+class GuessWordsHelperAdapter @Inject constructor(private val helperStrings: List<String>) :
         RecyclerView.Adapter<GuessWordHelperViewHolder>() {
     val helperStringsSubject: PublishSubject<String> = PublishSubject.create()
     var isEnabled = true;
@@ -50,12 +51,12 @@ class GuessWordsHelperAdapter @Inject constructor (private val helperStrings: Li
         holder.setEnabled(isEnabled)
     }
 
-    fun disable(){
+    fun disable() {
         isEnabled = false
         notifyDataSetChanged()
     }
 
-    fun enable(){
+    fun enable() {
         isEnabled = true
         notifyDataSetChanged()
     }

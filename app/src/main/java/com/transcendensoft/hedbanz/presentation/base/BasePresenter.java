@@ -39,6 +39,10 @@ public abstract class BasePresenter<M,V> {
     public void unbindView() {
         this.view = null;
 
+        disposeAll();
+    }
+
+    public void disposeAll(){
         if(mCompositeDisposable != null && !mCompositeDisposable.isDisposed()){
             mCompositeDisposable.dispose();
         }

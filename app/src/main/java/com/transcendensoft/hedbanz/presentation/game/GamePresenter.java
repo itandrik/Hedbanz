@@ -90,7 +90,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         if (model.getMessages() == null || model.getMessages().isEmpty()) {
             model.setMessages(new ArrayList<>());
             view().showLoading();
-            if(!isSocketInititalized) {
+            if (!isSocketInititalized) {
                 initSockets();
                 isSocketInititalized = true;
             }
@@ -211,23 +211,27 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     @Override
     public void processGuessWordSubmit(Observable<Question> clickObservable) {
-        addDisposable(clickObservable.subscribe(
-                questionFromView -> {
-                    Question question = mGameInteractor.guessWord(questionFromView.getQuestionId(),
-                            questionFromView.getMessage());
+        addDisposable(clickObservable
+                .distinct(Question::getQuestionId)
+                .subscribe(
+                        questionFromView -> {
+                            Question question = mGameInteractor.guessWord(questionFromView.getQuestionId(),
+                                    questionFromView.getMessage());
 
-                    question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
-                    question.setMessage(questionFromView.getMessage());
-                    question.setAllUsersCount(model.getPlayers().size() - 1);
+                            question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
+                            question.setMessage(questionFromView.getMessage());
+                            question.setAllUsersCount(model.getPlayers().size() - 1);
 
-                    updateSettingQuestionViewParameters(question.getUserFrom(),
-                            false, true, questionFromView.getMessage());
+                            updateSettingQuestionViewParameters(question.getUserFrom(),
+                                    false, true, questionFromView.getMessage());
 
-                    model.getMessages().add(question);
-                    view().addMessage(question);
-                },
-                err -> Timber.e("Error while guess word. Message : " + err.getMessage())
-        ));
+                            model.getMessages().add(question);
+                            view().addMessage(question);
+
+                            disposeAll();
+                        },
+                        err -> Timber.e("Error while guess word. Message : " + err.getMessage())
+                ));
     }
 
     private void updateSettingQuestionViewParameters(User senderUser, boolean isFinished,

@@ -38,11 +38,13 @@ class ChangeIconPresenter @Inject constructor(
         private val updateUserInteractor: UpdateUserInteractor,
         private val preferenceManager: PreferenceManager
 ) : BasePresenter<User, ChangeIconContract.View>(), ChangeIconContract.Presenter {
-    private var selectedIconId: Int = 0
+    lateinit var selectedUserIcon: UserIcon
 
     override fun updateView() {
+        selectedUserIcon = preferenceManager.user.iconId
+
         val icons = UserIcon.values().map {
-            val isSelected = selectedIconId == it.id
+            val isSelected = selectedUserIcon.id == it.id
             SelectableIcon(isSelected, it.id, it.resId)
         }
         view()?.setImages(icons)
@@ -56,7 +58,7 @@ class ChangeIconPresenter @Inject constructor(
         addDisposable(
                 clickObservable.subscribe(
                         {
-                            selectedIconId = it
+                            selectedUserIcon = UserIcon.getUserIconById(it)
                             view()?.selectIconWithId(it)
                         },
                         {
@@ -68,7 +70,7 @@ class ChangeIconPresenter @Inject constructor(
 
     override fun updateUserIcon() {
         val currentUser = preferenceManager.user
-        currentUser.iconId = selectedIconId
+        currentUser.iconId = selectedUserIcon
 
         val params: UpdateUserInteractor.Params = UpdateUserInteractor.Params()
                 .setUpdateOldPassword(false)

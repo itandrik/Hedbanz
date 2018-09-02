@@ -10,6 +10,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.domain.entity.Friend
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.item_friend_invite.view.*
 
 /**
@@ -80,10 +81,14 @@ class InviteViewHolder(private val mContext: Context,
         }
     }
 
-    fun bindOnClick(friend: Friend) {
+    fun bindIsSelected(isSelected: Boolean){
+        mChbSelect?.isSelected = isSelected
+    }
+
+    fun bindOnClick(friend: Friend) = Observable.create<Friend> {emitter ->
         mItemView.setOnClickListener {
-            mChbSelect?.isSelected = !mChbSelect?.isSelected!!
-            friend.isSelected = mChbSelect.isSelected
+            friend.isSelected = mChbSelect?.isSelected ?: false
+            emitter.onNext(friend)
         }
     }
 }

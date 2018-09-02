@@ -40,6 +40,7 @@ import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.game.list.GameListAdapter;
 import com.transcendensoft.hedbanz.presentation.notification.NotificationManager;
+import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
 import com.transcendensoft.hedbanz.utils.extension.ViewExtensionsKt;
 import com.vanniktech.emoji.EmojiEditText;
@@ -664,14 +665,15 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
     @Override
     public void showErrorDialog(@StringRes int message) {
-        Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
+        /*Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
         new AlertDialog.Builder(this)
                 .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> leaveFromRoom())
                 .setOnDismissListener(dialog -> leaveFromRoom())
                 .setIcon(d)
                 .setTitle(getString(R.string.game_error_title))
                 .setMessage(getString(message))
-                .show();
+                .show();*/
+        AndroidUtils.showLongToast(this, getString(message));
     }
 
     private void leaveFromRoom(){

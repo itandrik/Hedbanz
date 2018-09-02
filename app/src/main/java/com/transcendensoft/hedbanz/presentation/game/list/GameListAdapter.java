@@ -133,16 +133,12 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
 
     @NonNull
     public Observable<Question> guessWordSubmitObservable() {
-        return mGuessWordThisUserAdapterDelegate.guessWordObservable()
-                .subscribeOn(mIoScheduler)
-                .observeOn(mUiScheduler);
+        return mGuessWordThisUserAdapterDelegate.guessWordObservable();
     }
 
     @NonNull
     public Observable<Question> guessWordHelperStringObservable() {
-        return mGuessWordThisUserAdapterDelegate.guessWordHelperStringsObservable()
-                .subscribeOn(mIoScheduler)
-                .observeOn(mUiScheduler);
+        return mGuessWordThisUserAdapterDelegate.guessWordHelperStringsObservable();
     }
 
     @NonNull

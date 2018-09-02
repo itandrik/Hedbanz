@@ -38,12 +38,12 @@ public class User {
     private boolean isWinner;
     private int gamesNumber;
     private int friendsNumber;
-    private @DrawableRes int iconId;
+    private UserIcon iconId;
 
     protected User(long id, String email, String password, String confirmPassword,
                    long money, Long registrationDate, String login, PlayerStatus playerStatus,
                    boolean isFriend, String word, int attempts, boolean isWinner,
-                   int gamesNumber, int friendsNumber, int iconId) {
+                   int gamesNumber, int friendsNumber, UserIcon iconId) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -160,11 +160,11 @@ public class User {
         isWinner = winner;
     }
 
-    public int getIconId() {
+    public UserIcon getIconId() {
         return iconId;
     }
 
-    public void setIconId(int iconId) {
+    public void setIconId(UserIcon iconId) {
         this.iconId = iconId;
     }
 
@@ -235,7 +235,7 @@ public class User {
         private boolean isWinner;
         private int gamesNumber;
         private int friendsNumber;
-        private int iconId;
+        private UserIcon iconId;
 
         public User.Builder setId(long id) {
             this.id = id;
@@ -307,7 +307,7 @@ public class User {
             return this;
         }
 
-        public User.Builder setIconId(int iconId) {
+        public User.Builder setIconId(UserIcon iconId) {
             this.iconId = iconId;
             return this;
         }

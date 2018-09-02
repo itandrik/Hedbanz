@@ -29,13 +29,13 @@ public class Friend extends User {
     private boolean isInvited;
     private boolean isInGame;
     private boolean isSelected;
-    private @DrawableRes int iconId;
+    private UserIcon iconId;
 
     private Friend(long id, String email, String password, String confirmPassword,
                    long money, Long registrationDate, String login, PlayerStatus playerStatus,
                    boolean isAccepted, boolean isPending, boolean isFriend,
                    String word, int attempts, boolean isWinner, boolean isInvited, boolean isInGame,
-                   int gamesNumber, int friendsNumber, int iconId) {
+                   int gamesNumber, int friendsNumber, UserIcon iconId) {
         super(id, email, password, confirmPassword, money, registrationDate,
                 login, playerStatus, isFriend, word, attempts, isWinner,
                 gamesNumber, friendsNumber, iconId);
@@ -86,12 +86,12 @@ public class Friend extends User {
     }
 
     @Override
-    public int getIconId() {
+    public UserIcon getIconId() {
         return iconId;
     }
 
     @Override
-    public void setIconId(int iconId) {
+    public void setIconId(UserIcon iconId) {
         this.iconId = iconId;
     }
 
@@ -114,7 +114,7 @@ public class Friend extends User {
         private boolean isInGame;
         private int gamesNumber;
         private int friendsNumber;
-        private int iconId;
+        private UserIcon iconId;
 
         public Builder setId(long id) {
             this.id = id;
@@ -206,7 +206,7 @@ public class Friend extends User {
             return this;
         }
 
-        public Builder setIconId(int iconId) {
+        public Builder setIconId(UserIcon iconId) {
             this.iconId = iconId;
             return this;
         }

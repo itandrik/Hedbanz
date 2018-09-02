@@ -2,6 +2,7 @@ package com.transcendensoft.hedbanz.presentation.invite
 
 import com.transcendensoft.hedbanz.domain.entity.Friend
 import com.transcendensoft.hedbanz.domain.entity.Room
+import io.reactivex.Observable
 
 /**
  * Copyright 2018. Andrii Chernysh
@@ -41,10 +42,12 @@ interface InviteContract {
         fun showInviteSuccess()
         fun showInviteError()
         fun setRoom(room: Room)
+        fun invalidateAdapter()
     }
 
     interface Presenter {
         fun loadInvitingFriends()
         fun inviteSelectedUsers(selectedFriends : List<Friend>)
+        fun processFriendClick(clickObservable: Observable<Friend>)
     }
 }

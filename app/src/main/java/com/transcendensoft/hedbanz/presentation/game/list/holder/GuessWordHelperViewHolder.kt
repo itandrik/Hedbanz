@@ -27,9 +27,9 @@ import kotlinx.android.synthetic.main.item_guess_word_helper.view.*
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-class GuessWordHelperViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
-    private val mTvHelperGuessWord = itemView?.tvGuessWordHelper
-    private val mCvGuessWordHelper = itemView?.cvGuessWordHelper
+class GuessWordHelperViewHolder(private val mItemView: View?) : RecyclerView.ViewHolder(mItemView) {
+    private val mTvHelperGuessWord = mItemView?.tvGuessWordHelper
+    private val mCvGuessWordHelper = mItemView?.cvGuessWordHelper
 
     fun bindText(text: String?) {
         if(!text.isNullOrEmpty()){
@@ -39,10 +39,10 @@ class GuessWordHelperViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemV
 
     fun guessWordHelperObservable() =
             Observable.create<String> { emitter ->
-                itemView.setOnClickListener {
+                mItemView?.setOnClickListener {
                     emitter.onNext(mTvHelperGuessWord?.text.toString().trim())
                 }
-            }
+            }!!
 
     fun setEnabled(isEnabled: Boolean){
         mCvGuessWordHelper?.isEnabled = isEnabled

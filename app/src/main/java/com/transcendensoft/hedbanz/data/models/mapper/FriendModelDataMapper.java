@@ -56,7 +56,7 @@ public class FriendModelDataMapper {
                     .setIsInvited(friendDTO.isInvited())
                     .setGamesNumber(friendDTO.getGamesNumber())
                     .setFriendsNumber(friendDTO.getFriendsNumber())
-                    .setIconId(UserIcon.Companion.getResourceById(friendDTO.getIconId()))
+                    .setIconId(UserIcon.Companion.getUserIconById(friendDTO.getIconId()))
                     .build();
         }
         return friendResult;

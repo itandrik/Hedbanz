@@ -54,6 +54,9 @@ public interface ApiService {
     @PATCH("user")
     Observable<UserDTO> updateUser(@Body HashMap<String, Object> userMap);
 
+    @PATCH("user/update-info")
+    Observable<UserDTO> updateUserInfo(@Body UserDTO user);
+
     @GET("user/{userId}")
     Observable<UserDTO> getUser(@Path("userId") long userId);
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.domain.entity.Friend
+import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
 /**
@@ -36,6 +37,7 @@ class InviteAdapter @Inject constructor() : RecyclerView.Adapter<InviteViewHolde
             field.addAll(value)
             notifyDataSetChanged()
         }
+    val clickSubject = PublishSubject.create<Friend>()
 
     override fun getItemCount(): Int = items.size
 
@@ -48,10 +50,11 @@ class InviteAdapter @Inject constructor() : RecyclerView.Adapter<InviteViewHolde
     override fun onBindViewHolder(holder: InviteViewHolder, position: Int) {
         val friend = items[position]
 
-        holder.bindFriendIcon(friend.iconId)
+        holder.bindFriendIcon(friend.iconId.resId)
         holder.bindFriendName(friend.login)
         holder.bindFlags(friend.isInGame, friend.isInvited)
-        holder.bindOnClick(friend)
+        holder.bindIsSelected(friend.isSelected)
+        holder.bindOnClick(friend).subscribe(clickSubject)
     }
 
     fun getSelectedFriends(): List<Friend> = items.filter { it.isSelected }

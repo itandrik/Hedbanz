@@ -95,7 +95,7 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
 
     fun bindUserImage(@DrawableRes drawableRes: Int) {
         val drawableCompat = VectorDrawableCompat.create(
-                mContext.resources, R.drawable.logo, null)
+                mContext.resources, drawableRes, null)
         mIvUserImage?.setImageDrawable(drawableCompat)
 
         if (mIvUserImage?.visibility == View.VISIBLE) {

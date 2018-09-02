@@ -328,7 +328,7 @@
                     android:layout_height="48dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="18dp"
-                    android:layout_toRightOf="@id/ivImageShimmer"
+                    android:layout_alignParentRight="true"
                     android:background="@drawable/shimmer_non_filled_circle" />
 
                 <View
@@ -337,7 +337,7 @@
                     android:layout_height="48dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="18dp"
-                    android:layout_toRightOf="@id/ivShimmerCircle1"
+                    android:layout_toLeftOf="@id/ivShimmerCircle1"
                     android:background="@drawable/shimmer_non_filled_circle" />
 
                 <View
@@ -346,7 +346,7 @@
                     android:layout_height="48dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="18dp"
-                    android:layout_toRightOf="@id/ivShimmerCircle2"
+                    android:layout_toLeftOf="@id/ivShimmerCircle2"
                     android:background="@drawable/shimmer_non_filled_circle" />
 
                 <View

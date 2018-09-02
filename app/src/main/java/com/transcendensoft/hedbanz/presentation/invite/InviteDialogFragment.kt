@@ -171,6 +171,10 @@ class InviteDialogFragment @Inject constructor() : DialogFragment(),
         mRoom = room
     }
 
+    override fun invalidateAdapter() {
+        mAdapter.notifyDataSetChanged()
+    }
+
     /*------------------------------------*
      *-------- Error and loading ---------*
      *------------------------------------*/

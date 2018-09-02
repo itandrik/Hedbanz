@@ -243,14 +243,16 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
         }
 
         private void processEmptyRoomList(PaginationState<Room> roomPaginationState) {
-            if (roomPaginationState.isRefreshed()) {
-                view().showEmptyList();
-            } else {
-                Room lastRoom = model.getRooms().get(model.getRooms().size() - 1);
-                if (lastRoom.getId() == -1) {
-                    model.getRooms().remove(model.getRooms().size() - 1);
-                    if (view() != null) {
-                        view().removeLastRoom();
+            if(view() != null) {
+                if (roomPaginationState.isRefreshed()) {
+                    view().showEmptyList();
+                } else {
+                    Room lastRoom = model.getRooms().get(model.getRooms().size() - 1);
+                    if (lastRoom.getId() == -1) {
+                        model.getRooms().remove(model.getRooms().size() - 1);
+                        if (view() != null) {
+                            view().removeLastRoom();
+                        }
                     }
                 }
             }
@@ -287,7 +289,7 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
 
         @Override
         protected void onStart() {
-            if (model == null || model.isEmpty() && view() != null) {
+            if ((model == null || model.isEmpty()) && view() != null) {
                 view().showLoading();
             }
         }

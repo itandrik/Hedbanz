@@ -64,7 +64,7 @@ public class UserModelDataMapper {
                     .setAttempts(userDTO.getAttempts())
                     .setGamesNumber(userDTO.getGamesNumber())
                     .setFriendsNumber(userDTO.getFriendsNumber())
-                    .setIconId(UserIcon.Companion.getResourceById(userDTO.getIconId()))
+                    .setIconId(UserIcon.Companion.getUserIconById(userDTO.getIconId()))
                     .build();
         }
         return userResult;
@@ -88,7 +88,7 @@ public class UserModelDataMapper {
                     .setIsWinner(user.isWinner())
                     .setGamesNumber(user.getGamesNumber())
                     .setFriendsNumber(user.getGamesNumber())
-                    .setIconId(UserIcon.Companion.getIdByResource(user.getIconId()))
+                    .setIconId(user.getIconId().getId())
                     .build();
         }
         return userResult;

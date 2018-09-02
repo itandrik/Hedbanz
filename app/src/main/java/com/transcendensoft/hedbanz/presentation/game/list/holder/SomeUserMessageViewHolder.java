@@ -87,7 +87,7 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
 
     public void bindUserImage(@DrawableRes int drawableRes){
         VectorDrawableCompat drawableCompat = VectorDrawableCompat.create(
-                mContext.getResources(), R.drawable.logo, null);
+                mContext.getResources(), drawableRes, null);
         mIvUserImage.setImageDrawable(drawableCompat);
 
         if(mIvUserImage.getVisibility() == View.VISIBLE){

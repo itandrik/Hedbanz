@@ -121,7 +121,7 @@ class UserDetailsDialogFragment @Inject constructor() : DialogFragment(),
     private fun initUserView() {
         user?.let {
             mPresenter.setModel(it)
-            ivUserIcon.setImageResource(R.drawable.logo)
+            ivUserIcon.setImageResource(it.iconId.resId)
             tvUserLogin.text = it.login
             if (it.isFriend) {
                 tvFriendship.visibility = View.VISIBLE
