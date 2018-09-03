@@ -1,6 +1,7 @@
 package com.transcendensoft.hedbanz.presentation.feedback
 
 import android.support.annotation.StringRes
+import android.widget.EditText
 import com.transcendensoft.hedbanz.presentation.base.BaseView
 import com.transcendensoft.hedbanz.presentation.changeicon.list.SelectableIcon
 import io.reactivex.Observable
@@ -34,9 +35,12 @@ interface FeedbackContract {
         fun showFeedbackError(@StringRes message: Int)
         fun showSubmitError()
         fun hideError()
+        fun startSmileAnimation()
+        fun stopSmileAnimation()
     }
 
     interface Presenter {
         fun submitFeedback(feedbackText: String)
+        fun initAnimEditTextListener(editText: EditText)
     }
 }

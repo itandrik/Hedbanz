@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
@@ -85,8 +86,8 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     @BindView(R.id.swipeRefreshLayout) SwipeRefreshLayout mRefreshLayout;
     @BindView(R.id.rvRooms) RecyclerView mRecycler;
     @BindView(R.id.rlEmptyListContainer) RelativeLayout mRlEmptyList;
-    @BindView(R.id.rlErrorNetwork) RelativeLayout mRlErrorNetwork;
-    @BindView(R.id.rlErrorServer) RelativeLayout mRlErrorServer;
+    @BindView(R.id.rlErrorNetwork) ConstraintLayout mRlErrorNetwork;
+    @BindView(R.id.rlErrorServer) ConstraintLayout mRlErrorServer;
     @BindView(R.id.flLoadingContainer) FrameLayout mFlLoadingContainer;
     @BindView(R.id.parent) RelativeLayout mParentLayout;
 

@@ -1,6 +1,7 @@
 package com.transcendensoft.hedbanz.presentation.friends;
 
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,8 +32,8 @@ import static android.view.View.GONE;
 public class FriendsActivity extends BaseActivity implements FriendsContract.View {
     @BindView(R.id.rvFriends) RecyclerView mRecycler;
     @BindView(R.id.rlEmptyListContainer) RelativeLayout mRlEmptyList;
-    @BindView(R.id.rlErrorNetwork) RelativeLayout mRlErrorNetwork;
-    @BindView(R.id.rlErrorServer) RelativeLayout mRlErrorServer;
+    @BindView(R.id.rlErrorNetwork) ConstraintLayout mRlErrorNetwork;
+    @BindView(R.id.rlErrorServer) ConstraintLayout mRlErrorServer;
     @BindView(R.id.flLoadingContainer) FrameLayout mFlLoadingContainer;
 
     @Inject FriendsAdapter mAdapter;

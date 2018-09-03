@@ -2,6 +2,7 @@ package com.transcendensoft.hedbanz.domain.repository
 
 import com.transcendensoft.hedbanz.domain.entity.Feedback
 import io.reactivex.Completable
+import io.reactivex.Observable
 
 /**
  * Copyright 2017. Andrii Chernysh
@@ -26,5 +27,5 @@ import io.reactivex.Completable
  * Developed by <u>Transcendensoft</u>
  */
 interface FeedbackRepository{
-    fun submitFeedback(feedback:Feedback): Completable
+    fun submitFeedback(feedback:Feedback): Observable<Boolean>
 }

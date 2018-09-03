@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import retrofit2.http.Body;
@@ -61,8 +63,8 @@ public interface ApiService {
     @GET("user/{userId}")
     Observable<UserDTO> getUser(@Path("userId") long userId);
 
-    @POST("feedback")
-    Completable sendFeedback(@Body FeedbackDTO feedbackDTO);
+    @PUT("user/feedback")
+    Observable<Boolean> sendFeedback(@Body FeedbackDTO feedbackDTO);
 
     /* Firebase */
     @PUT("user/{userId}/token")

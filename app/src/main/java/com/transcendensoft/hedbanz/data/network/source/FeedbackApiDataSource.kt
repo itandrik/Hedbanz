@@ -4,6 +4,7 @@ import com.transcendensoft.hedbanz.data.models.FeedbackDTO
 import com.transcendensoft.hedbanz.data.source.FeedbackDataSource
 import com.transcendensoft.hedbanz.data.source.FirebaseIdDataSource
 import io.reactivex.Completable
+import io.reactivex.Observable
 import javax.inject.Inject
 
 /**
@@ -28,6 +29,8 @@ import javax.inject.Inject
  * Developed by <u>Transcendensoft</u>
  */
 class FeedbackApiDataSource @Inject constructor() : ApiDataSource(), FeedbackDataSource {
-    override fun submitFeedback(feedback: FeedbackDTO): Completable =
-            mService.sendFeedback(feedback)
+    override fun submitFeedback(feedback: FeedbackDTO): Observable<Boolean> {
+        val observable: Observable<Boolean> = mService.sendFeedback(feedback)
+        return observable
+    }
 }

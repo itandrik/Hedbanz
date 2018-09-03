@@ -1,6 +1,9 @@
 package com.transcendensoft.hedbanz.presentation.feedback
 
 import android.os.Build
+import android.text.TextUtils
+import android.widget.EditText
+import com.jakewharton.rxbinding2.widget.RxTextView
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager
 import com.transcendensoft.hedbanz.domain.entity.Feedback
 import com.transcendensoft.hedbanz.domain.entity.User
@@ -10,8 +13,10 @@ import com.transcendensoft.hedbanz.domain.interactor.user.UpdateUserInteractor
 import com.transcendensoft.hedbanz.domain.validation.FeedbackError
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter
 import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconContract
+import com.transcendensoft.hedbanz.utils.RxUtils
 import timber.log.Timber
 import java.net.ConnectException
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -65,6 +70,7 @@ class FeedbackPresenter @Inject constructor(
     }
 
     private fun processFeedbackError(err: Throwable) {
+        view()?.hideLoadingDialog()
         Timber.e(err)
         when (err) {
             is ConnectException -> view()?.showNetworkError()
@@ -77,7 +83,26 @@ class FeedbackPresenter @Inject constructor(
         for (error in feedbackException.feedbackErrors) {
             if (error == FeedbackError.EMPTY_FEEDBACK) {
                 view()?.showFeedbackError(error.messageId)
+            } else {
+                view()?.showServerError()
             }
         }
+    }
+
+    /*------------------------------------*
+     *------- Animation for smile --------*
+     *------------------------------------*/
+    override fun initAnimEditTextListener(editText: EditText) {
+        addDisposable(
+                RxTextView.textChanges(editText)
+                        .skip(1)
+                        .filter { text -> !TextUtils.isEmpty(text) }
+                        .compose(RxUtils.debounceFirst(500, TimeUnit.MILLISECONDS))
+                        .doOnNext { view()?.startSmileAnimation() }
+                        .mergeWith(RxTextView.textChanges(editText)
+                                .skip(1)
+                                .debounce(500, TimeUnit.MILLISECONDS)
+                                .doOnNext { view()?.stopSmileAnimation() })
+                        .subscribe())
     }
 }

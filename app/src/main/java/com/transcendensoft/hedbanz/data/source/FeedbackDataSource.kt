@@ -7,6 +7,7 @@ import com.transcendensoft.hedbanz.data.network.source.RoomsApiDataSource
 import dagger.Binds
 import dagger.Module
 import io.reactivex.Completable
+import io.reactivex.Observable
 
 /**
  * Base interface for remote and local data that
@@ -16,5 +17,5 @@ import io.reactivex.Completable
  * Developed by <u>Transcendensoft</u>
  */
 interface FeedbackDataSource{
-    fun submitFeedback(feedback: FeedbackDTO): Completable
+    fun submitFeedback(feedback: FeedbackDTO): Observable<Boolean>
 }

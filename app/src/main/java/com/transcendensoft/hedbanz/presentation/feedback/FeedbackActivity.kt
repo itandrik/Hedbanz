@@ -1,19 +1,29 @@
 package com.transcendensoft.hedbanz.presentation.feedback
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v7.app.AlertDialog
 import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import com.bumptech.glide.Glide
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity
 import com.transcendensoft.hedbanz.utils.AndroidUtils
 import javax.inject.Inject
+import android.content.Intent.ACTION_VIEW
+import android.net.Uri
+import android.widget.ScrollView
+import com.transcendensoft.hedbanz.BuildConfig
+import com.transcendensoft.hedbanz.utils.extension.setupKeyboardHiding
+
 
 /**
  * Copyright 2017. Andrii Chernysh
@@ -36,12 +46,18 @@ import javax.inject.Inject
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-class FeedbackActivity: BaseActivity(), FeedbackContract.View {
-    @BindView(R.id.ivSmileGif) lateinit var ivSmileGif: ImageView
-    @BindView(R.id.etFeedback) lateinit var etFeedback: EditText
-    @BindView(R.id.tvErrorFeedback) lateinit var tvFeedbackError: TextView
+class FeedbackActivity : BaseActivity(), FeedbackContract.View {
+    @BindView(R.id.ivSmileGif)
+    lateinit var ivSmileGif: ImageView
+    @BindView(R.id.etFeedback)
+    lateinit var etFeedback: EditText
+    @BindView(R.id.tvErrorFeedback)
+    lateinit var tvFeedbackError: TextView
+    @BindView(R.id.parentLayout)
+    lateinit var parentLayout: ScrollView
 
-    @Inject lateinit var presenter: FeedbackPresenter
+    @Inject
+    lateinit var presenter: FeedbackPresenter
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -49,13 +65,22 @@ class FeedbackActivity: BaseActivity(), FeedbackContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val window = window
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window.statusBarColor = resources.getColor(R.color.colorPrimaryLight)
+        }
+
         setContentView(R.layout.activity_feedback)
         ButterKnife.bind(this, this)
+        parentLayout.setupKeyboardHiding(this)
     }
 
     override fun onResume() {
         super.onResume()
         presenter.bindView(this)
+        presenter.initAnimEditTextListener(etFeedback)
     }
 
     override fun onPause() {
@@ -72,18 +97,24 @@ class FeedbackActivity: BaseActivity(), FeedbackContract.View {
      *-------- On click listeners --------*
      *------------------------------------*/
     @OnClick(R.id.btnSubmitFeedback)
-    fun onSubmitFeedbackClicked(){
+    fun onSubmitFeedbackClicked() {
         hideError()
         presenter.submitFeedback(etFeedback.text.toString())
     }
 
     @OnClick(R.id.btnConfidentiality)
-    fun onConfidentialityClicked(){
-        //TODO open confidentiality in browser
+    fun onConfidentialityClicked() {
+        startActivity(Intent(Intent.ACTION_VIEW,
+                Uri.parse("${BuildConfig.HOST_LINK}/privacy-policies")))
+    }
+
+    @OnClick(R.id.btnTelegram)
+    fun onTelegramClicked() {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(TELEGRAM_LINK)))
     }
 
     @OnClick(R.id.ivBack)
-    fun onBackClicked(){
+    fun onBackClicked() {
         onBackPressed()
     }
 
@@ -105,6 +136,11 @@ class FeedbackActivity: BaseActivity(), FeedbackContract.View {
     override fun showNetworkError() {
         super.showNetworkError()
         AndroidUtils.showShortToast(this, R.string.error_network)
+    }
+
+    override fun showServerError() {
+        super.showServerError()
+        AndroidUtils.showShortToast(this, R.string.error_server)
     }
 
     override fun showFeedbackSuccess() {
@@ -131,5 +167,19 @@ class FeedbackActivity: BaseActivity(), FeedbackContract.View {
 
     override fun showSubmitError() {
         AndroidUtils.showLongToast(this, getString(R.string.error_server))
+    }
+
+    override fun startSmileAnimation() {
+        runOnUiThread { Glide.with(this).asGif().load(R.raw.smile_gif_new).into(ivSmileGif) }
+    }
+
+    override fun stopSmileAnimation() {
+        runOnUiThread {
+            Glide.with(this).load(R.drawable.logo_for_anim).into(ivSmileGif)
+        }
+    }
+
+    companion object {
+        val TELEGRAM_LINK = "https://t.me/joinchat/DxRXGlBRkYwwxCbkX1UiBg"
     }
 }

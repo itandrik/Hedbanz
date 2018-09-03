@@ -1,5 +1,7 @@
 package com.transcendensoft.hedbanz.data.models
 
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import com.transcendensoft.hedbanz.domain.entity.User
 
 /**
@@ -25,7 +27,7 @@ import com.transcendensoft.hedbanz.domain.entity.User
  * Developed by <u>Transcendensoft</u>
  */
 data class FeedbackDTO(var feedbackText: String,
-                       var userDto: UserDTO?,
+                       @SerializedName("user") @Expose var userDto: UserDTO?,
                        var deviceVersion: Int?,
                        var deviceName: String?,
                        var deviceModel: String?,

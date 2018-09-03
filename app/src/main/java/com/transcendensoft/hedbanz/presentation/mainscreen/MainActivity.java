@@ -17,6 +17,7 @@ import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.custom.widget.VerticalViewPager;
 import com.transcendensoft.hedbanz.presentation.game.GameActivity;
+import com.transcendensoft.hedbanz.presentation.intro.IntroActivity;
 import com.transcendensoft.hedbanz.presentation.menu.MenuFragment;
 
 import javax.inject.Inject;
@@ -48,6 +49,10 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this, this);
         initViewPager();
         initNewVersionReceiver();
+
+        if(!mPreferenceManager.isTutorialShown()){
+            startActivity(new Intent(this, IntroActivity.class));
+        }
     }
 
     @Override

@@ -16,10 +16,12 @@ package com.transcendensoft.hedbanz.presentation.menu;
  */
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -168,7 +170,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
         startActivity(new Intent(getActivity(), FeedbackActivity.class));
     }
 
-    @OnClick(R.id.btnSettings)
+    @OnClick(R.id.btnRate)
     protected void onRateClicked() {
         final String appPackageName = mActivity.getPackageName();
 
@@ -201,6 +203,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
 
         mPreferenceManager.setIsAuthorised(false);
         mPreferenceManager.setUser(null);
+        mPreferenceManager.setAuthorizationToken(null);
 
         Intent intent = new Intent(getActivity(), StartActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -216,7 +219,10 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
                 .setTitle(getString(R.string.menu_logout_error_title))
                 .setMessage(getString(R.string.menu_logout_server_error))
                 .setIcon(R.drawable.ic_dialog_server_error)
-                .setPositiveButton(getString(R.string.action_ok), (dialog, v) -> dialog.dismiss())
+                .setPositiveButton(getString(R.string.action_ok), (dialog, v) -> {
+                    dialog.dismiss();
+                    showLogoutSuccess();
+                })
                 .setCancelable(true)
                 .show();
     }
@@ -266,6 +272,9 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
         mTvMoney.setText(String.valueOf(user.getMoney()));
         mTvFriends.setText(String.valueOf(user.getFriendsNumber()));
         mTvGamesPlayed.setText(String.valueOf(user.getFriendsNumber()));
+
+        Drawable d = VectorDrawableCompat.create(getResources(), user.getIconId().getResId(), null);
+        mIvImage.setImageDrawable(d);
     }
 
     @Override

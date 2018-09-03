@@ -1,141 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:fillViewport="true"
+    android:background="@drawable/login_full_background"
     android:layout_height="match_parent"
-    android:background="@drawable/login_full_background">
+    android:id="@+id/parentLayout">
 
-    <TextView
-        android:id="@+id/tvFeedbackTitle"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/lemon_tuesday_font_family"
-        android:gravity="center"
-        android:text="@string/feedback_title"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <ImageView
-        android:id="@+id/ivBack"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        app:srcCompat="@drawable/ic_back" />
-
-    <ImageView
-        android:id="@+id/ivRegisterDivider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginTop="8dp"
-        app:srcCompat="@drawable/register_divider" />
-
-    <ImageView
-        android:id="@+id/ivSmileGif"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:layout_below="@id/ivRegisterDivider"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="-48dp"
-        app:srcCompat="@drawable/logo_for_anim" />
-
-    <Button
-        android:id="@+id/btnConfidentiality"
-        android:layout_width="match_parent"
-        android:layout_height="62dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="56dp"
-        android:layout_marginRight="56dp"
-        android:background="@drawable/button_background"
-        android:elevation="0dp"
-        android:fontFamily="@font/playfair_display_sc_bold"
-        android:stateListAnimator="@null"
-        android:text="@string/feedback_confidentiality_action"
-        android:textColor="@color/textSecondaryDark" />
-
-    <TextView
-        android:id="@+id/tvConfidentiality"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/btnConfidentiality"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:fontFamily="@font/gabriela"
-        android:gravity="center"
-        android:text="@string/feedback_confidentiality_text"
-        android:textSize="14sp" />
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/tvConfidentiality"
-        android:layout_below="@id/ivSmileGif"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="-8dp"
-        android:background="@drawable/form_background"
-        android:paddingBottom="8dp"
-        android:paddingLeft="32dp"
-        android:paddingRight="32dp">
-
-        <Space
-            android:id="@+id/topSpace"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_alignParentTop="true" />
-
-        <Button
-            android:id="@+id/btnSubmitFeedback"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="56dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/button_white_round"
-            android:elevation="8dp"
-            android:fontFamily="@font/playfair_display_sc_bold"
-            android:text="@string/feedback_submit"
-            android:textColor="@color/textSecondaryDark" />
+        android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tvErrorFeedback"
+            android:id="@+id/tvFeedbackTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@id/btnSubmitFeedback"
-            android:drawablePadding="8dp"
-            android:drawableRight="@drawable/ic_error_validation"
-            android:paddingLeft="16dp"
-            android:textColor="@color/loginError"
-            android:textSize="11sp"
-            android:visibility="gone" />
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/lemon_tuesday_font_family"
+            android:gravity="center"
+            android:text="@string/feedback_title"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/etFeedback"
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_back" />
+
+        <ImageView
+            android:id="@+id/ivRegisterDivider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@id/tvErrorFeedback"
-            android:layout_below="@id/topSpace"
-            android:layout_marginTop="4dp"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:drawablePadding="8dp"
-            android:gravity="top|left"
-            android:hint="@string/feedback_hint"
-            android:inputType="textCapSentences" />
-        <!--<Space
-            android:id="@+id/bottomSpace"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="8dp"
+            app:srcCompat="@drawable/register_divider" />
+
+        <ImageView
+            android:id="@+id/ivSmileGif"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_below="@id/ivRegisterDivider"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-48dp"
+            app:srcCompat="@drawable/logo_for_anim" />
+
+        <RelativeLayout
+            android:id="@+id/rlFeedbackSticker"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_below="@id/btnUpdateCredentials" -->/>
+            android:layout_height="300dp"
+            android:layout_below="@id/ivSmileGif"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="-8dp"
+            android:background="@drawable/form_background"
+            android:paddingBottom="8dp"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp">
+
+            <Space
+                android:id="@+id/topSpace"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentTop="true" />
+            <Space
+                android:id="@+id/bottomSpace"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_alignParentBottom="true"/>
+
+            <Button
+                android:id="@+id/btnSubmitFeedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/bottomSpace"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_white_round"
+                android:elevation="8dp"
+                android:fontFamily="@font/playfair_display_sc_bold"
+                android:text="@string/feedback_submit"
+                android:textColor="@color/textSecondaryDark" />
+
+            <TextView
+                android:id="@+id/tvErrorFeedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/btnSubmitFeedback"
+                android:drawablePadding="8dp"
+                android:drawableRight="@drawable/ic_error_validation"
+                android:paddingLeft="16dp"
+                android:textColor="@color/loginError"
+                android:textSize="11sp"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/etFeedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/tvErrorFeedback"
+                android:layout_below="@id/topSpace"
+                android:layout_marginTop="4dp"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:drawablePadding="8dp"
+                android:gravity="top|left"
+                android:hint="@string/feedback_hint"
+                android:inputType="textMultiLine|textCapSentences" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rlFeedbackSticker"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true">
+            <TextView
+                android:id="@+id/tvConfidentiality"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:fontFamily="@font/gabriela"
+                android:gravity="center"
+                android:text="@string/feedback_telegram_title"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnTelegram"
+                android:layout_width="match_parent"
+                android:layout_height="62dp"
+                android:layout_marginBottom="-8dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:background="@drawable/button_background"
+                android:elevation="0dp"
+                android:fontFamily="@font/playfair_display_sc_bold"
+                android:stateListAnimator="@null"
+                android:text="@string/feedback_telegram_action"
+                android:textColor="@color/textSecondaryDark"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnConfidentiality"
+                android:layout_width="match_parent"
+                android:layout_height="62dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:background="@drawable/button_background"
+                android:elevation="0dp"
+                android:fontFamily="@font/playfair_display_sc_bold"
+                android:stateListAnimator="@null"
+                android:text="@string/feedback_confidentiality_action"
+                android:textColor="@color/textSecondaryDark"
+                android:textSize="12sp" />
+        </LinearLayout>
     </RelativeLayout>
-</RelativeLayout>
+</ScrollView>

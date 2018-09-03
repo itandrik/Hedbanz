@@ -72,6 +72,7 @@ public class UserModelDataMapper {
 
     public UserDTO convert(User user){
         UserDTO userResult = null;
+        int userIconId = user.getIconId() == null ? 0 : user.getIconId().getId();
         if(user != null){
             userResult = new UserDTO.Builder()
                     .setId(user.getId())
@@ -88,7 +89,7 @@ public class UserModelDataMapper {
                     .setIsWinner(user.isWinner())
                     .setGamesNumber(user.getGamesNumber())
                     .setFriendsNumber(user.getGamesNumber())
-                    .setIconId(user.getIconId().getId())
+                    .setIconId(userIconId)
                     .build();
         }
         return userResult;

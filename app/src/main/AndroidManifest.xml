@@ -73,7 +73,8 @@
         <activity
             android:name=".presentation.intro.IntroActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/ThemeMain" />
+            android:theme="@style/ThemeMain"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".presentation.changeicon.ChangeIconActivity"
             android:screenOrientation="portrait"
@@ -81,7 +82,8 @@
         <activity
             android:name=".presentation.feedback.FeedbackActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/ThemeMain" />
+            android:theme="@style/ThemeMain"
+            android:windowSoftInputMode="adjustResize"/>
         <!-- Service -->
         <!-- Firebase Notifications -->
         <service android:name=".data.network.service.firebase.HedbanzFirebaseMessagingService">

@@ -44,6 +44,7 @@ public class PreferenceManager {
     private static final String LOCALE = "locale";
     private static final String IS_USER_KICKED = "isUserKicked";
     private static final String IS_LAST_USER = "isLastUser";
+    private static final String IS_TUTORIAL_SHOWN = "isTutorialShown";
 
     public PreferenceManager(Context context) {
         mPreferences = context.getSharedPreferences(PREF_NAME, 0);
@@ -139,5 +140,13 @@ public class PreferenceManager {
 
     public boolean isLastUser(){
         return mPreferences.getBoolean(IS_LAST_USER, false);
+    }
+
+    public void setIsTutorialShown(boolean isTutorialShown){
+        getEditor().putBoolean(IS_TUTORIAL_SHOWN, isTutorialShown).apply();
+    }
+
+    public boolean isTutorialShown(){
+        return mPreferences.getBoolean(IS_TUTORIAL_SHOWN, false);
     }
 }

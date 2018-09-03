@@ -61,6 +61,12 @@ android {
             buildConfigField("String", 'PORT_API', '\":8085/\"')
             buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
         }
+        kiselBrotherType {
+            initWith(debug)
+            buildConfigField("String", 'HOST_LINK', '\"http://176.96.221.97\"')
+            buildConfigField("String", 'PORT_API', '\":8085/\"')
+            buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
+        }
     }
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES.txt'
@@ -174,6 +180,7 @@ dependencies {
     varashTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     dormitoryTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     raspberryTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    kiselBrotherTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
     //Tests
