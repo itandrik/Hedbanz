@@ -30,7 +30,7 @@ import java.util.List;
 public class QuestionDTO extends MessageDTO {
     @SerializedName("questionId")
     @Expose
-    private long questionId;
+    private Long questionId;
     @SerializedName("yesVoters")
     @Expose
     private List<UserDTO> yesVoters;
@@ -42,15 +42,15 @@ public class QuestionDTO extends MessageDTO {
     private List<UserDTO> winVoters;
     @SerializedName("vote")
     @Expose
-    private int voteId;
+    private Integer voteId;
     @SerializedName("attempt")
     @Expose
-    private int attempt;
+    private Integer attempt;
 
-    public QuestionDTO(long id, long senderId, long roomId, String text, int type,
-                       Long createDate, long clientMessageId, UserDTO senderUser,
-                       long questionId, List<UserDTO> yesVoters, List<UserDTO> noVoters,
-                       List<UserDTO> winVoters, int voteId, int attempt) {
+    public QuestionDTO(Long id, Long senderId, Long roomId, String text, Integer type,
+                       Long createDate, Long clientMessageId, UserDTO senderUser,
+                       Long questionId, List<UserDTO> yesVoters, List<UserDTO> noVoters,
+                       List<UserDTO> winVoters, Integer voteId, Integer attempt) {
         super(id, senderId, roomId, text, type, createDate, clientMessageId, senderUser);
         this.questionId = questionId;
         this.yesVoters = yesVoters;
@@ -60,11 +60,11 @@ public class QuestionDTO extends MessageDTO {
         this.attempt = attempt;
     }
 
-    public long getQuestionId() {
+    public Long getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(long questionId) {
+    public void setQuestionId(Long questionId) {
         this.questionId = questionId;
     }
 
@@ -92,49 +92,49 @@ public class QuestionDTO extends MessageDTO {
         this.winVoters = winVoters;
     }
 
-    public int getVoteId() {
+    public Integer getVoteId() {
         return voteId;
     }
 
-    public void setVoteId(int voteId) {
+    public void setVoteId(Integer voteId) {
         this.voteId = voteId;
     }
 
-    public int getAttempt() {
+    public Integer getAttempt() {
         return attempt;
     }
 
-    public void setAttempt(int attempt) {
+    public void setAttempt(Integer attempt) {
         this.attempt = attempt;
     }
 
     public static class Builder {
-        private long id;
-        private long senderId;
-        private long roomId;
+        private Long id;
+        private Long senderId;
+        private Long roomId;
         private String text;
-        private int type;
+        private Integer type;
         private Long createDate;
-        private long clientMessageId;
+        private Long clientMessageId;
         private UserDTO senderUser;
-        private long questionId;
+        private Long questionId;
         private List<UserDTO> yesVoters;
         private List<UserDTO> noVoters;
         private List<UserDTO> winVoters;
-        private int attempt;
-        private int voteId;
+        private Integer attempt;
+        private Integer voteId;
 
-        public QuestionDTO.Builder setId(long id) {
+        public QuestionDTO.Builder setId(Long id) {
             this.id = id;
             return this;
         }
 
-        public QuestionDTO.Builder setSenderId(long senderId) {
+        public QuestionDTO.Builder setSenderId(Long senderId) {
             this.senderId = senderId;
             return this;
         }
 
-        public QuestionDTO.Builder setRoomId(long roomId) {
+        public QuestionDTO.Builder setRoomId(Long roomId) {
             this.roomId = roomId;
             return this;
         }
@@ -144,7 +144,7 @@ public class QuestionDTO extends MessageDTO {
             return this;
         }
 
-        public QuestionDTO.Builder setType(int type) {
+        public QuestionDTO.Builder setType(Integer type) {
             this.type = type;
             return this;
         }
@@ -154,7 +154,7 @@ public class QuestionDTO extends MessageDTO {
             return this;
         }
 
-        public QuestionDTO.Builder setClientMessageId(long clientMessageId) {
+        public QuestionDTO.Builder setClientMessageId(Long clientMessageId) {
             this.clientMessageId = clientMessageId;
             return this;
         }
@@ -164,7 +164,7 @@ public class QuestionDTO extends MessageDTO {
             return this;
         }
 
-        public QuestionDTO.Builder setQuestionId(long questionId) {
+        public QuestionDTO.Builder setQuestionId(Long questionId) {
             this.questionId = questionId;
             return this;
         }
@@ -184,12 +184,12 @@ public class QuestionDTO extends MessageDTO {
             return this;
         }
 
-        public QuestionDTO.Builder setVoteId(int vote) {
+        public QuestionDTO.Builder setVoteId(Integer vote) {
             this.voteId = vote;
             return this;
         }
 
-        public QuestionDTO.Builder setAttempt(int attempt) {
+        public QuestionDTO.Builder setAttempt(Integer attempt) {
             this.attempt = attempt;
             return this;
         }

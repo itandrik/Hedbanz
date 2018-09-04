@@ -16,6 +16,8 @@ package com.transcendensoft.hedbanz.presentation.game.menu.list;
  */
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -63,7 +65,8 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
 
     @Override
     public void setIcon(int icon) {
-        mIvUserIcon.setImageResource(icon);
+        Drawable d = VectorDrawableCompat.create(mContext.getResources(), icon, null);
+        mIvUserIcon.setImageDrawable(d);
     }
 
     @Override

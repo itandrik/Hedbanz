@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -27,6 +28,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -38,6 +41,7 @@ import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.restorepwd.RestorePasswordActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.RegisterActivity;
+import com.transcendensoft.hedbanz.utils.ViewUtils;
 import com.transcendensoft.hedbanz.utils.extension.ViewExtensionsKt;
 
 import javax.inject.Inject;
@@ -61,6 +65,8 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
     @BindView(R.id.tvErrorLogin) TextView mTvLoginError;
     @BindView(R.id.tvErrorPassword) TextView mTvPasswordError;
     @BindView(R.id.parent) ScrollView mParentLayout;
+    @BindView(R.id.llRegisterContainer) LinearLayout mLlRegister;
+    @BindView(R.id.ivLogo) ImageView mIvLogo;
 
     @Inject LoginPresenter mPresenter;
     @Inject StartActivity mActivity;
@@ -80,9 +86,10 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         ButterKnife.bind(this, view);
-        ViewExtensionsKt.setupKeyboardHiding(mParentLayout, mActivity);
+        ViewExtensionsKt.hasNavbar(mActivity);
 
         initPasswordIcon();
+        initNavBar();
 
         return view;
     }
@@ -117,8 +124,16 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
         Drawable drawable = VectorDrawableCompat.create(
                 getResources(), R.drawable.ic_password, null);
         drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, ContextCompat.getColor(getActivity(), R.color.textDarkRed));
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(mActivity, R.color.textDarkRed));
         mEtPassword.setCompoundDrawablesWithIntrinsicBounds(drawable, null,null,null);
+    }
+
+    private void initNavBar(){
+        if(ViewExtensionsKt.hasNavbar(mActivity)){
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mLlRegister.getLayoutParams();
+            params.bottomMargin = ViewUtils.dpToPx(mActivity, 24);
+            mLlRegister.setLayoutParams(params);
+        }
     }
 
     /*------------------------------------*
@@ -209,5 +224,13 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
         hideLoadingDialog();
         mTvLoginError.setVisibility(GONE);
         mTvPasswordError.setVisibility(GONE);
+    }
+
+    public void showIcon(){
+        mIvLogo.animate()
+                .alpha(1.f)
+                .setDuration(100)
+                .setStartDelay(300)
+                .start();
     }
 }

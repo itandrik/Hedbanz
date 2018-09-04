@@ -15,8 +15,6 @@ package com.transcendensoft.hedbanz.domain.entity;
  * limitations under the License.
  */
 
-import android.support.annotation.DrawableRes;
-
 /**
  * User entity that represents user business logic
  *
@@ -24,26 +22,26 @@ import android.support.annotation.DrawableRes;
  *         Developed by <u>Transcendensoft</u>
  */
 public class User {
-    private long id;
+    private Long id;
     private String email;
     private String password;
     private String confirmPassword;
-    private long money;
+    private Long money;
     private Long registrationDate;
     private String login;
     private boolean isFriend;
     private PlayerStatus playerStatus;
     private String word;
-    private int attempts;
+    private Integer attempts;
     private boolean isWinner;
-    private int gamesNumber;
-    private int friendsNumber;
+    private Integer gamesNumber;
+    private Integer friendsNumber;
     private UserIcon iconId;
 
-    protected User(long id, String email, String password, String confirmPassword,
-                   long money, Long registrationDate, String login, PlayerStatus playerStatus,
-                   boolean isFriend, String word, int attempts, boolean isWinner,
-                   int gamesNumber, int friendsNumber, UserIcon iconId) {
+    protected User(Long id, String email, String password, String confirmPassword,
+                   Long money, Long registrationDate, String login, PlayerStatus playerStatus,
+                   boolean isFriend, String word, Integer attempts, boolean isWinner,
+                   Integer gamesNumber, Integer friendsNumber, UserIcon iconId) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -64,11 +62,11 @@ public class User {
     public User() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -96,11 +94,11 @@ public class User {
         this.confirmPassword = confirmPassword;
     }
 
-    public long getMoney() {
+    public Long getMoney() {
         return money;
     }
 
-    public void setMoney(long money) {
+    public void setMoney(Long money) {
         this.money = money;
     }
 
@@ -144,11 +142,11 @@ public class User {
         this.word = word;
     }
 
-    public int getAttempts() {
+    public Integer getAttempts() {
         return attempts;
     }
 
-    public void setAttempts(int attempts) {
+    public void setAttempts(Integer attempts) {
         this.attempts = attempts;
     }
 
@@ -175,28 +173,28 @@ public class User {
 
         User user = (User) o;
 
-        return id == user.id;
-    }
-
-    public int getGamesNumber() {
-        return gamesNumber;
-    }
-
-    public void setGamesNumber(int gamesNumber) {
-        this.gamesNumber = gamesNumber;
-    }
-
-    public int getFriendsNumber() {
-        return friendsNumber;
-    }
-
-    public void setFriendsNumber(int friendsNumber) {
-        this.friendsNumber = friendsNumber;
+        return id != null ? id.equals(user.id) : user.id == null;
     }
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return id != null ? id.hashCode() : 0;
+    }
+
+    public Integer getGamesNumber() {
+        return gamesNumber;
+    }
+
+    public void setGamesNumber(Integer gamesNumber) {
+        this.gamesNumber = gamesNumber;
+    }
+
+    public Integer getFriendsNumber() {
+        return friendsNumber;
+    }
+
+    public void setFriendsNumber(Integer friendsNumber) {
+        this.friendsNumber = friendsNumber;
     }
 
     @Override
@@ -221,23 +219,23 @@ public class User {
     }
 
     public static class Builder {
-        private long id;
+        private Long id;
         private String email;
         private String password;
         private String confirmPassword;
-        private long money;
+        private Long money;
         private Long registrationDate;
         private String login;
         private PlayerStatus playerStatus;
         private boolean isFriend;
         private String word;
-        private int attempts;
+        private Integer attempts;
         private boolean isWinner;
-        private int gamesNumber;
-        private int friendsNumber;
+        private Integer gamesNumber;
+        private Integer friendsNumber;
         private UserIcon iconId;
 
-        public User.Builder setId(long id) {
+        public User.Builder setId(Long id) {
             this.id = id;
             return this;
         }
@@ -257,7 +255,7 @@ public class User {
             return this;
         }
 
-        public User.Builder setMoney(long money) {
+        public User.Builder setMoney(Long money) {
             this.money = money;
             return this;
         }
@@ -287,7 +285,7 @@ public class User {
             return this;
         }
 
-        public User.Builder setAttempts(int attempts){
+        public User.Builder setAttempts(Integer attempts){
             this.attempts = attempts;
             return this;
         }
@@ -297,12 +295,12 @@ public class User {
             return this;
         }
 
-        public User.Builder setGamesNumber(int gamesNumber) {
+        public User.Builder setGamesNumber(Integer gamesNumber) {
             this.gamesNumber = gamesNumber;
             return this;
         }
 
-        public User.Builder setFriendsNumber(int friendsNumber) {
+        public User.Builder setFriendsNumber(Integer friendsNumber) {
             this.friendsNumber = friendsNumber;
             return this;
         }

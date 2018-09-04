@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
+import com.transcendensoft.hedbanz.presentation.usercrud.login.LoginFragment;
 import com.transcendensoft.hedbanz.utils.ViewUtils;
 
 import javax.inject.Inject;
@@ -196,7 +197,7 @@ public class StartActivity extends DaggerAppCompatActivity {
 
                     @Override
                     public void onAnimationEnd(Animator animator) {
-
+                        hideSmile();
                     }
 
                     @Override
@@ -220,5 +221,23 @@ public class StartActivity extends DaggerAppCompatActivity {
                 .setDuration(1500)
                 .translationY(0.f)
                 .start();
+    }
+
+    private void hideSmile(){
+        mIvHat.animate()
+                .setDuration(200)
+                .alpha(0.f)
+                .setStartDelay(300)
+                .start();
+        mIvSmile.animate()
+                .setDuration(100)
+                .setStartDelay(300)
+                .alpha(0.f)
+                .start();
+        LoginFragment loginFragment = (LoginFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.loginFragment);
+        if(loginFragment != null) {
+            loginFragment.showIcon();
+        }
     }
 }

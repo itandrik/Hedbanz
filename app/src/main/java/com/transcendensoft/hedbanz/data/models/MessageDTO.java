@@ -28,22 +28,22 @@ import com.google.gson.annotations.SerializedName;
 public class MessageDTO {
     @SerializedName("id")
     @Expose
-    private long id;
+    private Long id;
     @SerializedName("clientMessageId")
     @Expose
-    private long clientMessageId;
+    private Long clientMessageId;
     @SerializedName("senderId")
     @Expose
-    private long senderId;
+    private Long senderId;
     @SerializedName("roomId")
     @Expose
-    private long roomId;
+    private Long roomId;
     @SerializedName("text")
     @Expose
     private String text;
     @SerializedName("type")
     @Expose
-    private int type;
+    private Integer type;
     @SerializedName("createDate")
     @Expose
     private Long createDate;
@@ -52,7 +52,7 @@ public class MessageDTO {
     private UserDTO senderUser;
     private String securityToken;
 
-    MessageDTO(long id, long senderId, long roomId, String text, int type, Long createDate, long clientMessageId, UserDTO senderUser) {
+    MessageDTO(Long id, Long senderId, Long roomId, String text, Integer type, Long createDate, Long clientMessageId, UserDTO senderUser) {
         this.id = id;
         this.senderId = senderId;
         this.roomId = roomId;
@@ -63,27 +63,27 @@ public class MessageDTO {
         this.senderUser = senderUser;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getSenderId() {
+    public Long getSenderId() {
         return senderId;
     }
 
-    public void setSenderId(long senderId) {
+    public void setSenderId(Long senderId) {
         this.senderId = senderId;
     }
 
-    public long getRoomId() {
+    public Long getRoomId() {
         return roomId;
     }
 
-    public void setRoomId(long roomId) {
+    public void setRoomId(Long roomId) {
         this.roomId = roomId;
     }
 
@@ -95,11 +95,11 @@ public class MessageDTO {
         this.text = text;
     }
 
-    public int getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
@@ -111,11 +111,11 @@ public class MessageDTO {
         this.createDate = createDate;
     }
 
-    public long getClientMessageId() {
+    public Long getClientMessageId() {
         return clientMessageId;
     }
 
-    public void setClientMessageId(long clientMessageId) {
+    public void setClientMessageId(Long clientMessageId) {
         this.clientMessageId = clientMessageId;
     }
 
@@ -142,7 +142,7 @@ public class MessageDTO {
 
         MessageDTO that = (MessageDTO) o;
 
-        return clientMessageId == that.clientMessageId;
+        return clientMessageId != null ? clientMessageId.equals(that.clientMessageId) : that.clientMessageId == null;
     }
 
     @Override
@@ -151,26 +151,26 @@ public class MessageDTO {
     }
 
     public static class Builder {
-        private long id;
-        private long senderId;
-        private long roomId;
+        private Long id;
+        private Long senderId;
+        private Long roomId;
         private String text;
-        private int type;
+        private Integer type;
         private Long createDate;
-        private long clientMessageId;
+        private Long clientMessageId;
         private UserDTO senderUser;
 
-        public Builder setId(long id) {
+        public Builder setId(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder setSenderId(long senderId) {
+        public Builder setSenderId(Long senderId) {
             this.senderId = senderId;
             return this;
         }
 
-        public Builder setRoomId(long roomId) {
+        public Builder setRoomId(Long roomId) {
             this.roomId = roomId;
             return this;
         }
@@ -180,7 +180,7 @@ public class MessageDTO {
             return this;
         }
 
-        public Builder setType(int type) {
+        public Builder setType(Integer type) {
             this.type = type;
             return this;
         }
@@ -190,7 +190,7 @@ public class MessageDTO {
             return this;
         }
 
-        public Builder setClientMessageId(long clientMessageId) {
+        public Builder setClientMessageId(Long clientMessageId) {
             this.clientMessageId = clientMessageId;
             return this;
         }

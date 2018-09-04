@@ -592,7 +592,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 modelMessage.setLoading(false);
                 modelMessage.setFinished(true);
                 modelMessage.setCreateDate(message.getCreateDate());
-                if (modelMessage.getClientMessageId() == message.getClientMessageId()) {
+                if (modelMessage.getClientMessageId().equals(message.getClientMessageId())) {
                     view().setMessage(i, modelMessage);
                     break;
                 }
@@ -659,7 +659,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 modelMessage.setFinished(true);
                 modelMessage.setCreateDate(question.getCreateDate());
                 if (modelMessage instanceof Question &&
-                        modelMessage.getClientMessageId() == question.getClientMessageId()) {
+                        modelMessage.getClientMessageId().equals(question.getClientMessageId())) {
                     Question modelQuestion = (Question) modelMessage;
                     modelQuestion.setQuestionId(question.getQuestionId());
                     modelQuestion.setNoVoters(question.getNoVoters());

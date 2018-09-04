@@ -72,7 +72,7 @@ public class QuestionModelDataMapper {
         Question question = null;
         if (questionDTO != null) {
             Timestamp timestamp = null;
-            if(questionDTO.getCreateDate() != null){
+            if (questionDTO.getCreateDate() != null) {
                 timestamp = new Timestamp(questionDTO.getCreateDate());
             }
             Message message = new Message.Builder()
@@ -80,7 +80,7 @@ public class QuestionModelDataMapper {
                     .setCreateDate(timestamp)
                     .setId(questionDTO.getId())
                     .setMessage(questionDTO.getText())
-                    .setMessageType(MessageType.getMessageTypeById(questionDTO.getType()))
+                    .setMessageType(MessageType.getMessageTypeById(questionDTO.getType() != null ? questionDTO.getType() : 0))
                     .setUserFrom(questionDTO.getSenderUser() != null ?
                             mUserModelDataMapper.convert(questionDTO.getSenderUser()) : null)
                     .build();
@@ -90,7 +90,7 @@ public class QuestionModelDataMapper {
                     .yesVoters(mUserModelDataMapper.convertToUsers(questionDTO.getYesVoters()))
                     .noVoters(mUserModelDataMapper.convertToUsers(questionDTO.getNoVoters()))
                     .winVoters(mUserModelDataMapper.convertToUsers(questionDTO.getWinVoters()))
-                    .vote(Question.Vote.Companion.getVoteById(questionDTO.getVoteId()))
+                    .vote(Question.Vote.Companion.getVoteById(questionDTO.getVoteId() != null ? questionDTO.getVoteId() : 0))
                     .message(message)
                     .attempt(questionDTO.getAttempt())
                     .build();

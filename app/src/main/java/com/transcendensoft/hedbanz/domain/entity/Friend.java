@@ -15,8 +15,6 @@ package com.transcendensoft.hedbanz.domain.entity;
  * limitations under the License.
  */
 
-import android.support.annotation.DrawableRes;
-
 /**
  * Entity that describes Friend of some User
  *
@@ -29,13 +27,12 @@ public class Friend extends User {
     private boolean isInvited;
     private boolean isInGame;
     private boolean isSelected;
-    private UserIcon iconId;
 
-    private Friend(long id, String email, String password, String confirmPassword,
-                   long money, Long registrationDate, String login, PlayerStatus playerStatus,
+    private Friend(Long id, String email, String password, String confirmPassword,
+                   Long money, Long registrationDate, String login, PlayerStatus playerStatus,
                    boolean isAccepted, boolean isPending, boolean isFriend,
-                   String word, int attempts, boolean isWinner, boolean isInvited, boolean isInGame,
-                   int gamesNumber, int friendsNumber, UserIcon iconId) {
+                   String word, Integer attempts, boolean isWinner, boolean isInvited, boolean isInGame,
+                   Integer gamesNumber, Integer friendsNumber, UserIcon iconId) {
         super(id, email, password, confirmPassword, money, registrationDate,
                 login, playerStatus, isFriend, word, attempts, isWinner,
                 gamesNumber, friendsNumber, iconId);
@@ -85,38 +82,28 @@ public class Friend extends User {
         isSelected = selected;
     }
 
-    @Override
-    public UserIcon getIconId() {
-        return iconId;
-    }
-
-    @Override
-    public void setIconId(UserIcon iconId) {
-        this.iconId = iconId;
-    }
-
     public static class Builder {
-        private long id;
+        private Long id;
         private String email;
         private String password;
         private String confirmPassword;
-        private long money;
+        private Long money;
         private Long registrationDate;
         private String login;
         private boolean isAccepted;
         private PlayerStatus playerStatus;
         private boolean isFriend;
         private String word;
-        private int attempts;
+        private Integer attempts;
         private boolean isWinner;
         private boolean isPending;
         private boolean isInvited;
         private boolean isInGame;
-        private int gamesNumber;
-        private int friendsNumber;
+        private Integer gamesNumber;
+        private Integer friendsNumber;
         private UserIcon iconId;
 
-        public Builder setId(long id) {
+        public Builder setId(Long id) {
             this.id = id;
             return this;
         }
@@ -136,7 +123,7 @@ public class Friend extends User {
             return this;
         }
 
-        public Builder setMoney(long money) {
+        public Builder setMoney(Long money) {
             this.money = money;
             return this;
         }
@@ -176,7 +163,7 @@ public class Friend extends User {
             return this;
         }
 
-        public Builder setAttempts(int attempts){
+        public Builder setAttempts(Integer attempts){
             this.attempts = attempts;
             return this;
         }
@@ -196,12 +183,12 @@ public class Friend extends User {
             return this;
         }
 
-        public Builder setGamesNumber(int gamesNumber) {
+        public Builder setGamesNumber(Integer gamesNumber) {
             this.gamesNumber = gamesNumber;
             return this;
         }
 
-        public Builder setFriendsNumber(int friendsNumber) {
+        public Builder setFriendsNumber(Integer friendsNumber) {
             this.friendsNumber = friendsNumber;
             return this;
         }

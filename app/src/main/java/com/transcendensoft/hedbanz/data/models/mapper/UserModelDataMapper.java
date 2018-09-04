@@ -57,14 +57,14 @@ public class UserModelDataMapper {
                     .setMoney(userDTO.getMoney())
                     .setPassword(userDTO.getPassword())
                     .setRegistrationDate(userDTO.getRegistrationDate())
-                    .setPlayerStatus(PlayerStatus.getStatusByCode(userDTO.getStatus()))
+                    .setPlayerStatus(PlayerStatus.getStatusByCode(userDTO.getStatus() != null ? userDTO.getStatus(): 1))
                     .setIsFriend(userDTO.isFriend())
                     .setWord(userDTO.getWord())
                     .setIsWinner(userDTO.isWinner())
                     .setAttempts(userDTO.getAttempts())
                     .setGamesNumber(userDTO.getGamesNumber())
                     .setFriendsNumber(userDTO.getFriendsNumber())
-                    .setIconId(UserIcon.Companion.getUserIconById(userDTO.getIconId()))
+                    .setIconId(UserIcon.Companion.getUserIconById(userDTO.getIconId() != null ? userDTO.getIconId(): 0))
                     .build();
         }
         return userResult;

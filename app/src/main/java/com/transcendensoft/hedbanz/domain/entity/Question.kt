@@ -29,10 +29,10 @@ data class Question(
         var noVoters: List<User> = listOf(),
         var winVoters: List<User> = listOf(),
         var vote: Vote? = null,
-        var allUsersCount: Int = 0,
+        var allUsersCount: Int? = 0,
         var messageParent: Message = Message(),
         var isWin: Boolean = false,
-        var attempt: Int = 0
+        var attempt: Int? = 0
 ) : Message(messageParent.id, messageParent.message, messageParent.userFrom,
         messageParent.messageType, messageParent.createDate, messageParent.clientMessageId), Cloneable {
 
@@ -65,10 +65,10 @@ data class Question(
         var vote: Vote? = null
             private set
 
-        var allUsersCount: Int = 0
+        var allUsersCount: Int? = 0
             private set
 
-        var attempt: Int = 0
+        var attempt: Int? = 0
             private set
 
         var isWin: Boolean = false
@@ -87,9 +87,9 @@ data class Question(
 
         fun vote(vote: Vote?) = apply { this.vote = vote }
 
-        fun attempt(attempt: Int) = apply { this.attempt = attempt }
+        fun attempt(attempt: Int?) = apply { this.attempt = attempt }
 
-        fun allUsersCount(allUsersCount: Int) = apply { this.allUsersCount = allUsersCount }
+        fun allUsersCount(allUsersCount: Int?) = apply { this.allUsersCount = allUsersCount }
 
         fun isWin(isWin: Boolean) = apply { this.isWin = isWin }
 

@@ -49,7 +49,7 @@ public class MessageModelDataMapper {
                     .setId(messageDTO.getId())
                     .setClientMessageId(messageDTO.getClientMessageId())
                     .setMessage(messageDTO.getText())
-                    .setMessageType(MessageType.getMessageTypeById(messageDTO.getType()))
+                    .setMessageType(MessageType.getMessageTypeById(messageDTO.getType() != null ? messageDTO.getType() : 0))
                     .setCreateDate(new Timestamp(messageDTO.getCreateDate() == null ?
                             System.currentTimeMillis() : messageDTO.getCreateDate()))
                     .setUserFrom(mUserModelDataMapper.convert(messageDTO.getSenderUser()))

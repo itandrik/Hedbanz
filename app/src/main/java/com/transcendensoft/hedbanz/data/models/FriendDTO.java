@@ -39,12 +39,12 @@ public class FriendDTO extends UserDTO {
     @Expose
     private boolean isInvited;
 
-    private FriendDTO(long id, String email, String password, long money,
-                      Long registrationDate, String login, int status,
+    private FriendDTO(Long id, String email, String password, Long money,
+                      Long registrationDate, String login, Integer status,
                       boolean isAccepted, boolean isPending, boolean isFriend,
-                      String word, Long userId, int attempts, boolean isWinner,
-                      boolean isInGame, boolean isInvited, int gamesNumber,
-                      int friendsNumber, int iconId
+                      String word, Long userId, Integer attempts, boolean isWinner,
+                      boolean isInGame, boolean isInvited, Integer gamesNumber,
+                      Integer friendsNumber, Integer iconId
     ) {
         super(id, email, password, money, registrationDate, login,
                 status, isFriend, word, userId, attempts, isWinner,
@@ -88,27 +88,27 @@ public class FriendDTO extends UserDTO {
     }
 
     public static class Builder {
-        private long id;
+        private Long id;
         private String email;
         private String password;
-        private long money;
+        private Long money;
         private Long registrationDate;
         private String login;
         private boolean isAccepted;
         private boolean isPending;
-        private int status;
+        private Integer status;
         private boolean isFriend;
         private String word;
         private Long userId;
-        private int attempts;
+        private Integer attempts;
         private boolean isWinner;
         private boolean isInGame;
         private boolean isInvited;
-        private int gamesNumber;
-        private int friendsNumber;
-        private int iconId;
+        private Integer gamesNumber;
+        private Integer friendsNumber;
+        private Integer iconId;
 
-        public FriendDTO.Builder setId(long id) {
+        public FriendDTO.Builder setId(Long id) {
             this.id = id;
             return this;
         }
@@ -123,7 +123,7 @@ public class FriendDTO extends UserDTO {
             return this;
         }
 
-        public FriendDTO.Builder setMoney(long money) {
+        public FriendDTO.Builder setMoney(Long money) {
             this.money = money;
             return this;
         }
@@ -148,7 +148,7 @@ public class FriendDTO extends UserDTO {
             return this;
         }
 
-        public FriendDTO.Builder setStatus(int status) {
+        public FriendDTO.Builder setStatus(Integer status) {
             this.status = status;
             return this;
         }
@@ -168,7 +168,7 @@ public class FriendDTO extends UserDTO {
             return this;
         }
 
-        public FriendDTO.Builder setAttempts(int attempts) {
+        public FriendDTO.Builder setAttempts(Integer attempts) {
             this.attempts = attempts;
             return this;
         }
@@ -188,17 +188,17 @@ public class FriendDTO extends UserDTO {
             return this;
         }
 
-        public FriendDTO.Builder setGamesNumber(int gamesNumber) {
+        public FriendDTO.Builder setGamesNumber(Integer gamesNumber) {
             this.gamesNumber = gamesNumber;
             return this;
         }
 
-        public FriendDTO.Builder setFriendsNumber(int friendsNumber) {
+        public FriendDTO.Builder setFriendsNumber(Integer friendsNumber) {
             this.friendsNumber = friendsNumber;
             return this;
         }
 
-        public FriendDTO.Builder setIconId(int iconId) {
+        public FriendDTO.Builder setIconId(Integer iconId) {
             this.iconId = iconId;
             return this;
         }

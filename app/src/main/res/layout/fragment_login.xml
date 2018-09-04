@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:stickButton="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@color/transparent"
-    android:id="@+id/parent"
     android:fillViewport="true">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -15,168 +19,224 @@
             android:id="@+id/tvAppName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="32dp"
             android:fontFamily="@font/lemon_tuesday_font_family"
             android:gravity="center"
             android:text="@string/app_name"
             android:textSize="34sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvLoginIntro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvAppName"
-            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/gabriela"
             android:gravity="center"
             android:text="@string/login_intro"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvAppName" />
 
-        <Button
-            android:id="@+id/btnRegister"
-            android:layout_width="match_parent"
-            android:layout_height="62dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="56dp"
-            android:layout_marginRight="56dp"
-            android:background="@drawable/button_background"
-            android:elevation="0dp"
-            android:fontFamily="@font/playfair_display_sc_bold"
-            android:stateListAnimator="@null"
-            android:text="@string/login_register_button"
-            android:textColor="@color/textSecondaryDark" />
-
-        <TextView
-            android:id="@+id/tvRegisterIntro"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/btnRegister"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:fontFamily="@font/gabriela"
-            android:gravity="center"
-            android:text="@string/login_register_intro"
-            android:textSize="18sp" />
 
         <RelativeLayout
             android:id="@+id/rlLoginFrame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@id/tvRegisterIntro"
             android:layout_below="@id/tvLoginIntro"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="20dp"
-            android:gravity="center">
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/form_background"
+            android:paddingBottom="8dp"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:paddingTop="48dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvLoginIntro"
+            app:layout_constraintVertical_bias="0.32999998">
 
-            <RelativeLayout
+            <TextView
+                android:id="@+id/tvLoginTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/form_background"
-                android:paddingBottom="8dp"
-                android:paddingLeft="32dp"
-                android:paddingRight="32dp"
-                android:paddingTop="48dp">
+                android:fontFamily="@font/open_sans_light"
+                android:text="@string/login_title"
+                android:textColor="@color/textDarkRed" />
 
-                <TextView
-                    android:id="@+id/tvLoginTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_light"
-                    android:text="@string/login_title"
-                    android:textColor="@color/textDarkRed" />
+            <EditText
+                android:id="@+id/etLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvLoginTitle"
+                android:layout_marginTop="4dp"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:drawableLeft="@drawable/ic_login"
+                android:drawablePadding="8dp"
+                android:hint="@string/login_hint"
+                android:inputType="textEmailAddress" />
 
-                <EditText
-                    android:id="@+id/etLogin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tvLoginTitle"
-                    android:layout_marginTop="4dp"
-                    android:backgroundTint="@color/colorPrimaryDark"
-                    android:drawableLeft="@drawable/ic_login"
-                    android:drawablePadding="8dp"
-                    android:hint="@string/login_hint"
-                    android:inputType="textEmailAddress" />
+            <TextView
+                android:id="@+id/tvErrorLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/etLogin"
+                android:drawablePadding="8dp"
+                android:drawableRight="@drawable/ic_error_validation"
+                android:paddingLeft="16dp"
+                android:textColor="@color/loginError"
+                android:textSize="14sp"
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/tvErrorLogin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/etLogin"
-                    android:drawablePadding="8dp"
-                    android:drawableRight="@drawable/ic_error_validation"
-                    android:paddingLeft="16dp"
-                    android:textColor="@color/loginError"
-                    android:textSize="14sp"
-                    android:visibility="gone" />
+            <TextView
+                android:id="@+id/tvPasswordTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvErrorLogin"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/open_sans_light"
+                android:text="@string/login_password_title"
+                android:textColor="@color/textDarkRed" />
 
-                <TextView
-                    android:id="@+id/tvPasswordTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tvErrorLogin"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="@font/open_sans_light"
-                    android:text="@string/login_password_title"
-                    android:textColor="@color/textDarkRed" />
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvPasswordTitle"
+                android:layout_marginTop="4dp"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:drawableLeft="@drawable/ic_password"
+                android:drawablePadding="8dp"
+                android:hint="@string/login_password_hint"
+                android:inputType="textPassword" />
 
-                <EditText
-                    android:id="@+id/etPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tvPasswordTitle"
-                    android:layout_marginTop="4dp"
-                    android:backgroundTint="@color/colorPrimaryDark"
-                    android:drawableLeft="@drawable/ic_password"
-                    android:drawablePadding="8dp"
-                    android:hint="@string/login_password_hint"
-                    android:inputType="textPassword" />
+            <TextView
+                android:id="@+id/tvErrorPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/etPassword"
+                android:drawablePadding="8dp"
+                android:drawableRight="@drawable/ic_error_validation"
+                android:paddingLeft="16dp"
+                android:textColor="@color/loginError"
+                android:textSize="14sp"
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/tvErrorPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/etPassword"
-                    android:drawablePadding="8dp"
-                    android:drawableRight="@drawable/ic_error_validation"
-                    android:paddingLeft="16dp"
-                    android:textColor="@color/loginError"
-                    android:textSize="14sp"
-                    android:visibility="gone" />
+            <TextView
+                android:id="@+id/tvPasswordRecovery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvErrorPassword"
+                android:layout_marginTop="4dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="@font/open_sans_semibold"
+                android:text="@string/login_password_recovery"
+                android:textColor="@color/textDarkRed" />
 
-                <TextView
-                    android:id="@+id/tvPasswordRecovery"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tvErrorPassword"
-                    android:layout_marginTop="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:fontFamily="@font/open_sans_semibold"
-                    android:text="@string/login_password_recovery"
-                    android:textColor="@color/textDarkRed" />
+            <Button
+                android:id="@+id/btnEnter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvPasswordRecovery"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_white_round"
+                android:elevation="8dp"
+                android:fontFamily="@font/playfair_display_sc_bold"
+                android:text="@string/action_enter"
+                android:textColor="@color/textSecondaryDark" />
 
-                <Button
-                    android:id="@+id/btnEnter"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tvPasswordRecovery"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/button_white_round"
-                    android:elevation="8dp"
-                    android:fontFamily="@font/playfair_display_sc_bold"
-                    android:text="@string/action_enter"
-                    android:textColor="@color/textSecondaryDark" />
-
-                <android.support.v4.widget.Space
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_below="@id/btnEnter" />
-            </RelativeLayout>
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_below="@id/btnEnter" />
         </RelativeLayout>
-    </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/llRegisterContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/rlLoginFrame"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rlLoginFrame"
+            app:layout_constraintVertical_bias="1.0">
+
+            <TextView
+                android:id="@+id/tvRegisterIntro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:fontFamily="@font/gabriela"
+                android:gravity="center"
+                android:text="@string/login_register_intro"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnRegister"
+                android:layout_width="match_parent"
+                android:layout_height="62dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="56dp"
+                android:layout_marginRight="56dp"
+                android:background="@drawable/button_background"
+                android:elevation="0dp"
+                android:fontFamily="@font/playfair_display_sc_bold"
+                android:stateListAnimator="@null"
+                android:text="@string/login_register_button"
+                android:textColor="@color/textSecondaryDark" />
+        </LinearLayout>
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.8"
+            stickButton:layout_constraintGuide_begin="678dp" />
+
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="28dp"
+            android:alpha="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            stickButton:srcCompat="@drawable/logo" />
+
+    </android.support.constraint.ConstraintLayout>
 </ScrollView>

@@ -688,6 +688,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 .setMessage(getString(message))
                 .show();*/
         AndroidUtils.showLongToast(this, getString(message));
+        hideLoadingDialog();
     }
 
     private void leaveFromRoom() {

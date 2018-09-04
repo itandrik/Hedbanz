@@ -75,10 +75,11 @@ class AskingQuestionOtherUserAdapterDelegate @Inject constructor() :
             holder.bindShowHideLoginAndImage(false)
             holder.bindUserLogin(login)
             holder.bindMessage(question.message)
-            holder.bindUserImage(userFrom.iconId.resId)
+            holder.bindUserImage(userFrom?.iconId?.resId ?: R.drawable.logo)
             holder.bindTime(question.createDate.time)
 
-            holder.bindProgress(question.yesVoters, question.noVoters, question.winVoters, question.allUsersCount)
+            holder.bindProgress(question.yesVoters, question.noVoters,
+                    question.winVoters, question.allUsersCount ?: 0)
             holder.bindWin(question.isWin)
             holder.thumbsDownClickObservable(question.questionId).subscribe(thumbsDownSubject)
             holder.thumbsUpClickObservable(question.questionId).subscribe(thumbsUpSubject)

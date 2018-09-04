@@ -167,7 +167,7 @@
     <string name="game_exit_room_title">Выйти или не выйти, вот в чем вопрос&#8230;</string>
     <string name="game_action_resume_game">Продолжить</string>
     <string name="game_action_exit_game">Кидануть ребят</string>
-    <string name="game_menu_this_user">Это вы</string>
+    <string name="game_menu_this_user">Вы</string>
     <string name="game_kicked_title">Вы исключены из комнаты</string>
     <string name="game_kicked_message">Вы не присутствовали в игре на этапе загадывания слов долгое время, по-этому вас исключили с комнаты. Вы можете создать другую комнату, либо присоединиться к другим игрокам.</string>
     <string name="game_toolbar_open_menu_content_description">Открыть меню</string>

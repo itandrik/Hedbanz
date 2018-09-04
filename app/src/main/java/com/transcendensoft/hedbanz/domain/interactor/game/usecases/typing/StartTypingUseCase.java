@@ -17,6 +17,7 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.typing;
 
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
+import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.interactor.game.exception.IncorrectJsonException;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.room.RoomInfoUseCase;
@@ -43,7 +44,7 @@ import io.reactivex.subjects.PublishSubject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-public class StartTypingUseCase extends ObservableUseCase<User, List<User>> {
+public class StartTypingUseCase extends ObservableUseCase<User, Room> {
     private PublishSubject<User> mSubject;
     private GameDataRepository mRepository;
     private PreferenceManager mPreferenceManager;
@@ -60,9 +61,9 @@ public class StartTypingUseCase extends ObservableUseCase<User, List<User>> {
     }
 
     @Override
-    protected Observable<User> buildUseCaseObservable(List<User> params) {
+    protected Observable<User> buildUseCaseObservable(Room params) {
         Observable<User> observable = mRepository.typingObservable()
-                .flatMap(jsonObject -> convertUserIdToUserObservable(params, jsonObject));
+                .flatMap(jsonObject -> convertUserIdToUserObservable(params.getPlayers(), jsonObject));
         observable.subscribe(mSubject);
         return mSubject;
     }

@@ -17,8 +17,8 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.guess;
 
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
 import com.transcendensoft.hedbanz.domain.entity.Question;
-import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
+import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ import io.reactivex.subjects.PublishSubject;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class QuestionAskingUseCase extends ObservableUseCase<Question, List<User>> {
+public class QuestionAskingUseCase extends ObservableUseCase<Question, List<RxUser>> {
     private PublishSubject<Question> mSubject;
     private GameDataRepository mGameDataRepository;
     @Inject
@@ -51,22 +51,24 @@ public class QuestionAskingUseCase extends ObservableUseCase<Question, List<User
     }
 
     @Override
-    protected Observable<Question> buildUseCaseObservable(List<User> users) {
-        initSubject(users);
+    protected Observable<Question> buildUseCaseObservable(List<RxUser> rxUsers) {
+        initSubject(rxUsers);
         return mSubject;
     }
 
-    private void initSubject(List<User> users) {
+    private void initSubject(List<RxUser> users) {
         Observable<Question> observable = getObservable(users);
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
     }
 
-    private Observable<Question> getObservable(List<User> users) {
+    private Observable<Question> getObservable(List<RxUser> users) {
         return mGameDataRepository.questionAskingObservable()
                 .map(question -> {
-                    User userWithWord = getUserWithId(users, question.getUserFrom().getId());
-                    question.setUserFrom(userWithWord);
+                    RxUser userWithWord = getRxUser(users, question.getUserFrom().getId());
+                    if(userWithWord != null && userWithWord.getUser() != null) {
+                        question.setUserFrom(userWithWord.getUser());
+                    }
                     question.setLoading(false);
                     question.setFinished(true);
                     return question;
@@ -74,10 +76,10 @@ public class QuestionAskingUseCase extends ObservableUseCase<Question, List<User
     }
 
     @Nullable
-    private User getUserWithId(List<User> users, long id) {
-        for (User user : users) {
-            if (user.getId() == id) {
-                return user;
+    private RxUser getRxUser(List<RxUser> rxUsers, Long userId) {
+        for (RxUser rxUser : rxUsers) {
+            if (rxUser.getUser().getId().equals(userId)) {
+                return rxUser;
             }
         }
         return null;

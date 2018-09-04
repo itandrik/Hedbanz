@@ -33,7 +33,7 @@
             android:name=".presentation.StartActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ThemeMainTranslucentToolbar"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="adjustResize|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
