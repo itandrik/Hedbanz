@@ -48,10 +48,11 @@ class InviteAdapter @Inject constructor() : RecyclerView.Adapter<InviteViewHolde
     override fun onBindViewHolder(holder: InviteViewHolder, position: Int) {
         val friend = items[position]
 
-        holder.bindFriendIcon(friend.iconId)
+        holder.bindFriendIcon(friend.iconId.resId)
         holder.bindFriendName(friend.login)
         holder.bindFlags(friend.isInGame, friend.isInvited)
-        holder.bindOnClick(friend)
+        holder.bindIsSelected(friend.isSelected)
+        holder.bindOnClick(friend.isInGame, friend.isInvited, friend)
     }
 
     fun getSelectedFriends(): List<Friend> = items.filter { it.isSelected }

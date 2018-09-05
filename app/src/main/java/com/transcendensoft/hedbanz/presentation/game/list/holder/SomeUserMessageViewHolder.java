@@ -87,7 +87,7 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
 
     public void bindUserImage(@DrawableRes int drawableRes){
         VectorDrawableCompat drawableCompat = VectorDrawableCompat.create(
-                mContext.getResources(), R.drawable.logo, null);
+                mContext.getResources(), drawableRes, null);
         mIvUserImage.setImageDrawable(drawableCompat);
 
         if(mIvUserImage.getVisibility() == View.VISIBLE){
@@ -144,7 +144,7 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public void bindIsWinner(boolean isWinner){
+    public void bindIsWinner(boolean isWinner, boolean isHide){
         if(isWinner){
             mIvWin.setVisibility(View.VISIBLE);
             mTvUserWord.setVisibility(View.GONE);
@@ -152,7 +152,7 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
             mIvWin.setVisibility(View.GONE);
             if(TextUtils.isEmpty(mTvUserWord.getText())){
                 mTvUserWord.setVisibility(View.GONE);
-            } else {
+            } else if(!isHide) {
                 mTvUserWord.setVisibility(View.VISIBLE);
             }
         }

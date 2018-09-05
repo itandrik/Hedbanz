@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
@@ -45,10 +46,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.entity.HedbanzAnalyticsKt;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
@@ -85,8 +88,8 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     @BindView(R.id.swipeRefreshLayout) SwipeRefreshLayout mRefreshLayout;
     @BindView(R.id.rvRooms) RecyclerView mRecycler;
     @BindView(R.id.rlEmptyListContainer) RelativeLayout mRlEmptyList;
-    @BindView(R.id.rlErrorNetwork) RelativeLayout mRlErrorNetwork;
-    @BindView(R.id.rlErrorServer) RelativeLayout mRlErrorServer;
+    @BindView(R.id.rlErrorNetwork) ConstraintLayout mRlErrorNetwork;
+    @BindView(R.id.rlErrorServer) ConstraintLayout mRlErrorServer;
     @BindView(R.id.flLoadingContainer) FrameLayout mFlLoadingContainer;
     @BindView(R.id.parent) RelativeLayout mParentLayout;
 
@@ -113,6 +116,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     @Inject RoomsAdapter mAdapter;
     @Inject MainActivity mActivity;
     @Inject PreferenceManager mPreferenceManager;
+    @Inject FirebaseAnalytics mFirebaseAnalytics;
 
     @Inject
     public RoomsFragment() {
@@ -232,6 +236,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     private void initSearchOnClickListeners() {
         mIvCloseSearch.setOnClickListener(v -> {
             closeSearchAndRefresh();
+            mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.CLOSE_FILTER_BUTTON, null);
         });
 
         mIvSearchFilter.setOnClickListener(v -> {
@@ -240,6 +245,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
             } else {
                 mCvFilters.setVisibility(VISIBLE);
             }
+            mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.FILTER_BUTTON, null);
         });
     }
 
@@ -399,6 +405,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         mRlSearchContainer.setVisibility(View.VISIBLE);
         mSvRoomSearch.onActionViewExpanded();
         mFabSearch.hide();
+        mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.SEARCH_BUTTON, null);
     }
 
     public void closeSearchAndRefresh() {

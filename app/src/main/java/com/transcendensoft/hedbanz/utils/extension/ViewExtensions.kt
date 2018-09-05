@@ -46,3 +46,8 @@ fun View.setupKeyboardHiding(activity: Activity) {
         }
     }
 }
+
+fun Activity.hasNavbar(): Boolean {
+    val id = resources.getIdentifier("config_showNavigationBar", "bool", "android")
+    return id > 0 && resources.getBoolean(id);
+}

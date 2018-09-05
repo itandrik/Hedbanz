@@ -49,7 +49,7 @@ class ChangeIconAdapter @Inject constructor(): RecyclerView.Adapter<ChangeIconVi
     override fun onBindViewHolder(holder: ChangeIconViewHolder, position: Int) {
         val selectableIcon = items[position]
 
-        holder.bindUserIcon(selectableIcon.iconId)
+        holder.bindUserIcon(selectableIcon.iconRes)
         holder.bindIconSelected(selectableIcon.isSelected)
         holder.bindUserIconClickListener(selectableIcon).subscribe(clickSubject)
     }

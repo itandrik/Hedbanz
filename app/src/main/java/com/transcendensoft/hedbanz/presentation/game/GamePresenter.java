@@ -90,7 +90,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         if (model.getMessages() == null || model.getMessages().isEmpty()) {
             model.setMessages(new ArrayList<>());
             view().showLoading();
-            if(!isSocketInititalized) {
+            if (!isSocketInititalized) {
                 initSockets();
                 isSocketInititalized = true;
             }
@@ -119,6 +119,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         if (mPreferenceManger.isLastUser()) {
             view.showLastUserDialog();
         }
+        mPreferenceManger.setIsGameEnabled(true);
     }
 
     @Override
@@ -127,6 +128,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         if (mGameInteractor != null && !isLeaveFromRoom) {
             mGameInteractor.stopSocket();
         }
+        mPreferenceManger.setIsGameEnabled(false);
     }
 
     @Override
@@ -211,23 +213,27 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     @Override
     public void processGuessWordSubmit(Observable<Question> clickObservable) {
-        addDisposable(clickObservable.subscribe(
-                questionFromView -> {
-                    Question question = mGameInteractor.guessWord(questionFromView.getQuestionId(),
-                            questionFromView.getMessage());
+        addDisposable(clickObservable
+                .distinct(Question::getQuestionId)
+                .subscribe(
+                        questionFromView -> {
+                            Question question = mGameInteractor.guessWord(questionFromView.getQuestionId(),
+                                    questionFromView.getMessage());
 
-                    question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
-                    question.setMessage(questionFromView.getMessage());
-                    question.setAllUsersCount(model.getPlayers().size() - 1);
+                            question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
+                            question.setMessage(questionFromView.getMessage());
+                            question.setAllUsersCount(model.getPlayers().size() - 1);
 
-                    updateSettingQuestionViewParameters(question.getUserFrom(),
-                            false, true, questionFromView.getMessage());
+                            updateSettingQuestionViewParameters(question.getUserFrom(),
+                                    false, true, questionFromView.getMessage());
 
-                    model.getMessages().add(question);
-                    view().addMessage(question);
-                },
-                err -> Timber.e("Error while guess word. Message : " + err.getMessage())
-        ));
+                            model.getMessages().add(question);
+                            view().addMessage(question);
+
+                            disposeAll();
+                        },
+                        err -> Timber.e("Error while guess word. Message : " + err.getMessage())
+                ));
     }
 
     private void updateSettingQuestionViewParameters(User senderUser, boolean isFinished,
@@ -272,7 +278,10 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     @Override
     public void processRestartGameClick(Observable<View> clickObservable) {
         addDisposable(clickObservable
-                .subscribe(view -> mGameInteractor.restartGame(),
+                .subscribe(view -> {
+                            view().showLoadingDialog();
+                            mGameInteractor.restartGame();
+                        },
                         err -> Timber.e("Error while restart game click." +
                                 " Message : " + err.getMessage())));
 
@@ -498,6 +507,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         }, this::processEventListenerOnError);
 
         mGameInteractor.onWordSettingListener(wordReceiverUser -> {
+            view().hideLoadingDialog();
             Word word = new Word.Builder()
                     .setMessageType(MessageType.WORD_SETTING)
                     .setWordReceiverUser(wordReceiverUser)
@@ -584,7 +594,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 modelMessage.setLoading(false);
                 modelMessage.setFinished(true);
                 modelMessage.setCreateDate(message.getCreateDate());
-                if (modelMessage.getClientMessageId() == message.getClientMessageId()) {
+                if (modelMessage.getClientMessageId().equals(message.getClientMessageId())) {
                     view().setMessage(i, modelMessage);
                     break;
                 }
@@ -651,7 +661,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 modelMessage.setFinished(true);
                 modelMessage.setCreateDate(question.getCreateDate());
                 if (modelMessage instanceof Question &&
-                        modelMessage.getClientMessageId() == question.getClientMessageId()) {
+                        modelMessage.getClientMessageId().equals(question.getClientMessageId())) {
                     Question modelQuestion = (Question) modelMessage;
                     modelQuestion.setQuestionId(question.getQuestionId());
                     modelQuestion.setNoVoters(question.getNoVoters());

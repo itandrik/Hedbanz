@@ -3,6 +3,7 @@ package com.transcendensoft.hedbanz.presentation.invite.list
 import android.content.Context
 import android.support.annotation.DrawableRes
 import android.support.v7.widget.AppCompatCheckBox
+import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
@@ -37,25 +38,26 @@ import kotlinx.android.synthetic.main.item_friend_invite.view.*
  *         Developed by <u>Transcendensoft</u>
  */
 class InviteViewHolder(private val mContext: Context,
-                       private val mItemView: View): RecyclerView.ViewHolder(mItemView) {
+                       private val mItemView: View) : RecyclerView.ViewHolder(mItemView) {
     private val mIvIcon: ImageView? = mItemView.ivFriendIcon
     private val mTvFriendName: TextView? = mItemView.tvFriendName
     private val mTvSystemText: TextView? = mItemView.tvSystemText
     private val mChbSelect: AppCompatCheckBox? = mItemView.chbFriendSelected
+    private val mCard: CardView? = mItemView.friendCard
 
-    fun bindFriendIcon(@DrawableRes drawable: Int){
+    fun bindFriendIcon(@DrawableRes drawable: Int) {
         mIvIcon?.setImageResource(drawable)
     }
 
-    fun bindFriendName(name: String?){
-        if(name.isNullOrEmpty()){
+    fun bindFriendName(name: String?) {
+        if (name.isNullOrEmpty()) {
             mTvFriendName?.text = ""
         } else {
             mTvFriendName?.text = name
         }
     }
 
-    fun bindFlags(isInGame: Boolean, isInvited: Boolean){
+    fun bindFlags(isInGame: Boolean, isInvited: Boolean) {
         when {
             isInGame -> {
                 mTvSystemText?.text = mContext.getString(R.string.invite_already_in_game)
@@ -80,10 +82,19 @@ class InviteViewHolder(private val mContext: Context,
         }
     }
 
-    fun bindOnClick(friend: Friend) {
-        mItemView.setOnClickListener {
-            mChbSelect?.isSelected = !mChbSelect?.isSelected!!
-            friend.isSelected = mChbSelect.isSelected
+    fun bindIsSelected(isSelected: Boolean) {
+        mChbSelect?.isSelected = isSelected
+    }
+
+    fun bindOnClick(isInGame: Boolean, isInvited: Boolean, friend: Friend) {
+        if (!isInGame && !isInvited) {
+            mCard?.setOnClickListener {
+                friend.isSelected = mChbSelect?.isChecked ?: false
+                mChbSelect?.isChecked = !(mChbSelect?.isChecked ?: false)
+            }
+            mChbSelect?.setOnCheckedChangeListener { _, isChecked ->
+                friend.isSelected = isChecked
+            }
         }
     }
 }

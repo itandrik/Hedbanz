@@ -112,6 +112,23 @@ public class UserDataRepositoryImpl implements UserDataRepository {
     }
 
     @Override
+    public Observable<User> updateUserInfo(User user, DataPolicy dataPolicy) {
+        if (dataPolicy == DataPolicy.API) {
+            return mUserApiDataSource.updateUserInfo(mUserModelDataMapper.convert(user))
+                    .map(mUserModelDataMapper::convert);
+        } else if (dataPolicy == DataPolicy.DB) {
+            User currentUser = mPreferenceManager.getUser();
+            currentUser.setId(user.getId());
+            currentUser.setMoney(user.getMoney());
+            currentUser.setIconId(user.getIconId());
+            mPreferenceManager.setUser(currentUser);
+
+            return Observable.just(currentUser);
+        }
+        return Observable.error(new UnsupportedOperationException());
+    }
+
+    @Override
     public Observable<User> getUser(long id, DataPolicy dataPolicy) {
         if (dataPolicy == DataPolicy.API) {
             return mUserApiDataSource.getUser(id)

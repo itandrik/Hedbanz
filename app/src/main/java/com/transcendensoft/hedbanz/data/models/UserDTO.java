@@ -31,7 +31,7 @@ public class UserDTO {
 
     @SerializedName("id")
     @Expose
-    private long id;
+    private Long id;
     @SerializedName("userId")
     @Expose
     private Long userId;
@@ -43,7 +43,7 @@ public class UserDTO {
     private String password;
     @SerializedName("money")
     @Expose
-    private long money;
+    private Long money;
     @SerializedName("registrationDate")
     @Expose
     private Long registrationDate;
@@ -52,7 +52,7 @@ public class UserDTO {
     private String login;
     @SerializedName("status")
     @Expose
-    private int status;
+    private Integer status;
     @SerializedName("isFriend")
     @Expose
     private boolean isFriend;
@@ -61,7 +61,7 @@ public class UserDTO {
     private String word;
     @SerializedName("attempt")
     @Expose
-    private int attempts;
+    private Integer attempts;
     @SerializedName("securityToken")
     @Expose
     private String securityToken;
@@ -70,18 +70,18 @@ public class UserDTO {
     private boolean isWinner;
     @SerializedName("gamesNumber")
     @Expose
-    private int gamesNumber;
+    private Integer gamesNumber;
     @SerializedName("friendsNumber")
     @Expose
-    private int friendsNumber;
+    private Integer friendsNumber;
     @SerializedName("iconId")
     @Expose
-    private int iconId;
+    private Integer iconId;
 
-    protected UserDTO(long id, String email, String password, long money,
-                      Long registrationDate, String login, int status,
-                      boolean isFriend, String word, Long userId, int attempts,
-                      boolean isWinner, int gamesNumber, int friendsNumber, int iconId) {
+    protected UserDTO(Long id, String email, String password, Long money,
+                      Long registrationDate, String login, Integer status,
+                      boolean isFriend, String word, Long userId, Integer attempts,
+                      boolean isWinner, Integer gamesNumber, Integer friendsNumber, Integer iconId) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -102,11 +102,11 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -126,11 +126,11 @@ public class UserDTO {
         this.password = password;
     }
 
-    public long getMoney() {
+    public Long getMoney() {
         return money;
     }
 
-    public void setMoney(long money) {
+    public void setMoney(Long money) {
         this.money = money;
     }
 
@@ -150,11 +150,11 @@ public class UserDTO {
         this.registrationDate = registrationDate;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
@@ -182,11 +182,11 @@ public class UserDTO {
         this.userId = userId;
     }
 
-    public int getAttempts() {
+    public Integer getAttempts() {
         return attempts;
     }
 
-    public void setAttempts(int attempts) {
+    public void setAttempts(Integer attempts) {
         this.attempts = attempts;
     }
 
@@ -206,29 +206,29 @@ public class UserDTO {
         isWinner = winner;
     }
 
-    public int getGamesNumber() {
+    public Integer getGamesNumber() {
         return gamesNumber;
     }
 
-    public UserDTO setGamesNumber(int gamesNumber) {
+    public UserDTO setGamesNumber(Integer gamesNumber) {
         this.gamesNumber = gamesNumber;
         return this;
     }
 
-    public int getFriendsNumber() {
+    public Integer getFriendsNumber() {
         return friendsNumber;
     }
 
-    public UserDTO setFriendsNumber(int friendsNumber) {
+    public UserDTO setFriendsNumber(Integer friendsNumber) {
         this.friendsNumber = friendsNumber;
         return this;
     }
 
-    public int getIconId() {
+    public Integer getIconId() {
         return iconId;
     }
 
-    public void setIconId(int iconId) {
+    public void setIconId(Integer iconId) {
         this.iconId = iconId;
     }
 
@@ -237,34 +237,34 @@ public class UserDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserDTO user = (UserDTO) o;
+        UserDTO userDTO = (UserDTO) o;
 
-        return id == user.id;
+        return id != null ? id.equals(userDTO.id) : userDTO.id == null;
     }
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return id != null ? id.hashCode() : 0;
     }
 
     public static class Builder {
-        private long id;
+        private Long id;
         private String email;
         private String password;
-        private long money;
+        private Long money;
         private Long registrationDate;
         private String login;
-        private int status;
+        private Integer status;
         private boolean isFriend;
         private String word;
         private Long userId;
-        private int attempts;
+        private Integer attempts;
         private boolean isWinner;
-        private int gamesNumber;
-        private int friendsNumber;
-        private int iconId;
+        private Integer gamesNumber;
+        private Integer friendsNumber;
+        private Integer iconId;
 
-        public Builder setId(long id) {
+        public Builder setId(Long id) {
             this.id = id;
             return this;
         }
@@ -279,7 +279,7 @@ public class UserDTO {
             return this;
         }
 
-        public Builder setMoney(long money) {
+        public Builder setMoney(Long money) {
             this.money = money;
             return this;
         }
@@ -314,7 +314,7 @@ public class UserDTO {
             return this;
         }
 
-        public Builder setAttempts(int attempts) {
+        public Builder setAttempts(Integer attempts) {
             this.attempts = attempts;
             return this;
         }
@@ -324,17 +324,17 @@ public class UserDTO {
             return this;
         }
 
-        public Builder setGamesNumber(int gamesNumber) {
+        public Builder setGamesNumber(Integer gamesNumber) {
             this.gamesNumber = gamesNumber;
             return this;
         }
 
-        public Builder setFriendsNumber(int friendsNumber) {
+        public Builder setFriendsNumber(Integer friendsNumber) {
             this.friendsNumber = friendsNumber;
             return this;
         }
 
-        public Builder setIconId(int iconId) {
+        public Builder setIconId(Integer iconId) {
             this.iconId = iconId;
             return this;
         }

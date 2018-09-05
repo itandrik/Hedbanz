@@ -1,5 +1,7 @@
 package com.transcendensoft.hedbanz.domain.entity;
 
+import javax.sql.DataSource;
+
 public enum PlayerStatus {
     ACTIVE(1),
     AFK(2),

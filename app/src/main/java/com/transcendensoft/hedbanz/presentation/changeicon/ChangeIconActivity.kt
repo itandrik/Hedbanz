@@ -11,6 +11,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.transcendensoft.hedbanz.R
+import com.transcendensoft.hedbanz.domain.entity.User
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity
 import com.transcendensoft.hedbanz.presentation.changeicon.list.ChangeIconAdapter
 import com.transcendensoft.hedbanz.presentation.changeicon.list.SelectableIcon
@@ -54,6 +55,7 @@ class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
         setContentView(R.layout.activity_change_user_icon)
         ButterKnife.bind(this, this)
 
+        presenter.setModel(User())
         initRecycler()
         initToolbar()
     }
@@ -98,6 +100,11 @@ class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
         presenter.updateUserIcon()
     }
 
+    @OnClick(R.id.ivBack)
+    fun onBackClicked(){
+        onBackPressed()
+    }
+
     /*------------------------------------*
      *--------- Set data to view ---------*
      *------------------------------------*/
@@ -110,6 +117,7 @@ class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
             it.isSelected = it.iconId == iconId
             it
         }
+        adapter.notifyDataSetChanged()
     }
 
     /*------------------------------------*
@@ -118,7 +126,7 @@ class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
     override fun showSuccessUpdateUserIcon() {
         val d = VectorDrawableCompat.create(resources, R.drawable.ic_win_happy, null)
         AlertDialog.Builder(this)
-                .setPositiveButton(getString(R.string.action_ok)) { dialog, which -> dialog.dismiss() }
+                .setPositiveButton(getString(R.string.action_ok)) { dialog, _ -> dialog.dismiss() }
                 .setIcon(d)
                 .setTitle(getString(R.string.change_icon_success_title))
                 .setMessage(getString(R.string.change_icon_success_message))
@@ -128,7 +136,7 @@ class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
     override fun showErrorUpdateUserIcon() {
         val d = VectorDrawableCompat.create(resources, R.drawable.ic_unhappy, null)
         AlertDialog.Builder(this)
-                .setPositiveButton(getString(R.string.action_ok)) { dialog, which -> dialog.dismiss() }
+                .setPositiveButton(getString(R.string.action_ok)) { dialog, _ -> dialog.dismiss() }
                 .setIcon(d)
                 .setTitle(getString(R.string.change_icon_error_title))
                 .setMessage(getString(R.string.change_icon_error_message))

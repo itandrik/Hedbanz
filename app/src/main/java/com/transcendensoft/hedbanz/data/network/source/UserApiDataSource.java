@@ -66,6 +66,11 @@ public class UserApiDataSource extends ApiDataSource implements UserDataSource{
     }
 
     @Override
+    public Observable<UserDTO> updateUserInfo(UserDTO user) {
+        return mService.updateUserInfo(user);
+    }
+
+    @Override
     public Observable<?> forgotPassword(String login, String locale) {
         HashMap<String, Object> body = new HashMap<>();
         body.put("login", login);

@@ -37,6 +37,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 
 /**
@@ -126,17 +127,17 @@ public class RoomDataRepositoryImpl implements RoomDataRepository {
     }
 
     @Override
-    public Completable isPasswordCorrect(long userId, long roomId, String password, DataPolicy dataPolicy) {
+    public Maybe<Object> isPasswordCorrect(long userId, long roomId, String password, DataPolicy dataPolicy) {
         if (dataPolicy == DataPolicy.API) {
             return mRoomsApiDataSource.isPasswordCorrect(userId, roomId, password);
         } else if (dataPolicy == DataPolicy.DB) {
-            return Completable.error(new UnsupportedOperationException());
+            return Maybe.error(new UnsupportedOperationException());
         }
-        return Completable.error(new UnsupportedOperationException());
+        return Maybe.error(new UnsupportedOperationException());
     }
 
     @Override
-    public Completable inviteFriend(Invite invite) {
+    public Maybe<Object> inviteFriend(Invite invite) {
         return mRoomsApiDataSource.inviteFriend(mInviteModelDataMapper.convert(invite));
     }
 }

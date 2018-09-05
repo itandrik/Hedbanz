@@ -1,6 +1,8 @@
 package com.transcendensoft.hedbanz.presentation.changeicon
 
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager
+import com.transcendensoft.hedbanz.domain.entity.USER_ICON
 import com.transcendensoft.hedbanz.domain.entity.User
 import com.transcendensoft.hedbanz.domain.entity.UserIcon
 import com.transcendensoft.hedbanz.domain.interactor.user.UpdateUserInteractor
@@ -27,22 +29,24 @@ import javax.inject.Inject
  *
  */
 /**
- * Implementation of change user icon presenter.
- * Here are work with server by sockets and other like
- * processing game algorithm.
+ * Implementation of change icon presenter.
+ * Here are work with server to updating user info
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
 class ChangeIconPresenter @Inject constructor(
         private val updateUserInteractor: UpdateUserInteractor,
-        private val preferenceManager: PreferenceManager
+        private val preferenceManager: PreferenceManager,
+        private val firebaseAnalytics: FirebaseAnalytics
 ) : BasePresenter<User, ChangeIconContract.View>(), ChangeIconContract.Presenter {
-    private var selectedIconId: Int = 0
+    lateinit var selectedUserIcon: UserIcon
 
     override fun updateView() {
+        selectedUserIcon = preferenceManager.user.iconId
+
         val icons = UserIcon.values().map {
-            val isSelected = selectedIconId == it.id
+            val isSelected = selectedUserIcon.id == it.id
             SelectableIcon(isSelected, it.id, it.resId)
         }
         view()?.setImages(icons)
@@ -56,8 +60,9 @@ class ChangeIconPresenter @Inject constructor(
         addDisposable(
                 clickObservable.subscribe(
                         {
-                            selectedIconId = it
+                            selectedUserIcon = UserIcon.getUserIconById(it)
                             view()?.selectIconWithId(it)
+                            firebaseAnalytics.setUserProperty(USER_ICON, it.toString())
                         },
                         {
                             Timber.e("Error while select icon." +
@@ -68,17 +73,22 @@ class ChangeIconPresenter @Inject constructor(
 
     override fun updateUserIcon() {
         val currentUser = preferenceManager.user
-        currentUser.iconId = selectedIconId
+        currentUser.iconId = selectedUserIcon
 
         val params: UpdateUserInteractor.Params = UpdateUserInteractor.Params()
                 .setUpdateOldPassword(false)
                 .setUser(currentUser)
 
+        view()?.showLoadingDialog()
         updateUserInteractor.execute(params,
                 {
                     preferenceManager.user = currentUser
                     view()?.showSuccessUpdateUserIcon()
+                    view()?.hideLoadingDialog()
                 },
-                { view()?.showErrorUpdateUserIcon() })
+                {
+                    view()?.showErrorUpdateUserIcon()
+                    view()?.hideLoadingDialog()
+                })
     }
 }

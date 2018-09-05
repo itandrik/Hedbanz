@@ -10,6 +10,7 @@ import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.Animatable2Compat;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
@@ -40,6 +41,7 @@ import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.game.list.GameListAdapter;
 import com.transcendensoft.hedbanz.presentation.notification.NotificationManager;
+import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
 import com.transcendensoft.hedbanz.utils.extension.ViewExtensionsKt;
 import com.vanniktech.emoji.EmojiEditText;
@@ -67,8 +69,8 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @BindView(R.id.rvGameList) RecyclerView mRecycler;
     @BindView(R.id.etChatMessage) EmojiEditText mEtChatMessage;
     @BindView(R.id.rlGameDataContainer) RelativeLayout mRlDataContainer;
-    @BindView(R.id.rlErrorNetwork) RelativeLayout mRlErrorNetwork;
-    @BindView(R.id.rlErrorServer) RelativeLayout mRlErrorServer;
+    @BindView(R.id.rlErrorNetwork) ConstraintLayout mRlErrorNetwork;
+    @BindView(R.id.rlErrorServer) ConstraintLayout mRlErrorServer;
     @BindView(R.id.flLoadingContainer) FrameLayout mFlLoadingContainer;
     @BindView(R.id.tvSystemField) TextView mTvSystemField;
     @BindView(R.id.ivSystemAnimation) ImageView mIvSystemAnimation;
@@ -254,6 +256,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         mParentLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                // mParentLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
                 Rect r = new Rect();
                 mParentLayout.getWindowVisibleDisplayFrame(r);
@@ -268,10 +271,13 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 } else {
                     isKeyboardOpened = false;
                     mEmojiPopup.dismiss();
-                    Drawable imageDrawable = VectorDrawableCompat.create(
-                            getResources(), R.drawable.ic_smile_keyboard, null);
-                    mIvEmojiKeyboard.setImageDrawable(imageDrawable);
+                    if (!isEmojiKeyboardImageClicked) {
+                        Drawable imageDrawable = VectorDrawableCompat.create(
+                                getResources(), R.drawable.ic_smile_keyboard, null);
+                        mIvEmojiKeyboard.setImageDrawable(imageDrawable);
+                    }
                 }
+                isEmojiKeyboardImageClicked = false;
             }
         });
     }
@@ -326,13 +332,22 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @OnClick(R.id.ivEmoji)
     protected void onEmojiKeyboardClicked() {
         mEmojiPopup.toggle();
-        Drawable imageDrawable = null;
-        if (mEmojiPopup.isShowing() || !isKeyboardOpened) {
-            imageDrawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_keyboard, null);
-        } else {
-            imageDrawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_smile_keyboard, null);
+        isEmojiKeyboardImageClicked = true;
+        processSmileKeyboardIcon();
+    }
+
+    private boolean isEmojiKeyboardImageClicked = false;
+
+    private void processSmileKeyboardIcon() {
+        if (mEmojiPopup != null) {
+            Drawable imageDrawable = null;
+            if (mEmojiPopup.isShowing() || !isKeyboardOpened) {
+                imageDrawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_keyboard, null);
+            } else {
+                imageDrawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_smile_keyboard, null);
+            }
+            mIvEmojiKeyboard.setImageDrawable(imageDrawable);
         }
-        mIvEmojiKeyboard.setImageDrawable(imageDrawable);
     }
 
     /*------------------------------------*
@@ -664,17 +679,19 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
     @Override
     public void showErrorDialog(@StringRes int message) {
-        Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
+        /*Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
         new AlertDialog.Builder(this)
                 .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> leaveFromRoom())
                 .setOnDismissListener(dialog -> leaveFromRoom())
                 .setIcon(d)
                 .setTitle(getString(R.string.game_error_title))
                 .setMessage(getString(message))
-                .show();
+                .show();*/
+        AndroidUtils.showLongToast(this, getString(message));
+        hideLoadingDialog();
     }
 
-    private void leaveFromRoom(){
+    private void leaveFromRoom() {
         mPresenter.destroy();
         finish();
     }

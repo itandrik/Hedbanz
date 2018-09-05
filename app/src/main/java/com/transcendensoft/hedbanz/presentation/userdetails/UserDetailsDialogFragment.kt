@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -121,7 +122,9 @@ class UserDetailsDialogFragment @Inject constructor() : DialogFragment(),
     private fun initUserView() {
         user?.let {
             mPresenter.setModel(it)
-            ivUserIcon.setImageResource(R.drawable.logo)
+            val drawable = VectorDrawableCompat.create(resources, it.iconId.resId, null)
+            ivUserIcon.setImageDrawable(drawable)
+
             tvUserLogin.text = it.login
             if (it.isFriend) {
                 tvFriendship.visibility = View.VISIBLE

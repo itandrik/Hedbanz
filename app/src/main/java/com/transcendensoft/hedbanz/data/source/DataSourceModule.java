@@ -16,6 +16,7 @@ package com.transcendensoft.hedbanz.data.source;
  */
 
 import com.transcendensoft.hedbanz.data.network.source.ApiDataSource;
+import com.transcendensoft.hedbanz.data.network.source.FeedbackApiDataSource;
 import com.transcendensoft.hedbanz.data.network.source.FirebaseIdApiDataSource;
 import com.transcendensoft.hedbanz.data.network.source.FriendsApiDataSource;
 import com.transcendensoft.hedbanz.data.network.source.MessagesApiDataSource;
@@ -29,7 +30,7 @@ import dagger.Module;
  * Dagger 2 module to provide different API and DB data sources.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 @Module
 public interface DataSourceModule {
@@ -47,4 +48,7 @@ public interface DataSourceModule {
 
     @Binds
     ApiDataSource provideFirebaseIdApiDataSource(FirebaseIdApiDataSource firebaseIdApiDataSource);
+
+    @Binds
+    ApiDataSource provideFeedbackDataSource(FeedbackApiDataSource feedbackApiDataSource);
 }

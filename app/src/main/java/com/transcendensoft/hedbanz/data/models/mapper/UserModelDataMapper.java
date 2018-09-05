@@ -57,14 +57,14 @@ public class UserModelDataMapper {
                     .setMoney(userDTO.getMoney())
                     .setPassword(userDTO.getPassword())
                     .setRegistrationDate(userDTO.getRegistrationDate())
-                    .setPlayerStatus(PlayerStatus.getStatusByCode(userDTO.getStatus()))
+                    .setPlayerStatus(PlayerStatus.getStatusByCode(userDTO.getStatus() != null ? userDTO.getStatus(): 1))
                     .setIsFriend(userDTO.isFriend())
                     .setWord(userDTO.getWord())
                     .setIsWinner(userDTO.isWinner())
                     .setAttempts(userDTO.getAttempts())
                     .setGamesNumber(userDTO.getGamesNumber())
                     .setFriendsNumber(userDTO.getFriendsNumber())
-                    .setIconId(UserIcon.Companion.getResourceById(userDTO.getIconId()))
+                    .setIconId(UserIcon.Companion.getUserIconById(userDTO.getIconId() != null ? userDTO.getIconId(): 0))
                     .build();
         }
         return userResult;
@@ -72,6 +72,7 @@ public class UserModelDataMapper {
 
     public UserDTO convert(User user){
         UserDTO userResult = null;
+        int userIconId = user.getIconId() == null ? 0 : user.getIconId().getId();
         if(user != null){
             userResult = new UserDTO.Builder()
                     .setId(user.getId())
@@ -88,7 +89,7 @@ public class UserModelDataMapper {
                     .setIsWinner(user.isWinner())
                     .setGamesNumber(user.getGamesNumber())
                     .setFriendsNumber(user.getGamesNumber())
-                    .setIconId(UserIcon.Companion.getIdByResource(user.getIconId()))
+                    .setIconId(userIconId)
                     .build();
         }
         return userResult;

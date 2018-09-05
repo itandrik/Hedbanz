@@ -86,7 +86,7 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
                 login = userFrom.getLogin();
                 word = userFrom.getWord();
                 isWinner = userFrom.isWinner();
-                iconId = userFrom.getIconId();
+                iconId = userFrom.getIconId().getResId();
             }
 
             boolean isHideLoginAndImage = false;
@@ -102,7 +102,7 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
             viewHolder.bindMessage(message.getMessage());
             viewHolder.bindUserImage(iconId);
             viewHolder.bindTime(message.getCreateDate().getTime());
-            viewHolder.bindIsWinner(isWinner);
+            viewHolder.bindIsWinner(isWinner, isHideLoginAndImage);
         }
     }
 }

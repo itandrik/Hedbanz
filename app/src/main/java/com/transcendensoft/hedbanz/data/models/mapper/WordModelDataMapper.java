@@ -47,7 +47,7 @@ public class WordModelDataMapper {
             wordResult = new Word.Builder()
                     .setRoomId(wordDTO.getRoomId())
                     .setWord(wordDTO.getWord())
-                    .setMessageType(MessageType.getMessageTypeById(wordDTO.getType()))
+                    .setMessageType(MessageType.getMessageTypeById(wordDTO.getType() != null ? wordDTO.getType() : 0))
                     .setUserFrom(mUserModelDataMapper.convert(wordDTO.getSenderUser()))
                     .setWordReceiverUser(mUserModelDataMapper.convert(wordDTO.getWordReceiverUser()))
                     .build();

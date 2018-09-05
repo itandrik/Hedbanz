@@ -57,6 +57,7 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
     private val mThumbsDownPlayersDivider = itemView?.dividerThumbsDownPlayers
     private val mWinPlayersDivider = itemView?.dividerWinPlayers
     private val mTvUserWord = itemView?.tvUserWord
+    private val mIvWinIcon = itemView?.ivWinIcon
     private val mTvMessage = itemView?.tvMessage
     private val mIvUserImage = itemView?.ivUserImage
     private val mTvLogin = itemView?.tvLogin
@@ -69,6 +70,7 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
 
 
     fun bindUserWord(word: String?) {
+        mIvWinIcon?.visibility = View.GONE
         if (word.isNullOrEmpty()) {
             mTvUserWord?.visibility = View.GONE
         } else {
@@ -95,7 +97,7 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
 
     fun bindUserImage(@DrawableRes drawableRes: Int) {
         val drawableCompat = VectorDrawableCompat.create(
-                mContext.resources, R.drawable.logo, null)
+                mContext.resources, drawableRes, null)
         mIvUserImage?.setImageDrawable(drawableCompat)
 
         if (mIvUserImage?.visibility == View.VISIBLE) {
@@ -242,24 +244,30 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
         }
     }
 
-    fun thumbsUpClickObservable(questionId: Long) =
+    fun thumbsUpClickObservable(questionId: Long, isEnableClick: Boolean) =
             Observable.create<Long> { emitter ->
                 mCvThumbsUp?.setOnClickListener {
-                    emitter.onNext(questionId)
+                    if (isEnableClick) {
+                        emitter.onNext(questionId)
+                    }
                 }
             }!!
 
-    fun thumbsDownClickObservable(questionId: Long) =
+    fun thumbsDownClickObservable(questionId: Long, isEnableClick: Boolean) =
             Observable.create<Long> { emitter ->
                 mCvThumbsDown?.setOnClickListener {
-                    emitter.onNext(questionId)
+                    if (isEnableClick) {
+                        emitter.onNext(questionId)
+                    }
                 }
             }!!
 
-    fun winClickObservable(questionId: Long) =
+    fun winClickObservable(questionId: Long, isEnableClick: Boolean) =
             Observable.create<Long> { emitter ->
                 mCvWin?.setOnClickListener {
-                    emitter.onNext(questionId)
+                    if (isEnableClick) {
+                        emitter.onNext(questionId)
+                    }
                 }
             }!!
 }

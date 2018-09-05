@@ -26,6 +26,8 @@ import com.transcendensoft.hedbanz.presentation.StartActivityModule;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconActivity;
 import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconModule;
+import com.transcendensoft.hedbanz.presentation.feedback.FeedbackActivity;
+import com.transcendensoft.hedbanz.presentation.feedback.FeedbackModule;
 import com.transcendensoft.hedbanz.presentation.friends.FriendsActivity;
 import com.transcendensoft.hedbanz.presentation.friends.FriendsModule;
 import com.transcendensoft.hedbanz.presentation.game.GameActivity;
@@ -92,4 +94,8 @@ public interface ActivityBindingModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = ChangeIconModule.class)
     ChangeIconActivity changeIconActivity();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = FeedbackModule.class)
+    FeedbackActivity feedbackActivity();
 }

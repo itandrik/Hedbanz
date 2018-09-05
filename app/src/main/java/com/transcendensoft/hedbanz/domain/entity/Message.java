@@ -24,8 +24,8 @@ import java.sql.Timestamp;
  * Developed by <u>Transcendensoft</u>
  */
 public class Message{
-    private long id;
-    private long clientMessageId;
+    private Long id;
+    private Long clientMessageId;
     private String message;
     private User userFrom;
     private MessageType messageType;
@@ -36,7 +36,7 @@ public class Message{
     protected Message() {
     }
 
-    protected Message(long id, String message, User userFrom, MessageType messageType, Timestamp timestamp, long clientMessageId) {
+    protected Message(Long id, String message, User userFrom, MessageType messageType, Timestamp timestamp, Long clientMessageId) {
         this.id = id;
         this.message = message;
         this.userFrom = userFrom;
@@ -45,11 +45,11 @@ public class Message{
         this.clientMessageId = clientMessageId;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -85,11 +85,11 @@ public class Message{
         this.createDate = createDate;
     }
 
-    public long getClientMessageId() {
+    public Long getClientMessageId() {
         return clientMessageId;
     }
 
-    public void setClientMessageId(long clientMessageId) {
+    public void setClientMessageId(Long clientMessageId) {
         this.clientMessageId = clientMessageId;
     }
 
@@ -111,14 +111,14 @@ public class Message{
 
 
     public static class Builder {
-        private long id;
+        private Long id;
         private String message;
         private User userFrom;
         private MessageType messageType;
         private Timestamp createDate;
-        private long clientMessageId;
+        private Long clientMessageId;
 
-        public Builder setId(long id) {
+        public Builder setId(Long id) {
             this.id = id;
             return this;
         }
@@ -143,7 +143,7 @@ public class Message{
             return this;
         }
 
-        public Builder setClientMessageId(long clientMessageId) {
+        public Builder setClientMessageId(Long clientMessageId) {
             this.clientMessageId = clientMessageId;
             return this;
         }

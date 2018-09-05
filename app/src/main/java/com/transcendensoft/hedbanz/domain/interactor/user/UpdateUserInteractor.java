@@ -75,9 +75,7 @@ public class UpdateUserInteractor extends ObservableUseCase<User, UpdateUserInte
                         .onErrorResumeNext(this::processUpdateUserOnError);
             }
         } else {
-            //TODO change to another API request
-            return mUserRepository.updateUser(user.getId(), user.getLogin(),
-                    oldPassword, user.getPassword(), DataPolicy.API)
+            return mUserRepository.updateUserInfo(user, DataPolicy.API)
                     .onErrorResumeNext(this::processUpdateUserOnError);
         }
         return Observable.error(mUserException);

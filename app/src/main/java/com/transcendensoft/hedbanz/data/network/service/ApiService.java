@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.data.network.service;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.models.FeedbackDTO;
 import com.transcendensoft.hedbanz.data.models.FriendDTO;
 import com.transcendensoft.hedbanz.data.models.InviteDTO;
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -54,8 +56,14 @@ public interface ApiService {
     @PATCH("user")
     Observable<UserDTO> updateUser(@Body HashMap<String, Object> userMap);
 
+    @PATCH("user/update-info")
+    Observable<UserDTO> updateUserInfo(@Body UserDTO user);
+
     @GET("user/{userId}")
     Observable<UserDTO> getUser(@Path("userId") long userId);
+
+    @PUT("user/feedback")
+    Observable<Boolean> sendFeedback(@Body FeedbackDTO feedbackDTO);
 
     /* Firebase */
     @PUT("user/{userId}/token")
@@ -80,10 +88,10 @@ public interface ApiService {
             @Body RoomFilterDTO roomFilter);
 
     @POST("rooms/password")
-    Completable checkRoomPasswordCorrect(@Body HashMap<String, Object> checkPasswordDataMap);
+    Maybe<Object> checkRoomPasswordCorrect(@Body HashMap<String, Object> checkPasswordDataMap);
 
-    @POST("rooms/invite")
-    Completable inviteFriendToRoom(@Body InviteDTO inviteDTO);
+    @PUT("user/friends/invite")
+    Maybe<Object> inviteFriendToRoom(@Body InviteDTO inviteDTO); // Maybe instead of Completable. It doesn't recognize API errors
 
     /* Game mode */
     @GET("rooms/{roomId}/messages/{page}")

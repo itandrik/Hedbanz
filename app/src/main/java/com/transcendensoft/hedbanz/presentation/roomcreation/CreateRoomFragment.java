@@ -270,6 +270,7 @@ public class CreateRoomFragment extends BaseFragment implements CreateRoomContra
 
     @Override
     public void showMaxActiveRoomsError() {
+        hideLoadingDialog();
         Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
         new AlertDialog.Builder(mActivity)
                 .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> dialog.dismiss())

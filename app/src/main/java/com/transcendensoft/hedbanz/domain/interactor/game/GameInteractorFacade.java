@@ -116,7 +116,9 @@ public class GameInteractorFacade {
 
     @Inject GameOverUseCase mGameOverUseCase;
 
-    @Inject @SchedulerIO Scheduler mIoScheduler;
+    @Inject
+    @SchedulerIO
+    Scheduler mIoScheduler;
     @Inject RxRoom mCurrentRoom;
     @Inject NotificationManager mNotificationManager;
 
@@ -192,7 +194,7 @@ public class GameInteractorFacade {
                     }
                     user.setPlayerStatus(PlayerStatus.ACTIVE);
                 }
-                if(mPreferenceManger.getUser().equals(user)){
+                if (mPreferenceManger.getUser().equals(user)) {
                     mNotificationManager.cancelKickNotification();
                 }
             }
@@ -254,12 +256,12 @@ public class GameInteractorFacade {
 
     public void onStartTypingListener(Consumer<? super User> onNext,
                                       Consumer<? super Throwable> onError) {
-        mStartTypingUseCase.execute(mCurrentRoom.getRoom().getPlayers(), onNext, onError);
+        mStartTypingUseCase.execute(mCurrentRoom.getRoom(), onNext, onError);
     }
 
     public void onStopTypingListener(Consumer<? super User> onNext,
                                      Consumer<? super Throwable> onError) {
-        mStopTypingUseCase.execute(mCurrentRoom.getRoom().getPlayers(), onNext, onError);
+        mStopTypingUseCase.execute(mCurrentRoom.getRoom(), onNext, onError);
     }
 
     public void onRoomInfoListener(Consumer<? super Room> onNext,
@@ -301,6 +303,11 @@ public class GameInteractorFacade {
                 if (rxUser != null) {
                     rxUser.setWord(word.getWord());
                 }
+                for(User user: mCurrentRoom.getRoom().getPlayers()){
+                    if(user.equals(word.getWordReceiverUser())){
+                        user.setWord(word.getWord());
+                    }
+                }
             }
         };
         mWordSettedUseCase.execute(null, onNext, onError, doOnNext);
@@ -330,7 +337,7 @@ public class GameInteractorFacade {
 
     public void onQuestionAskingListener(Consumer<? super Question> onNext,
                                          Consumer<? super Throwable> onError) {
-        mQuestionAskingUseCase.execute(null, onNext, onError);
+        mQuestionAskingUseCase.execute(mCurrentRoom.getRxPlayers(), onNext, onError);
     }
 
     public void onQuestionVotingListener(Consumer<? super Question> onNext,
@@ -367,7 +374,7 @@ public class GameInteractorFacade {
     public Question guessWord(Long questionId, String word) {
         User currentUser = mPreferenceManger.getUser();
 
-        int clientMessageId = Arrays.hashCode(new long[]{
+        Long clientMessageId = (long) Arrays.hashCode(new long[]{
                 System.currentTimeMillis(), currentUser.getId()});
 
         Question question = new Question();
@@ -424,7 +431,7 @@ public class GameInteractorFacade {
     public Message sendMessage(String text) {
         User currentUser = mPreferenceManger.getUser();
 
-        int clientMessageId = Arrays.hashCode(new long[]{
+        Long clientMessageId = (long) Arrays.hashCode(new long[]{
                 System.currentTimeMillis(), currentUser.getId()});
 
         Message message = new Message.Builder()

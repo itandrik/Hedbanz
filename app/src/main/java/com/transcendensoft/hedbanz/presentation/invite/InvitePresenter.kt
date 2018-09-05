@@ -54,6 +54,7 @@ class InvitePresenter @Inject constructor(
         inviteToRoomInteractor.dispose()
     }
 
+
     override fun loadInvitingFriends() {
         view()?.showLoading()
         getInviteFriendsInteractor.execute(DataPolicy.API,
@@ -77,7 +78,7 @@ class InvitePresenter @Inject constructor(
     }
 
     override fun inviteSelectedUsers(selectedFriends: List<Friend>) {
-        if(selectedFriends.isEmpty()){
+        if (selectedFriends.isEmpty()) {
             view()?.showNoUsersSelected()
         } else {
             view()?.showLoadingDialog()
@@ -89,13 +90,14 @@ class InvitePresenter @Inject constructor(
 
             inviteToRoomInteractor.execute(
                     invite,
-                    {
-                        view()?.showInviteSuccess()
-                        loadInvitingFriends()
-                    },
+                    {},
                     { err ->
                         view()?.showInviteError()
                         Timber.e(err)
+                    },
+                    {
+                        view()?.showInviteSuccess()
+                        loadInvitingFriends()
                     })
         }
     }

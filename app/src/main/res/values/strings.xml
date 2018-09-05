@@ -108,6 +108,7 @@
     <string name="room_creation_error_name_empty">Введите имя комнаты</string>
     <string name="room_creation_error_name_already_exist">Комната с таким именем уже существует</string>
     <string name="room_creation_error_creating">Не получилось создать комнату. Ошибка сервера. Попробуйте позже.</string>
+    <string name="room_creation_error_invalid_password">Пароль не подходит :(</string>
 
     <!-- Menu fragment -->
     <string name="menu_games_played">Игр сыграно</string>
@@ -118,6 +119,8 @@
     <string name="menu_action_shop">Магазин</string>
     <string name="menu_action_help">Помощь</string>
     <string name="menu_action_settings">Настройки</string>
+    <string name="menu_action_rate">Оценить</string>
+    <string name="menu_action_feedback">Сообщить об ошибке</string>
     <string name="menu_action_logout">Выйти</string>
     <string name="menu_logout_error_title">Произошла ошибка</string>
     <string name="menu_logout_server_error">Похоже у нас проблемы с сервером. Попробуйте попытку позже.</string>
@@ -165,7 +168,7 @@
     <string name="game_exit_room_title">Выйти или не выйти, вот в чем вопрос&#8230;</string>
     <string name="game_action_resume_game">Продолжить</string>
     <string name="game_action_exit_game">Кидануть ребят</string>
-    <string name="game_menu_this_user">Это вы</string>
+    <string name="game_menu_this_user">Вы</string>
     <string name="game_kicked_title">Вы исключены из комнаты</string>
     <string name="game_kicked_message">Вы не присутствовали в игре на этапе загадывания слов долгое время, по-этому вас исключили с комнаты. Вы можете создать другую комнату, либо присоединиться к другим игрокам.</string>
     <string name="game_toolbar_open_menu_content_description">Открыть меню</string>
@@ -216,6 +219,8 @@
     <string name="game_notification_game_over_title">Игра окончена</string>
     <string name="game_notification_game_over_message">Игра в комнате %1$s закончилась, все игроки угадали свои слова. Вернитесь в комнату и начните новую игру.</string>
     <string name="game_notification_game_over_message_error">Игра закончилась, все игроки угадали свои слова. Вернитесь в комнату и начните новую игру.</string>
+    <string name="game_notification_last_user_title">Комната %1$s закрылась</string>
+    <string name="game_notification_last_user_message">Вы были последним игроком в этой комнате, вам не с кем будет играть, поэтому она закрылась.</string>
 
     <!-- Friends -->
     <string name="friends_toolbar_title">Ваши друзяки</string>
@@ -273,4 +278,29 @@
     <string name="change_icon_success_message">Вы успешно изменили ваш аватар. </string>
     <string name="change_icon_error_title">Ошибка</string>
     <string name="change_icon_error_message">Не получается изменить ваш аватар. Проблемы с сервером. Попробуйте повторить операцию позже.</string>
+
+    <!-- Feedback -->
+    <string name="feedback_title">Сообщить об ошибке</string>
+    <string name="feedback_confidentiality_text">Для того, чтобы как можно быстрее исправить ошибку мы используем только модель вашего устройства. Также, если нам нужно будет уточнить подробности об ошибке, мы свяжемся с вами по email, который вы указали при регистрации. Уверяем, больше никаких ваших данных наша команда не использует. Спасибо вам большое понимание и помощь в развитии проекта :)</string>
+    <string name="feedback_confidentiality_action">Политика конфиденциальности</string>
+    <string name="feedback_hint">Авторизация лагает не по детски</string>
+    <string name="feedback_submit">Отправить</string>
+    <string name="feedback_success_title">У вас получилось!</string>
+    <string name="feedback_success_message">Ваше сообщение успешно отправлено команде разработчиков. Большое спасибо вам за помощь в развитии проекта. Надеемся, что с помощью вашего сообщения мы сможем исправить ситуацию в скором времени.</string>
+    <string name="feedback_telegram_action">Telegram-чат</string>
+    <string name="feedback_telegram_title">Мы создали Telegram-чат для общения пользователей. Там вы можете описать ошибку или предложить о улучшении приложения.</string>
+
+    <!-- Tutorial -->
+    <string name="tutorial_page_1_title">Присоединись к комнате либо создай свою!</string>
+    <string name="tutorial_page_1_text">Hedbanz - это игра в кругу людей. Тебе нужно набрать свою команду игроков, либо присоединиться к другим людям со всего мира!</string>
+    <string name="tutorial_page_2_title">Загадай слово какому-то игроку!</string>
+    <string name="tutorial_page_2_text">Это может быть что угодно: имя известного персонажа, кухонный предмет или даже что-то космическое. Вам решать насколько сильно вы хотите загрузить игрока ;)</string>
+    <string name="tutorial_page_3_title">Задавай наводящие вопросы!</string>
+    <string name="tutorial_page_3_text">Как только тебе загадают слово, оно начнет обозначать тебя. Тебе нужно будет угадать \"кто ты\". Для этого ты можешь задавать наводящие вопросы, например: \"Я существую?\" или \"Я растение?\". Не переживай, если у тебя закончатся варианты, ты можешь использовать наш вспомогательный список. </string>
+    <string name="tutorial_page_4_title">Честно отвечай другим игрокам</string>
+    <string name="tutorial_page_4_text">Когда наступает очередь других игроков отгадывать слова тебе не нужно просто ждать, ты можешь голосовать за то двигаются ли они в правильном направлении или нет. Для этого жми \"палец вверх\" - за правильное направление и \"палец вниз\" - за неверное. Если игрок угадал свое слово - жми на \"корону\".</string>
+    <string name="tutorial_page_5_title">Лошадь узнают в езде, человека - в общении</string>
+    <string name="tutorial_page_5_text">Помимо игры ты можешь просто общаться с игроками, делиться секретами и просто хорошо проводить время!</string>
+    <string name="tutorial_page_6_title">Угадывайте слова, общайтесь, развивайтесь</string>
+    <string name="tutorial_page_6_text">Присоединяйся к другим игрокам и развивай навыки общения. Находи новых друзей, новые знакомства, изучай новые языки с иностранцами. Мы желаем тебе приятного времяпровождения! :)</string>
 </resources>

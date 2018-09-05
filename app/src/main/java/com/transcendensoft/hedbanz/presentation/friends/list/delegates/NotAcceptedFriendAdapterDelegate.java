@@ -75,7 +75,7 @@ public class NotAcceptedFriendAdapterDelegate extends AdapterDelegate<List<Frien
         NotAcceptedFriendViewHolder notAcceptedFriendViewHolder = (NotAcceptedFriendViewHolder) holder;
 
         notAcceptedFriendViewHolder.bindName(friend.getLogin());
-        notAcceptedFriendViewHolder.bindIcon(friend.getIconId());
+        notAcceptedFriendViewHolder.bindIcon(friend.getIconId() != null ? friend.getIconId().getResId() : R.drawable.logo);
         notAcceptedFriendViewHolder.acceptObservable(friend)
                 .subscribe(mAcceptSubject);
         notAcceptedFriendViewHolder.dismissObservable(friend)

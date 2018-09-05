@@ -134,7 +134,7 @@ class HedbanzBillingManager(context: Context) : PurchasesUpdatedListener {
                         onError: (errorMessage: String) -> Unit) {
         if(isConnected) {
             onStart()
-            billingClient.consumeAsync(purchaseToken) { responseCode, outToken ->
+            billingClient.consumeAsync(purchaseToken) { responseCode, _ ->
                 onComplete(responseCode, getBillingResponseCodeString(responseCode))
             }
         } else {

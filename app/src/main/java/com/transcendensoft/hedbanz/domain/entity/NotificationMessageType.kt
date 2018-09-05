@@ -35,6 +35,7 @@ enum class NotificationMessageType(val id: Int) {
     NEW_ROOM_CREATED(9),
     LAST_PLAYER(10),
     APP_NEW_VERSION(20),
+    GLOBAL(21),
     UNDEFINED(100500);
 
     companion object {

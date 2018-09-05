@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DefaultItemAnimator
@@ -67,8 +68,8 @@ class InviteDialogFragment @Inject constructor() : DialogFragment(),
 
     @BindView(R.id.rvInviteFriends) lateinit var mRecycler: RecyclerView
     @BindView(R.id.rlEmptyListContainer) lateinit var mRlEmptyListContainer: RelativeLayout
-    @BindView(R.id.rlErrorNetwork) lateinit var mRlErrorNetwork: RelativeLayout
-    @BindView(R.id.rlErrorServer) lateinit var mRlErrorServer: RelativeLayout
+    @BindView(R.id.rlErrorNetwork) lateinit var mRlErrorNetwork: ConstraintLayout
+    @BindView(R.id.rlErrorServer) lateinit var mRlErrorServer: ConstraintLayout
     @BindView(R.id.pbLoading) lateinit var mPbLoading: ProgressBar
     @BindView(R.id.btnInvite) lateinit var mBtnInvite: Button
 
@@ -92,8 +93,8 @@ class InviteDialogFragment @Inject constructor() : DialogFragment(),
         ButterKnife.bind(this, view)
 
         initProgressDialog()
-        initRecycler()
         initPresenter()
+        initRecycler()
 
         return view
     }

@@ -28,8 +28,7 @@
             app:layout_constraintBottom_toTopOf="@+id/tvUsername"
             app:layout_constraintDimensionRatio="h,1:1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvUsername"
@@ -196,6 +195,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
+            android:visibility="gone"
             android:layout_marginTop="8dp"
             android:background="@drawable/shop_btn_background"
             android:text="@string/menu_action_shop"
@@ -229,6 +229,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginLeft="16dp"
+            android:visibility="gone"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/settings_btn_background"
@@ -241,6 +242,40 @@
             app:layout_constraintTop_toBottomOf="@+id/btnHelp" />
 
         <Button
+            android:id="@+id/btnRate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rate_btn_background"
+            android:text="@string/menu_action_rate"
+            android:textColor="@color/textWhite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+
+        <Button
+            android:id="@+id/btnFeedback"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/feedback_btn_background"
+            android:text="@string/menu_action_feedback"
+            android:textColor="@color/textWhite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnRate" />
+
+        <Button
             android:id="@+id/btnExit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -248,6 +283,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/exit_btn_background"
             android:text="@string/menu_action_logout"
             android:textColor="@color/textWhite"
@@ -255,7 +291,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+            app:layout_constraintTop_toBottomOf="@+id/btnFeedback" />
 
         <ImageView
             android:id="@+id/ivSeparator"
@@ -328,7 +364,7 @@
                     android:layout_height="48dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="18dp"
-                    android:layout_toRightOf="@id/ivImageShimmer"
+                    android:layout_alignParentRight="true"
                     android:background="@drawable/shimmer_non_filled_circle" />
 
                 <View
@@ -337,7 +373,7 @@
                     android:layout_height="48dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="18dp"
-                    android:layout_toRightOf="@id/ivShimmerCircle1"
+                    android:layout_toLeftOf="@id/ivShimmerCircle1"
                     android:background="@drawable/shimmer_non_filled_circle" />
 
                 <View
@@ -346,7 +382,7 @@
                     android:layout_height="48dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="18dp"
-                    android:layout_toRightOf="@id/ivShimmerCircle2"
+                    android:layout_toLeftOf="@id/ivShimmerCircle2"
                     android:background="@drawable/shimmer_non_filled_circle" />
 
                 <View
