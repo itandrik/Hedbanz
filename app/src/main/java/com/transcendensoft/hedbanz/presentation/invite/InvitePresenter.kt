@@ -7,7 +7,6 @@ import com.transcendensoft.hedbanz.domain.entity.Room
 import com.transcendensoft.hedbanz.domain.interactor.friends.GetInviteFriends
 import com.transcendensoft.hedbanz.domain.interactor.rooms.InviteToRoomInteractor
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter
-import io.reactivex.Observable
 import timber.log.Timber
 import java.net.ConnectException
 import javax.inject.Inject
@@ -55,14 +54,6 @@ class InvitePresenter @Inject constructor(
         inviteToRoomInteractor.dispose()
     }
 
-    override fun processFriendClick(clickObservable: Observable<Friend>) {
-        addDisposable(
-                clickObservable.subscribe(
-                        {
-                            view()?.invalidateAdapter()
-                        }, {Timber.e(it)})
-        )
-    }
 
     override fun loadInvitingFriends() {
         view()?.showLoading()
@@ -87,7 +78,7 @@ class InvitePresenter @Inject constructor(
     }
 
     override fun inviteSelectedUsers(selectedFriends: List<Friend>) {
-        if(selectedFriends.isEmpty()){
+        if (selectedFriends.isEmpty()) {
             view()?.showNoUsersSelected()
         } else {
             view()?.showLoadingDialog()
@@ -99,13 +90,14 @@ class InvitePresenter @Inject constructor(
 
             inviteToRoomInteractor.execute(
                     invite,
-                    {
-                        view()?.showInviteSuccess()
-                        loadInvitingFriends()
-                    },
+                    {},
                     { err ->
                         view()?.showInviteError()
                         Timber.e(err)
+                    },
+                    {
+                        view()?.showInviteSuccess()
+                        loadInvitingFriends()
                     })
         }
     }

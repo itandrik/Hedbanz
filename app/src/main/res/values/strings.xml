@@ -108,6 +108,7 @@
     <string name="room_creation_error_name_empty">Введите имя комнаты</string>
     <string name="room_creation_error_name_already_exist">Комната с таким именем уже существует</string>
     <string name="room_creation_error_creating">Не получилось создать комнату. Ошибка сервера. Попробуйте позже.</string>
+    <string name="room_creation_error_invalid_password">Пароль не подходит :(</string>
 
     <!-- Menu fragment -->
     <string name="menu_games_played">Игр сыграно</string>
@@ -218,6 +219,8 @@
     <string name="game_notification_game_over_title">Игра окончена</string>
     <string name="game_notification_game_over_message">Игра в комнате %1$s закончилась, все игроки угадали свои слова. Вернитесь в комнату и начните новую игру.</string>
     <string name="game_notification_game_over_message_error">Игра закончилась, все игроки угадали свои слова. Вернитесь в комнату и начните новую игру.</string>
+    <string name="game_notification_last_user_title">Комната %1$s закрылась</string>
+    <string name="game_notification_last_user_message">Вы были последним игроком в этой комнате, вам не с кем будет играть, поэтому она закрылась.</string>
 
     <!-- Friends -->
     <string name="friends_toolbar_title">Ваши друзяки</string>
@@ -296,9 +299,8 @@
     <string name="tutorial_page_3_text">Как только тебе загадают слово, оно начнет обозначать тебя. Тебе нужно будет угадать \"кто ты\". Для этого ты можешь задавать наводящие вопросы, например: \"Я существую?\" или \"Я растение?\". Не переживай, если у тебя закончатся варианты, ты можешь использовать наш вспомогательный список. </string>
     <string name="tutorial_page_4_title">Честно отвечай другим игрокам</string>
     <string name="tutorial_page_4_text">Когда наступает очередь других игроков отгадывать слова тебе не нужно просто ждать, ты можешь голосовать за то двигаются ли они в правильном направлении или нет. Для этого жми \"палец вверх\" - за правильное направление и \"палец вниз\" - за неверное. Если игрок угадал свое слово - жми на \"корону\".</string>
-    <string name="tutorial_page_5_title">Лошадь узнают в езде, человека в общении</string>
+    <string name="tutorial_page_5_title">Лошадь узнают в езде, человека - в общении</string>
     <string name="tutorial_page_5_text">Помимо игры ты можешь просто общаться с игроками, делиться секретами и просто хорошо проводить время!</string>
     <string name="tutorial_page_6_title">Угадывайте слова, общайтесь, развивайтесь</string>
     <string name="tutorial_page_6_text">Присоединяйся к другим игрокам и развивай навыки общения. Находи новых друзей, новые знакомства, изучай новые языки с иностранцами. Мы желаем тебе приятного времяпровождения! :)</string>
-
 </resources>

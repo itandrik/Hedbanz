@@ -33,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.User;
@@ -51,6 +52,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.view.View.GONE;
+import static com.transcendensoft.hedbanz.domain.entity.HedbanzAnalyticsKt.AUTH_BUTTON;
+import static com.transcendensoft.hedbanz.domain.entity.HedbanzAnalyticsKt.PASSWORD_RECOVERY_BUTTON;
+import static com.transcendensoft.hedbanz.domain.entity.HedbanzAnalyticsKt.REGISTER_BUTTON;
 
 /**
  * Fragment that show standard form for login and
@@ -71,6 +75,7 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
     @Inject LoginPresenter mPresenter;
     @Inject StartActivity mActivity;
     @Inject PreferenceManager mPreferenceManager;
+    @Inject FirebaseAnalytics mFirebaseAnalytics;
 
     @Inject
     public LoginFragment() {
@@ -86,6 +91,7 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         ButterKnife.bind(this, view);
+        ViewExtensionsKt.setupKeyboardHiding(view, mActivity);
         ViewExtensionsKt.hasNavbar(mActivity);
 
         initPasswordIcon();
@@ -147,6 +153,7 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
         if(mActivity != null) {
             mActivity.overridePendingTransition(R.anim.login_page_right_in, R.anim.login_page_right_out);
         }
+        mFirebaseAnalytics.logEvent(REGISTER_BUTTON, null);
     }
 
     @OnClick(R.id.tvPasswordRecovery)
@@ -157,6 +164,7 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
         if(mActivity != null) {
             mActivity.overridePendingTransition(R.anim.login_page_left_in, R.anim.login_page_left_out);
         }
+        mFirebaseAnalytics.logEvent(PASSWORD_RECOVERY_BUTTON, null);
     }
 
     @OnClick(R.id.btnEnter)
@@ -168,6 +176,7 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
                     .setPassword(mEtPassword.getText().toString())
                     .build();
             mPresenter.login(user);
+            mFirebaseAnalytics.logEvent(AUTH_BUTTON, null);
         }
     }
 

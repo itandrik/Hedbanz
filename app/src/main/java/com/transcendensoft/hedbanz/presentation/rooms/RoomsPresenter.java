@@ -68,11 +68,12 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
     protected void updateView() {
         if (model.isEmpty()) {
             model.subscribe(room -> view().closeSearchAndRefresh());
-            refreshRooms();
-        } else {
-            view().clearRooms();
-            view().addRoomsToRecycler(model.getRooms());
         }
+        // } else {
+        //     view().clearRooms();
+        //     view().addRoomsToRecycler(model.getRooms());
+        //}
+        refreshRooms();
     }
 
     @Override
@@ -179,7 +180,7 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
                             view().forceLogout();
                         }
                     });
-        } else if(view() != null){
+        } else if (view() != null) {
             view().forceLogout();
         }
     }
@@ -243,7 +244,7 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
         }
 
         private void processEmptyRoomList(PaginationState<Room> roomPaginationState) {
-            if(view() != null) {
+            if (view() != null) {
                 if (roomPaginationState.isRefreshed()) {
                     view().showEmptyList();
                 } else {

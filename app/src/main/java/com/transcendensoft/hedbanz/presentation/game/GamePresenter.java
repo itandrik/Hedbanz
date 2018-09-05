@@ -119,6 +119,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         if (mPreferenceManger.isLastUser()) {
             view.showLastUserDialog();
         }
+        mPreferenceManger.setIsGameEnabled(true);
     }
 
     @Override
@@ -127,6 +128,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         if (mGameInteractor != null && !isLeaveFromRoom) {
             mGameInteractor.stopSocket();
         }
+        mPreferenceManger.setIsGameEnabled(false);
     }
 
     @Override

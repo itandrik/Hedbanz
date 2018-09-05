@@ -126,7 +126,7 @@ class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
     override fun showSuccessUpdateUserIcon() {
         val d = VectorDrawableCompat.create(resources, R.drawable.ic_win_happy, null)
         AlertDialog.Builder(this)
-                .setPositiveButton(getString(R.string.action_ok)) { dialog, which -> dialog.dismiss() }
+                .setPositiveButton(getString(R.string.action_ok)) { dialog, _ -> dialog.dismiss() }
                 .setIcon(d)
                 .setTitle(getString(R.string.change_icon_success_title))
                 .setMessage(getString(R.string.change_icon_success_message))
@@ -136,7 +136,7 @@ class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
     override fun showErrorUpdateUserIcon() {
         val d = VectorDrawableCompat.create(resources, R.drawable.ic_unhappy, null)
         AlertDialog.Builder(this)
-                .setPositiveButton(getString(R.string.action_ok)) { dialog, which -> dialog.dismiss() }
+                .setPositiveButton(getString(R.string.action_ok)) { dialog, _ -> dialog.dismiss() }
                 .setIcon(d)
                 .setTitle(getString(R.string.change_icon_error_title))
                 .setMessage(getString(R.string.change_icon_error_message))

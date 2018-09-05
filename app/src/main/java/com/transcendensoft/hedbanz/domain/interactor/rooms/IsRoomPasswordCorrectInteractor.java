@@ -20,7 +20,7 @@ import android.text.TextUtils;
 import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
-import com.transcendensoft.hedbanz.domain.CompletableUseCase;
+import com.transcendensoft.hedbanz.domain.MaybeUseCase;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.exception.RoomCreationException;
 import com.transcendensoft.hedbanz.domain.repository.RoomDataRepository;
@@ -30,8 +30,8 @@ import com.transcendensoft.hedbanz.utils.SecurityUtils;
 
 import javax.inject.Inject;
 
-import io.reactivex.Completable;
-import io.reactivex.CompletableTransformer;
+import io.reactivex.Maybe;
+import io.reactivex.MaybeTransformer;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
@@ -42,13 +42,13 @@ import io.reactivex.disposables.CompositeDisposable;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-public class IsRoomPasswordCorrectInteractor extends CompletableUseCase<Room> {
+public class IsRoomPasswordCorrectInteractor extends MaybeUseCase<Object, Room> {
     private RoomDataRepository mRoomRepository;
     private PreferenceManager mPreferenceManager;
     private RoomCreationException mRoomException;
 
     @Inject
-    public IsRoomPasswordCorrectInteractor(CompletableTransformer mSchedulersTransformer,
+    public IsRoomPasswordCorrectInteractor(MaybeTransformer mSchedulersTransformer,
                                            CompositeDisposable mCompositeDisposable,
                                            RoomDataRepository mRoomRepository,
                                            PreferenceManager mPreferenceManager) {
@@ -58,7 +58,7 @@ public class IsRoomPasswordCorrectInteractor extends CompletableUseCase<Room> {
     }
 
     @Override
-    protected Completable buildUseCaseCompletable(Room params) {
+    protected Maybe<Object> buildUseCaseMaybe(Room params) {
         mRoomException = new RoomCreationException();
         if (isValidRoom(params)) {
             if (!TextUtils.isEmpty(params.getPassword())) {
@@ -69,7 +69,7 @@ public class IsRoomPasswordCorrectInteractor extends CompletableUseCase<Room> {
                     params.getId(), params.getPassword(), DataPolicy.API)
                     .onErrorResumeNext(this::processCreateRoomOnError);
         }
-        return Completable.error(mRoomException);
+        return Maybe.error(mRoomException);
     }
 
     private boolean isValidRoom(Room room) {
@@ -82,7 +82,7 @@ public class IsRoomPasswordCorrectInteractor extends CompletableUseCase<Room> {
         return result;
     }
 
-    private Completable processCreateRoomOnError(Throwable throwable) {
+    private Maybe<Object> processCreateRoomOnError(Throwable throwable) {
         if (throwable instanceof HedbanzApiException) {
             HedbanzApiException exception = (HedbanzApiException) throwable;
             mRoomException.addRoomError(
@@ -90,6 +90,6 @@ public class IsRoomPasswordCorrectInteractor extends CompletableUseCase<Room> {
         } else {
             mRoomException.addRoomError(RoomError.UNDEFINED_ERROR);
         }
-        return Completable.error(mRoomException);
+        return Maybe.error(mRoomException);
     }
 }

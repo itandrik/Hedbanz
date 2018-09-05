@@ -40,9 +40,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
+import com.transcendensoft.hedbanz.domain.entity.HedbanzAnalyticsKt;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.game.menu.list.UserMenuListAdapter;
@@ -84,6 +86,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     @Inject InviteDialogFragment mInviteDialogFragment;
     @Inject PreferenceManager mPreferenceManger;
     @Inject @ActivityContext Context mContext;
+    @Inject FirebaseAnalytics mFirebaseAnalytics;
 
     @Inject
     public GameMenuFragment() {
@@ -150,7 +153,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
             Typeface typeface = ResourcesCompat.getFont(mContext, R.font.open_sans_light);
             mCollapsingToolbar.setCollapsedTitleTypeface(typeface);
             mCollapsingToolbar.setExpandedTitleTypeface(typeface);
-        }catch(Resources.NotFoundException e){
+        } catch (Resources.NotFoundException e) {
             Timber.e(e);
         }
     }
@@ -234,6 +237,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     protected void onInviteClicked() {
         mInviteDialogFragment.setRoom(mPresenter.getRoom());
         mInviteDialogFragment.show(getChildFragmentManager(), getString(R.string.tag_fragment_invite));
+        mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.INVITE_BUTTON, null);
     }
 
     @Override
@@ -271,7 +275,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     @Override
     public void setInviteEnabled(boolean isEnabled) {
         mFabInvite.setEnabled(isEnabled);
-        if(isEnabled){
+        if (isEnabled) {
             mFabInvite.setBackgroundTintList(ColorStateList.valueOf(
                     ContextCompat.getColor(mContext, R.color.google_green)));
         } else {

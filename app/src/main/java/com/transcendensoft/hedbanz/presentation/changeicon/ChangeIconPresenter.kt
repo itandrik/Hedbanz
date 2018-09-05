@@ -1,6 +1,8 @@
 package com.transcendensoft.hedbanz.presentation.changeicon
 
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager
+import com.transcendensoft.hedbanz.domain.entity.USER_ICON
 import com.transcendensoft.hedbanz.domain.entity.User
 import com.transcendensoft.hedbanz.domain.entity.UserIcon
 import com.transcendensoft.hedbanz.domain.interactor.user.UpdateUserInteractor
@@ -35,7 +37,8 @@ import javax.inject.Inject
  */
 class ChangeIconPresenter @Inject constructor(
         private val updateUserInteractor: UpdateUserInteractor,
-        private val preferenceManager: PreferenceManager
+        private val preferenceManager: PreferenceManager,
+        private val firebaseAnalytics: FirebaseAnalytics
 ) : BasePresenter<User, ChangeIconContract.View>(), ChangeIconContract.Presenter {
     lateinit var selectedUserIcon: UserIcon
 
@@ -59,6 +62,7 @@ class ChangeIconPresenter @Inject constructor(
                         {
                             selectedUserIcon = UserIcon.getUserIconById(it)
                             view()?.selectIconWithId(it)
+                            firebaseAnalytics.setUserProperty(USER_ICON, it.toString())
                         },
                         {
                             Timber.e("Error while select icon." +

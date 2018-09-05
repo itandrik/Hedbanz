@@ -244,24 +244,30 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
         }
     }
 
-    fun thumbsUpClickObservable(questionId: Long) =
+    fun thumbsUpClickObservable(questionId: Long, isEnableClick: Boolean) =
             Observable.create<Long> { emitter ->
                 mCvThumbsUp?.setOnClickListener {
-                    emitter.onNext(questionId)
+                    if (isEnableClick) {
+                        emitter.onNext(questionId)
+                    }
                 }
             }!!
 
-    fun thumbsDownClickObservable(questionId: Long) =
+    fun thumbsDownClickObservable(questionId: Long, isEnableClick: Boolean) =
             Observable.create<Long> { emitter ->
                 mCvThumbsDown?.setOnClickListener {
-                    emitter.onNext(questionId)
+                    if (isEnableClick) {
+                        emitter.onNext(questionId)
+                    }
                 }
             }!!
 
-    fun winClickObservable(questionId: Long) =
+    fun winClickObservable(questionId: Long, isEnableClick: Boolean) =
             Observable.create<Long> { emitter ->
                 mCvWin?.setOnClickListener {
-                    emitter.onNext(questionId)
+                    if (isEnableClick) {
+                        emitter.onNext(questionId)
+                    }
                 }
             }!!
 }

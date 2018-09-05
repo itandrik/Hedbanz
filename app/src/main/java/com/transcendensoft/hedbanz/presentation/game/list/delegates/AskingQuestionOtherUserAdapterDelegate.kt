@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import com.transcendensoft.hedbanz.R
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager
 import com.transcendensoft.hedbanz.domain.entity.Message
 import com.transcendensoft.hedbanz.domain.entity.MessageType
 import com.transcendensoft.hedbanz.domain.entity.Question
@@ -39,7 +40,9 @@ import javax.inject.Inject
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class AskingQuestionOtherUserAdapterDelegate @Inject constructor() :
+class AskingQuestionOtherUserAdapterDelegate @Inject constructor(
+        private val preferenceManager: PreferenceManager
+) :
         AdapterDelegate<List<@JvmSuppressWildcards Message>>() {
     private val thumbsUpSubject: PublishSubject<Long> = PublishSubject.create()
     private val thumbsDownSubject: PublishSubject<Long> = PublishSubject.create()
@@ -61,6 +64,8 @@ class AskingQuestionOtherUserAdapterDelegate @Inject constructor() :
     override fun onBindViewHolder(items: List<Message>, position: Int,
                                   holder: RecyclerView.ViewHolder, payloads: MutableList<Any>) {
         val question = items[position] as Question
+        val currentUser = preferenceManager.user
+
         if (holder is AskingQuestionOtherUserViewHolder) {
             val userFrom = question.userFrom
 
@@ -81,9 +86,18 @@ class AskingQuestionOtherUserAdapterDelegate @Inject constructor() :
             holder.bindProgress(question.yesVoters, question.noVoters,
                     question.winVoters, question.allUsersCount ?: 0)
             holder.bindWin(question.isWin)
-            holder.thumbsDownClickObservable(question.questionId).subscribe(thumbsDownSubject)
-            holder.thumbsUpClickObservable(question.questionId).subscribe(thumbsUpSubject)
-            holder.winClickObservable(question.questionId).subscribe(winSubject)
+
+            val isEnableThumbsDownClick = !question.noVoters.contains(currentUser)
+            holder.thumbsDownClickObservable(question.questionId, isEnableThumbsDownClick)
+                    .subscribe(thumbsDownSubject)
+
+            val isEnableThumbsUpClick = !question.yesVoters.contains(currentUser)
+            holder.thumbsUpClickObservable(question.questionId, isEnableThumbsUpClick)
+                    .subscribe(thumbsUpSubject)
+
+            val isEnableWinClick = !question.winVoters.contains(currentUser)
+            holder.winClickObservable(question.questionId, isEnableWinClick)
+                    .subscribe(winSubject)
         }
     }
 

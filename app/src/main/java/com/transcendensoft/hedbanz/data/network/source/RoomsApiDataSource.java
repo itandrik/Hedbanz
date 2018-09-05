@@ -27,7 +27,7 @@ import java.util.LinkedHashMap;
 
 import javax.inject.Inject;
 
-import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 
 /**
@@ -64,7 +64,7 @@ public class RoomsApiDataSource extends ApiDataSource implements RoomDataSource 
         return mService.filterRooms(page, userId, roomFilter);
     }
 
-    public Completable isPasswordCorrect(long userId, long roomId, String password){
+    public Maybe<Object> isPasswordCorrect(long userId, long roomId, String password){
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
         result.put("userId", userId);
         result.put("roomId", roomId);
@@ -73,7 +73,7 @@ public class RoomsApiDataSource extends ApiDataSource implements RoomDataSource 
         return mService.checkRoomPasswordCorrect(result);
     }
 
-    public Completable inviteFriend(InviteDTO inviteDTO){
+    public Maybe<Object> inviteFriend(InviteDTO inviteDTO){
         return mService.inviteFriendToRoom(inviteDTO);
     }
 }

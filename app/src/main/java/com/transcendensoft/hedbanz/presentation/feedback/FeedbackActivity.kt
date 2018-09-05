@@ -1,6 +1,7 @@
 package com.transcendensoft.hedbanz.presentation.feedback
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.graphics.drawable.VectorDrawableCompat
@@ -9,20 +10,22 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ScrollView
 import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.bumptech.glide.Glide
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.transcendensoft.hedbanz.BuildConfig
 import com.transcendensoft.hedbanz.R
+import com.transcendensoft.hedbanz.domain.entity.CONFIDENTIALITY_BUTTON
+import com.transcendensoft.hedbanz.domain.entity.FEEDBACK_SUBMIT_BUTTON
+import com.transcendensoft.hedbanz.domain.entity.TELEGRAM_BUTTON
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity
 import com.transcendensoft.hedbanz.utils.AndroidUtils
-import javax.inject.Inject
-import android.content.Intent.ACTION_VIEW
-import android.net.Uri
-import android.widget.ScrollView
-import com.transcendensoft.hedbanz.BuildConfig
 import com.transcendensoft.hedbanz.utils.extension.setupKeyboardHiding
+import javax.inject.Inject
 
 
 /**
@@ -47,17 +50,13 @@ import com.transcendensoft.hedbanz.utils.extension.setupKeyboardHiding
  * Developed by <u>Transcendensoft</u>
  */
 class FeedbackActivity : BaseActivity(), FeedbackContract.View {
-    @BindView(R.id.ivSmileGif)
-    lateinit var ivSmileGif: ImageView
-    @BindView(R.id.etFeedback)
-    lateinit var etFeedback: EditText
-    @BindView(R.id.tvErrorFeedback)
-    lateinit var tvFeedbackError: TextView
-    @BindView(R.id.parentLayout)
-    lateinit var parentLayout: ScrollView
+    @BindView(R.id.ivSmileGif) lateinit var ivSmileGif: ImageView
+    @BindView(R.id.etFeedback) lateinit var etFeedback: EditText
+    @BindView(R.id.tvErrorFeedback) lateinit var tvFeedbackError: TextView
+    @BindView(R.id.parentLayout) lateinit var parentLayout: ScrollView
 
-    @Inject
-    lateinit var presenter: FeedbackPresenter
+    @Inject lateinit var presenter: FeedbackPresenter
+    @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -100,17 +99,21 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     fun onSubmitFeedbackClicked() {
         hideError()
         presenter.submitFeedback(etFeedback.text.toString())
+        firebaseAnalytics.logEvent(FEEDBACK_SUBMIT_BUTTON, null)
+
     }
 
     @OnClick(R.id.btnConfidentiality)
     fun onConfidentialityClicked() {
         startActivity(Intent(Intent.ACTION_VIEW,
                 Uri.parse("${BuildConfig.HOST_LINK}/privacy-policies")))
+        firebaseAnalytics.logEvent(CONFIDENTIALITY_BUTTON, null)
     }
 
     @OnClick(R.id.btnTelegram)
     fun onTelegramClicked() {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(TELEGRAM_LINK)))
+        firebaseAnalytics.logEvent(TELEGRAM_BUTTON, null)
     }
 
     @OnClick(R.id.ivBack)
@@ -147,7 +150,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         hideLoadingDialog()
         val d = VectorDrawableCompat.create(resources, R.drawable.ic_win_happy, null)
         AlertDialog.Builder(this)
-                .setPositiveButton(getString(R.string.action_ok)) { dialog, which -> dialog.dismiss() }
+                .setPositiveButton(getString(R.string.action_ok)) { dialog, _ -> dialog.dismiss() }
                 .setOnDismissListener { etFeedback.setText("") }
                 .setIcon(d)
                 .setTitle(getString(R.string.feedback_success_title))

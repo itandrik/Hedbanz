@@ -46,10 +46,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.entity.HedbanzAnalyticsKt;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
@@ -114,6 +116,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     @Inject RoomsAdapter mAdapter;
     @Inject MainActivity mActivity;
     @Inject PreferenceManager mPreferenceManager;
+    @Inject FirebaseAnalytics mFirebaseAnalytics;
 
     @Inject
     public RoomsFragment() {
@@ -233,6 +236,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     private void initSearchOnClickListeners() {
         mIvCloseSearch.setOnClickListener(v -> {
             closeSearchAndRefresh();
+            mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.CLOSE_FILTER_BUTTON, null);
         });
 
         mIvSearchFilter.setOnClickListener(v -> {
@@ -241,6 +245,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
             } else {
                 mCvFilters.setVisibility(VISIBLE);
             }
+            mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.FILTER_BUTTON, null);
         });
     }
 
@@ -400,6 +405,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         mRlSearchContainer.setVisibility(View.VISIBLE);
         mSvRoomSearch.onActionViewExpanded();
         mFabSearch.hide();
+        mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.SEARCH_BUTTON, null);
     }
 
     public void closeSearchAndRefresh() {

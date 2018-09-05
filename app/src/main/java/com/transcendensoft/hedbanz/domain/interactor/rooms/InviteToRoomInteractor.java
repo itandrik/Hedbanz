@@ -16,14 +16,14 @@ package com.transcendensoft.hedbanz.domain.interactor.rooms;
  */
 
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
-import com.transcendensoft.hedbanz.domain.CompletableUseCase;
+import com.transcendensoft.hedbanz.domain.MaybeUseCase;
 import com.transcendensoft.hedbanz.domain.entity.Invite;
 import com.transcendensoft.hedbanz.domain.repository.RoomDataRepository;
 
 import javax.inject.Inject;
 
-import io.reactivex.Completable;
-import io.reactivex.CompletableTransformer;
+import io.reactivex.Maybe;
+import io.reactivex.MaybeTransformer;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
@@ -33,12 +33,12 @@ import io.reactivex.disposables.CompositeDisposable;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-public class InviteToRoomInteractor extends CompletableUseCase<Invite> {
+public class InviteToRoomInteractor extends MaybeUseCase<Object, Invite> {
     private RoomDataRepository mRoomRepository;
     private PreferenceManager mPreferenceManager;
 
     @Inject
-    public InviteToRoomInteractor(CompletableTransformer mSchedulersTransformer,
+    public InviteToRoomInteractor(MaybeTransformer mSchedulersTransformer,
                                   CompositeDisposable mCompositeDisposable,
                                   RoomDataRepository mRoomRepository,
                                   PreferenceManager preferenceManager) {
@@ -48,7 +48,7 @@ public class InviteToRoomInteractor extends CompletableUseCase<Invite> {
     }
 
     @Override
-    protected Completable buildUseCaseCompletable(Invite params) {
+    protected Maybe<Object> buildUseCaseMaybe(Invite params) {
         params.setSenderId(mPreferenceManager.getUser().getId());
 
         return mRoomRepository.inviteFriend(params);

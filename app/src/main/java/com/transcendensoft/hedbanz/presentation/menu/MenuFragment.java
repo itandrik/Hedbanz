@@ -30,8 +30,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.entity.HedbanzAnalyticsKt;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
@@ -72,6 +74,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
     @Inject PreferenceManager mPreferenceManager;
     @Inject MainActivity mActivity;
     @Inject MenuFragmentPresenter mPresenter;
+    @Inject FirebaseAnalytics mFirebaseAnalytics;
 
     @Inject
     public MenuFragment() {
@@ -127,21 +130,25 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
     @OnClick(R.id.btnCredentials)
     protected void onCredentialsClicked() {
         startActivity(new Intent(getActivity(), CredentialsActivity.class));
+        mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.CREDENTIALS_BUTTON, null);
     }
 
     @OnClick(R.id.ivUserImage)
     protected void onUserImageClicked(){
         startActivity(new Intent(getActivity(), ChangeIconActivity.class));
+        mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.USER_IMAGE_BUTTON, null);
     }
 
     @OnClick(R.id.tvFriends)
     protected void onFriendsAmountClicked() {
-        onFriendsButtonClicked();
+        startActivity(new Intent(mActivity, FriendsActivity.class));
+        mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.FRIENDS_CIRCLE, null);
     }
 
     @OnClick(R.id.btnFriends)
     protected void onFriendsButtonClicked() {
         startActivity(new Intent(mActivity, FriendsActivity.class));
+        mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.FRIENDS_BUTTON, null);
     }
 
     @OnClick(R.id.tvMoney)
@@ -153,21 +160,25 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
     @OnClick(R.id.btnShop)
     protected void onShopClicked() {
         mActivity.showShortToastMessage(R.string.in_developing);
+        mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.SHOP_BUTTON, null);
     }
 
     @OnClick(R.id.btnHelp)
     protected void onHelpClicked() {
         startActivity(new Intent(getActivity(), IntroActivity.class));
+        mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.HELP_BUTTON, null);
     }
 
     @OnClick(R.id.btnSettings)
     protected void onSettingsClicked() {
         AndroidUtils.showShortToast(getActivity(), R.string.in_developing);
+        mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.SETTINGS_BUTTON, null);
     }
 
     @OnClick(R.id.btnFeedback)
     protected void onFeedbackClicked() {
         startActivity(new Intent(getActivity(), FeedbackActivity.class));
+        mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.FEEDBACK_BUTTON, null);
     }
 
     @OnClick(R.id.btnRate)
@@ -181,12 +192,16 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
             startActivity(new Intent(Intent.ACTION_VIEW,
                     Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
         }
+
+        mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.RATE_BUTTON, null);
+
     }
 
     @OnClick(R.id.btnExit)
     protected void onLogoutClicked() {
         if (mPresenter != null) {
             mPresenter.unbindFirebaseToken();
+            mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.EXIT_BUTTON, null);
         }
     }
 
@@ -259,10 +274,10 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
     public void setUserData(@NotNull User user) {
         mTvFriends.setVisibility(View.VISIBLE);
         mTvGamesPlayed.setVisibility(View.VISIBLE);
-        mTvMoney.setVisibility(View.VISIBLE);
+        mTvMoney.setVisibility(View.INVISIBLE);// TODO change to visible when money becomes in prod
         mTvFriendsTitle.setVisibility(View.VISIBLE);
         mTvGamesPlayedTitle.setVisibility(View.VISIBLE);
-        mTvMoneyTitle.setVisibility(View.VISIBLE);
+        mTvMoneyTitle.setVisibility(View.INVISIBLE);// TODO change to visible when money becomes in prod
         mTvUsername.setVisibility(View.VISIBLE);
         mIvImage.setVisibility(View.VISIBLE);
 

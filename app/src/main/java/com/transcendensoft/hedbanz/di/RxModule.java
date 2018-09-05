@@ -23,6 +23,7 @@ import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.CompletableTransformer;
+import io.reactivex.MaybeTransformer;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.Scheduler;
 import io.reactivex.SingleTransformer;
@@ -80,6 +81,15 @@ public class RxModule {
     @ApplicationScope
     @Provides
     public SingleTransformer provideSingleTransformer(
+            @SchedulerIO Scheduler ioScheduler, @SchedulerUI Scheduler uiScheduler) {
+        return o -> o
+                .subscribeOn(ioScheduler)
+                .observeOn(uiScheduler);
+    }
+
+    @ApplicationScope
+    @Provides
+    public MaybeTransformer provideMaybeTransformer(
             @SchedulerIO Scheduler ioScheduler, @SchedulerUI Scheduler uiScheduler) {
         return o -> o
                 .subscribeOn(ioScheduler)

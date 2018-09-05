@@ -93,8 +93,8 @@ class InviteDialogFragment @Inject constructor() : DialogFragment(),
         ButterKnife.bind(this, view)
 
         initProgressDialog()
-        initRecycler()
         initPresenter()
+        initRecycler()
 
         return view
     }
@@ -170,10 +170,6 @@ class InviteDialogFragment @Inject constructor() : DialogFragment(),
 
     override fun setRoom(room: Room) {
         mRoom = room
-    }
-
-    override fun invalidateAdapter() {
-        mAdapter.notifyDataSetChanged()
     }
 
     /*------------------------------------*

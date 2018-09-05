@@ -60,6 +60,7 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
         private const val INVITE_NOTIFICATION_ID = 5
         private const val KICK_NOTIFICATION_ID = 6
         private const val GAME_OVER_NOTIFICATION_ID = 7
+        private const val LAST_USER_NOTIFICATION_ID = 8
 
         private const val MESSAGE_NOTIFICATION_REQUEST_CODE = 100
         private const val SET_WORD_NOTIFICATION_REQUEST_CODE = 101
@@ -68,6 +69,7 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
         private const val INVITE_NOTIFICATION_REQUEST_CODE = 104
         private const val KICK_NOTIFICATION_REQUEST_CODE = 105
         private const val GAME_OVER_REQUEST_CODE = 106
+        private const val LAST_USER_REQUEST_CODE = 107
 
         private const val GAME_CHANNEL_ID = "GAME_CHANNEL"
         private const val FRIEND_CHANNEL_ID = "FRIENDS_CHANNEL"
@@ -335,6 +337,34 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
         }
 
         notify(GAME_OVER_NOTIFICATION_ID, notification)
+    }
+
+    fun notifyLastUser(message: NotificationMessage){
+        createNotificationChannel(
+                GAME_CHANNEL_ID,
+                mContext.getString(R.string.game_notification_channel_title_message))
+
+        val title = mContext.getString(R.string.game_notification_last_user_title, message.roomName)
+        val spannableTitle= SpannableString(title)
+        spannableTitle.setSpan(StyleSpan(android.graphics.Typeface.BOLD),
+                0, title.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        val text = mContext.getString(R.string.game_notification_last_user_message)
+
+        val notification = notification(INVITE_CHANNEL_ID) {
+            setContentTitle(spannableTitle)
+            setContentText(text)
+
+            setStyle(NotificationCompat.BigTextStyle().bigText(text))
+
+            val intent = Intent(mContext, MainActivity::class.java)
+            val pendingIntent = PendingIntent.getActivity(
+                    mContext, LAST_USER_REQUEST_CODE,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            setContentIntent(pendingIntent)
+        }
+
+        notify(LAST_USER_NOTIFICATION_ID, notification)
     }
 
     private fun getPendingIntentForGame(message: NotificationMessage, requestCode: Int): PendingIntent? {

@@ -45,6 +45,7 @@ public class PreferenceManager {
     private static final String IS_USER_KICKED = "isUserKicked";
     private static final String IS_LAST_USER = "isLastUser";
     private static final String IS_TUTORIAL_SHOWN = "isTutorialShown";
+    private static final String IS_GAME_ENABLED = "isGameEnabled";
 
     public PreferenceManager(Context context) {
         mPreferences = context.getSharedPreferences(PREF_NAME, 0);
@@ -118,35 +119,43 @@ public class PreferenceManager {
         return mPreferences.getBoolean(APP_NEW_VERSION, false);
     }
 
-    public void setLocale(String locale){
+    public void setLocale(String locale) {
         getEditor().putString(LOCALE, locale).apply();
     }
 
-    public String getLocale(){
+    public String getLocale() {
         return mPreferences.getString(LOCALE, Locale.getDefault().getLanguage());
     }
 
-    public void setIsUserKicked(boolean isUserKicked){
+    public void setIsUserKicked(boolean isUserKicked) {
         getEditor().putBoolean(IS_USER_KICKED, isUserKicked).apply();
     }
 
-    public boolean isUserKicked(){
+    public boolean isUserKicked() {
         return mPreferences.getBoolean(IS_USER_KICKED, false);
     }
 
-    public void setIsLastUser(boolean isLastUser){
+    public void setIsLastUser(boolean isLastUser) {
         getEditor().putBoolean(IS_LAST_USER, isLastUser).apply();
     }
 
-    public boolean isLastUser(){
+    public boolean isLastUser() {
         return mPreferences.getBoolean(IS_LAST_USER, false);
     }
 
-    public void setIsTutorialShown(boolean isTutorialShown){
+    public void setIsTutorialShown(boolean isTutorialShown) {
         getEditor().putBoolean(IS_TUTORIAL_SHOWN, isTutorialShown).apply();
     }
 
-    public boolean isTutorialShown(){
+    public boolean isTutorialShown() {
         return mPreferences.getBoolean(IS_TUTORIAL_SHOWN, false);
+    }
+
+    public void setIsGameEnabled(boolean isGameEnabled) {
+        getEditor().putBoolean(IS_GAME_ENABLED, isGameEnabled).apply();
+    }
+
+    public boolean isGameEnabled() {
+        return mPreferences.getBoolean(IS_GAME_ENABLED, false);
     }
 }

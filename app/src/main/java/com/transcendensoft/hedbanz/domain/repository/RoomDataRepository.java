@@ -22,7 +22,7 @@ import com.transcendensoft.hedbanz.domain.entity.RoomFilter;
 
 import java.util.List;
 
-import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 
 /**
@@ -38,7 +38,7 @@ public interface RoomDataRepository {
 
     Observable<List<Room>> filterRooms(int page, long userId, RoomFilter roomFilter, DataPolicy dataPolicy);
 
-    Completable isPasswordCorrect(long userId, long roomId, String password, DataPolicy dataPolicy);
+    Maybe<Object> isPasswordCorrect(long userId, long roomId, String password, DataPolicy dataPolicy);
 
-    Completable inviteFriend(Invite invite);
+    Maybe<Object> inviteFriend(Invite invite);
 }

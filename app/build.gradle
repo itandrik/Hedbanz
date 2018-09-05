@@ -138,6 +138,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+    implementation 'com.squareup.retrofit2:converter-java8:2.3.0'
 
     //RxJava
     implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
@@ -160,6 +161,7 @@ dependencies {
     //Firebase
     implementation 'com.google.firebase:firebase-auth:11.2.0'
     implementation 'com.google.android.gms:play-services-auth:11.2.0'
+    implementation 'com.google.firebase:firebase-core:11.2.0'
     implementation project(path: ':com-google-firebase-messaging')
 
     //Sockets

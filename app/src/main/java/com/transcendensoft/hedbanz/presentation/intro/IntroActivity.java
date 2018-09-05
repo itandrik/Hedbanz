@@ -20,7 +20,7 @@ public class IntroActivity extends AppIntro2 {
         //Add fragments (slides)
         addSlide(AppIntro2Fragment.newInstance(getString(R.string.tutorial_page_1_title),
                 getString(R.string.tutorial_page_1_text), 0,
-                ContextCompat.getColor(this, R.color.colorPrimary)));
+                ContextCompat.getColor(this, R.color.colorPrimaryDark)));
         addSlide(AppIntro2Fragment.newInstance(getString(R.string.tutorial_page_2_title),
                 getString(R.string.tutorial_page_2_text), 0,
                 ContextCompat.getColor(this, R.color.pink_light)));
@@ -35,7 +35,9 @@ public class IntroActivity extends AppIntro2 {
                 ContextCompat.getColor(this, R.color.teal_light)));
         addSlide(AppIntro2Fragment.newInstance(getString(R.string.tutorial_page_6_title),
                 getString(R.string.tutorial_page_6_text), 0,
-                ContextCompat.getColor(this, R.color.colorPrimaryDark)));
+                ContextCompat.getColor(this, R.color.colorPrimary),
+                ContextCompat.getColor(this, R.color.textPrimary),
+                ContextCompat.getColor(this, R.color.textPrimary)));
 
         showSkipButton(true);
         showStatusBar(false);

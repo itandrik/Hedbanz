@@ -28,9 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -89,10 +88,10 @@ public interface ApiService {
             @Body RoomFilterDTO roomFilter);
 
     @POST("rooms/password")
-    Completable checkRoomPasswordCorrect(@Body HashMap<String, Object> checkPasswordDataMap);
+    Maybe<Object> checkRoomPasswordCorrect(@Body HashMap<String, Object> checkPasswordDataMap);
 
-    @POST("rooms/invite")
-    Completable inviteFriendToRoom(@Body InviteDTO inviteDTO);
+    @PUT("user/friends/invite")
+    Maybe<Object> inviteFriendToRoom(@Body InviteDTO inviteDTO); // Maybe instead of Completable. It doesn't recognize API errors
 
     /* Game mode */
     @GET("rooms/{roomId}/messages/{page}")
