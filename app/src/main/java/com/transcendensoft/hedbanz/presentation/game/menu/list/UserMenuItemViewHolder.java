@@ -44,8 +44,6 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
         implements UserMenuItemContract.View {
     @BindView(R.id.tvUserWordMenu) TextView mTvWord;
     @BindView(R.id.tvUserLogin) TextView mTvLogin;
-    @BindView(R.id.ivFriend) ImageView mIvIsFriend;
-    @BindView(R.id.tvFriendTitle) TextView mTvIsFriend;
     @BindView(R.id.ivUserIcon) ImageView mIvUserIcon;
     @BindView(R.id.tvAfkShadow) TextView mTvAfk;
     @BindView(R.id.tvThisUser) TextView mTvThisUser;
@@ -97,17 +95,6 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
             mIvWin.setVisibility(View.VISIBLE);
         } else {
             mIvWin.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void setIsFriend(boolean isFriend) {
-        if (isFriend) {
-            mIvIsFriend.setVisibility(View.VISIBLE);
-            mTvIsFriend.setVisibility(View.VISIBLE);
-        } else {
-            mIvIsFriend.setVisibility(View.GONE);
-            mTvIsFriend.setVisibility(View.GONE);
         }
     }
 

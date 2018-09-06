@@ -36,8 +36,6 @@ public interface UserMenuItemContract {
 
         void setStatus(PlayerStatus playerStatus);
 
-        void setIsFriend(boolean isFriend);
-
         void setIsWinner(boolean isWinner);
 
         void setWord(User user);

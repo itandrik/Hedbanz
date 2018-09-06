@@ -87,7 +87,7 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, GetMessage
                 // Question with guessing
                 PlayerGuessing playerGuessing = new PlayerGuessing.Builder()
                         .player(question.getUserFrom())
-                        .attempts(question.getAttempt())
+                        .attempts(question.getAttempt() != null ? question.getAttempt() : -1)
                         .questionId(question.getQuestionId())
                         .build();
                 playerGuessing.setUserFrom(question.getUserFrom());
@@ -131,7 +131,7 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, GetMessage
                 Word word = (Word) message;
 
                 messages.remove(i);
-                if (currentUser.equals(message.getUserFrom())) {
+                if (currentUser.equals(word.getUserFrom())) {
                     word.setMessageType(MessageType.WORD_SETTING);
 
                     if(TextUtils.isEmpty(word.getWord())){
@@ -156,6 +156,8 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, GetMessage
                     if(!TextUtils.isEmpty(word.getWord())){
                         word.setMessageType(MessageType.WORD_SETTED);
                         messages.add(i, word);
+                    } else {
+                        i--;
                     }
                 }
             } else if(message.getMessageType() == MessageType.USER_WINS_THIS){

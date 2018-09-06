@@ -66,14 +66,18 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     private boolean isLeaveFromRoom = false;
     private boolean isUserKicked = false;
     private boolean isSocketInititalized = false;
+    private Boolean isGameActive;
 
     @Inject
     public GamePresenter(GameInteractorFacade gameInteractor,
                          GetMessagesInteractor getMessagesInteractor,
-                         PreferenceManager preferenceManager) {
+                         PreferenceManager preferenceManager,
+                         Boolean isGameActive) {
         this.mGameInteractor = gameInteractor;
         this.mGetMessagesInteractor = getMessagesInteractor;
         this.mPreferenceManger = preferenceManager;
+        this.isGameActive = isGameActive;
+
         mTypingUsers = new ArrayList<>();
     }
 
@@ -134,6 +138,16 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     @Override
     public void setAfterRoomCreation(boolean afterRoomCreation) {
         isAfterRoomCreation = afterRoomCreation;
+    }
+
+    @Override
+    public boolean doesGameHasServerConnectionError() {
+        return mGameInteractor.doesGameHasServerConnectionError();
+    }
+
+    @Override
+    public void leaveFromRoom() {
+        mGameInteractor.leaveFromRoom();
     }
 
     /*------------------------------------*
@@ -394,18 +408,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     private void initLeftUserListener() {
         mGameInteractor.onLeftUserListener(
-                user -> {
-                    List<User> users = model.getPlayers();
-                    if (users.contains(user)) {
-                        users.remove(user);
-                    }
-                    Message message = new Message.Builder()
-                            .setUserFrom(user)
-                            .setMessageType(MessageType.LEFT_USER)
-                            .build();
-                    model.getMessages().add(message);
-                    view().addMessage(message);
-                },
+                this::processLeftUserOnNext,
                 this::processEventListenerOnError);
     }
 
@@ -472,7 +475,9 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 if (modelMessage instanceof Question) {
                     Question modelQuestion = (Question) modelMessage;
                     int winVotersCount = modelQuestion.getWinVoters().size();
-                    if (winVotersCount / modelQuestion.getAllUsersCount() > 0.8) {
+                    int allUsersCount = modelQuestion.getAllUsersCount() != null ?
+                            modelQuestion.getAllUsersCount() : 0;
+                    if (winVotersCount / allUsersCount > 0.8) {
                         modelQuestion.setWin(true);
                         view().setMessage(i, modelQuestion);
                     }
@@ -489,6 +494,24 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 winMessage.setMessageType(MessageType.USER_WINS_THIS);
             } else {
                 winMessage.setMessageType(MessageType.USER_WINS_OTHER);
+            }
+
+            Message guessWordMessage = null;
+            int guessWordMessagePosition = 0;
+            for (int i = model.getMessages().size() - 1; i >= 0; i--) {
+                Message message = model.getMessages().get(i);
+                if(message.getMessageType().equals(MessageType.GUESS_WORD_THIS_USER) &&
+                        message.getUserFrom().equals(mPreferenceManger.getUser())){
+                    guessWordMessage = message;
+                    guessWordMessagePosition = i;
+                }
+                if(message.getMessageType().equals(MessageType.ASKING_QUESTION_THIS_USER)){
+                    if(guessWordMessage != null){
+                        model.getMessages().remove(guessWordMessage);
+                        view().removeMessage(guessWordMessagePosition);
+                    }
+                    break;
+                }
             }
 
             messages.add(winMessage);
@@ -508,6 +531,8 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
         mGameInteractor.onWordSettingListener(wordReceiverUser -> {
             view().hideLoadingDialog();
+            isGameActive = true;
+
             Word word = new Word.Builder()
                     .setMessageType(MessageType.WORD_SETTING)
                     .setWordReceiverUser(wordReceiverUser)
@@ -519,7 +544,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             List<Message> messages = model.getMessages();
             for (int i = messages.size() - 1; i >= 0; i--) {
                 Message message = messages.get(i);
-                if (message.getMessageType() == MessageType.GAME_OVER) {
+                if (message.getMessageType().equals(MessageType.GAME_OVER)) {
                     message.setLoading(false);
                     message.setFinished(true);
                     view().setMessage(i, message);
@@ -579,9 +604,46 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         );
     }
 
+    private void processLeftUserOnNext(User user) {
+        List<User> users = model.getPlayers();
+        if (users.contains(user)) {
+            users.remove(user);
+        }
+        Message message = new Message.Builder()
+                .setUserFrom(user)
+                .setMessageType(MessageType.LEFT_USER)
+                .build();
+        model.getMessages().add(message);
+        view().addMessage(message);
+
+        boolean containsGuess = false;
+        for (int i = model.getMessages().size() - 1; i >= 0; i--) {
+            Message message1 = model.getMessages().get(i);
+            if (message1.getMessageType().equals(MessageType.GUESS_WORD_THIS_USER) ||
+                    message1.getMessageType().equals(MessageType.GUESS_WORD_OTHER_USER)) {
+                containsGuess = true;
+                break;
+            }
+            if (message1.getMessageType().equals(MessageType.WORD_SETTING)) {
+                break;
+            }
+        }
+        if (!containsGuess) {
+           // model.setMaxPlayers((byte) (model.getMaxPlayers() - 1));
+            mGameInteractor.decRoomMaxPlayers();
+        }
+    }
+
     private void processRoomError(RoomError roomError) {
         Timber.e("Room error from server. Code: " + roomError.getErrorCode());
-        view().showErrorDialog(roomError.getErrorMessage());
+        switch (roomError) {
+            case SUCH_PLAYER_ALREADY_IN_ROOM:
+                mGameInteractor.restoreRoom();
+                break;
+            default:
+                view().showErrorDialog(roomError.getErrorMessage());
+
+        }
     }
 
     private void processSimpleMessage(Message message) {
@@ -718,6 +780,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     }
 
     private void processGameOverEvent(Boolean stub) {
+        isGameActive = false;
         Message message = new Message.Builder()
                 .setMessageType(MessageType.GAME_OVER)
                 .build();

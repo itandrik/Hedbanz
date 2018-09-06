@@ -1,5 +1,6 @@
 package com.transcendensoft.hedbanz.presentation.menu
 
+import com.transcendensoft.hedbanz.data.network.retrofit.AuthorizationHeaderInterceptor
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager
 import com.transcendensoft.hedbanz.domain.entity.User
 import com.transcendensoft.hedbanz.domain.interactor.firebase.FirebaseBindTokenInteractor
@@ -37,7 +38,8 @@ class MenuFragmentPresenter @Inject constructor(
         private val mFirebaseBindTokenInteractor: FirebaseBindTokenInteractor,
         private val mFirebaseUnbindTokenInteractor: FirebaseUnbindTokenInteractor,
         private val mGetUserInteractor: GetUserInteractor,
-        private val mPreferenceManager: PreferenceManager
+        private val mPreferenceManager: PreferenceManager,
+        private val mAuthorizationHeaderInterceptor: AuthorizationHeaderInterceptor
 ) : BasePresenter<User, MenuFragment>(), MenuFragmentContract.Presenter {
 
     override fun updateView() {
@@ -74,6 +76,7 @@ class MenuFragmentPresenter @Inject constructor(
                     {
                         view()?.showLogoutSuccess()
                         mPreferenceManager.firebaseTokenBinded = false
+                        mAuthorizationHeaderInterceptor.sessionToken = null
                     },
                     this::processLogoutOnError)
         } else {

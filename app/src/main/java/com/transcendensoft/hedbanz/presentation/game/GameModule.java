@@ -80,4 +80,10 @@ public interface GameModule {
     static RxRoom provideRxRoom(){
         return new RxRoom(new Room());
     }
+
+    @Provides
+    @ActivityScope
+    static Boolean provideIsGameActive(){
+        return Boolean.FALSE;
+    }
 }

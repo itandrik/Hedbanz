@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="?attr/selectableItemBackground"
-    android:layout_height="wrap_content"
-    android:minHeight="100dp">
+    android:layout_height="110dp">
 
     <ImageView
         android:id="@+id/ivThisUserStar"
@@ -15,7 +14,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvAfkShadow"
+        app:layout_constraintTop_toTopOf="@+id/ivUserIcon"
         app:srcCompat="@drawable/ic_this_user_star" />
 
     <TextView
@@ -64,17 +63,6 @@
         app:layout_constraintTop_toBottomOf="@id/tvUserWordMenu"
         app:srcCompat="@drawable/logo" />
 
-    <ImageView
-        android:id="@+id/ivFriend"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/ivUserIcon"
-        app:srcCompat="@drawable/ic_friendship" />
-
     <TextView
         android:id="@+id/tvUserLogin"
         android:layout_width="0dp"
@@ -90,7 +78,7 @@
         android:textColor="@color/textPrimary"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/ivUserIcon"
-        app:layout_constraintEnd_toStartOf="@id/ivFriend"
+        app:layout_constraintEnd_toStartOf="@+id/ivThisUserStar"
         app:layout_constraintStart_toEndOf="@id/ivUserIcon"
         app:layout_constraintTop_toTopOf="@id/ivUserIcon" />
 
@@ -116,31 +104,16 @@
         app:layout_constraintTop_toTopOf="@id/ivUserIcon"
         app:layout_constraintVertical_bias="1.0" />
 
-    <TextView
-        android:id="@+id/tvFriendTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/game_menu_friend"
-        android:textColor="@color/google_blue"
-        android:textSize="13sp"
-        android:textStyle="italic"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="@+id/ivUserIcon"
-        app:layout_constraintEnd_toEndOf="@+id/ivFriend"
-        app:layout_constraintStart_toStartOf="@+id/ivFriend"
-        app:layout_constraintTop_toBottomOf="@+id/ivFriend" />
-
     <ImageView
         android:id="@+id/ivWin"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginStart="28dp"
         android:layout_marginTop="6dp"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/tvAfkShadow"
+        app:layout_constraintBottom_toTopOf="@+id/ivUserIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_win" />

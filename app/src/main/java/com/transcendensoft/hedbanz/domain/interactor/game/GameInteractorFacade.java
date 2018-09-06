@@ -19,6 +19,7 @@ import android.annotation.SuppressLint;
 
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.qualifier.SchedulerIO;
+import com.transcendensoft.hedbanz.domain.entity.GameState;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing;
@@ -78,6 +79,7 @@ import io.reactivex.functions.Consumer;
 public class GameInteractorFacade {
     private GameDataRepository mRepository;
     private PreferenceManager mPreferenceManger;
+    private GameState mGameState;
 
     //Use cases
     @Inject OnConnectUseCase mOnConnectUseCase;
@@ -131,36 +133,61 @@ public class GameInteractorFacade {
 
     public void onConnectListener(Consumer<? super String> onNext,
                                   Consumer<? super Throwable> onError) {
-        mOnConnectUseCase.execute(null, onNext, onError);
+        Consumer<? super String> doOnNextConsumer = (str) -> {
+            mGameState = GameState.CONNECTED;
+        };
+
+        mOnConnectUseCase.execute(null, onNext, onError, doOnNextConsumer);
     }
 
     public void onDisconnectListener(Consumer<? super String> onNext,
                                      Consumer<? super Throwable> onError) {
-        mOnDisconnectUseCase.execute(null, onNext, onError);
+        Consumer<? super String> doOnNextConsumer = (str) -> {
+            mGameState = GameState.DISCONNECTED;
+        };
+
+        mOnDisconnectUseCase.execute(null, onNext, onError, doOnNextConsumer);
     }
 
     public void onConnectErrorListener(Consumer<? super String> onNext,
                                        Consumer<? super Throwable> onError) {
-        mOnConnectErrorUseCase.execute(null, onNext, onError);
+        Consumer<? super String> doOnNextConsumer = (str) -> {
+            mGameState = GameState.DISCONNECTED;
+        };
+
+        mOnConnectErrorUseCase.execute(null, onNext, onError, doOnNextConsumer);
     }
 
     public void onConnectTimeoutListener(Consumer<? super String> onNext,
                                          Consumer<? super Throwable> onError) {
-        mOnConnectTimeoutUseCase.execute(null, onNext, onError);
+        Consumer<? super String> doOnNextConsumer = (str) -> {
+            mGameState = GameState.DISCONNECTED;
+        };
+
+        mOnConnectTimeoutUseCase.execute(null, onNext, onError, doOnNextConsumer);
     }
 
     public void onReconnectListener(Consumer<? super String> onNext,
                                     Consumer<? super Throwable> onError) {
-        mOnReconnectUseCase.execute(null, onNext, onError);
+        Consumer<? super String> doOnNextConsumer = (str) -> {
+            mGameState = GameState.CONNECTED;
+        };
+
+        mOnReconnectUseCase.execute(null, onNext, onError, doOnNextConsumer);
     }
 
     public void onReconnectErrorListener(Consumer<? super String> onNext,
                                          Consumer<? super Throwable> onError) {
-        mOnReconnectErrorUseCase.execute(null, onNext, onError);
+        Consumer<? super String> doOnNextConsumer = (str) -> {
+            mGameState = GameState.DISCONNECTED;
+        };
+
+        mOnReconnectErrorUseCase.execute(null, onNext, onError, doOnNextConsumer);
     }
 
     public void onReconnectingListener(Consumer<? super String> onNext,
                                        Consumer<? super Throwable> onError) {
+
         mOnReconnectingUseCase.execute(null, onNext, onError);
     }
 
@@ -303,8 +330,8 @@ public class GameInteractorFacade {
                 if (rxUser != null) {
                     rxUser.setWord(word.getWord());
                 }
-                for(User user: mCurrentRoom.getRoom().getPlayers()){
-                    if(user.equals(word.getWordReceiverUser())){
+                for (User user : mCurrentRoom.getRoom().getPlayers()) {
+                    if (user.equals(word.getWordReceiverUser())) {
                         user.setWord(word.getWord());
                     }
                 }
@@ -473,6 +500,10 @@ public class GameInteractorFacade {
         }
     }
 
+    public void decRoomMaxPlayers() {
+        mCurrentRoom.setMaxPlayers((byte) (mCurrentRoom.getRoom().getMaxPlayers() - 1));
+    }
+
     @SuppressLint("CheckResult")
     public void destroy() {
         mOnConnectUseCase.dispose();
@@ -505,9 +536,16 @@ public class GameInteractorFacade {
         mGameOverUseCase.dispose();
         mPlayersInfoUseCase.dispose();
 
+        mRepository.disconnect();
+    }
+
+    public void leaveFromRoom() {
         mRepository.disconnectFromRoom();
         mPreferenceManger.setCurrentRoomId(-1); //We leave from current game
-        mRepository.disconnect();
+    }
+
+    public boolean doesGameHasServerConnectionError(){
+        return mGameState.equals(GameState.DISCONNECTED);
     }
 
     public void resumeSocket() {

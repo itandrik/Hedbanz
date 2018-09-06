@@ -46,6 +46,7 @@ public interface GameContract {
         void invalidateMessageWithPosition(int position);
         void setMessage(int position, Message message);
 
+        void showLeaveWhenServerError();
         void showFooterTyping(List<User>users);
         void showFooterServerError();
         void showFooterDisconnected();
@@ -70,7 +71,8 @@ public interface GameContract {
         void processSetWordToUserObservable(Observable<Word> sendWordObservable);
         void setAfterRoomCreation(boolean isAfterRoomCreation);
         void setIsLeaveFromRoom(boolean isLeaveFromRoom);
-
+        void leaveFromRoom();
+        boolean doesGameHasServerConnectionError();
         void restoreRoom();
         void processRetryNetworkPagination(Observable<Object> clickObservable);
         void processRetryServerPagination(Observable<Object> clickObservable);

@@ -59,7 +59,6 @@ public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemCon
     private void updateUserView() {
         view().setIcon(model.getUser().getIconId().getResId());
         view().setStatus(model.getUser().getPlayerStatus());
-        view().setIsFriend(model.getUser().isFriend());
         view().setName(model.getUser().getLogin());
         view().setWord(model.getUser());
         view().setIsWinner(model.getUser().isWinner());

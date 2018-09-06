@@ -65,7 +65,7 @@ public class UserDTO {
     @SerializedName("securityToken")
     @Expose
     private String securityToken;
-    @SerializedName("isWinner")
+    @SerializedName("winner")
     @Expose
     private boolean isWinner;
     @SerializedName("gamesNumber")

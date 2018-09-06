@@ -37,10 +37,13 @@ import timber.log.Timber;
 public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.View>
         implements GameMenuContract.Presenter {
     private ObservableTransformer mSchedulersTransformer;
+    private Boolean isGameActive;
 
     @Inject
-    public GameMenuPresenter(ObservableTransformer schedulersTransformer) {
+    public GameMenuPresenter(ObservableTransformer schedulersTransformer,
+                             Boolean isGameActive) {
         this.mSchedulersTransformer = schedulersTransformer;
+        this.isGameActive = isGameActive;
     }
 
     @Override
@@ -57,10 +60,12 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
             view().setRoomName(model.getRoom().getName());
             view().setMaxPlayersCount(model.getRoom().getMaxPlayers());
             view().setCurrentPlayersCount(model.getRxPlayers().size());
-            if(model.getRxPlayers().size() >= model.getRoom().getMaxPlayers()){
-                view().setInviteEnabled(false);
-            } else {
-                view().setInviteEnabled(true);
+            if(!isGameActive) {
+                if (model.getRxPlayers().size() >= model.getRoom().getMaxPlayers()) {
+                    view().setInviteEnabled(false);
+                } else {
+                    view().setInviteEnabled(true);
+                }
             }
         }
     }

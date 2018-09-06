@@ -286,7 +286,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
 
         mTvMoney.setText(String.valueOf(user.getMoney()));
         mTvFriends.setText(String.valueOf(user.getFriendsNumber()));
-        mTvGamesPlayed.setText(String.valueOf(user.getFriendsNumber()));
+        mTvGamesPlayed.setText(String.valueOf(user.getGamesNumber()));
 
         Drawable d = VectorDrawableCompat.create(getResources(), user.getIconId().getResId(), null);
         mIvImage.setImageDrawable(d);

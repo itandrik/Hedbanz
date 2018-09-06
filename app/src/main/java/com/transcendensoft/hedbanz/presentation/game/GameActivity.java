@@ -313,8 +313,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     .setMessage(getString(R.string.game_exit_room_message))
                     .setTitle(getString(R.string.game_exit_room_title))
                     .setPositiveButton(getString(R.string.game_action_exit_game), (dialog, which) -> {
-                        mPresenter.setIsLeaveFromRoom(true);
-                        super.onBackPressed();
+                        leaveFromRoom();
                     })
                     .setNegativeButton(getString(R.string.game_action_resume_game), (dialog, which) -> {
                         dialog.dismiss();
@@ -671,6 +670,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     mPreferenceManager.setIsLastUser(false);
                     leaveFromRoom();
                 })
+                .setOnCancelListener(dialog -> {
+                    mPreferenceManager.setIsLastUser(false);
+                    leaveFromRoom();
+                })
                 .setIcon(d)
                 .setTitle(getString(R.string.game_last_player_title))
                 .setMessage(getString(R.string.game_last_player_message))
@@ -691,8 +694,28 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         hideLoadingDialog();
     }
 
+    @Override
+    public void showLeaveWhenServerError() {
+        Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_dialog_server_error, null);
+        new AlertDialog.Builder(this)
+                .setPositiveButton(getString(R.string.game_action_resume_game),
+                        (dialog, which) -> dialog.dismiss())
+                .setNegativeButton(getString(R.string.game_action_leave_room),
+                        (dialog, which) -> finish())
+                .setIcon(d)
+                .setTitle(getString(R.string.game_error_leave_when_server_error_title))
+                .setMessage(getString(R.string.game_error_leave_when_server_error_message))
+                .show();
+    }
+
     private void leaveFromRoom() {
-        mPresenter.destroy();
-        finish();
+        if(mPresenter.doesGameHasServerConnectionError()){
+            showLeaveWhenServerError();
+        } else {
+            mPresenter.setIsLeaveFromRoom(true);
+            mPresenter.leaveFromRoom();
+            mPresenter.destroy();
+            finish();
+        }
     }
 }
