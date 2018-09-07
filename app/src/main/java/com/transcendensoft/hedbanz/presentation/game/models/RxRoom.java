@@ -37,6 +37,7 @@ import io.reactivex.subjects.PublishSubject;
 public class RxRoom {
     private Room mRoom;
     private List<RxUser> mPlayers;
+    private boolean isGameActive;
     private PublishSubject<RxRoom> mRoomInfoSubject;
     private PublishSubject<RxUser> mRemoveUserSubject;
     private PublishSubject<RxUser> mAddUserSubject;
@@ -145,6 +146,15 @@ public class RxRoom {
             mRoom.getPlayers().remove(user);
             mRemoveUserSubject.onNext(rxUserResult);
         }
+    }
+
+    public boolean isGameActive() {
+        return isGameActive;
+    }
+
+    public RxRoom setGameActive(boolean gameActive) {
+        isGameActive = gameActive;
+        return this;
     }
 
     public Observable<RxRoom> roomInfoObservable() {

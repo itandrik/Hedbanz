@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.transcendensoft.hedbanz.BuildConfig
 import com.transcendensoft.hedbanz.R
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager
 import com.transcendensoft.hedbanz.domain.entity.CONFIDENTIALITY_BUTTON
 import com.transcendensoft.hedbanz.domain.entity.FEEDBACK_SUBMIT_BUTTON
 import com.transcendensoft.hedbanz.domain.entity.TELEGRAM_BUTTON
@@ -57,6 +58,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
     @Inject lateinit var presenter: FeedbackPresenter
     @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
+    @Inject lateinit var preferenceManager: PreferenceManager
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -106,7 +108,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     @OnClick(R.id.btnConfidentiality)
     fun onConfidentialityClicked() {
         startActivity(Intent(Intent.ACTION_VIEW,
-                Uri.parse("${BuildConfig.HOST_LINK}/privacy-policies")))
+                Uri.parse("${BuildConfig.HOST_LINK}/privacy-policies/${preferenceManager.locale}")))
         firebaseAnalytics.logEvent(CONFIDENTIALITY_BUTTON, null)
     }
 

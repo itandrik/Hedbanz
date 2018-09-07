@@ -31,6 +31,7 @@ import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.ErrorUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.GameOverUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.MessageUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.WaitingForUsersUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnConnectErrorUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnConnectTimeoutUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnConnectUseCase;
@@ -79,7 +80,7 @@ import io.reactivex.functions.Consumer;
 public class GameInteractorFacade {
     private GameDataRepository mRepository;
     private PreferenceManager mPreferenceManger;
-    private GameState mGameState;
+    private GameState mGameState = GameState.DISCONNECTED;
 
     //Use cases
     @Inject OnConnectUseCase mOnConnectUseCase;
@@ -117,6 +118,7 @@ public class GameInteractorFacade {
     @Inject KickUseCase mKickUseCase;
 
     @Inject GameOverUseCase mGameOverUseCase;
+    @Inject WaitingForUsersUseCase mWaitingForUsersUseCase;
 
     @Inject
     @SchedulerIO
@@ -313,6 +315,7 @@ public class GameInteractorFacade {
         Consumer<? super List<User>> doOnNext = users -> {
             mCurrentRoom.getRoom().setPlayers(users);
             this.mCurrentRoom.setRoom(mCurrentRoom.getRoom());
+            mGameState = GameState.CONNECTED;
         };
         mPlayersInfoUseCase.execute(null, onNext, onError, doOnNext);
     }
@@ -352,6 +355,7 @@ public class GameInteractorFacade {
                     player.setWord("");
                     player.setWinner(false);
                 }
+                mCurrentRoom.setGameActive(true);
             }
         };
         mWordSettingUseCase.execute(null, onNext, onError, doOnNext);
@@ -391,7 +395,18 @@ public class GameInteractorFacade {
 
     public void onGameOverListener(Consumer<? super Boolean> onNext,
                                    Consumer<? super Throwable> onError) {
-        mGameOverUseCase.execute(null, onNext, onError);
+        Consumer<? super Boolean> doOnNext = bool -> {
+            if (mCurrentRoom != null ) {
+               mCurrentRoom.setGameActive(false);
+            }
+        };
+
+        mGameOverUseCase.execute(null, onNext, onError, doOnNext);
+    }
+
+    public void onWaitingForUsersListener(Consumer<? super Boolean> onNext,
+                                          Consumer<? super Throwable> onError){
+        mWaitingForUsersUseCase.execute(null, onNext, onError);
     }
 
     public void restartGame() {
@@ -535,6 +550,7 @@ public class GameInteractorFacade {
         mKickUseCase.dispose();
         mGameOverUseCase.dispose();
         mPlayersInfoUseCase.dispose();
+        mWaitingForUsersUseCase.dispose();
 
         mRepository.disconnect();
     }
@@ -545,7 +561,7 @@ public class GameInteractorFacade {
     }
 
     public boolean doesGameHasServerConnectionError(){
-        return mGameState.equals(GameState.DISCONNECTED);
+        return mGameState != null && mGameState.equals(GameState.DISCONNECTED);
     }
 
     public void resumeSocket() {

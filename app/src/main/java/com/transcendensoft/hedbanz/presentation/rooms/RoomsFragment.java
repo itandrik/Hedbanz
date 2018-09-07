@@ -454,12 +454,14 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     @Override
     public void showContent() {
         hideAll();
+        mFabSearch.setVisibility(VISIBLE);
         mRefreshLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showEmptyList() {
         hideAll();
+        mRefreshLayout.setVisibility(VISIBLE);
         mRlEmptyList.setVisibility(View.VISIBLE);
     }
 
@@ -503,5 +505,6 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         mFlLoadingContainer.setVisibility(GONE);
         mRefreshLayout.setVisibility(GONE);
         mRlEmptyList.setVisibility(GONE);
+        mFabSearch.setVisibility(GONE);
     }
 }

@@ -31,6 +31,7 @@ import com.transcendensoft.hedbanz.data.models.mapper.QuestionModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.RoomModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.UserModelDataMapper;
 import com.transcendensoft.hedbanz.data.models.mapper.WordModelDataMapper;
+import com.transcendensoft.hedbanz.domain.entity.Advertise;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.MessageType;
 import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing;
@@ -114,8 +115,11 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String SERVER_PLAYER_AFK_WARNING = "server-player-afk-warning";
     private static final String SERVER_KICKED_USER_EVENT = "server-kicked-user";
 
-    public static final String SERVER_GAME_OVER = "server-game-over";
-    public static final String CLIENT_RESTART_GAME = "client-restart-game";
+    private static final String SERVER_GAME_OVER = "server-game-over";
+    private static final String CLIENT_RESTART_GAME = "client-restart-game";
+
+    private static final String SERVER_WAITING_FOR_USERS = "server-waiting-for-users";
+    private static final String SERVER_ADVERTISE = "server_advertise";
 
     private Socket mSocket;
     private long mUserId;
@@ -668,6 +672,23 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
+    public Observable<Boolean> waitingForUsersObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                emitter.onNext(false);
+                Timber.i("SOCKET <-- GET(%1$s) : Waiting for users.",
+                        SERVER_WAITING_FOR_USERS);
+            };
+            mSocket.on(SERVER_WAITING_FOR_USERS, listener);
+        });
+    }
+
+    @Override
+    public Observable<Advertise> advertiseObservable() {
+        return null;
+    }
+
+    @Override
     public void restartGame() {
         Timber.i("SOCKET --> SEND(%1$s) : %2$s",
                 CLIENT_RESTART_GAME, mRoomToUserJson);
@@ -853,6 +874,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             mSocket.off(SERVER_USER_ANSWERING_EVENT);
             mSocket.off(SERVER_USER_WIN);
             mSocket.off(SERVER_GAME_OVER);
+            mSocket.off(SERVER_WAITING_FOR_USERS);
 
             mSocket.off(SERVER_PLAYER_AFK_WARNING);
             mSocket.off(SERVER_KICKED_USER_EVENT);

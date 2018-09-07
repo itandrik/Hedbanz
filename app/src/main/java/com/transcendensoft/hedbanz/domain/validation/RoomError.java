@@ -28,6 +28,7 @@ import com.transcendensoft.hedbanz.R;
 
 public enum RoomError {
     NO_SUCH_USER(103, R.string.login_error_no_such_login),
+    NO_SUCH_ROOM(104, R.string.game_error_there_is_no_such_room),
     INCORRECT_PASSWORD(301, R.string.room_creation_error_invalid_password),
     ROOM_IS_FULL(302, R.string.room_is_full),
     CANT_START_GAME(303, R.string.room_cant_start_game),
@@ -36,6 +37,7 @@ public enum RoomError {
     ROOM_ALREADY_EXIST(306, R.string.room_creation_error_name_already_exist),
     SUCH_PLAYER_ALREADY_IN_ROOM(307,  R.string.room_user_already_in_room),
     UNAUTHORIZED_PLAYER(401, R.string.room_unauthorized_player),
+    SUCH_PLAYER_ALREADY_VOTED(201, R.string.game_error_such_player_already_voted),
 
     EMPTY_ROOM_ID(10, R.string.error_server),
     EMPTY_NAME(11, R.string.room_creation_error_name_empty),

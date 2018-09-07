@@ -369,7 +369,11 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
 
     private fun getPendingIntentForGame(message: NotificationMessage, requestCode: Int): PendingIntent? {
         val stackBuilder = TaskStackBuilder.create(mContext)
-        stackBuilder.addParentStack(MainActivity::class.java)
+        val parentIntent = Intent(mContext, MainActivity::class.java)
+        parentIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                Intent.FLAG_ACTIVITY_NEW_TASK);
+        stackBuilder.addNextIntentWithParentStack(parentIntent)
 
         val gameIntent = Intent(mContext, GameActivity::class.java)
         gameIntent.putExtra(mContext.getString(R.string.bundle_room_id), message.roomId)
@@ -442,6 +446,18 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
 
     fun cancelGameOverNotification(){
         cancelNotification(GAME_OVER_NOTIFICATION_ID)
+    }
+
+    fun cancelMessageNotifications(){
+        cancelNotification(MESSAGE_NOTIFICATION_ID)
+    }
+
+    fun cancelAllLeaveFromRoomNotifications(){
+        cancelNotification(MESSAGE_NOTIFICATION_ID)
+        cancelNotification(GAME_OVER_NOTIFICATION_ID)
+        cancelNotification(KICK_NOTIFICATION_ID)
+        cancelNotification(GUESS_WORD_NOTIFICATION_ID)
+        cancelNotification(SET_WORD_NOTIFICATION_ID)
     }
 
     private fun cancelNotification(notificationId: Int){

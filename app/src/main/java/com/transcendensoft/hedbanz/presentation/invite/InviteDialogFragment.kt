@@ -161,6 +161,16 @@ class InviteDialogFragment @Inject constructor() : DialogFragment(),
         dismiss()
     }
 
+    @OnClick(R.id.btnRetryNetwork)
+    fun onRetryNetworkClicked(){
+        mPresenter.loadInvitingFriends()
+    }
+
+    @OnClick(R.id.btnRetryServer)
+    fun onRetryServerClicked(){
+        mPresenter.loadInvitingFriends()
+    }
+
     /*------------------------------------*
      *--------- Set data to view ---------*
      *------------------------------------*/

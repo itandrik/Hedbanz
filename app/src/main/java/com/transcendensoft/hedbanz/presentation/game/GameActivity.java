@@ -54,6 +54,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 import static android.view.View.GONE;
 import static android.view.View.OVER_SCROLL_NEVER;
@@ -138,7 +139,13 @@ public class GameActivity extends BaseActivity implements GameContract.View {
             if ((mRecycler != null) && (mAdapter != null) &&
                     (mAdapter.getItems() != null) &&
                     (mAdapter.getItems().size() > 0)) {
-                mRecycler.smoothScrollToPosition(mAdapter.getItems().size() - 1);
+                mRecycler.post(() -> {
+                    try {
+                        mRecycler.smoothScrollToPosition(mAdapter.getItemCount() - 1);
+                    } catch (IllegalArgumentException e) {
+                        Timber.e(e);
+                    }
+                });
             }
         }
         registerReceiver(mLastPlayerBroadcastReceiver, new IntentFilter(ACTION_LAST_USER));
@@ -356,7 +363,13 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void addMessage(Message message) {
         if (mAdapter != null) {
             mAdapter.add(message);
-            mRecycler.smoothScrollToPosition(mAdapter.getItems().size() - 1);
+            mRecycler.post(() -> {
+                try {
+                    mRecycler.smoothScrollToPosition(mAdapter.getItemCount() - 1);
+                } catch (IllegalArgumentException e) {
+                    Timber.e(e);
+                }
+            });
         }
     }
 
@@ -364,7 +377,13 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void addMessage(int position, Message message) {
         if (mAdapter != null) {
             mAdapter.add(position, message);
-            mRecycler.smoothScrollToPosition(mAdapter.getItems().size() - 1);
+            mRecycler.post(() -> {
+                try {
+                    mRecycler.smoothScrollToPosition(mAdapter.getItemCount() - 1);
+                } catch (IllegalArgumentException e) {
+                    Timber.e(e);
+                }
+            });
         }
     }
 
@@ -681,17 +700,21 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     }
 
     @Override
+    public void showErrorToast(@StringRes int message) {
+        AndroidUtils.showLongToast(this, getString(message));
+        hideLoadingDialog();
+    }
+
+    @Override
     public void showErrorDialog(@StringRes int message) {
-        /*Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
+        Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
         new AlertDialog.Builder(this)
                 .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> leaveFromRoom())
                 .setOnDismissListener(dialog -> leaveFromRoom())
                 .setIcon(d)
                 .setTitle(getString(R.string.game_error_title))
                 .setMessage(getString(message))
-                .show();*/
-        AndroidUtils.showLongToast(this, getString(message));
-        hideLoadingDialog();
+                .show();
     }
 
     @Override
@@ -709,9 +732,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     }
 
     private void leaveFromRoom() {
-        if(mPresenter.doesGameHasServerConnectionError()){
+        if (mPresenter.doesGameHasServerConnectionError()) {
             showLeaveWhenServerError();
         } else {
+            mNotificationManager.cancelAllLeaveFromRoomNotifications();
             mPresenter.setIsLeaveFromRoom(true);
             mPresenter.leaveFromRoom();
             mPresenter.destroy();

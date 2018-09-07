@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.domain.repository;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.domain.entity.Advertise;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing;
 import com.transcendensoft.hedbanz.domain.entity.Question;
@@ -66,6 +67,9 @@ public interface GameDataRepository {
     Observable<User> userAfkWarningObservable();
     Observable<User> userKickedObservable();
     Observable<Boolean> gameOverObservable();
+
+    Observable<Boolean> waitingForUsersObservable();
+    Observable<Advertise> advertiseObservable();
 
     void startTyping();
     void stopTyping();

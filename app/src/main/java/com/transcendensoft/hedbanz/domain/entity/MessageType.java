@@ -46,6 +46,7 @@ public enum MessageType {
     USER_WINS_THIS(22),
     USER_WINS_OTHER(23),
     GAME_OVER(24),
+    WAITING_FOR_USERS(25),
     UNDEFINED(100500);
 
     private int id;

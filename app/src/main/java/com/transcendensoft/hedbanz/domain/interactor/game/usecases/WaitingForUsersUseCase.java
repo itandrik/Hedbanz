@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor.game.usecases.user;
+package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
 /**
  * Copyright 2018. Andrii Chernysh
  * <p>
@@ -16,11 +16,7 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases.user;
  */
 
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;
-import com.transcendensoft.hedbanz.domain.entity.PlayerStatus;
-import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.repository.GameDataRepository;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -31,17 +27,17 @@ import io.reactivex.subjects.PublishSubject;
 
 /**
  * This class is an implementation of {@link com.transcendensoft.hedbanz.domain.UseCase}
- * that represents a use case listening {@link com.transcendensoft.hedbanz.domain.entity.User}
- * information when server sent players from room info
+ * that represents a use case listening event when
+ * users should wait, while room is not full
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class PlayersInfoUseCase extends ObservableUseCase<List<User>, Void> {
-    private PublishSubject<List<User>> mSubject;
+public class WaitingForUsersUseCase extends ObservableUseCase<Boolean, Void> {
+    private PublishSubject<Boolean> mSubject;
 
     @Inject
-    public PlayersInfoUseCase(ObservableTransformer observableTransformer,
+    public WaitingForUsersUseCase(ObservableTransformer observableTransformer,
                            CompositeDisposable mCompositeDisposable,
                            GameDataRepository gameDataRepository) {
         super(observableTransformer, mCompositeDisposable);
@@ -50,26 +46,13 @@ public class PlayersInfoUseCase extends ObservableUseCase<List<User>, Void> {
     }
 
     private void initSubject(GameDataRepository gameDataRepository) {
-        Observable<List<User>> observable = gameDataRepository.playersInfoObservable()
-                .map(users -> {
-                    for (int i = 0; i < users.size(); i++) {
-                        User user = users.get(i);
-                        if (user.getPlayerStatus().equals(PlayerStatus.LEFT) ||
-                                user.getPlayerStatus().equals(PlayerStatus.UNDEFINED)) {
-                            users.remove(i);
-                            i--;
-                        }
-                    }
-                    return users;
-                });
-
+        Observable<Boolean> observable = gameDataRepository.waitingForUsersObservable();
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
     }
 
     @Override
-    protected Observable<List<User>> buildUseCaseObservable(Void params) {
+    protected Observable<Boolean> buildUseCaseObservable(Void params) {
         return mSubject;
     }
 }
-

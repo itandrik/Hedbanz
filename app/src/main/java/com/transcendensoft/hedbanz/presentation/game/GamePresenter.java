@@ -66,17 +66,14 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     private boolean isLeaveFromRoom = false;
     private boolean isUserKicked = false;
     private boolean isSocketInititalized = false;
-    private Boolean isGameActive;
 
     @Inject
     public GamePresenter(GameInteractorFacade gameInteractor,
                          GetMessagesInteractor getMessagesInteractor,
-                         PreferenceManager preferenceManager,
-                         Boolean isGameActive) {
+                         PreferenceManager preferenceManager) {
         this.mGameInteractor = gameInteractor;
         this.mGetMessagesInteractor = getMessagesInteractor;
         this.mPreferenceManger = preferenceManager;
-        this.isGameActive = isGameActive;
 
         mTypingUsers = new ArrayList<>();
     }
@@ -124,6 +121,10 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             view.showLastUserDialog();
         }
         mPreferenceManger.setIsGameEnabled(true);
+
+        if (mGameInteractor.doesGameHasServerConnectionError()) {
+            view().showLoadingDialog();
+        }
     }
 
     @Override
@@ -324,51 +325,68 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         mGameInteractor.onConnectListener(
                 str -> {
                     Timber.i("Socket connected: %s", str);
-                    if (!isAfterRoomCreation) {
-                        if (mPreferenceManger.getCurrentRoomId() == -1) {
-                            mGameInteractor.joinToRoom(model.getPassword());
+
+                    if (view() != null) {
+                        view().hideLoadingDialog();
+                        if (!isAfterRoomCreation) {
+                            if (mPreferenceManger.getCurrentRoomId() == -1) {
+                                mGameInteractor.joinToRoom(model.getPassword());
+                            } else {
+                                view().showRestoreRoom();
+                            }
                         } else {
-                            view().showRestoreRoom();
+                            mGameInteractor.sendConnectInfo();
+                            mGameInteractor.setRoomInfo(model);
+                            initRoom(model);
                         }
-                    } else {
-                        mGameInteractor.sendConnectInfo();
-                        mGameInteractor.setRoomInfo(model);
-                        initRoom(model);
                     }
                 },
                 this::processEventListenerOnError);
         mGameInteractor.onDisconnectListener(
                 str -> {
                     Timber.i("Socket disconnected!");
-                    view().showFooterDisconnected();
+                    if (view() != null) {
+                        view().showFooterDisconnected();
+                    }
                 },
                 this::processEventListenerOnError);
         mGameInteractor.onConnectErrorListener(
                 str -> {
                     Timber.e("Socket connect ERROR: %s", str);
-                    view().showFooterDisconnected();
+                    if (view() != null) {
+                        view().showFooterDisconnected();
+                    }
                 },
                 this::processEventListenerOnError);
         mGameInteractor.onConnectTimeoutListener(
                 str -> {
                     Timber.e("Socket connect TIMEOUT: %s", str);
-                    view().showFooterDisconnected();
+                    if (view() != null) {
+                        view().showFooterDisconnected();
+                    }
                 },
                 this::processEventListenerOnError);
         mGameInteractor.onReconnectListener(
                 str -> {
                     Timber.i("Socket reconnected!");
-                    view().showFooterReconnected();
+                    if (view() != null) {
+                        view().showFooterReconnected();
+                        view().hideLoadingDialog();
+                    }
                 },
                 this::processEventListenerOnError);
         mGameInteractor.onReconnectErrorListener(str -> {
                     Timber.e("Socket reconnect error %s", str);
-                    view().showFooterDisconnected();
+                    if (view() != null) {
+                        view().showFooterDisconnected();
+                    }
                 },
                 this::processEventListenerOnError);
         mGameInteractor.onReconnectingListener(str -> {
                     Timber.i("Socket reconnecting... %s", str);
-                    view().showFooterReconnecting();
+                    if (view() != null) {
+                        view().showFooterReconnecting();
+                    }
                 },
                 this::processEventListenerOnError);
     }
@@ -402,6 +420,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         initWordVotingListeners();
         initUserKickListeners();
         initGameOverListener();
+        initWaitingForUsersListener();
 
         refreshMessageHistory();
     }
@@ -458,11 +477,14 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     private void initPlayersInfoListener() {
         mGameInteractor.onPlayersInfoUseCase(users -> {
-            model.setPlayers(users);
-            model.setMessages(new ArrayList<>());
-            view().clearMessages();
-            view().showLoading();
-            refreshMessageHistory();
+            if(view() != null) {
+                view().hideLoadingDialog();
+                model.setPlayers(users);
+                model.setMessages(new ArrayList<>());
+                view().clearMessages();
+                view().showLoading();
+                refreshMessageHistory();
+            }
         }, this::processEventListenerOnError);
     }
 
@@ -500,13 +522,13 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             int guessWordMessagePosition = 0;
             for (int i = model.getMessages().size() - 1; i >= 0; i--) {
                 Message message = model.getMessages().get(i);
-                if(message.getMessageType().equals(MessageType.GUESS_WORD_THIS_USER) &&
-                        message.getUserFrom().equals(mPreferenceManger.getUser())){
+                if (message.getMessageType().equals(MessageType.GUESS_WORD_THIS_USER) &&
+                        message.getUserFrom().equals(mPreferenceManger.getUser())) {
                     guessWordMessage = message;
                     guessWordMessagePosition = i;
                 }
-                if(message.getMessageType().equals(MessageType.ASKING_QUESTION_THIS_USER)){
-                    if(guessWordMessage != null){
+                if (message.getMessageType().equals(MessageType.ASKING_QUESTION_THIS_USER)) {
+                    if (guessWordMessage != null) {
                         model.getMessages().remove(guessWordMessage);
                         view().removeMessage(guessWordMessagePosition);
                     }
@@ -531,7 +553,6 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
         mGameInteractor.onWordSettingListener(wordReceiverUser -> {
             view().hideLoadingDialog();
-            isGameActive = true;
 
             Word word = new Word.Builder()
                     .setMessageType(MessageType.WORD_SETTING)
@@ -541,17 +562,21 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             model.getMessages().add(word);
             view().addMessage(word);
 
-            List<Message> messages = model.getMessages();
-            for (int i = messages.size() - 1; i >= 0; i--) {
-                Message message = messages.get(i);
-                if (message.getMessageType().equals(MessageType.GAME_OVER)) {
-                    message.setLoading(false);
-                    message.setFinished(true);
-                    view().setMessage(i, message);
-                    break;
-                }
-            }
+            setGameOverViewAsFinished();
         }, this::processEventListenerOnError);
+    }
+
+    private void setGameOverViewAsFinished() {
+        List<Message> messages = model.getMessages();
+        for (int i = messages.size() - 1; i >= 0; i--) {
+            Message message = messages.get(i);
+            if (message.getMessageType().equals(MessageType.GAME_OVER)) {
+                message.setLoading(false);
+                message.setFinished(true);
+                view().setMessage(i, message);
+                break;
+            }
+        }
     }
 
     private void initMessageListeners() {
@@ -604,6 +629,13 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         );
     }
 
+    private void initWaitingForUsersListener() {
+        mGameInteractor.onWaitingForUsersListener(
+                this::processWaitingForUsersEvent,
+                this::processEventListenerOnError
+        );
+    }
+
     private void processLeftUserOnNext(User user) {
         List<User> users = model.getPlayers();
         if (users.contains(user)) {
@@ -629,7 +661,6 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             }
         }
         if (!containsGuess) {
-           // model.setMaxPlayers((byte) (model.getMaxPlayers() - 1));
             mGameInteractor.decRoomMaxPlayers();
         }
     }
@@ -640,8 +671,18 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             case SUCH_PLAYER_ALREADY_IN_ROOM:
                 mGameInteractor.restoreRoom();
                 break;
-            default:
+            case UNAUTHORIZED_PLAYER:
+            case INCORRECT_PASSWORD:
+            case INVALID_PASSWORD:
+            case NO_SUCH_ROOM:
+            case ROOM_IS_FULL:
+            case CANT_START_GAME:
+            case GAME_HAS_BEEN_ALREADY_STARTED:
+            case USER_HAS_MAX_ACTIVE_ROOMS_NUMBER:
                 view().showErrorDialog(roomError.getErrorMessage());
+                break;
+            default:
+                view().showErrorToast(roomError.getErrorMessage());
 
         }
     }
@@ -709,6 +750,12 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     private void processAskingQuestion(Question question) {
         User currentUser = mPreferenceManger.getUser();
+       /* Message lastMessage = model.getMessages().get(model.getMessages().size()-1);
+        if(lastMessage instanceof Question &&
+                lastMessage.getMessage().equalsIgnoreCase(question.getMessage())){
+            return;
+        }//TODO*/
+
         if (currentUser.equals(question.getUserFrom()) &&
                 !question.isLoading() && question.isFinished()) {
             question.setMessageType(MessageType.ASKING_QUESTION_THIS_USER);
@@ -780,12 +827,22 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     }
 
     private void processGameOverEvent(Boolean stub) {
-        isGameActive = false;
         Message message = new Message.Builder()
                 .setMessageType(MessageType.GAME_OVER)
                 .build();
         message.setLoading(false);
         message.setFinished(false);
+        model.getMessages().add(message);
+        view().addMessage(message);
+    }
+
+    private void processWaitingForUsersEvent(Boolean stub) {
+        view().hideLoadingDialog();
+        setGameOverViewAsFinished();
+
+        Message message = new Message.Builder()
+                .setMessageType(MessageType.WAITING_FOR_USERS)
+                .build();
         model.getMessages().add(message);
         view().addMessage(message);
     }

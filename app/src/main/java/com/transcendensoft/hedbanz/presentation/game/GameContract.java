@@ -57,6 +57,7 @@ public interface GameContract {
         void showUserKicked();
         void showRestoreRoom();
         void showWinDialog();
+        void showErrorToast(@StringRes int message);
         void showErrorDialog(@StringRes int message);
         void onBackPressed();
 

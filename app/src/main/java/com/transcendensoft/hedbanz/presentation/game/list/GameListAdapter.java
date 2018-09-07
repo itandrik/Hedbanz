@@ -39,6 +39,7 @@ import com.transcendensoft.hedbanz.presentation.game.list.delegates.NetworkError
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.ServerErrorAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.UserAfkReturnedAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.UserWinsAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.WaitingForGameAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.WordSettedAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.WordSettingAdapterDelegate;
 
@@ -83,6 +84,7 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                            KickWarningAdapterDelegate kickWarningAdapterDelegate,
                            UserWinsAdapterDelegate userWinsAdapterDelegate,
                            GameOverAdapterDelegate gameOverAdapterDelegate,
+                           WaitingForGameAdapterDelegate waitingForGameAdapterDelegate,
                            @SchedulerIO Scheduler ioScheduler,
                            @SchedulerUI Scheduler uiScheduler) {
         super();
@@ -113,7 +115,8 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                 .addDelegate(kickedAdapterDelegate)
                 .addDelegate(kickWarningAdapterDelegate)
                 .addDelegate(userWinsAdapterDelegate)
-                .addDelegate(gameOverAdapterDelegate);
+                .addDelegate(gameOverAdapterDelegate)
+                .addDelegate(waitingForGameAdapterDelegate);
     }
 
     @Nullable
@@ -142,27 +145,27 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     }
 
     @NonNull
-    public Observable<Long> askingQuestionThumbsUpObservable(){
+    public Observable<Long> askingQuestionThumbsUpObservable() {
         return mAskingQuestionOtherUserAdapterDelegate.thumbsUpClickObservable();
     }
 
     @NonNull
-    public Observable<Long> askingQuestionThumbsDownObservable(){
+    public Observable<Long> askingQuestionThumbsDownObservable() {
         return mAskingQuestionOtherUserAdapterDelegate.thumbsDownClickObservable();
     }
 
     @NonNull
-    public Observable<Long> askingQuestionWinObservable(){
+    public Observable<Long> askingQuestionWinObservable() {
         return mAskingQuestionOtherUserAdapterDelegate.winClickObservable();
     }
 
     @NonNull
-    public Observable<View> restartGameObservable(){
+    public Observable<View> restartGameObservable() {
         return mGameOverAdapterDelegate.getRestartSubject();
     }
 
     @NonNull
-    public Observable<View> cancelGameObservable(){
+    public Observable<View> cancelGameObservable() {
         return mGameOverAdapterDelegate.getCancelSubject();
     }
 }
