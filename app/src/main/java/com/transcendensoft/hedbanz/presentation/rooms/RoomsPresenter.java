@@ -260,9 +260,9 @@ public class RoomsPresenter extends BasePresenter<RoomList, RoomsContract.View>
         }
 
         private void processNotEmptyRoomList(PaginationState<Room> roomPaginationState, List<Room> rooms) {
-            if (!roomPaginationState.isRefreshed()) {
+            if (!roomPaginationState.isRefreshed() && view() != null) {
                 model.getRooms().remove(model.getRooms().size() - 1);
-                view().removeLastRoom();//
+                view().removeLastRoom();
             }
 
             rooms.add(new Room.Builder().setId(-1).build()); //ProgressBar view

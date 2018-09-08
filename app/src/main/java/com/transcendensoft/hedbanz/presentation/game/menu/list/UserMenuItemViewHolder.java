@@ -103,7 +103,11 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
         if (new PreferenceManager(mContext).getUser().equals(user)) {
             mTvThisUser.setVisibility(View.VISIBLE);
             mIvThisUserStar.setVisibility(View.VISIBLE);
-            mTvWord.setVisibility(View.GONE);
+            if(mIvWin.getVisibility() == View.VISIBLE) {
+                mTvWord.setVisibility(View.INVISIBLE);
+            } else {
+                mTvWord.setVisibility(View.GONE);
+            }
         } else {
             mTvThisUser.setVisibility(View.GONE);
             mIvThisUserStar.setVisibility(View.GONE);
@@ -112,7 +116,11 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
                 mTvWord.setText(user.getWord());
                 mTvWord.setVisibility(View.VISIBLE);
             } else {
-                mTvWord.setVisibility(View.GONE);
+                if(mIvWin.getVisibility() == View.VISIBLE) {
+                    mTvWord.setVisibility(View.INVISIBLE);
+                } else {
+                    mTvWord.setVisibility(View.GONE);
+                }
             }
         }
     }

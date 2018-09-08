@@ -37,6 +37,7 @@ import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageOther
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.MessageThisUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.NetworkErrorAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.ServerErrorAdapterDelegate;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.UpdateUsersInfoAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.UserAfkReturnedAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.UserWinsAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.WaitingForGameAdapterDelegate;
@@ -85,6 +86,7 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                            UserWinsAdapterDelegate userWinsAdapterDelegate,
                            GameOverAdapterDelegate gameOverAdapterDelegate,
                            WaitingForGameAdapterDelegate waitingForGameAdapterDelegate,
+                           UpdateUsersInfoAdapterDelegate updateUsersInfoAdapterDelegate,
                            @SchedulerIO Scheduler ioScheduler,
                            @SchedulerUI Scheduler uiScheduler) {
         super();
@@ -116,7 +118,8 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                 .addDelegate(kickWarningAdapterDelegate)
                 .addDelegate(userWinsAdapterDelegate)
                 .addDelegate(gameOverAdapterDelegate)
-                .addDelegate(waitingForGameAdapterDelegate);
+                .addDelegate(waitingForGameAdapterDelegate)
+                .addDelegate(updateUsersInfoAdapterDelegate);
     }
 
     @Nullable

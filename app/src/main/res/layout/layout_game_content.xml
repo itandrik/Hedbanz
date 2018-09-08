@@ -102,6 +102,7 @@
             android:layout_alignBottom="@id/tvSystemField"
             android:layout_alignTop="@id/tvSystemField"
             android:layout_marginLeft="12dp"
+            android:visibility="gone"
             android:layout_toEndOf="@id/tvSystemField"
             android:layout_toRightOf="@id/tvSystemField" />
 

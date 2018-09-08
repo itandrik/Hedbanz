@@ -28,10 +28,12 @@ import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.entity.Word;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.AdvertiseUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.ErrorUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.GameOverUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.MessageUseCase;
-import com.transcendensoft.hedbanz.domain.interactor.game.usecases.WaitingForUsersUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.UpdateUsersInfoUseCase;
+import com.transcendensoft.hedbanz.domain.interactor.game.usecases.user.WaitingForUsersUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnConnectErrorUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnConnectTimeoutUseCase;
 import com.transcendensoft.hedbanz.domain.interactor.game.usecases.connect.OnConnectUseCase;
@@ -119,10 +121,10 @@ public class GameInteractorFacade {
 
     @Inject GameOverUseCase mGameOverUseCase;
     @Inject WaitingForUsersUseCase mWaitingForUsersUseCase;
+    @Inject UpdateUsersInfoUseCase mUpdateUsersInfoUseCase;
+    @Inject AdvertiseUseCase mAdvertiseUseCase;
 
-    @Inject
-    @SchedulerIO
-    Scheduler mIoScheduler;
+    @Inject @SchedulerIO Scheduler mIoScheduler;
     @Inject RxRoom mCurrentRoom;
     @Inject NotificationManager mNotificationManager;
 
@@ -222,6 +224,8 @@ public class GameInteractorFacade {
                         rxUser.setStatus(PlayerStatus.ACTIVE);
                     }
                     user.setPlayerStatus(PlayerStatus.ACTIVE);
+                } else {
+                    mCurrentRoom.addPlayer(user);
                 }
                 if (mPreferenceManger.getUser().equals(user)) {
                     mNotificationManager.cancelKickNotification();
@@ -396,8 +400,8 @@ public class GameInteractorFacade {
     public void onGameOverListener(Consumer<? super Boolean> onNext,
                                    Consumer<? super Throwable> onError) {
         Consumer<? super Boolean> doOnNext = bool -> {
-            if (mCurrentRoom != null ) {
-               mCurrentRoom.setGameActive(false);
+            if (mCurrentRoom != null) {
+                mCurrentRoom.setGameActive(false);
             }
         };
 
@@ -405,8 +409,28 @@ public class GameInteractorFacade {
     }
 
     public void onWaitingForUsersListener(Consumer<? super Boolean> onNext,
-                                          Consumer<? super Throwable> onError){
+                                          Consumer<? super Throwable> onError) {
+        Consumer<? super Boolean> doOnNext = bool -> {
+            if (mCurrentRoom != null) {
+                mCurrentRoom.setGameActive(false);
+            }
+        };
+
         mWaitingForUsersUseCase.execute(null, onNext, onError);
+    }
+
+    public void onUpdateUsersInfo(Consumer<? super Room> onNext,
+                                  Consumer<? super Throwable> onError){
+        Consumer<? super Room> doOnNext = room -> {
+            this.mCurrentRoom.setRoom(room);
+        };
+
+        mUpdateUsersInfoUseCase.execute(null, onNext, onError, doOnNext);
+    }
+
+    public void onAdvertiseMessageListener(Consumer<? super Message> onNext,
+                                           Consumer<? super Throwable> onError) {
+        mAdvertiseUseCase.execute(null, onNext, onError);
     }
 
     public void restartGame() {
@@ -516,7 +540,7 @@ public class GameInteractorFacade {
     }
 
     public void decRoomMaxPlayers() {
-        mCurrentRoom.setMaxPlayers((byte) (mCurrentRoom.getRoom().getMaxPlayers() - 1));
+       // mCurrentRoom.setMaxPlayers((byte) (mCurrentRoom.getRoom().getMaxPlayers() - 1));
     }
 
     @SuppressLint("CheckResult")
@@ -551,6 +575,8 @@ public class GameInteractorFacade {
         mGameOverUseCase.dispose();
         mPlayersInfoUseCase.dispose();
         mWaitingForUsersUseCase.dispose();
+        mAdvertiseUseCase.dispose();
+        mUpdateUsersInfoUseCase.dispose();
 
         mRepository.disconnect();
     }
@@ -560,8 +586,12 @@ public class GameInteractorFacade {
         mPreferenceManger.setCurrentRoomId(-1); //We leave from current game
     }
 
-    public boolean doesGameHasServerConnectionError(){
+    public boolean doesGameHasServerConnectionError() {
         return mGameState != null && mGameState.equals(GameState.DISCONNECTED);
+    }
+
+    public int currentUsersCount(){
+        return mCurrentRoom.getRxPlayers().size();
     }
 
     public void resumeSocket() {

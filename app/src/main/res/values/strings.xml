@@ -181,6 +181,7 @@
     <string name="game_error_leave_when_server_error_title">Внимание</string>
     <string name="game_error_leave_when_server_error_message">Проверьте ваше интернет соединение. Если с интернетом у вас все в порядке, значит сейчас сервер находится в нестабильном соединении с вашим устройством. Для цельности данных игры лучше подождите немного пока восстановится соединение. Если вы все же хотите выйти, нажмите соответсвующую кнопку. Тогда вернетесь в комнату, когда хотите, если она еще будет активна.</string>
     <string name="game_error_there_is_no_such_room">Такой комнаты не существует</string>
+    <string name="game_error_there_is_no_such_user_in_room">Такого игрока нет в этой комнате.</string>
     <string name="game_error_such_player_already_voted">Вы уже проголосовали</string>
     <string name="game_some_user_think_word_to_user">Сейчас будет спрашивать игрок %1$s.\n Попытка %2$d/3</string>
     <string name="game_some_user_think_word_to_user_error">Сейчас будет спрашивать какой-то игрок.\n Попытка %1$d/3</string>
@@ -198,6 +199,7 @@
     <string name="game_win_user_alert_message">Поздравляем вас, вы угадали свое слово и выиграли игру! Вы можете понаблюдать за игрой ваших товарищей, пообщаться с ними, помочь в отгадывании. Если вам надоест вы всегда можете уйти с комнаты.</string>
     <string name="game_win_user_alert_title">Победа!</string>
     <string name="game_waiting_for_users">Ожидаем когда присоединятся все игроки и начинаем игру.</string>
+    <string name="game_update_users_info">Игрок покинул комнату на этапе загадывания слов. Загаданные слова переопределились другим игрокам. Изменения смотрите в меню.</string>
 
     <!-- Game notification -->
     <string name="game_notification_title">%1$s с комнаты %2$s</string>

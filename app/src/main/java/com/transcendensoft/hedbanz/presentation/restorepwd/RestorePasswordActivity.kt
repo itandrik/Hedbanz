@@ -108,10 +108,12 @@ class RestorePasswordActivity : BaseActivity(), RestorePasswordContract.View {
                 .setCancelable(true)
                 .setOnCancelListener {
                     KeyboardUtils.hideSoftInput(this)
+                    it.dismiss()
                     finish()
                 }
                 .setOnDismissListener {
                     KeyboardUtils.hideSoftInput(this)
+                    it.dismiss()
                     finish()
                 }
                 .show()

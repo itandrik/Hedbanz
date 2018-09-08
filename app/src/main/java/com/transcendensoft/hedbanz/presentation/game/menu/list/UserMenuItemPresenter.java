@@ -60,8 +60,8 @@ public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemCon
         view().setIcon(model.getUser().getIconId().getResId());
         view().setStatus(model.getUser().getPlayerStatus());
         view().setName(model.getUser().getLogin());
-        view().setWord(model.getUser());
         view().setIsWinner(model.getUser().isWinner());
+        view().setWord(model.getUser());
         view().getClickObservable(model.getUser())
                 .subscribe(mItemClickObservable);
     }

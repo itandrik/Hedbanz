@@ -27,6 +27,7 @@ import com.transcendensoft.hedbanz.R;
  */
 
 public enum RoomError {
+    NO_SUCH_USER_IN_ROOM(101, R.string.game_error_there_is_no_such_user_in_room),
     NO_SUCH_USER(103, R.string.login_error_no_such_login),
     NO_SUCH_ROOM(104, R.string.game_error_there_is_no_such_room),
     INCORRECT_PASSWORD(301, R.string.room_creation_error_invalid_password),

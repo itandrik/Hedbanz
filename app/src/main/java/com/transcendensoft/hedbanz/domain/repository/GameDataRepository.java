@@ -69,6 +69,7 @@ public interface GameDataRepository {
     Observable<Boolean> gameOverObservable();
 
     Observable<Boolean> waitingForUsersObservable();
+    Observable<Room> updateUsersInfoObservable();
     Observable<Advertise> advertiseObservable();
 
     void startTyping();

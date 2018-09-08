@@ -1,4 +1,4 @@
-package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
+package com.transcendensoft.hedbanz.domain.interactor.game.usecases.user;
 /**
  * Copyright 2018. Andrii Chernysh
  * <p>

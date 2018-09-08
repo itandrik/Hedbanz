@@ -50,6 +50,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.data.network.retrofit.AuthorizationHeaderInterceptor;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.HedbanzAnalyticsKt;
 import com.transcendensoft.hedbanz.domain.entity.Room;
@@ -117,6 +118,7 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     @Inject MainActivity mActivity;
     @Inject PreferenceManager mPreferenceManager;
     @Inject FirebaseAnalytics mFirebaseAnalytics;
+    @Inject AuthorizationHeaderInterceptor mAuthorizationHeaderInterceptor;
 
     @Inject
     public RoomsFragment() {
@@ -424,7 +426,9 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
             mTvToolbarTitle.setVisibility(View.VISIBLE);
             mRlSearchContainer.setVisibility(View.GONE);
             mCvFilters.setVisibility(GONE);
-            mFabSearch.show();
+            if(mAdapter.getItemCount() != 0) {
+                mFabSearch.show();
+            }
         } catch (NullPointerException e) {
             Timber.e(e);
         }
@@ -486,6 +490,8 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         mPreferenceManager.setIsAuthorised(false);
         mPreferenceManager.setUser(null);
         mPreferenceManager.setFirebaseTokenBinded(false);
+        mPreferenceManager.setAuthorizationToken(null);
+        mAuthorizationHeaderInterceptor.setSessionToken(null);
 
         Intent intent = new Intent(getActivity(), StartActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

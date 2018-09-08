@@ -15,6 +15,8 @@ package com.transcendensoft.hedbanz.domain;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
+
 import java.net.ConnectException;
 import java.util.List;
 
@@ -78,8 +80,10 @@ public abstract class PaginationUseCase<T, ParamUseCase, ParamPaginator>
                     .setHasServerError(false)
                     .setHasUnauthorizedError(false)
                     .setHasInternetError(true);
-        } else if(throwable instanceof HttpException && (((HttpException)throwable).code() == 401 ||
-                ((HttpException)throwable).code() == 403 )) {
+        } else if((throwable instanceof HttpException && (((HttpException)throwable).code() == 401 ||
+                ((HttpException)throwable).code() == 403 )) ||
+                (throwable instanceof HedbanzApiException &&
+                        ((HedbanzApiException)throwable).getServerErrorCode() == 103)) {
             paginationState
                     .setHasServerError(false)
                     .setHasUnauthorizedError(true)

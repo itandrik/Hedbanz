@@ -119,6 +119,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     private static final String CLIENT_RESTART_GAME = "client-restart-game";
 
     private static final String SERVER_WAITING_FOR_USERS = "server-waiting-for-users";
+    private static final String SERVER_UPDATE_USERS_INFO = "server-update-users-info";
     private static final String SERVER_ADVERTISE = "server_advertise";
 
     private Socket mSocket;
@@ -383,7 +384,8 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 if (data != null) {
                     try {
                         List<UserDTO> players = mGson.fromJson(data.toString(),
-                                new TypeToken<List<UserDTO>>(){}.getType());
+                                new TypeToken<List<UserDTO>>() {
+                                }.getType());
 
                         Timber.i("SOCKET <-- GET(%1$s) : %2$s",
                                 SERVER_PLAYERS_INFO, data.toString());
@@ -684,8 +686,40 @@ public class GameDataRepositoryImpl implements GameDataRepository {
     }
 
     @Override
+    public Observable<Room> updateUsersInfoObservable() {
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                JSONObject data = (JSONObject) args[0];
+                if (data != null) {
+                    RoomDTO roomDTO = mGson.fromJson(data.toString(), RoomDTO.class);
+
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s",
+                            SERVER_UPDATE_USERS_INFO, data.toString());
+                    emitter.onNext(mRoomMapper.convert(roomDTO));
+                } else {
+                    Timber.i("SOCKET <-- GET(%1$s) : %2$s",
+                            SERVER_UPDATE_USERS_INFO, "null");
+                }
+            };
+            mSocket.on(SERVER_UPDATE_USERS_INFO, listener);
+        });
+    }
+
+    @Override
     public Observable<Advertise> advertiseObservable() {
-        return null;
+        return Observable.create(emitter -> {
+            Emitter.Listener listener = args -> {
+                if (args != null && args.length != 0) {
+                    emitter.onNext(Advertise.Companion.getTypeById((Integer) args[0]));
+                    Timber.i("SOCKET <-- GET(%1$s) : Advertise",
+                            SERVER_ADVERTISE);
+                } else {
+                    Timber.e("SOCKET <-- GET(%1$s) : Advertise parameters is null" +
+                            Arrays.toString(args));
+                }
+            };
+            mSocket.on(SERVER_ADVERTISE, listener);
+        });
     }
 
     @Override
@@ -824,7 +858,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
 
     @Override
     public void startSocket() {
-        if(mSocket != null && isAfterStop){
+        if (mSocket != null && isAfterStop) {
             mSocket.connect();
             sendConnectInfo();
             isAfterStop = false;
@@ -833,7 +867,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
 
     @Override
     public void stopSocket() {
-        if(mSocket != null){
+        if (mSocket != null) {
             mSocket.disconnect();
             isAfterStop = true;
         }
@@ -875,6 +909,8 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             mSocket.off(SERVER_USER_WIN);
             mSocket.off(SERVER_GAME_OVER);
             mSocket.off(SERVER_WAITING_FOR_USERS);
+            mSocket.off(SERVER_ADVERTISE);
+            mSocket.off(SERVER_UPDATE_USERS_INFO);
 
             mSocket.off(SERVER_PLAYER_AFK_WARNING);
             mSocket.off(SERVER_KICKED_USER_EVENT);

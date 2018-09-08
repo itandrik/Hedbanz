@@ -421,6 +421,8 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         initUserKickListeners();
         initGameOverListener();
         initWaitingForUsersListener();
+        initUpdateUsersInfoListener();
+        initAdvertiseListener();
 
         refreshMessageHistory();
     }
@@ -477,7 +479,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     private void initPlayersInfoListener() {
         mGameInteractor.onPlayersInfoUseCase(users -> {
-            if(view() != null) {
+            if (view() != null) {
                 view().hideLoadingDialog();
                 model.setPlayers(users);
                 model.setMessages(new ArrayList<>());
@@ -636,6 +638,25 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         );
     }
 
+    private void initUpdateUsersInfoListener(){
+        mGameInteractor.onUpdateUsersInfo(
+                this::processUpdateUsersInfoEvent,
+                this::processEventListenerOnError
+        );
+    }
+
+    private void initAdvertiseListener() {
+        mGameInteractor.onAdvertiseMessageListener(
+                message -> {
+                    if (view() != null) {
+                        model.getMessages().add(message);
+                        view().addMessage(message);
+                    }
+                },
+                this::processEventListenerOnError
+        );
+    }
+
     private void processLeftUserOnNext(User user) {
         List<User> users = model.getPlayers();
         if (users.contains(user)) {
@@ -680,6 +701,11 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             case GAME_HAS_BEEN_ALREADY_STARTED:
             case USER_HAS_MAX_ACTIVE_ROOMS_NUMBER:
                 view().showErrorDialog(roomError.getErrorMessage());
+                break;
+            case NO_SUCH_USER_IN_ROOM:
+                if (!mPreferenceManger.isUserKicked() && doesGameHasServerConnectionError()) {
+                    view().showErrorDialog(roomError.getErrorMessage());
+                }
                 break;
             default:
                 view().showErrorToast(roomError.getErrorMessage());
@@ -797,6 +823,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 modelQuestion.setYesVoters(question.getYesVoters());
                 modelQuestion.setNoVoters(question.getNoVoters());
                 modelQuestion.setWinVoters(question.getWinVoters());
+                modelQuestion.setAllUsersCount(mGameInteractor.currentUsersCount());
 
                 view().setMessage(i, modelQuestion);
                 return;
@@ -842,6 +869,14 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
         Message message = new Message.Builder()
                 .setMessageType(MessageType.WAITING_FOR_USERS)
+                .build();
+        model.getMessages().add(message);
+        view().addMessage(message);
+    }
+
+    private void processUpdateUsersInfoEvent(Room room){
+        Message message = new Message.Builder()
+                .setMessageType(MessageType.UPDATE_USERS_INFO)
                 .build();
         model.getMessages().add(message);
         view().addMessage(message);

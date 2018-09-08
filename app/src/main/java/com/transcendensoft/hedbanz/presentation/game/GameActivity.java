@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Rect;
-import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
@@ -157,6 +156,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         if (mPresenter != null) {
             mPresenter.unbindView();
         }
+        stopTypingAnimation();
         unregisterReceiver(mLastPlayerBroadcastReceiver);
     }
 
@@ -320,7 +320,8 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     .setMessage(getString(R.string.game_exit_room_message))
                     .setTitle(getString(R.string.game_exit_room_title))
                     .setPositiveButton(getString(R.string.game_action_exit_game), (dialog, which) -> {
-                        leaveFromRoom();
+                        dialog.dismiss();
+                        leaveFromRoom(false);
                     })
                     .setNegativeButton(getString(R.string.game_action_resume_game), (dialog, which) -> {
                         dialog.dismiss();
@@ -504,23 +505,25 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     }
 
     private void startTypingAnimation() {
-        final AnimatedVectorDrawableCompat avd =
+        AnimatedVectorDrawableCompat avd =
                 AnimatedVectorDrawableCompat.create(this, R.drawable.typing_animation);
         mIvSystemAnimation.setImageDrawable(avd);
-
         avd.registerAnimationCallback(new Animatable2Compat.AnimationCallback() {
             @Override
             public void onAnimationEnd(Drawable drawable) {
-                avd.start();
+                startTypingAnimation();
             }
         });
+        //animatedVectorDrawableCompat.registerAnimationCallback(mAnimationCallback);
+        //mIvSystemAnimation.setImageDrawable(animatedVectorDrawableCompat);
         avd.start();
         mIvSystemAnimation.setVisibility(View.VISIBLE);
     }
 
     private void stopTypingAnimation() {
-        Animatable typingAnimatable = ((Animatable) mIvSystemAnimation.getDrawable());
+        AnimatedVectorDrawableCompat typingAnimatable = ((AnimatedVectorDrawableCompat) mIvSystemAnimation.getDrawable());
         if (typingAnimatable != null) {
+            typingAnimatable.clearAnimationCallbacks();
             typingAnimatable.stop();
             mIvSystemAnimation.setVisibility(View.INVISIBLE);
             mIvSystemAnimation.setImageDrawable(null);
@@ -633,7 +636,8 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     mPresenter.restoreRoom();
                 })
                 .setNegativeButton(getString(R.string.game_action_leave_room), (dialog, which) -> {
-                    leaveFromRoom();
+                    dialog.dismiss();
+                    leaveFromRoom(false);
                 })
                 .setTitle(getString(R.string.game_restore_room_title))
                 .setMessage(getString(R.string.game_restore_room_message))
@@ -664,12 +668,14 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> {
                     mNotificationManager.cancelKickNotification();
                     mPreferenceManager.setIsUserKicked(false);
-                    leaveFromRoom();
+                    dialog.dismiss();
+                    leaveFromRoom(true);
                 })
                 .setOnDismissListener(dialog -> {
                     mNotificationManager.cancelKickNotification();
                     mPreferenceManager.setIsUserKicked(false);
-                    leaveFromRoom();
+                    dialog.dismiss();
+                    leaveFromRoom(true);
                 })
                 .setIcon(d)
                 .setTitle(getString(R.string.game_kicked_title))
@@ -679,24 +685,29 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
     @Override
     public void showLastUserDialog() {
-        Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
-        new AlertDialog.Builder(this)
-                .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> {
-                    mPreferenceManager.setIsLastUser(false);
-                    leaveFromRoom();
-                })
-                .setOnDismissListener(dialog -> {
-                    mPreferenceManager.setIsLastUser(false);
-                    leaveFromRoom();
-                })
-                .setOnCancelListener(dialog -> {
-                    mPreferenceManager.setIsLastUser(false);
-                    leaveFromRoom();
-                })
-                .setIcon(d)
-                .setTitle(getString(R.string.game_last_player_title))
-                .setMessage(getString(R.string.game_last_player_message))
-                .show();
+        if(!mPreferenceManager.isUserKicked()) {
+            Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
+            new AlertDialog.Builder(this)
+                    .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> {
+                        mPreferenceManager.setIsLastUser(false);
+                        dialog.dismiss();
+                        leaveFromRoom(true);
+                    })
+                    .setOnDismissListener(dialog -> {
+                        mPreferenceManager.setIsLastUser(false);
+                        dialog.dismiss();
+                        leaveFromRoom(true);
+                    })
+                    .setOnCancelListener(dialog -> {
+                        mPreferenceManager.setIsLastUser(false);
+                        dialog.dismiss();
+                        leaveFromRoom(true);
+                    })
+                    .setIcon(d)
+                    .setTitle(getString(R.string.game_last_player_title))
+                    .setMessage(getString(R.string.game_last_player_message))
+                    .show();
+        }
     }
 
     @Override
@@ -709,8 +720,11 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void showErrorDialog(@StringRes int message) {
         Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
         new AlertDialog.Builder(this)
-                .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> leaveFromRoom())
-                .setOnDismissListener(dialog -> leaveFromRoom())
+                .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> {
+                    dialog.dismiss();
+                    leaveFromRoom(true);
+                })
+                .setOnDismissListener(dialog -> leaveFromRoom(true))
                 .setIcon(d)
                 .setTitle(getString(R.string.game_error_title))
                 .setMessage(getString(message))
@@ -731,8 +745,8 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 .show();
     }
 
-    private void leaveFromRoom() {
-        if (mPresenter.doesGameHasServerConnectionError()) {
+    private void leaveFromRoom(boolean isAfterErrorLastOrKicked) {
+        if (mPresenter.doesGameHasServerConnectionError() && !isAfterErrorLastOrKicked) {
             showLeaveWhenServerError();
         } else {
             mNotificationManager.cancelAllLeaveFromRoomNotifications();
