@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.presentation.friends;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.network.retrofit.NoConnectivityException;
 import com.transcendensoft.hedbanz.data.source.DataPolicy;
 import com.transcendensoft.hedbanz.domain.entity.Friend;
 import com.transcendensoft.hedbanz.domain.interactor.friends.AcceptFriend;
@@ -23,7 +24,6 @@ import com.transcendensoft.hedbanz.domain.interactor.friends.GetFriends;
 import com.transcendensoft.hedbanz.domain.interactor.friends.RemoveFriend;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 
-import java.net.ConnectException;
 import java.util.Collections;
 import java.util.List;
 
@@ -171,7 +171,7 @@ public class FriendsPresenter extends BasePresenter<List<Friend>, FriendsContrac
 
     private void processOnError(Throwable err) {
         Timber.e(err);
-        if (err instanceof ConnectException) {
+        if (err instanceof NoConnectivityException) {
             view().showNetworkError();
         } else {
             view().showServerError();

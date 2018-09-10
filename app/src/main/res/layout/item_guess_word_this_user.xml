@@ -26,8 +26,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tilGuessWord"
-        app:srcCompat="@drawable/ic_accept"
-        app:tint="@color/textPrimary" />
+        app:srcCompat="@drawable/ic_accept" />
 
     <ProgressBar
         android:id="@+id/pbGuessLoading"

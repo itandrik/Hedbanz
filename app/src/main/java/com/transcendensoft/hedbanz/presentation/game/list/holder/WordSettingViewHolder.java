@@ -31,6 +31,7 @@ import com.transcendensoft.hedbanz.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
+import timber.log.Timber;
 
 /**
  * {@link android.support.v7.widget.RecyclerView.ViewHolder}
@@ -75,17 +76,23 @@ public class WordSettingViewHolder extends RecyclerView.ViewHolder {
         if (isLoading && !isFinished) {
             mIvSetWord.setVisibility(View.GONE);
             mPbWordLoading.setVisibility(View.VISIBLE);
-            mIvSetWord.setColorFilter(ContextCompat.getColor(mContext, R.color.textPrimary),
+            mIvSetWord.setColorFilter(ContextCompat.getColor(mContext, R.color.google_green),
                     android.graphics.PorterDuff.Mode.SRC_IN);
             mTietSetWord.setEnabled(false);
+            mTilSetWord.setEnabled(false);
+            mTietSetWord.clearFocus();
+            mTilSetWord.clearFocus();
             mIvSetWord.setEnabled(false);
         } else if (!isLoading && isFinished) {
             mIvSetWord.setVisibility(View.VISIBLE);
-            mIvSetWord.setColorFilter(ContextCompat.getColor(mContext, R.color.google_green),
+            mIvSetWord.setColorFilter(ContextCompat.getColor(mContext, R.color.textSecondary),
                     android.graphics.PorterDuff.Mode.SRC_IN);
             mPbWordLoading.setVisibility(View.GONE);
-            mTietSetWord.setEnabled(false);
             mIvSetWord.setEnabled(false);
+            mTilSetWord.setEnabled(false);
+            mTietSetWord.clearFocus();
+            mTietSetWord.setEnabled(false);
+            mTilSetWord.clearFocus();
         } else {
             mIvSetWord.setVisibility(View.VISIBLE);
             mPbWordLoading.setVisibility(View.GONE);
@@ -104,6 +111,14 @@ public class WordSettingViewHolder extends RecyclerView.ViewHolder {
                     mTilSetWord.setError(null);
                     emitter.onNext(text);
                 }
+            });
+        });
+    }
+
+    public Observable<Boolean> setWordEtFocusedObservable(){
+        return Observable.create(emitter -> {
+            mTietSetWord.setOnFocusChangeListener((v, hasFocus) -> {
+                emitter.onNext(hasFocus);
             });
         });
     }

@@ -52,11 +52,13 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.ivWinIcon) ImageView mIvWin;
 
     private Context mContext;
+    private View itemView;
 
     public SomeUserMessageViewHolder(Context context, View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
 
+        this.itemView = itemView;
         this.mContext = context;
     }
 
@@ -155,6 +157,14 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
             } else if(!isHide) {
                 mTvUserWord.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    public void bindTopMargin(boolean isTopMarginNeeded){
+        if (isTopMarginNeeded){
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) itemView.getLayoutParams();
+            params.topMargin = ViewUtils.dpToPx(mContext, 8);
+            itemView.setLayoutParams(params);
         }
     }
 }

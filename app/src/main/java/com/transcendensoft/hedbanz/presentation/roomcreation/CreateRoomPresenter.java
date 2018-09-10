@@ -17,17 +17,16 @@ package com.transcendensoft.hedbanz.presentation.roomcreation;
 
 import android.content.Context;
 
+import com.transcendensoft.hedbanz.data.network.retrofit.NoConnectivityException;
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.domain.entity.Room;
-import com.transcendensoft.hedbanz.presentation.roomcreation.models.RoomIcons;
-import com.transcendensoft.hedbanz.presentation.roomcreation.models.StickerIcons;
-import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.CreateRoomInteractor;
 import com.transcendensoft.hedbanz.domain.interactor.rooms.exception.RoomCreationException;
 import com.transcendensoft.hedbanz.domain.validation.RoomError;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
-
-import java.net.ConnectException;
+import com.transcendensoft.hedbanz.presentation.roomcreation.models.RoomIcons;
+import com.transcendensoft.hedbanz.presentation.roomcreation.models.StickerIcons;
+import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 
 import javax.inject.Inject;
 
@@ -84,7 +83,7 @@ public class CreateRoomPresenter extends BasePresenter<RoomList, CreateRoomContr
             for (RoomError roomError : exception.getErrors()) {
                 processRoomError(roomError);
             }
-        } else if (err instanceof ConnectException) {
+        } else if (err instanceof NoConnectivityException) {
             view().showNetworkError();
         } else {
             Timber.e(err);

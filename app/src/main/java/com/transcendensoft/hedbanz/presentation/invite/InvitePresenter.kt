@@ -1,5 +1,6 @@
 package com.transcendensoft.hedbanz.presentation.invite
 
+import com.transcendensoft.hedbanz.data.network.retrofit.NoConnectivityException
 import com.transcendensoft.hedbanz.data.source.DataPolicy
 import com.transcendensoft.hedbanz.domain.entity.Friend
 import com.transcendensoft.hedbanz.domain.entity.Invite
@@ -70,7 +71,7 @@ class InvitePresenter @Inject constructor(
 
     private fun processOnError(err: Throwable) {
         Timber.e(err)
-        if (err is ConnectException) {
+        if (err is NoConnectivityException) {
             view()?.showNetworkError()
         } else {
             view()?.showServerError()

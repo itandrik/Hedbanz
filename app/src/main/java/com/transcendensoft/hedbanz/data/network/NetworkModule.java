@@ -19,6 +19,7 @@ import android.content.Context;
 
 import com.transcendensoft.hedbanz.BuildConfig;
 import com.transcendensoft.hedbanz.data.network.retrofit.AuthorizationHeaderInterceptor;
+import com.transcendensoft.hedbanz.data.network.retrofit.ConnectivityInterceptor;
 import com.transcendensoft.hedbanz.di.qualifier.ApplicationContext;
 import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 
@@ -53,6 +54,12 @@ public class NetworkModule {
 
     @Provides
     @ApplicationScope
+    public ConnectivityInterceptor provideConnectivityInterceptor(@ApplicationContext Context context){
+        return new ConnectivityInterceptor(context);
+    }
+
+    @Provides
+    @ApplicationScope
     public File provideCacheFile(@ApplicationContext Context context) {
         File cacheFile = new File(context.getCacheDir(), "okhttp_cache");
         cacheFile.mkdirs();
@@ -69,10 +76,12 @@ public class NetworkModule {
     @ApplicationScope
     public OkHttpClient provideOkHttpClient(HttpLoggingInterceptor loggingInterceptor,
                                             AuthorizationHeaderInterceptor headerInterceptor,
+                                            ConnectivityInterceptor connectivityInterceptor,
                                             Cache cache) {
         return new OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
                 .addInterceptor(headerInterceptor)
+                .addInterceptor(connectivityInterceptor)
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(1, TimeUnit.HOURS)
                 .readTimeout(1, TimeUnit.HOURS)

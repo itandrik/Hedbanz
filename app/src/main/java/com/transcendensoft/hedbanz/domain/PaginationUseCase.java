@@ -16,8 +16,8 @@ package com.transcendensoft.hedbanz.domain;
  */
 
 import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
+import com.transcendensoft.hedbanz.data.network.retrofit.NoConnectivityException;
 
-import java.net.ConnectException;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -31,7 +31,7 @@ import timber.log.Timber;
  * Use case that has pagination logic
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 
 public abstract class PaginationUseCase<T, ParamUseCase, ParamPaginator>
@@ -63,7 +63,7 @@ public abstract class PaginationUseCase<T, ParamUseCase, ParamPaginator>
                 .setHasInternetError(false)
                 .setHasServerError(false);
 
-        if(entities == null || entities.isEmpty()){
+        if (entities == null || entities.isEmpty()) {
             decPage();
         }
 
@@ -75,15 +75,15 @@ public abstract class PaginationUseCase<T, ParamUseCase, ParamPaginator>
         PaginationState<T> paginationState = new PaginationState<>();
         paginationState.setRefreshed(mCurrentPage <= 0);
 
-        if (throwable instanceof ConnectException) {
+        if (throwable instanceof NoConnectivityException) {
             paginationState
                     .setHasServerError(false)
                     .setHasUnauthorizedError(false)
                     .setHasInternetError(true);
-        } else if((throwable instanceof HttpException && (((HttpException)throwable).code() == 401 ||
-                ((HttpException)throwable).code() == 403 )) ||
+        } else if ((throwable instanceof HttpException && (((HttpException) throwable).code() == 401 ||
+                ((HttpException) throwable).code() == 403)) ||
                 (throwable instanceof HedbanzApiException &&
-                        ((HedbanzApiException)throwable).getServerErrorCode() == 103)) {
+                        ((HedbanzApiException) throwable).getServerErrorCode() == 103)) {
             paginationState
                     .setHasServerError(false)
                     .setHasUnauthorizedError(true)
@@ -101,7 +101,7 @@ public abstract class PaginationUseCase<T, ParamUseCase, ParamPaginator>
     }
 
     private void decPage() {
-        if(mCurrentPage > 0){
+        if (mCurrentPage > 0) {
             mCurrentPage--;
         } else {
             mCurrentPage = 0;

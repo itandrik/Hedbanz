@@ -90,10 +90,14 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
             }
 
             boolean isHideLoginAndImage = false;
+            boolean isAddTopMargin = false;
             if ((items.size() > 1) && position != 0 &&
-                    (items.get(position - 1).getMessageType() == SIMPLE_MESSAGE_OTHER_USER) &&
-                    (items.get(position - 1).getUserFrom().equals(message.getUserFrom()))) {
-                isHideLoginAndImage = true;
+                    (items.get(position - 1).getMessageType() == SIMPLE_MESSAGE_OTHER_USER)) {
+                if(items.get(position - 1).getUserFrom().equals(message.getUserFrom())) {
+                    isHideLoginAndImage = true;
+                } else {
+                    isAddTopMargin = true;
+                }
             }
 
             viewHolder.bindUserWord(word);
@@ -103,6 +107,7 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
             viewHolder.bindUserImage(iconId);
             viewHolder.bindTime(message.getCreateDate().getTime());
             viewHolder.bindIsWinner(isWinner, isHideLoginAndImage);
+            viewHolder.bindTopMargin(isAddTopMargin);
         }
     }
 }

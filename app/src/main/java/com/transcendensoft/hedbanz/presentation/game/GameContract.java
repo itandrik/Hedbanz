@@ -45,6 +45,7 @@ public interface GameContract {
         void removeMessage(int position);
         void invalidateMessageWithPosition(int position);
         void setMessage(int position, Message message);
+        void setIsScrollDownMessages(boolean isScroll);
 
         void showLeaveWhenServerError();
         void showFooterTyping(List<User>users);
@@ -59,6 +60,15 @@ public interface GameContract {
         void showWinDialog();
         void showErrorToast(@StringRes int message);
         void showErrorDialog(@StringRes int message);
+        void focusMessageEditText();
+
+        void playGameOverSound();
+        void playGuessWordSound();
+        void playUserAskingSound();
+        void playMessageReceivedSound();
+        void playUserKickedSound();
+        void playWordSettingSound();
+
         void onBackPressed();
 
         void showEmptyList();
@@ -67,6 +77,7 @@ public interface GameContract {
 
     interface Presenter {
         void initSockets();
+        void refreshMessageHistory();
         void messageTextChanges(EditText editText);
         void sendMessage(String message);
         void processSetWordToUserObservable(Observable<Word> sendWordObservable);
@@ -84,5 +95,7 @@ public interface GameContract {
         void processWinClick(Observable<Long> clickObservable);
         void processRestartGameClick(Observable<android.view.View> clickObservable);
         void processCancelGameClick(Observable<android.view.View> clickObservable);
+        void processSetWordFocused(Observable<Boolean> clickObservable);
+        void processGuessWordFocused(Observable<Boolean> clickObservable);
     }
 }

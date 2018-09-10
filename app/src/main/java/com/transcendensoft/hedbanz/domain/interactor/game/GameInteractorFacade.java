@@ -83,6 +83,7 @@ public class GameInteractorFacade {
     private GameDataRepository mRepository;
     private PreferenceManager mPreferenceManger;
     private GameState mGameState = GameState.DISCONNECTED;
+    private boolean isGameActive = false;
 
     //Use cases
     @Inject OnConnectUseCase mOnConnectUseCase;
@@ -539,10 +540,6 @@ public class GameInteractorFacade {
         }
     }
 
-    public void decRoomMaxPlayers() {
-       // mCurrentRoom.setMaxPlayers((byte) (mCurrentRoom.getRoom().getMaxPlayers() - 1));
-    }
-
     @SuppressLint("CheckResult")
     public void destroy() {
         mOnConnectUseCase.dispose();
@@ -591,7 +588,13 @@ public class GameInteractorFacade {
     }
 
     public int currentUsersCount(){
-        return mCurrentRoom.getRxPlayers().size();
+        int count = 0;
+        for (RxUser rxUser: mCurrentRoom.getRxPlayers()) {
+            if(rxUser.getUser().getPlayerStatus().equals(PlayerStatus.ACTIVE)){
+                count++;
+            }
+        }
+        return count;
     }
 
     public void resumeSocket() {

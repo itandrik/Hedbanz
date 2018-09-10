@@ -171,4 +171,14 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     public Observable<View> cancelGameObservable() {
         return mGameOverAdapterDelegate.getCancelSubject();
     }
+
+    @NonNull
+    public Observable<Boolean> setWordFocusedObservable() {
+        return mWordSettingAdapterDelegate.getSetWordFocusedSubject();
+    }
+
+    @NonNull
+    public Observable<Boolean> guessWordFocusedObservable() {
+        return mGuessWordThisUserAdapterDelegate.guessWordFocusedObservable();
+    }
 }

@@ -108,7 +108,8 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     @OnClick(R.id.btnConfidentiality)
     fun onConfidentialityClicked() {
         startActivity(Intent(Intent.ACTION_VIEW,
-                Uri.parse("${BuildConfig.HOST_LINK}/privacy-policies/${preferenceManager.locale}")))
+                Uri.parse("${BuildConfig.HOST_LINK}:${BuildConfig.PORT_API}" +
+                        "/privacy-policies?lang=${preferenceManager.locale}")))
         firebaseAnalytics.logEvent(CONFIDENTIALITY_BUTTON, null)
     }
 

@@ -50,10 +50,12 @@ import io.reactivex.subjects.PublishSubject;
  */
 public class WordSettingAdapterDelegate extends RxAdapterDelegate<List<Message>> {
     private PublishSubject<Word> mSendWordSubject;
+    private PublishSubject<Boolean> mSetWordFocusedSubject;
 
     @Inject
     public WordSettingAdapterDelegate() {
         mSendWordSubject = PublishSubject.create();
+        mSetWordFocusedSubject = PublishSubject.create();
     }
 
     @Override
@@ -70,7 +72,10 @@ public class WordSettingAdapterDelegate extends RxAdapterDelegate<List<Message>>
         Context context = parent.getContext();
         View itemView = LayoutInflater.from(context)
                 .inflate(R.layout.item_set_word, parent, false);
-        return new WordSettingViewHolder(context, itemView);
+        WordSettingViewHolder holder =  new WordSettingViewHolder(context, itemView);
+        holder.setWordEtFocusedObservable().subscribe(mSetWordFocusedSubject);
+
+        return holder;
     }
 
     @Override
@@ -81,7 +86,6 @@ public class WordSettingAdapterDelegate extends RxAdapterDelegate<List<Message>>
         Word word = (Word) items.get(position);
 
         viewHolder.bindTitle(word.getWordReceiverUser().getLogin());
-        viewHolder.bindLoading(word.isLoading(), word.isFinished());
         viewHolder.bindText(word.getWord());
         viewHolder.setWordObservable()
                 .flatMap(wordMessage -> {
@@ -89,9 +93,15 @@ public class WordSettingAdapterDelegate extends RxAdapterDelegate<List<Message>>
                     return Observable.just(word);
                 })
                 .subscribe(mSendWordSubject);
+        viewHolder.bindLoading(word.isLoading(), word.isFinished());
+        //viewHolder.setWordEtFocusedObservable().subscribe(mSetWordFocusedSubject);
     }
 
     public Observable<Word> getSetWordObservable() {
         return mSendWordSubject;
+    }
+
+    public Observable<Boolean> getSetWordFocusedSubject() {
+        return mSetWordFocusedSubject;
     }
 }

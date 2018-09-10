@@ -4,6 +4,7 @@ import android.os.Build
 import android.text.TextUtils
 import android.widget.EditText
 import com.jakewharton.rxbinding2.widget.RxTextView
+import com.transcendensoft.hedbanz.data.network.retrofit.NoConnectivityException
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager
 import com.transcendensoft.hedbanz.domain.entity.Feedback
 import com.transcendensoft.hedbanz.domain.entity.User
@@ -73,7 +74,7 @@ class FeedbackPresenter @Inject constructor(
         view()?.hideLoadingDialog()
         Timber.e(err)
         when (err) {
-            is ConnectException -> view()?.showNetworkError()
+            is NoConnectivityException -> view()?.showNetworkError()
             is FeedbackException -> processFeedbackException(err)
             else -> view()?.showServerError()
         }

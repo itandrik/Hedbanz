@@ -148,6 +148,9 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
             setStyle(NotificationCompat.BigTextStyle().bigText(text))
 
             val intent = Intent(mContext, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_NEW_TASK);
             val pendingIntent = PendingIntent.getActivity(
                     mContext, KICK_NOTIFICATION_REQUEST_CODE,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -358,6 +361,9 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
             setStyle(NotificationCompat.BigTextStyle().bigText(text))
 
             val intent = Intent(mContext, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_NEW_TASK)
             val pendingIntent = PendingIntent.getActivity(
                     mContext, LAST_USER_REQUEST_CODE,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT)

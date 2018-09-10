@@ -10,7 +10,6 @@ import com.transcendensoft.hedbanz.domain.entity.MessageType
 import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing
 import com.transcendensoft.hedbanz.domain.entity.Question
 import com.transcendensoft.hedbanz.presentation.game.list.holder.GuessWordThisUserViewHolder
-import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
@@ -45,6 +44,7 @@ class GuessWordThisUserAdapterDelegate @Inject constructor() :
         AdapterDelegate<List<@JvmSuppressWildcards Message>>() {
     private val guessWordSubject: PublishSubject<Question> = PublishSubject.create()
     private val helperStringSubject: PublishSubject<Question> = PublishSubject.create()
+    private val guessWordFocusedSubject: PublishSubject<Boolean> = PublishSubject.create()
 
     override fun onCreateViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder {
         val context = parent?.context
@@ -75,12 +75,14 @@ class GuessWordThisUserAdapterDelegate @Inject constructor() :
             holder.bindTitle(message.attempts)
 
             holder.submitWordObservable(message.questionId).subscribe(guessWordSubject)
-            holder.helperStringsObservable(message.questionId).subscribe(helperStringSubject);
-
+            holder.helperStringsObservable(message.questionId).subscribe(helperStringSubject)
+            holder.guessWordEtFocusedObservable().subscribe(guessWordFocusedSubject)
         }
     }
 
     fun guessWordObservable() = guessWordSubject
 
     fun guessWordHelperStringsObservable() = helperStringSubject
+
+    fun guessWordFocusedObservable() = guessWordFocusedSubject
 }

@@ -73,7 +73,10 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
             mRvGuessHelpers.setAdapter(adapter);
 
             mHelperStringsObservable = adapter.getHelperStringsSubject()
-                    .doOnNext(s -> mTietGuessWord.setText(s));
+                    .doOnNext(s -> {
+                        mTietGuessWord.setText(s);
+                        mTietGuessWord.clearFocus();
+                    });
         }
     }
 
@@ -99,19 +102,24 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         if (isLoading && !isFinished) {
             mIvSubmitWord.setVisibility(View.GONE);
             mPbGuessLoading.setVisibility(View.VISIBLE);
-            mIvSubmitWord.setColorFilter(ContextCompat.getColor(mContext, R.color.textPrimary),
+            mIvSubmitWord.getDrawable().setColorFilter(ContextCompat.getColor(mContext, R.color.google_green),
                     android.graphics.PorterDuff.Mode.SRC_IN);
             mTietGuessWord.setEnabled(false);
+            mTilGuessWord.setEnabled(false);
+            mTietGuessWord.clearFocus();
+            mTilGuessWord.clearFocus();
             mIvSubmitWord.setEnabled(false);
         } else if (!isLoading && isFinished) {
             mIvSubmitWord.setVisibility(View.VISIBLE);
-            mIvSubmitWord.getDrawable().setColorFilter(ContextCompat.getColor(mContext, R.color.google_green),
+            mIvSubmitWord.getDrawable().setColorFilter(ContextCompat.getColor(mContext, R.color.textSecondary),
                     android.graphics.PorterDuff.Mode.SRC_IN);
             mPbGuessLoading.setVisibility(View.GONE);
             mTietGuessWord.setEnabled(false);
             mIvSubmitWord.setEnabled(false);
             mRvGuessHelpers.setEnabled(false);
             ((GuessWordsHelperAdapter) mRvGuessHelpers.getAdapter()).disable();
+            mTietGuessWord.clearFocus();
+            mTilGuessWord.clearFocus();
         } else {
             mIvSubmitWord.setVisibility(View.VISIBLE);
             mPbGuessLoading.setVisibility(View.GONE);
@@ -140,6 +148,10 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
+    public Observable<String> getHelperStringsObservable() {
+        return mHelperStringsObservable;
+    }
+
     public Observable<Question> helperStringsObservable(Long questionId) {
         if (mHelperStringsObservable != null) {
             return mHelperStringsObservable.map(text -> {
@@ -152,6 +164,14 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         } else {
             return Observable.empty();
         }
+    }
+
+    public Observable<Boolean> guessWordEtFocusedObservable(){
+        return Observable.create(emitter -> {
+            mTietGuessWord.setOnFocusChangeListener((v, hasFocus) -> {
+                emitter.onNext(hasFocus);
+            });
+        });
     }
 
     @NonNull

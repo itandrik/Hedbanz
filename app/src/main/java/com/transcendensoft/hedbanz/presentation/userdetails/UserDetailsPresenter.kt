@@ -1,6 +1,7 @@
 package com.transcendensoft.hedbanz.presentation.userdetails
 
 import com.transcendensoft.hedbanz.data.exception.HedbanzApiException
+import com.transcendensoft.hedbanz.data.network.retrofit.NoConnectivityException
 import com.transcendensoft.hedbanz.data.source.DataPolicy
 import com.transcendensoft.hedbanz.domain.entity.User
 import com.transcendensoft.hedbanz.domain.interactor.friends.AddFriend
@@ -57,7 +58,7 @@ class UserDetailsPresenter @Inject constructor(
 
     private fun processAddFriendError(err: Throwable?) {
         when (err) {
-            is ConnectException -> view().showInternetError()
+            is NoConnectivityException -> view().showInternetError()
             is HedbanzApiException -> Timber.e(
                     "Code: ${err.serverErrorCode}." +
                             " Message: ${err.serverErrorMessage}")

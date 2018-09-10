@@ -3,6 +3,7 @@ package com.transcendensoft.hedbanz.presentation.restorepwd
 import android.text.TextUtils
 import android.widget.EditText
 import com.jakewharton.rxbinding2.widget.RxTextView
+import com.transcendensoft.hedbanz.data.network.retrofit.NoConnectivityException
 import com.transcendensoft.hedbanz.domain.entity.User
 import com.transcendensoft.hedbanz.domain.interactor.changepwd.ChangePasswordInteractor
 import com.transcendensoft.hedbanz.domain.interactor.changepwd.exception.PasswordResetException
@@ -115,7 +116,7 @@ class RestorePasswordPresenter @Inject constructor(
                     processError(passwordResetError)
                 }
             }
-            is ConnectException -> view()?.showNetworkError()
+            is NoConnectivityException -> view()?.showNetworkError()
             else -> {
                 Timber.e(err)
                 view()?.showServerError()

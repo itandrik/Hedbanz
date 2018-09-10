@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.constraint.ConstraintLayout;
@@ -85,6 +87,9 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     private BroadcastReceiver mLastPlayerBroadcastReceiver;
     private EmojiPopup mEmojiPopup;
     private boolean isKeyboardOpened = false;
+    private boolean isScrollDown = true;
+    private boolean isEmojiKeyboardImageClicked = false;
+    private MediaPlayer mMediaPlayer;
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -96,6 +101,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         setContentView(R.layout.activity_game);
         ButterKnife.bind(this, this);
         ViewExtensionsKt.setupKeyboardHiding(mParentLayout, this);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         if (mPresenter != null && getIntent() != null) {
             long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
@@ -137,14 +143,8 @@ public class GameActivity extends BaseActivity implements GameContract.View {
             mPresenter.bindView(this);
             if ((mRecycler != null) && (mAdapter != null) &&
                     (mAdapter.getItems() != null) &&
-                    (mAdapter.getItems().size() > 0)) {
-                mRecycler.post(() -> {
-                    try {
-                        mRecycler.smoothScrollToPosition(mAdapter.getItemCount() - 1);
-                    } catch (IllegalArgumentException e) {
-                        Timber.e(e);
-                    }
-                });
+                    (mAdapter.getItems().size() > 0) && !isScrollDown) {
+                scrollToTheVeryDown();
             }
         }
         registerReceiver(mLastPlayerBroadcastReceiver, new IntentFilter(ACTION_LAST_USER));
@@ -243,6 +243,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     mAdapter.restartGameObservable());
             mPresenter.processCancelGameClick(
                     mAdapter.cancelGameObservable());
+            mPresenter.processSetWordFocused(
+                    mAdapter.setWordFocusedObservable());
+            mPresenter.processGuessWordFocused(
+                    mAdapter.guessWordFocusedObservable());
         }
     }
 
@@ -315,11 +319,21 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
             mDrawerLayout.closeDrawer(GravityCompat.END);
         } else {
+            String text = "";
+            String positiveButtonText = "";
+            if (mPresenter.isGameActive()) {
+                text = getString(R.string.game_exit_room_message_active);
+                positiveButtonText = getString(R.string.game_action_exit_game_active);
+            } else {
+                text = getString(R.string.game_exit_room_message);
+                positiveButtonText = getString(R.string.game_action_exit_game);
+            }
+
             new AlertDialog.Builder(this)
                     .setCancelable(true)
-                    .setMessage(getString(R.string.game_exit_room_message))
+                    .setMessage(text)
                     .setTitle(getString(R.string.game_exit_room_title))
-                    .setPositiveButton(getString(R.string.game_action_exit_game), (dialog, which) -> {
+                    .setPositiveButton(positiveButtonText, (dialog, which) -> {
                         dialog.dismiss();
                         leaveFromRoom(false);
                     })
@@ -343,7 +357,15 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         processSmileKeyboardIcon();
     }
 
-    private boolean isEmojiKeyboardImageClicked = false;
+    @OnClick(R.id.btnRetryServer)
+    protected void OnRetryServerClicked() {
+        mPresenter.refreshMessageHistory();
+    }
+
+    @OnClick(R.id.btnRetryNetwork)
+    protected void OnRetryNetworkClicked() {
+        mPresenter.refreshMessageHistory();
+    }
 
     private void processSmileKeyboardIcon() {
         if (mEmojiPopup != null) {
@@ -364,13 +386,9 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void addMessage(Message message) {
         if (mAdapter != null) {
             mAdapter.add(message);
-            mRecycler.post(() -> {
-                try {
-                    mRecycler.smoothScrollToPosition(mAdapter.getItemCount() - 1);
-                } catch (IllegalArgumentException e) {
-                    Timber.e(e);
-                }
-            });
+            if (!isScrollDown) {
+                scrollToTheVeryDown();
+            }
         }
     }
 
@@ -378,14 +396,20 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void addMessage(int position, Message message) {
         if (mAdapter != null) {
             mAdapter.add(position, message);
-            mRecycler.post(() -> {
-                try {
-                    mRecycler.smoothScrollToPosition(mAdapter.getItemCount() - 1);
-                } catch (IllegalArgumentException e) {
-                    Timber.e(e);
-                }
-            });
+            if (!isScrollDown) {
+                scrollToTheVeryDown();
+            }
         }
+    }
+
+    private void scrollToTheVeryDown() {
+        mRecycler.post(() -> {
+            try {
+                mRecycler.smoothScrollToPosition(mAdapter.getItemCount() - 1);
+            } catch (IllegalArgumentException e) {
+                Timber.e(e);
+            }
+        });
     }
 
     @Override
@@ -436,6 +460,17 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         if (mAdapter != null) {
             mAdapter.notifyItemChanged(position);
         }
+    }
+
+    @Override
+    public void setIsScrollDownMessages(boolean isScroll) {
+        isScrollDown = isScroll;
+    }
+
+    @Override
+    public void focusMessageEditText() {
+        mEtChatMessage.requestFocus();
+        scrollToTheVeryDown();
     }
 
     /*------------------------------------*
@@ -500,6 +535,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
             String typingText = getTypingMessage(users);
             mTvSystemField.setText(typingText);
             mTvSystemField.setTextColor(ContextCompat.getColor(this, R.color.textSecondary));
+            stopTypingAnimation();
             startTypingAnimation();
         }
     }
@@ -685,7 +721,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
     @Override
     public void showLastUserDialog() {
-        if(!mPreferenceManager.isUserKicked()) {
+        if (!mPreferenceManager.isUserKicked()) {
             Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
             new AlertDialog.Builder(this)
                     .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> {
@@ -754,6 +790,59 @@ public class GameActivity extends BaseActivity implements GameContract.View {
             mPresenter.leaveFromRoom();
             mPresenter.destroy();
             finish();
+        }
+    }
+
+    /*------------------------------------*
+     *---------- Playing sounds ----------*
+     *------------------------------------*/
+    @Override
+    public void playGameOverSound() {
+        stopSound();
+        mMediaPlayer = MediaPlayer.create(this, R.raw.game_over);
+        mMediaPlayer.start();
+    }
+
+    @Override
+    public void playGuessWordSound() {
+        stopSound();
+        mMediaPlayer = MediaPlayer.create(this, R.raw.guess_word);
+        mMediaPlayer.start();
+    }
+
+    @Override
+    public void playUserAskingSound() {
+        stopSound();
+        mMediaPlayer = MediaPlayer.create(this, R.raw.asking_question);
+        mMediaPlayer.start();
+    }
+
+    @Override
+    public void playMessageReceivedSound() {
+        stopSound();
+        mMediaPlayer = MediaPlayer.create(this, R.raw.message_received);
+        mMediaPlayer.start();
+    }
+
+    @Override
+    public void playUserKickedSound() {
+        stopSound();
+        mMediaPlayer = MediaPlayer.create(this, R.raw.user_kicked);
+        mMediaPlayer.start();
+    }
+
+    @Override
+    public void playWordSettingSound() {
+        stopSound();
+        mMediaPlayer = MediaPlayer.create(this, R.raw.word_setting);
+        mMediaPlayer.start();
+    }
+
+    private void stopSound() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
+            mMediaPlayer.release();
+            mMediaPlayer = null;
         }
     }
 }

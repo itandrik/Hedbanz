@@ -64,8 +64,8 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     private List<User> mTypingUsers;
     private boolean isAfterRoomCreation;
     private boolean isLeaveFromRoom = false;
-    private boolean isUserKicked = false;
     private boolean isSocketInititalized = false;
+    private boolean isGameActive = false;
 
     @Inject
     public GamePresenter(GameInteractorFacade gameInteractor,
@@ -168,7 +168,8 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 .execute(new MessageListObserver(view(), model), param);
     }
 
-    private void refreshMessageHistory() {
+    @Override
+    public void refreshMessageHistory() {
         GetMessagesInteractor.Param param = new GetMessagesInteractor.Param(
                 model.getId(), model.getPlayers().size());
         mGetMessagesInteractor.refresh(null)
@@ -307,6 +308,22 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         addDisposable(clickObservable
                 .subscribe(view -> view().onBackPressed(),
                         err -> Timber.e("Error while cancel game click." +
+                                " Message : " + err.getMessage())));
+    }
+
+    @Override
+    public void processGuessWordFocused(Observable<Boolean> clickObservable) {
+        addDisposable(clickObservable
+                .subscribe(isScroll -> view().setIsScrollDownMessages(isScroll),
+                        err -> Timber.e("Error while guess word focused" +
+                                " Message : " + err.getMessage())));
+    }
+
+    @Override
+    public void processSetWordFocused(Observable<Boolean> clickObservable) {
+        addDisposable(clickObservable
+                .subscribe(isScroll -> view().setIsScrollDownMessages(isScroll),
+                        err -> Timber.e("Error while set word focused" +
                                 " Message : " + err.getMessage())));
     }
 
@@ -479,7 +496,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     private void initPlayersInfoListener() {
         mGameInteractor.onPlayersInfoUseCase(users -> {
-            if (view() != null) {
+            if (view() != null && !isAfterRoomCreation) {
                 view().hideLoadingDialog();
                 model.setPlayers(users);
                 model.setMessages(new ArrayList<>());
@@ -487,6 +504,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 view().showLoading();
                 refreshMessageHistory();
             }
+            isAfterRoomCreation = false;
         }, this::processEventListenerOnError);
     }
 
@@ -551,6 +569,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             view().addMessage(word);
 
             updateSettingWordViewParameters(word.getUserFrom(), true, false);
+            view().focusMessageEditText();
         }, this::processEventListenerOnError);
 
         mGameInteractor.onWordSettingListener(wordReceiverUser -> {
@@ -563,6 +582,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
             model.getMessages().add(word);
             view().addMessage(word);
+            view().playWordSettingSound();
 
             setGameOverViewAsFinished();
         }, this::processEventListenerOnError);
@@ -668,22 +688,6 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 .build();
         model.getMessages().add(message);
         view().addMessage(message);
-
-        boolean containsGuess = false;
-        for (int i = model.getMessages().size() - 1; i >= 0; i--) {
-            Message message1 = model.getMessages().get(i);
-            if (message1.getMessageType().equals(MessageType.GUESS_WORD_THIS_USER) ||
-                    message1.getMessageType().equals(MessageType.GUESS_WORD_OTHER_USER)) {
-                containsGuess = true;
-                break;
-            }
-            if (message1.getMessageType().equals(MessageType.WORD_SETTING)) {
-                break;
-            }
-        }
-        if (!containsGuess) {
-            mGameInteractor.decRoomMaxPlayers();
-        }
     }
 
     private void processRoomError(RoomError roomError) {
@@ -731,6 +735,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         } else {
             messages.add(message);
             view().addMessage(message);
+            view().playMessageReceivedSound();
         }
     }
 
@@ -765,6 +770,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
             if (currentUser.equals(playerGuessing.getPlayer())) {
                 playerGuessing.setMessageType(MessageType.GUESS_WORD_THIS_USER);
+                view().playGuessWordSound();
             } else {
                 playerGuessing.setMessageType(MessageType.GUESS_WORD_OTHER_USER);
             }
@@ -772,6 +778,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
         model.getMessages().add(playerGuessing);
         view().addMessage(playerGuessing);
+        isGameActive = true;
     }
 
     private void processAskingQuestion(Question question) {
@@ -801,16 +808,18 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                     modelQuestion.setQuestionId(question.getQuestionId());
                     modelQuestion.setNoVoters(question.getNoVoters());
                     modelQuestion.setYesVoters(question.getYesVoters());
-                    modelQuestion.setAllUsersCount((byte) model.getPlayers().size() - 1);
+                    modelQuestion.setAllUsersCount((byte) mGameInteractor.currentUsersCount() - 1);
                     view().setMessage(i, modelQuestion);
                     break;
                 }
             }
+            view().focusMessageEditText();
         } else {
             question.setMessageType(MessageType.ASKING_QUESTION_OTHER_USER);
             question.setAllUsersCount((byte) model.getPlayers().size() - 1);
             model.getMessages().add(question);
             view().addMessage(question);
+            view().playUserAskingSound();
         }
     }
 
@@ -823,7 +832,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 modelQuestion.setYesVoters(question.getYesVoters());
                 modelQuestion.setNoVoters(question.getNoVoters());
                 modelQuestion.setWinVoters(question.getWinVoters());
-                modelQuestion.setAllUsersCount(mGameInteractor.currentUsersCount());
+                modelQuestion.setAllUsersCount(mGameInteractor.currentUsersCount()-1);
 
                 view().setMessage(i, modelQuestion);
                 return;
@@ -851,6 +860,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 .build();
         model.getMessages().add(message);
         view().addMessage(message);
+        view().playUserKickedSound();
     }
 
     private void processGameOverEvent(Boolean stub) {
@@ -859,8 +869,12 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 .build();
         message.setLoading(false);
         message.setFinished(false);
+
         model.getMessages().add(message);
         view().addMessage(message);
+        view().playGameOverSound();
+
+        isGameActive = false;
     }
 
     private void processWaitingForUsersEvent(Boolean stub) {
@@ -910,6 +924,10 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
         model.getMessages().add(message);
         view().addMessage(message);
+    }
+
+    public boolean isGameActive() {
+        return isGameActive;
     }
 
     @Override

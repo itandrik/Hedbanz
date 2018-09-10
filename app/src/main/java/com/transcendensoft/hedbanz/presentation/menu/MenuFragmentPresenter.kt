@@ -1,6 +1,7 @@
 package com.transcendensoft.hedbanz.presentation.menu
 
 import com.transcendensoft.hedbanz.data.network.retrofit.AuthorizationHeaderInterceptor
+import com.transcendensoft.hedbanz.data.network.retrofit.NoConnectivityException
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager
 import com.transcendensoft.hedbanz.domain.entity.User
 import com.transcendensoft.hedbanz.domain.interactor.firebase.FirebaseBindTokenInteractor
@@ -85,7 +86,7 @@ class MenuFragmentPresenter @Inject constructor(
     }
 
     private fun processLogoutOnError(err: Throwable) {
-        if (err is ConnectException) {
+        if (err is NoConnectivityException) {
             view()?.showLogoutNetworkError()
         } else {
             Timber.e(err)

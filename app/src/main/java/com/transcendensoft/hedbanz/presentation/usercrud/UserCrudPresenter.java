@@ -20,6 +20,7 @@ import android.widget.EditText;
 
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
+import com.transcendensoft.hedbanz.data.network.retrofit.NoConnectivityException;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.domain.entity.User;
@@ -32,7 +33,6 @@ import com.transcendensoft.hedbanz.domain.validation.UserError;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.utils.RxUtils;
 
-import java.net.ConnectException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -225,7 +225,7 @@ public class UserCrudPresenter extends BasePresenter<User, UserCrudContract.View
 
     private void processLoginAvailabilityError(Throwable err) {
         if (view() != null) {
-            if (err instanceof ConnectException) {
+            if (err instanceof NoConnectivityException) {
                 view().showNetworkError();
             } else {
                 view().showServerError();
