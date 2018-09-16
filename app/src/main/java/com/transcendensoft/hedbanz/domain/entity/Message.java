@@ -18,7 +18,7 @@ package com.transcendensoft.hedbanz.domain.entity;
 import java.sql.Timestamp;
 
 /**
- * Entity that describes message in game mode from other users.
+ * Entity that describes message_received in game mode from other users.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>

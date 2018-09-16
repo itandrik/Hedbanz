@@ -68,6 +68,7 @@ public interface GameContract {
         void playMessageReceivedSound();
         void playUserKickedSound();
         void playWordSettingSound();
+        void playWinSound();
 
         void onBackPressed();
 

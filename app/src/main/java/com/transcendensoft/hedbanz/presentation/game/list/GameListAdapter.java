@@ -18,12 +18,11 @@ package com.transcendensoft.hedbanz.presentation.game.list;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.transcendensoft.hedbanz.di.qualifier.SchedulerIO;
-import com.transcendensoft.hedbanz.di.qualifier.SchedulerUI;
 import com.transcendensoft.hedbanz.domain.entity.Message;
 import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;
+import com.transcendensoft.hedbanz.presentation.game.list.delegates.AdvertiseAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.AskingQuestionOtherUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.AskingQuestionThisUserAdapterDelegate;
 import com.transcendensoft.hedbanz.presentation.game.list.delegates.GameOverAdapterDelegate;
@@ -48,7 +47,6 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
 
 /**
  * Adapter for game mode recycler.
@@ -63,9 +61,6 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
     private GuessWordThisUserAdapterDelegate mGuessWordThisUserAdapterDelegate;
     private AskingQuestionOtherUserAdapterDelegate mAskingQuestionOtherUserAdapterDelegate;
     private GameOverAdapterDelegate mGameOverAdapterDelegate;
-
-    private Scheduler mIoScheduler;
-    private Scheduler mUiScheduler;
 
     @Inject
     public GameListAdapter(LoadingAdapterDelegate loadingAdapterDelegate,
@@ -87,8 +82,7 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                            GameOverAdapterDelegate gameOverAdapterDelegate,
                            WaitingForGameAdapterDelegate waitingForGameAdapterDelegate,
                            UpdateUsersInfoAdapterDelegate updateUsersInfoAdapterDelegate,
-                           @SchedulerIO Scheduler ioScheduler,
-                           @SchedulerUI Scheduler uiScheduler) {
+                           AdvertiseAdapterDelegate advertiseAdapterDelegate) {
         super();
 
         this.mServerErrorAdapterDelegate = serverErrorAdapterDelegate;
@@ -97,9 +91,6 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
         this.mGuessWordThisUserAdapterDelegate = guessWordThisUserAdapterDelegate;
         this.mAskingQuestionOtherUserAdapterDelegate = askingQuestionOtherUserAdapterDelegate;
         this.mGameOverAdapterDelegate = gameOverAdapterDelegate;
-
-        this.mUiScheduler = uiScheduler;
-        this.mIoScheduler = ioScheduler;
 
         delegatesManager.addDelegate(loadingAdapterDelegate)
                 .addDelegate(serverErrorAdapterDelegate)
@@ -119,7 +110,8 @@ public class GameListAdapter extends RecyclerDelegationAdapter<Message> {
                 .addDelegate(userWinsAdapterDelegate)
                 .addDelegate(gameOverAdapterDelegate)
                 .addDelegate(waitingForGameAdapterDelegate)
-                .addDelegate(updateUsersInfoAdapterDelegate);
+                .addDelegate(updateUsersInfoAdapterDelegate)
+                .addDelegate(advertiseAdapterDelegate);
     }
 
     @Nullable

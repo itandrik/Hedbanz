@@ -20,7 +20,7 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Object in {@link ServerResult} which contains
- * string error message and integer error code.
+ * string error message_received and integer error code.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>

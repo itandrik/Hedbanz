@@ -231,6 +231,14 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     public void processGuessWordSubmit(Observable<Question> clickObservable) {
         addDisposable(clickObservable
                 .distinct(Question::getQuestionId)
+                .filter(question -> {
+                    Message lastMessage = model.getMessages().get(model.getMessages().size() - 1);
+                    if(lastMessage instanceof PlayerGuessing){
+                        PlayerGuessing lastPlayerGuessing = (PlayerGuessing) lastMessage;
+                        return (lastPlayerGuessing.getQuestionId() - 1) != question.getQuestionId();
+                    }
+                    return true;
+                })
                 .subscribe(
                         questionFromView -> {
                             Question question = mGameInteractor.guessWord(questionFromView.getQuestionId(),
@@ -349,7 +357,9 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                             if (mPreferenceManger.getCurrentRoomId() == -1) {
                                 mGameInteractor.joinToRoom(model.getPassword());
                             } else {
-                                view().showRestoreRoom();
+                                if(!mPreferenceManger.isLastUser()) {
+                                    view().showRestoreRoom();
+                                }
                             }
                         } else {
                             mGameInteractor.sendConnectInfo();
@@ -534,25 +544,29 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             if (mPreferenceManger.getUser().equals(user)) {
                 view().showWinDialog();
                 winMessage.setMessageType(MessageType.USER_WINS_THIS);
+                view().playWinSound();
             } else {
                 winMessage.setMessageType(MessageType.USER_WINS_OTHER);
             }
 
-            Message guessWordMessage = null;
-            int guessWordMessagePosition = 0;
-            for (int i = model.getMessages().size() - 1; i >= 0; i--) {
-                Message message = model.getMessages().get(i);
-                if (message.getMessageType().equals(MessageType.GUESS_WORD_THIS_USER) &&
-                        message.getUserFrom().equals(mPreferenceManger.getUser())) {
-                    guessWordMessage = message;
-                    guessWordMessagePosition = i;
-                }
-                if (message.getMessageType().equals(MessageType.ASKING_QUESTION_THIS_USER)) {
-                    if (guessWordMessage != null) {
-                        model.getMessages().remove(guessWordMessage);
-                        view().removeMessage(guessWordMessagePosition);
+            // Delete guess message if there was revoting for win after guess appeared
+            if(user.equals(mPreferenceManger.getUser())) {
+                Message guessWordMessage = null;
+                int guessWordMessagePosition = 0;
+                for (int i = model.getMessages().size() - 1; i >= 0; i--) {
+                    Message message = model.getMessages().get(i);
+                    if (message.getMessageType().equals(MessageType.GUESS_WORD_THIS_USER) &&
+                            message.getUserFrom().equals(mPreferenceManger.getUser())) {
+                        guessWordMessage = message;
+                        guessWordMessagePosition = i;
                     }
-                    break;
+                    if (message.getMessageType().equals(MessageType.ASKING_QUESTION_THIS_USER)) {
+                        if (guessWordMessage != null) {
+                            model.getMessages().remove(guessWordMessage);
+                            view().removeMessage(guessWordMessagePosition);
+                        }
+                        break;
+                    }
                 }
             }
 

@@ -83,6 +83,17 @@ public class FriendsDataRepositoryImpl implements FriendsDataRepository {
     }
 
     @Override
+    public Observable<Friend> getFriendForUser(long friendId, long forUserId, DataPolicy dataPolicy) {
+        if (dataPolicy == DataPolicy.API) {
+            return mFriendsApiDataSource.getFriendsForUser(friendId, forUserId)
+                    .map(mFriendsDataMapper::convert);
+        } else if (dataPolicy == DataPolicy.DB) {
+            return Observable.error(new UnsupportedOperationException());
+        }
+        return Observable.error(new UnsupportedOperationException());
+    }
+
+    @Override
     public Completable declineFriend(long userId, long friendId, DataPolicy dataPolicy) {
         if (dataPolicy == DataPolicy.API) {
             return mFriendsApiDataSource.declineFriend(userId, friendId);

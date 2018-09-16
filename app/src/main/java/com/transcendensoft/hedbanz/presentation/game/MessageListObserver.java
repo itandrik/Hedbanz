@@ -25,7 +25,7 @@ import java.util.List;
 import io.reactivex.observers.DisposableObserver;
 
 /**
- * Observer that handles message list from Repository
+ * Observer that handles message_received list from Repository
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>

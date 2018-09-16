@@ -91,11 +91,12 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
 
             boolean isHideLoginAndImage = false;
             boolean isAddTopMargin = false;
-            if ((items.size() > 1) && position != 0 &&
-                    (items.get(position - 1).getMessageType() == SIMPLE_MESSAGE_OTHER_USER)) {
-                if(items.get(position - 1).getUserFrom().equals(message.getUserFrom())) {
+            if ((items.size() > 1) && position != 0) {
+                Message prevMessage = items.get(position - 1);
+                if((prevMessage.getMessageType() == SIMPLE_MESSAGE_OTHER_USER) &&
+                        prevMessage.getUserFrom().equals(message.getUserFrom())) {
                     isHideLoginAndImage = true;
-                } else {
+                } else if(prevMessage.getMessageType() != SIMPLE_MESSAGE_OTHER_USER){ // Here was change
                     isAddTopMargin = true;
                 }
             }

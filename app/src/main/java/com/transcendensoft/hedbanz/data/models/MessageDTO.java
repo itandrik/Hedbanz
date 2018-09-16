@@ -19,8 +19,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * DTO for message entity.
- * All message properties received from server described here
+ * DTO for message_received entity.
+ * All message_received properties received from server described here
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>

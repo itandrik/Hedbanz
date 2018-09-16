@@ -99,7 +99,7 @@ public abstract class BaseFragment extends DaggerFragment implements BaseView {
         if (rootView != null) {
             Snackbar.make(rootView, getString(messageRes), Snackbar.LENGTH_LONG).show();
         } else {
-            Timber.tag(TAG).e("Cant show snack message, because fragment root view is null");
+            Timber.tag(TAG).e("Cant show snack message_received, because fragment root view is null");
         }
     }
 
@@ -109,7 +109,7 @@ public abstract class BaseFragment extends DaggerFragment implements BaseView {
         if (rootView != null) {
             Snackbar.make(rootView, message, Snackbar.LENGTH_LONG).show();
         } else {
-            Timber.tag(TAG).e("Cant show snack message, because fragment root view is null");
+            Timber.tag(TAG).e("Cant show snack message_received, because fragment root view is null");
         }
     }
 

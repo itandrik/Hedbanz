@@ -34,6 +34,8 @@ public interface FriendDataSource {
 
     Observable<List<FriendDTO>> getInviteFriends(long userId, long roomId);
 
+    Observable<FriendDTO> getFriendsForUser(long friendId, long forUserId);
+
     Completable removeFriend(long userId, long friendId);
 
     Completable declineFriend(long userId, long friendId);

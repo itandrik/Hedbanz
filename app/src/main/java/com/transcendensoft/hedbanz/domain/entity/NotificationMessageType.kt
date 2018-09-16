@@ -17,8 +17,8 @@ package com.transcendensoft.hedbanz.domain.entity
  *
  */
 /**
- * Enum with notification message types.
- * Id of message type must be the same as in server.
+ * Enum with notification message_received types.
+ * Id of message_received type must be the same as in server.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>

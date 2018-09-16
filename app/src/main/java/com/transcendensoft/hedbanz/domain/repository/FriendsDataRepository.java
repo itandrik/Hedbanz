@@ -37,6 +37,8 @@ public interface FriendsDataRepository {
 
     Observable<List<Friend>> getInviteFriends(long userId, long roomId, DataPolicy dataPolicy);
 
+    Observable<Friend> getFriendForUser(long friendId, long forUserId, DataPolicy dataPolicy);
+
     Completable removeFriend(long userId, long friendId, DataPolicy dataPolicy);
 
     Completable acceptFriend(long userId, long friendId, DataPolicy dataPolicy);

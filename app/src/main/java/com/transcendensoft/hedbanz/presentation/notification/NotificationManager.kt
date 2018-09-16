@@ -419,7 +419,6 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
             Crashlytics.logException(e)
         }
 
-
         return notificationBuilder.build()
     }
 

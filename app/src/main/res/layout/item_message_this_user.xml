@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.vanniktech.emoji.EmojiTextView
+    <com.transcendensoft.hedbanz.presentation.custom.widget.NonPaddingEmojiTextView
         android:id="@+id/tvMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         android:includeFontPadding="false"
         android:lineSpacingExtra="0dp"
         android:background="@drawable/message_this_user"
-        android:maxWidth="300dp"
+        android:maxWidth="240dp"
         android:padding="12dp"
         android:textColor="@color/textPrimary"
         android:textSize="14sp" />

@@ -62,6 +62,10 @@ public interface ApiService {
     @GET("user/{userId}")
     Observable<UserDTO> getUser(@Path("userId") long userId);
 
+    @GET("user/{userId}/for-user/{forUserId}")
+    Observable<FriendDTO> getFriendForUser(@Path("userId") long userId,
+                                         @Path("forUserId") long forUserId);
+
     @PUT("user/feedback")
     Observable<Boolean> sendFeedback(@Body FeedbackDTO feedbackDTO);
 

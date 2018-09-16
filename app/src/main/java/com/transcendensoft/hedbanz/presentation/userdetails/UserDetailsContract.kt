@@ -22,7 +22,7 @@ package com.transcendensoft.hedbanz.presentation.userdetails
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-interface UserDetailsContract{
+interface UserDetailsContract {
     interface View {
         fun showLoadingDialog()
         fun hideLoadingDialog()
@@ -30,6 +30,9 @@ interface UserDetailsContract{
         fun showInternetError()
         fun showServerError()
         fun showAlreadySentRequest()
+
+        fun showIsFriend(isFriend: Boolean)
+        fun showSentFriendRequest()
     }
 
     interface Presenter {

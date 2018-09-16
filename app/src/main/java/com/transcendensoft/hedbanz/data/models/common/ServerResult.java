@@ -23,7 +23,7 @@ import com.google.gson.annotations.SerializedName;
  * can receive from server.
  * There are 3 basic fields:
  * 1) ServerStatus - {@link ServerStatus} can be success or error
- * 2) Error message - message to output or null if success
+ * 2) Error message_received - message_received to output or null if success
  * 3) Data - result object from server
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com

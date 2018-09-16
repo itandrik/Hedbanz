@@ -38,6 +38,12 @@ android {
             buildConfigField("String", 'PORT_API', '\":8085/\"')
             buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
         }
+        kiselBrotherType {
+            initWith(debug)
+            buildConfigField("String", 'HOST_LINK', '\"http://176.96.221.97\"')
+            buildConfigField("String", 'PORT_API', '\":8085/\"')
+            buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
+        }
     }
 }
 

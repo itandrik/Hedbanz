@@ -23,3 +23,27 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-dontwarn com.google.errorprone.annotations.**
+-dontwarn org.codehaus.**
+-dontwarn okio.**
+# keep the class and specified members from being removed or renamed
+-keep class com.transcendensoft.hedbanz.BuildConfig { *; }
+
+# keep the specified class members from being removed or renamed
+# only if the class is preserved
+-keepclassmembers class com.transcendensoft.hedbanz.BuildConfig { *; }
+
+# keep everything in this package from being removed or renamed
+-keep class com.transcendensoft.hedbanz.data.network.** { *; }
+
+# keep everything in this package from being removed or renamed
+-keep class com.transcendensoft.hedbanz.data.models.** { *; }
+
+# keep everything in this package from being removed or renamed
+-keep class com.transcendensoft.hedbanz.data.source.** { *; }
+
+# keep everything in this package from being removed or renamed
+-keep class com.transcendensoft.hedbanz.data.repository.** { *; }
+
+# keep everything in this package from being removed or renamed
+-keep class com.transcendensoft.hedbanz.domain.** { *; }

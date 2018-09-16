@@ -73,7 +73,7 @@ public class HedbanzFirebaseMessagingService extends FirebaseMessagingService im
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Timber.tag(TAG);
 
-        // Check if message contains a notification payload.
+        // Check if message_received contains a notification payload.
         if (remoteMessage.getData() != null) {
             Map<String, String> bodyMap = remoteMessage.getData();
             int type = Integer.parseInt(bodyMap.get(FIELD_TYPE));

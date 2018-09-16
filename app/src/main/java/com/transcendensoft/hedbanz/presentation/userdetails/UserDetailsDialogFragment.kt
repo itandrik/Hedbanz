@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,9 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.transcendensoft.hedbanz.R
+import com.transcendensoft.hedbanz.domain.entity.Friend
 import com.transcendensoft.hedbanz.domain.entity.User
+import com.transcendensoft.hedbanz.presentation.game.GameActivity
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.AndroidSupportInjection
@@ -54,6 +57,8 @@ class UserDetailsDialogFragment @Inject constructor() : DialogFragment(),
         HasSupportFragmentInjector, UserDetailsContract.View {
     @Inject lateinit var mPresenter: UserDetailsPresenter
     @Inject lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
+    @Inject lateinit var gameActivity: GameActivity
+
     @BindView(R.id.btnAddFriend) lateinit var btnAddFriend: Button
     @BindView(R.id.ivUserIcon) lateinit var ivUserIcon: ImageView
     @BindView(R.id.tvUserLogin) lateinit var tvUserLogin: TextView
@@ -121,20 +126,11 @@ class UserDetailsDialogFragment @Inject constructor() : DialogFragment(),
 
     private fun initUserView() {
         user?.let {
-            mPresenter.setModel(it)
+            mPresenter.setModel(Friend.Builder().setId(it.id).build())
+
             val drawable = VectorDrawableCompat.create(resources, it.iconId.resId, null)
             ivUserIcon.setImageDrawable(drawable)
-
             tvUserLogin.text = it.login
-            if (it.isFriend) {
-                tvFriendship.visibility = View.VISIBLE
-                ivFriendship.visibility = View.VISIBLE
-                btnAddFriend.visibility = View.INVISIBLE
-            } else {
-                tvFriendship.visibility = View.GONE
-                ivFriendship.visibility = View.GONE
-                btnAddFriend.visibility = View.VISIBLE
-            }
         }
     }
 
@@ -176,6 +172,28 @@ class UserDetailsDialogFragment @Inject constructor() : DialogFragment(),
     override fun showAlreadySentRequest() {
         hideLoadingDialog()
         Toast.makeText(context, "Вы уже прислали запрос на дружбу", Toast.LENGTH_LONG).show()
+    }
+
+    override fun showIsFriend(isFriend: Boolean) {
+        if (isFriend) {
+            tvFriendship.visibility = View.VISIBLE
+            ivFriendship.visibility = View.VISIBLE
+            btnAddFriend.visibility = View.GONE
+        } else {
+            tvFriendship.visibility = View.GONE
+            ivFriendship.visibility = View.GONE
+            btnAddFriend.visibility = View.VISIBLE
+            btnAddFriend.text = getString(R.string.user_details_add_friend)
+            btnAddFriend.isEnabled = true
+            btnAddFriend.setBackgroundResource(R.drawable.add_friend_button_bg)
+        }
+    }
+
+    override fun showSentFriendRequest() {
+        btnAddFriend.text = getString(R.string.user_details_friend_request_sent)
+        btnAddFriend.isEnabled = false
+        btnAddFriend.setBackgroundResource(R.drawable.restart_button_bg)
+        btnAddFriend.setTextColor(ContextCompat.getColor(gameActivity, R.color.textWhite))
     }
 
     override fun onDestroy() {

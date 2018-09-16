@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.MobileAds;
 import com.google.gson.Gson;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.network.service.firebase.HedbanzFirebaseMessagingService;
@@ -55,6 +56,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import timber.log.Timber;
 
 import static android.view.View.GONE;
@@ -87,7 +89,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     private BroadcastReceiver mLastPlayerBroadcastReceiver;
     private EmojiPopup mEmojiPopup;
     private boolean isKeyboardOpened = false;
-    private boolean isScrollDown = true;
+    private boolean isScrollDown = false;
     private boolean isEmojiKeyboardImageClicked = false;
     private MediaPlayer mMediaPlayer;
 
@@ -102,6 +104,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         ButterKnife.bind(this, this);
         ViewExtensionsKt.setupKeyboardHiding(mParentLayout, this);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        MobileAds.initialize(this, getString(R.string.admob_ads_id));
 
         if (mPresenter != null && getIntent() != null) {
             long roomId = getIntent().getLongExtra(getString(R.string.bundle_room_id), 0L);
@@ -312,6 +315,13 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @OnClick(R.id.fabLogout)
     protected void onExitFromRoom() {
         onBackPressed();
+    }
+
+    @OnFocusChange(R.id.etChatMessage)
+    protected void onEtChatFocusChange(View view, boolean hasFocus) {
+        if(hasFocus){
+            isScrollDown = false;
+        }
     }
 
     @Override
@@ -672,9 +682,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     mPresenter.restoreRoom();
                 })
                 .setNegativeButton(getString(R.string.game_action_leave_room), (dialog, which) -> {
-                    dialog.dismiss();
                     leaveFromRoom(false);
+                    dialog.dismiss();
                 })
+                .setCancelable(false)
                 .setTitle(getString(R.string.game_restore_room_title))
                 .setMessage(getString(R.string.game_restore_room_message))
                 .show();
@@ -835,6 +846,13 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void playWordSettingSound() {
         stopSound();
         mMediaPlayer = MediaPlayer.create(this, R.raw.word_setting);
+        mMediaPlayer.start();
+    }
+
+    @Override
+    public void playWinSound() {
+        stopSound();
+        mMediaPlayer = MediaPlayer.create(this, R.raw.win);
         mMediaPlayer.start();
     }
 

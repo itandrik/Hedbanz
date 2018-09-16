@@ -42,6 +42,9 @@ public class Friend extends User {
         this.isInGame = isInGame;
     }
 
+    public Friend(){
+
+    }
     public boolean isAccepted() {
         return isAccepted;
     }

@@ -36,10 +36,10 @@ import butterknife.ButterKnife;
 
 /**
  * {@link android.support.v7.widget.RecyclerView.ViewHolder}
- * for view that represents a message from another users.
+ * for view that represents a message_received from another users.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.ivUserImage) ImageView mIvUserImage;
@@ -62,8 +62,8 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
         this.mContext = context;
     }
 
-    public void bindUserWord(String word){
-        if(!TextUtils.isEmpty(word)){
+    public void bindUserWord(String word) {
+        if (!TextUtils.isEmpty(word)) {
             mTvUserWord.setVisibility(View.VISIBLE);
             mTvUserWord.setText(word);
         } else {
@@ -71,54 +71,61 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public void bindMessage(String message){
-        if(!TextUtils.isEmpty(message)){
+    public void bindMessage(String message) {
+        if (!TextUtils.isEmpty(message)) {
             mTvMessage.setText(message);
         } else {
             mTvMessage.setText("");
         }
 
-        if(mTvUserWord.getVisibility() == View.VISIBLE){
-            ((RelativeLayout.LayoutParams)mTvMessage.getLayoutParams()).topMargin =
+        if (mTvUserWord.getVisibility() == View.VISIBLE) {
+            ((RelativeLayout.LayoutParams) mTvMessage.getLayoutParams()).topMargin =
                     ViewUtils.dpToPx(mContext, 16.f);
-        } else {
+        } else if (mIvUserImage.getVisibility() == View.VISIBLE) {  // Here was change
             ((RelativeLayout.LayoutParams)mTvMessage.getLayoutParams()).topMargin =
                     ViewUtils.dpToPx(mContext, 8.f);
         }
     }
 
-    public void bindUserImage(@DrawableRes int drawableRes){
+    public void bindUserImage(@DrawableRes int drawableRes) {
         VectorDrawableCompat drawableCompat = VectorDrawableCompat.create(
                 mContext.getResources(), drawableRes, null);
         mIvUserImage.setImageDrawable(drawableCompat);
 
-        if(mIvUserImage.getVisibility() == View.VISIBLE){
-            ((RelativeLayout.LayoutParams)mIvUserImage.getLayoutParams()).topMargin =
+        if (mIvUserImage.getVisibility() == View.VISIBLE) {
+            ((RelativeLayout.LayoutParams) mIvUserImage.getLayoutParams()).topMargin =
                     ViewUtils.dpToPx(mContext, 16.f);
         } else {
-            ((RelativeLayout.LayoutParams)mIvUserImage.getLayoutParams()).topMargin =
-                    ViewUtils.dpToPx(mContext, 8.f);
+           // ((RelativeLayout.LayoutParams) mIvUserImage.getLayoutParams()).topMargin =
+            //        ViewUtils.dpToPx(mContext, 8.f);
         }
     }
 
-    public void bindUserLogin(String login){
-        if(TextUtils.isEmpty(login)){
+    public void bindUserLogin(String login) {
+        if (TextUtils.isEmpty(login)) {
             mTvLogin.setVisibility(View.GONE);
         } else {
             mTvLogin.setText(login);
         }
     }
 
-    public void bindShowHideLoginAndImage(boolean isHide){
-        if(isHide){
+    public void bindShowHideLoginAndImage(boolean isHide) {
+        if (isHide) {
             mTvLogin.setVisibility(View.GONE);
             mTvUserWord.setVisibility(View.GONE);
             mIvUserImage.setVisibility(View.INVISIBLE);
             mSeparator.setVisibility(View.VISIBLE);
             mRlContainer.setMinimumHeight(0);
+            ((RelativeLayout.LayoutParams)mTvMessage.getLayoutParams())
+                    .topMargin = ViewUtils.dpToPx(mContext, 3);
+            ((RelativeLayout.LayoutParams)mIvUserImage.getLayoutParams())
+                    .topMargin = ViewUtils.dpToPx(mContext, 3);
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) itemView.getLayoutParams();
+            params.height = RecyclerView.LayoutParams.WRAP_CONTENT;
+            itemView.setLayoutParams(params);
         } else {
             mTvLogin.setVisibility(View.VISIBLE);
-            if(!TextUtils.isEmpty(mTvUserWord.getText().toString())) {
+            if (!TextUtils.isEmpty(mTvUserWord.getText().toString())) {
                 mTvUserWord.setVisibility(View.VISIBLE);
             }
             mIvUserImage.setVisibility(View.VISIBLE);
@@ -127,41 +134,41 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private int getListPreferredItemHeight(){
-        int[] textSizeAttr = new int[] { android.R.attr.listPreferredItemHeight };
+    private int getListPreferredItemHeight() {
+        int[] textSizeAttr = new int[]{android.R.attr.listPreferredItemHeight};
         int indexOfAttrTextSize = 0;
         TypedArray a = mContext.obtainStyledAttributes(new TypedValue().data, textSizeAttr);
-        int textSize = a.getDimensionPixelSize(indexOfAttrTextSize, -1);
+        int height = a.getDimensionPixelSize(indexOfAttrTextSize, -1);
         a.recycle();
 
-        return textSize;
+        return height;
     }
 
-    public void bindTime(Long time){
+    public void bindTime(Long time) {
         String humanReadableTime = DateUtils.convertDateToHoursMinutes(time);
-        if(!TextUtils.isEmpty(humanReadableTime)){
+        if (!TextUtils.isEmpty(humanReadableTime)) {
             mTvTime.setText(humanReadableTime);
         } else {
             mTvTime.setText("");
         }
     }
 
-    public void bindIsWinner(boolean isWinner, boolean isHide){
-        if(isWinner){
+    public void bindIsWinner(boolean isWinner, boolean isHide) {
+        if (isWinner) {
             mIvWin.setVisibility(View.VISIBLE);
             mTvUserWord.setVisibility(View.GONE);
         } else {
             mIvWin.setVisibility(View.GONE);
-            if(TextUtils.isEmpty(mTvUserWord.getText())){
+            if (TextUtils.isEmpty(mTvUserWord.getText())) {
                 mTvUserWord.setVisibility(View.GONE);
-            } else if(!isHide) {
+            } else if (!isHide) {
                 mTvUserWord.setVisibility(View.VISIBLE);
             }
         }
     }
 
-    public void bindTopMargin(boolean isTopMarginNeeded){
-        if (isTopMarginNeeded){
+    public void bindTopMargin(boolean isTopMarginNeeded) {
+        if (isTopMarginNeeded) {
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) itemView.getLayoutParams();
             params.topMargin = ViewUtils.dpToPx(mContext, 8);
             itemView.setLayoutParams(params);

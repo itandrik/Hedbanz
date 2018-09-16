@@ -27,7 +27,6 @@ import com.transcendensoft.hedbanz.di.scope.ApplicationScope;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
-import retrofit.converter.java8.Java8OptionalConverterFactory;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -80,7 +79,6 @@ public class ApiServiceModule {
         return new Retrofit.Builder()
                 .addConverterFactory(HedbanzApiErrorHandlerFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addConverterFactory(Java8OptionalConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okHttpClient)
                 .baseUrl(ApiDataSource.BASE_URL)

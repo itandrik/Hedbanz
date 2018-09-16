@@ -17,7 +17,7 @@ package com.transcendensoft.hedbanz.domain.entity
  *
  */
 /**
- * Entity that receives from FCM when some user writes message
+ * Entity that receives from FCM when some user writes message_received
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>

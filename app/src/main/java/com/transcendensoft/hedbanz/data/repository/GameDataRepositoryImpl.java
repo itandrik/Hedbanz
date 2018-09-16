@@ -62,6 +62,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Observable;
 import io.socket.client.Ack;
 import io.socket.client.IO;
@@ -120,7 +123,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
 
     private static final String SERVER_WAITING_FOR_USERS = "server-waiting-for-users";
     private static final String SERVER_UPDATE_USERS_INFO = "server-update-users-info";
-    private static final String SERVER_ADVERTISE = "server_advertise";
+    private static final String SERVER_ADVERTISE = "server-advertise";
 
     private Socket mSocket;
     private long mUserId;
@@ -557,12 +560,14 @@ public class GameDataRepositoryImpl implements GameDataRepository {
             Emitter.Listener listener = args -> {
                 JSONObject data = (JSONObject) args[0];
                 try {
-                    PlayerGuessingDTO playerGuessingDTO = mGson.fromJson(
-                            data.toString(), PlayerGuessingDTO.class);
+                    if(data != null) {
+                        PlayerGuessingDTO playerGuessingDTO = mGson.fromJson(
+                                data.toString(), PlayerGuessingDTO.class);
 
-                    Timber.i("SOCKET <-- GET(%1$s) : %2$s",
-                            SERVER_USER_GUESSING_EVENT, data.toString());
-                    emitter.onNext(mPlayerGuessingModelDataMapper.convert(playerGuessingDTO));
+                        Timber.i("SOCKET <-- GET(%1$s) : %2$s",
+                                SERVER_USER_GUESSING_EVENT, data.toString());
+                        emitter.onNext(mPlayerGuessingModelDataMapper.convert(playerGuessingDTO));
+                    }
                 } catch (JsonSyntaxException | NullPointerException e) {
                     emitter.onError(e);
                 }
@@ -592,7 +597,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
 
     @Override
     public Observable<Question> questionVotingObservable() {
-        return Observable.create(emitter -> {
+        return Flowable.create((FlowableOnSubscribe<Question>) emitter -> {
             Emitter.Listener listener = args -> {
                 JSONObject data = (JSONObject) args[0];
                 try {
@@ -606,7 +611,7 @@ public class GameDataRepositoryImpl implements GameDataRepository {
                 }
             };
             mSocket.on(SERVER_USER_ANSWERING_EVENT, listener);
-        });
+        }, BackpressureStrategy.BUFFER).toObservable();
     }
 
     @Override

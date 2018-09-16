@@ -27,6 +27,9 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_ads_id"/>
 
         <!-- Activities -->
         <activity
@@ -83,7 +86,8 @@
             android:name=".presentation.feedback.FeedbackActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ThemeMain"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+
         <!-- Service -->
         <!-- Firebase Notifications -->
         <service android:name=".data.network.service.firebase.HedbanzFirebaseMessagingService">

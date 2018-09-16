@@ -24,15 +24,23 @@ repositories {
 }
 
 android {
+    signingConfigs {
+        release {
+            keyAlias 'hedbanz-key'
+            keyPassword 'mvwxrwyb6HUasuJJVvCJhR9ZLPRQbRK7Gq9Mh64P'
+            storeFile file('D:/AndroidProjects/keystore/Hedbanz.jks')
+            storePassword 'mvwxrwyb6HUasuJJVvCJhR9ZLPRQbRK7Gq9Mh64P'
+        }
+    }
     compileSdkVersion 27
-
     defaultConfig {
         applicationId "com.transcendensoft.hedbanz"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 1
+        versionCode 2
         vectorDrawables.useSupportLibrary = true
-        versionName "1.0.0"
+        versionName "1.0.1" +
+                ""
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         project.ext.set("archivesBaseName", "Hedbanz-v" + versionName);
         multiDexEnabled true
@@ -41,10 +49,11 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         raspberryType {
-            initWith(debug)
+            initWith(release)
             buildConfigField("String", 'HOST_LINK', '\"http://176.36.146.229\"')
             buildConfigField("String", 'PORT_API', '\":8085/\"')
             buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
@@ -105,15 +114,12 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
     //Fabric
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
-
     //Android
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:appcompat-v7:27.1.1'
@@ -138,13 +144,12 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
-    implementation 'com.squareup.retrofit2:converter-java8:2.3.0'
 
     //RxJava
     implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
-    implementation 'com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.1.0'
-    implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.0'
+    implementation 'com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.1.1'
+    implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
 
     //Dagger 2
     implementation 'com.google.dagger:dagger-android:2.11'
@@ -153,38 +158,35 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
     kapt 'com.google.dagger:dagger-android-processor:2.11'
     kapt 'com.google.dagger:dagger-compiler:2.11'
-
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
-
     //Firebase
     implementation 'com.google.firebase:firebase-auth:11.2.0'
     implementation 'com.google.android.gms:play-services-auth:11.2.0'
     implementation 'com.google.firebase:firebase-core:11.2.0'
     implementation project(path: ':com-google-firebase-messaging')
-
     //Sockets
     implementation('io.socket:socket.io-client:0.9.0') {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
     implementation 'com.github.euzee:serviceManager:1.0.2'
-
     //In-app billing
     implementation 'com.android.billingclient:billing:1.0'
-
+    // Admob
+    implementation 'com.google.android.gms:play-services-ads:11.2.0'
     //Utils
     implementation 'com.jakewharton:butterknife:8.8.1'
     kapt 'com.jakewharton:butterknife-compiler:8.8.1'
-    implementation 'com.jakewharton.timber:timber:4.5.1' //4.6.1 has bugs
+    implementation 'com.jakewharton.timber:timber:4.5.1'
+    //4.6.1 has bugs
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     varashTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     dormitoryTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    raspberryTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    raspberryTypeImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     kiselBrotherTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
-
     //Tests
     testImplementation 'junit:junit:4.12'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {

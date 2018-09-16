@@ -75,7 +75,15 @@ class GuessWordThisUserAdapterDelegate @Inject constructor() :
             holder.bindTitle(message.attempts)
 
             holder.submitWordObservable(message.questionId).subscribe(guessWordSubject)
-            holder.helperStringsObservable(message.questionId).subscribe(helperStringSubject)
+            holder.helperStringsObservable
+                    .map {
+                        val question = Question()
+                        question.message = it
+                        question.questionId = message.questionId
+
+                        question
+                    }
+                    .subscribe(helperStringSubject)
             holder.guessWordEtFocusedObservable().subscribe(guessWordFocusedSubject)
         }
     }

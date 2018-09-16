@@ -48,6 +48,11 @@ public class FriendsApiDataSource extends ApiDataSource implements FriendDataSou
     }
 
     @Override
+    public Observable<FriendDTO> getFriendsForUser(long friendId, long forUserId) {
+        return mService.getFriendForUser(friendId, forUserId);
+    }
+
+    @Override
     public Completable removeFriend(long userId, long friendId) {
         return mService.deleteFriend(userId, friendId);
     }

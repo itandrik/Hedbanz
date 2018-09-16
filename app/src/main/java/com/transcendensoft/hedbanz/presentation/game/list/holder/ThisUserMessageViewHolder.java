@@ -31,7 +31,7 @@ import butterknife.ButterKnife;
 
 /**
  * {@link android.support.v7.widget.RecyclerView.ViewHolder}
- * for view that represents a message from current user.
+ * for view that represents a message_received from current user.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>

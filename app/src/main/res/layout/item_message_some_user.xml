@@ -11,7 +11,11 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:text="Harashi dfsagsdfgsdfgsdfg"
+        android:maxLength="25"
+        android:singleLine="true"
+        android:gravity="left|center_vertical"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textColor="@color/textDarkRed"
         android:textSize="15sp"
         android:textStyle="bold" />
@@ -26,7 +30,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp" />
 
-    <com.vanniktech.emoji.EmojiTextView
+    <com.transcendensoft.hedbanz.presentation.custom.widget.NonPaddingEmojiTextView
         android:id="@+id/tvMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,7 +43,7 @@
         android:background="@drawable/message_other_user"
         android:includeFontPadding="false"
         android:lineSpacingExtra="0dp"
-        android:maxWidth="300dp"
+        android:maxWidth="200dp"
         android:padding="12dp"
         android:textColor="@color/textPrimary"
         android:textSize="14sp" />

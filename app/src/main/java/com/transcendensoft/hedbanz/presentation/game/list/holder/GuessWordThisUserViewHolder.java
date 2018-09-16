@@ -38,6 +38,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * {@link android.support.v7.widget.RecyclerView.ViewHolder}
@@ -55,7 +56,7 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.tvGuessWordTitle) TextView mTvGuessWordTitle;
 
     private Context mContext;
-    private Observable<String> mHelperStringsObservable;
+    private PublishSubject<String> mHelperStringsSubject = PublishSubject.create();
 
     public GuessWordThisUserViewHolder(Context context, View itemView) {
         super(itemView);
@@ -72,11 +73,11 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
                     mContext, LinearLayoutManager.HORIZONTAL, false));
             mRvGuessHelpers.setAdapter(adapter);
 
-            mHelperStringsObservable = adapter.getHelperStringsSubject()
+            adapter.getHelperStringsSubject()
                     .doOnNext(s -> {
                         mTietGuessWord.setText(s);
                         mTietGuessWord.clearFocus();
-                    });
+                    }).subscribe(mHelperStringsSubject);
         }
     }
 
@@ -149,10 +150,10 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
     }
 
     public Observable<String> getHelperStringsObservable() {
-        return mHelperStringsObservable;
+        return mHelperStringsSubject;
     }
 
-    public Observable<Question> helperStringsObservable(Long questionId) {
+    /*public Observable<Question> helperStringsObservable(Long questionId) {
         if (mHelperStringsObservable != null) {
             return mHelperStringsObservable.map(text -> {
                 Question question = new Question();
@@ -164,7 +165,7 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         } else {
             return Observable.empty();
         }
-    }
+    }*/
 
     public Observable<Boolean> guessWordEtFocusedObservable(){
         return Observable.create(emitter -> {
@@ -181,8 +182,9 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         if (!text.toUpperCase().startsWith(startText.toUpperCase())) {
             text = startText + text;
         } else {
-            text = startText + text.substring(1);
+            text = startText + text.substring(2);
         }
+
         if (!text.endsWith(endText)) {
             text = text + endText;
         }

@@ -3,11 +3,11 @@ package com.transcendensoft.hedbanz.presentation.userdetails
 import com.transcendensoft.hedbanz.data.exception.HedbanzApiException
 import com.transcendensoft.hedbanz.data.network.retrofit.NoConnectivityException
 import com.transcendensoft.hedbanz.data.source.DataPolicy
-import com.transcendensoft.hedbanz.domain.entity.User
+import com.transcendensoft.hedbanz.domain.entity.Friend
 import com.transcendensoft.hedbanz.domain.interactor.friends.AddFriend
+import com.transcendensoft.hedbanz.domain.interactor.friends.GetFriendForUser
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter
 import timber.log.Timber
-import java.net.ConnectException
 import javax.inject.Inject
 
 /**
@@ -34,16 +34,48 @@ import javax.inject.Inject
  *         Developed by <u>Transcendensoft</u>
  */
 class UserDetailsPresenter @Inject constructor(
-        val mAddFriendInteractor: AddFriend
-) : BasePresenter<User, UserDetailsContract.View>(),
+        val mAddFriendInteractor: AddFriend,
+        val getFriendForUserInteractor: GetFriendForUser
+) : BasePresenter<Friend, UserDetailsContract.View>(),
         UserDetailsContract.Presenter {
 
     override fun updateView() {
-        // Stub
+        if (model.login.isNullOrEmpty()) {
+            getFriendInfo()
+        } else {
+            processFriendState()
+        }
     }
 
     override fun destroy() {
         mAddFriendInteractor.dispose()
+    }
+
+    private fun getFriendInfo() {
+        view()?.showLoadingDialog()
+        getFriendForUserInteractor.execute(model.id,
+                {
+                    view()?.hideLoadingDialog()
+                    model.isAccepted = it.isAccepted
+                    model.isPending = it.isPending
+                    processFriendState()
+                },
+                {
+                    view()?.hideLoadingDialog()
+                    Timber.e(it)
+                })
+    }
+
+    private fun processFriendState() {
+        if (!model.isAccepted && !model.isPending) {
+            view()?.showIsFriend(false)
+        } else if (model.isAccepted && !model.isPending) {
+            view()?.showIsFriend(true)
+        } else if (!model.isAccepted && model.isPending) {
+            view()?.showSentFriendRequest()
+        } else {
+            view()?.showIsFriend(false)
+        }
     }
 
     override fun addFriend() {
@@ -65,5 +97,4 @@ class UserDetailsPresenter @Inject constructor(
             else -> view().showServerError()
         }
     }
-
 }
