@@ -1,0 +1,319 @@
+<resources>
+    <!-- Base -->
+    <string name="admob_ads_id">ca-app-pub-5606966984883396~7037086141</string>
+
+    <!-- Temporary -->
+    <string name="in_developing">Поки в розробці</string>
+
+    <!-- Base -->
+    <string name="app_name">Hedbanz</string>
+
+    <!-- API keys -->
+    <!-- Bundle -->
+    <string name="bundle_room_id">bundle_room_id</string>
+    <string name="bundle_room_password">bundle_room_password</string>
+    <string name="bundle_is_after_creation">bundle_is_after_creation</string>
+    <string name="bundle_is_active_game">bundle_is_active_game</string>
+    <string name="bundle_room_data">bundle_room_data</string>
+
+    <string name="salt">$2a$10$3L8fxrPhH3/qLYhjmsuEku</string>
+
+    <!-- Tags -->
+    <string name="tag_fragment_user_details">tag_fragment_user_details</string>
+    <string name="tag_fragment_invite">tag_fragment_invite</string>
+    <string name="tag_fragment_forgot_password">tag_fragment_forgot_password</string>
+    <string name="tag_fragment_check_keyword">tag_fragment_check_keyword</string>
+    <string name="tag_fragment_reset_password">tag_fragment_reset_password</string>
+
+    <!-- Actions -->
+    <string name="action_enter">Увійти</string>
+    <string name="action_ok">Ок</string>
+    <string name="action_yes">Так</string>
+    <string name="action_no">Ні</string>
+    <string name="action_cancel">Відміна</string>
+    <string name="action_close">Закрити</string>
+    <string name="action_reload">Повторити спробу</string>
+    <string name="action_loading">Завантаження&#8230;</string>
+    <string name="action_accept">Прийняти</string>
+    <string name="action_decline">Відміна</string>
+    <string name="action_update">Оновити</string>
+    <string name="action_later">Пізніше</string>
+
+    <!-- Errors -->
+    <string name="error_server">Схоже, що у нас проблеми з сервером. Спробуйте спробу пізніше</string>
+    <string name="error_network">Відсутнє підключення до інтернету</string>
+    <string name="error_empty_list">Список пустий</string>
+    <string name="error_action_retry">Повторити спробу</string>
+    <string name="error_undefined_error">Хьюстон, у нас проблеми! Відбулась помилка серверу.</string>
+
+    <!-- Login fragment -->
+    <string name="login_intro">Покваптесь, ваші друзі чекають на вас!</string>
+    <string name="login_hint">e.g. HedbanzUser2000</string>
+    <string name="login_password_hint">*********</string>
+    <string name="login_title">Логін</string>
+    <string name="login_password_title">Пароль</string>
+    <string name="login_password_recovery">Забули пароль?</string>
+    <string name="login_register_intro">Вперше у нас? Вам доведеться пройти етап реєстрації. Не хвилюйтесь, це швидка процедура.</string>
+    <string name="login_register_button">Зареєструватись</string>
+
+    <string name="login_error_empty_field">Упс! Ви пропустили це поле :(</string>
+    <string name="login_error_no_such_login">Користувача з таким логіном не існує!</string>
+    <string name="login_error_incorrect_password">Неправильно введено пароль. У випадку амнезії скористуйтесь функцією відновлення паролю нижче!</string>
+    <string name="login_error_email_not_available">Фіаско, еmail зайнятий іншим користувачем.</string>
+    <string name="login_error_login_not_available">Фіаско, користувач з таким логіном вже існує.</string>
+    <string name="login_error_login_available">Логін вільний!</string>
+
+    <!-- Register activity -->
+    <string name="register_intro">Реєстрація</string>
+    <string name="register_email_title">Електронна пошта</string>
+    <string name="register_email_hint">e.g. hedbanz@example.com</string>
+    <string name="register_confirm_password">Підтвердження паролю</string>
+    <string name="register_action_submit">Підтвердити</string>
+
+    <string name="register_validate_empty_field">Упс, ви пропустили це поле.</string>
+    <string name="register_validate_email">Це некоректна електронна адреса. Ви десь помилились.</string>
+    <string name="register_validate_password">Це некоректний пароль. Допустимая довжина від 6 до 14 символів.</string>
+    <string name="register_validate_confirm_password">Пароль підтверджено неправильно.</string>
+    <string name="register_validate_login">Некоректний логін. Довжина 3&#8211;10 символов. Допустимі тільки літери, цифри и крапка (\".\")</string>
+
+    <!-- Main menu -->
+    <string name="main_menu_new_version_title">Новая версія додатку доступна</string>
+    <string name="main_menu_new_version_message">Ви хочете встановити останню версію гри?</string>
+
+    <!-- Rooms fragment -->
+    <string name="rooms_title">Список кімнат</string>
+    <string name="rooms_apply_filters">Застосувати фільтр</string>
+    <string name="rooms_max_players_title">Максимальна кількість гравців</string>
+    <string name="rooms_max_players_from">від</string>
+    <string name="rooms_max_players_to">до</string>
+    <string name="rooms_search_hint">My_room or #100500...</string>
+    <string name="rooms_with_password">З паролем</string>
+    <string name="rooms_password_title">Введіть пароль від кімнати</string>
+    <string name="rooms_active">Активна</string>
+    <string name="room_is_full">Кімната заповнена. Спробуйте зайти в іншу кімнату.</string>
+    <string name="room_cant_start_game">Неможливо почати гру. Проблема з сервером.</string>
+    <string name="room_game_already_started">Неможливо приєднатись до гравців. Гра вже почалась</string>
+    <string name="room_user_has_max_active_rooms_number">Ви досягли максимально допустимої кількості одночасних активних ігор. Завершіть їх спочатку.</string>
+    <string name="room_user_already_in_room">Помилка серверу, спробуйте знову пізніше.</string>
+    <string name="room_unauthorized_player">Ви не являєтесь авторизованим користувачем.</string>
+    <string name="rooms_unauthorized_user">Ви не являєтесь авторизованим користувачем. Увійдіть в ваш аккаунт знову</string>
+
+    <!-- Create room fragment -->
+    <string name="room_creation_title">Створити кімнату</string>
+    <string name="room_creation_room_name">Назва кімнати</string>
+    <string name="room_creation_players_count">Кількість гравців</string>
+    <string name="room_creation_1_player">%1$d гравець</string>
+    <string name="room_creation_4_players">%1$d гравця</string>
+    <string name="room_creation_8_players">%1$d гравці</string>
+    <string name="room_creation_name_example">e.g. Game is coming!</string>
+    <string name="room_creation_action_create">Створити</string>
+    <string name="room_creation_error_password_incorrect">Це некоректний пароль. Допустимая довжина овід 6 до 14 символів.</string>
+    <string name="room_creation_error_password_empty">Введіть пароль від кімнати</string>
+    <string name="room_creation_error_name_empty">Введіть ім\'я кімнати</string>
+    <string name="room_creation_error_name_already_exist">Кімната з таким ім\'ям вже існує</string>
+    <string name="room_creation_error_creating">Не вдалось створити кімнату. Помилка серверу. Спробуйте знову пізніше</string>
+    <string name="room_creation_error_invalid_password">Пароль не підходить :(</string>
+
+    <!-- Menu fragment -->
+    <string name="menu_games_played">Ігр зіграно</string>
+    <string name="menu_friends">Друзів</string>
+    <string name="menu_money">Стікоїнів</string>
+    <string name="menu_action_credentials">Мої дані</string>
+    <string name="menu_action_friends">Мої друзі</string>
+    <string name="menu_action_shop">Магазин</string>
+    <string name="menu_action_help">Допомога</string>
+    <string name="menu_action_settings">Налаштування</string>
+    <string name="menu_action_rate">Оцінити</string>
+    <string name="menu_action_feedback">Повідомити про помилку</string>
+    <string name="menu_action_logout">Вийти</string>
+    <string name="menu_logout_error_title">Відбулась помилка</string>
+    <string name="menu_logout_server_error">Схоже в нас проблеми з сервером. Спробуйте помилку пізніше.</string>
+    <string name="menu_logout_network_error">Перевірте ваше інтернет з\'єднання і спробуйте вийти знову.</string>
+
+    <!-- Credentials activity -->
+    <string name="credentials_title">Мої дані</string>
+    <string name="credentials_old_password">Старий пароль</string>
+    <string name="credentials_new_password">Новий пароль</string>
+    <string name="credentials_confirm_new_password">Підтвердження нового паролю</string>
+    <string name="credentials_action_save_data">Змінити дані</string>
+    <string name="credentials_error_confirm_password">Пароль підтверждено неправильно.</string>
+    <string name="credentials_update_success">Ваші дані успішно оновлені!</string>
+
+    <!-- Game mode -->
+    <string name="game_starts">Всі гравці готові.\n Да почнеться велика гра!</string>
+    <string name="game_typing_one_user">%1$s щось пише</string>
+    <string name="game_typing_two_user">%1$s та %2$s щось пишуть</string>
+    <string name="game_typing_several_users">Декілька гравців пишуть повідомлення</string>
+    <string name="game_user_joined">%1$s зайшов в кімнату</string>
+    <string name="game_user_left">%1$s покинув кімнату</string>
+    <string name="game_et_hint">Текст повідомлення</string>
+    <string name="game_set_word_title">Час загадати слово гравцю %1$s</string>
+    <string name="game_set_word_title_random">Час загадати слово випадковому гравцю</string>
+    <string name="game_set_word_hint">Ваше слово&#8230;</string>
+    <string name="game_word_setting_error">Ви не ввели слово гравцю</string>
+    <string name="game_set_word_start_text">Я</string>
+    <string name="game_word_setted">Гравець %1$s загадав слово гравцю %2$s</string>
+    <string name="game_word_setted_to_current_user">Гравець %1$s загадав вам слово</string>
+    <string name="game_word_current_user_setted">Вы загадали слово гравцю %1$s</string>
+    <string name="game_error_disconnected">Очікування підключення&#8230;</string>
+    <string name="game_error_reconnecting">Підключаємо&#8230;</string>
+    <string name="game_error_reconnected">З\'єднання відновлено!</string>
+    <string name="game_user_afk">Гравець %1$s ненадовго відлучився</string>
+    <string name="game_user_returned">Гравець %1$s знову в грі</string>
+    <string name="game_some_user_afk">Якийсь гравець ненадовго відійшов</string>
+    <string name="game_some_user_returned">Якийсь гравець знову в грі</string>
+
+    <string name="game_action_restore_room">Продовжити</string>
+    <string name="game_action_leave_room">Киданути народ</string>
+    <string name="game_restore_room_title">У вас активна гра!</string>
+    <string name="game_restore_room_message">Щось пішло не так і ви вийшли з цієї кімнати. Вы хочете повернутись в гру?</string>
+
+    <string name="game_exit_room_message">Ви впевнені, що хочете покинути цю гру? Ваші друзі можуть неправильно вас зрозуміти&#8230;</string>
+    <string name="game_exit_room_message_active">Ви впевнені, що хочете покинути цю гру? Поки в кімнаті будуть грати інші гравці ви зможете повернутись.</string>
+    <string name="game_exit_room_title">Вийти чи не вийти? Ось в чому питання&#8230;</string>
+    <string name="game_action_resume_game">Продовжити</string>
+    <string name="game_action_exit_game">Киданути народ</string>
+    <string name="game_action_exit_game_active">Вернутись пізніше</string>
+    <string name="game_menu_this_user">Ви</string>
+    <string name="game_kicked_title">Ви виключені з кімнати</string>
+    <string name="game_kicked_message">Ви не були присутні в грі на етапі загадування слів довгий час, тому вас виключили з кімнати. Ви можете створити іншу кімнату, або ж приєднатись до інших гравців.</string>
+    <string name="game_toolbar_open_menu_content_description">Відкрити меню</string>
+    <string name="game_toolbar_close_menu_content_description">Закрити меню</string>
+    <string name="game_menu_friend">Друг</string>
+    <string name="game_afk">AFK</string>
+    <string name="game_last_player_title">Ви останній гравець в кімнаті</string>
+    <string name="game_last_player_message">Так вийшло, що всі гравці покинули кімнату. Ця кімната закривається, якщо ви хочете зібрати нову команду, створіть нову кімнату або ж приєднайтесь до існуючої.</string>
+    <string name="game_error_title">Помилка</string>
+    <string name="game_error_leave_when_server_error_title">Увага</string>
+    <string name="game_error_leave_when_server_error_message">Перевірте ваше інтернет з\'єднання. Якщо з інтернетом все добре, значить зараз сервер знаходиться в нестабільному з\'єднанні з вашим пристроєм. Для цільності даних гри краще трішки зачекати, поки не відновиться з\'єднання. Якщо ви все ж хочете вийти, натисніть на відповідну кнопку. Тоді вернетесь в кімнату коли захочете, якщо вона ще буде активною.</string>
+    <string name="game_error_there_is_no_such_room">Такої кімнати не існує</string>
+    <string name="game_error_there_is_no_such_user_in_room">Такого гравця немає в цій кімнаті.</string>
+    <string name="game_error_such_player_already_voted">Ви вже проголосували</string>
+    <string name="game_some_user_think_word_to_user">Зараз буде запитувати гравцеь %1$s.\n Спроба %2$d/3</string>
+    <string name="game_some_user_think_word_to_user_error">Зараз буде запитувати якийсь гравцеь.\n Спроба %1$d/3</string>
+    <string name="game_this_user_think_word_to_user">Задайте питання про те хто ви. Спроба %1$d/3</string>
+    <string name="game_guess_word_error">Ви нічого не ввели</string>
+    <string name="game_guess_word_hint">Питання</string>
+    <string name="game_asking_total_votes">Всього:</string>
+    <string name="game_user_kicked">Гравець %1$s був виключений з гри через довготривалу відсутність</string>
+    <string name="game_user_kick_warning">Гравець %1$s буде виключений з гри, якщо не повернеться в кімнату на протязі 60 секунд.</string>
+    <string name="game_user_wins">Гравець %1$s відгадав загадане йому слово!</string>
+    <string name="game_this_user_wins">Ви відгадали загадане вам слово!</string>
+    <string name="game_error_user_wins">Якийсь гравець відгадав загадане йому слово!</string>
+    <string name="game_over_title">Гру завершено.\n Всі гравці відгадали свої слова.</string>
+    <string name="game_restart_question">Ви хочете повторити гру з цією командою?</string>
+    <string name="game_win_user_alert_message">Вітаємо, ви відгадали своє слово і перемогли! Ви можете поспостерігати за грою ваших товаришів, поспілкуватись з ними, можливо чимось допомогти. Якщо вам набридне ви завжди можете вийти з кімнати.</string>
+    <string name="game_win_user_alert_title">Перемога!</string>
+    <string name="game_waiting_for_users">Очікуємо коли приєднаються всі гравці і розпочнемо гру.</string>
+    <string name="game_update_users_info">Загадані слова перевизначились іншим гравцям. Зміни ви можете побачити в меню.</string>
+    <string name="game_advertise_explanation">Так, вам не здалось, нижче знаходиться рекламний банер. Ми показуємо рекламу дуже рідко для того, щоб ви насолоджувались грою і нічого не відволікало вас. Додаток безкоштовний по всьому світу, проте йому потрібно розвиватись.</string>
+    <string name="game_advertise_click">Простий клік по банеру зробить додаток кращим!</string>
+
+    <!-- Game notification -->
+    <string name="game_notification_title">%1$s з кімнати %2$s</string>
+    <string name="game_notification_title_error">Нове повідомлення</string>
+    <string name="game_notification_channel_title_message">Повідомлення</string>
+    <string name="game_invite_notification_channel_title_message">Запрошення до гри</string>
+    <string name="game_notification_kick_warning_title">Увага! У вас є 30 секунд щоб повернутись в кімнату</string>
+    <string name="game_notification_kick_warning_message">Ваші друзі чекають вас в кімнаті %1$s при загадуванні слів. Якщо ви не повернетесь в гру, то через 30 секунд ви будете виключені з неї. Поважайте час інших гравців.</string>
+    <string name="game_notification_kick_title">Вас виключили з кімнати %1$s</string>
+    <string name="game_notification_kick_message">Через те, що ви не були присутніми в грі на етапі загадування слів довгий час, вас виключили з кімнати. Спробуйте зіграти з іншими гравцями.</string>
+    <string name="game_notification_channel_title_friend">Друзі</string>
+    <string name="game_notification_friend_title">Запит в друзі</string>
+    <string name="game_notification_friend_message">Гравець %1$s хоче дружити з вами</string>
+    <string name="game_notification_set_word_message">Верніться в кімнату %1$s і придумайте слово гравцеві %2$s</string>
+    <string name="game_notification_set_word_title">Загадайте слово</string>
+    <string name="game_notification_set_word_message_error">Вам необхідно придумати слово</string>
+    <string name="game_notification_guess_word_title">Час відгадати хто ви</string>
+    <string name="game_notification_guess_word_message">Поверніться в кімнату %1$s та задайте питання про те хто ви</string>
+    <string name="game_notification_guess_word_message_error">Поверніться в гру та задайте питання про те хто ви</string>
+    <string name="game_notification_invite_title">Вас запросили!</string>
+    <string name="game_notification_invite_message">Гравець %1$s запросив вас пограти з ним в кімнаті %2$s</string>
+    <string name="game_notification_invite_message_error">Хтось запросив вас пограти з ним</string>
+    <string name="game_notification_game_over_title">Гру завершено</string>
+    <string name="game_notification_game_over_message">Гру в кімнаті %1$s завершено, всі гравці відгадали свої слова. Поверніться в кімнату і почніть нову гру.</string>
+    <string name="game_notification_game_over_message_error">Гру завершено, всі гравці відгадали свої слова. Поверніться в кімнату і почніть нову гру.</string>
+    <string name="game_notification_last_user_title">Кімната %1$s закрилась</string>
+    <string name="game_notification_last_user_message">Ви були останнім гравцем в цій кімнаті, вам не буде з ким грати, тому вона закрилась</string>
+
+    <!-- Friends -->
+    <string name="friends_toolbar_title">Ваші дружбани</string>
+    <string name="friends_decline_title">Не хочете дружити з цим гравцем?</string>
+    <string name="friends_decline_message">Ви впевнені, що хочете відмінити запит на дружбу від користувача %1$s</string>
+    <string name="friends_delete_title">Ви більше не хочете дружити з цим гравцем?</string>
+    <string name="friends_delete_message">Ви впевнені, що хочете видалити користувача %1$s з вашого списку друзів?</string>
+
+    <string name="friends_accept_success_title">У вас з\'явився новий друг</string>
+    <string name="friends_accept_success_message">Тепер %1$s в вашому списку друзів</string>
+    <string name="friends_decline_success_title">Дружбу відмхилено</string>
+    <string name="friends_decline_success_message">Ви успішно відхилили запит користувача %1$s на дружбу!</string>
+    <string name="friends_delete_success_title">Друга видалено</string>
+    <string name="friends_delete_success_message">Ви успішно видалили друга%1$s із списку.</string>
+    <string name="friends_error_title">Щось пішло не так</string>
+    <string name="friends_error_message">Відбулась помилка, повторіть спробу пізніше.</string>
+    <string name="friends_pending">Очікує підтвердження</string>
+    <string name="friends_cant_send_friendship_request">Неможливо додати в друзі, помилка сервера</string>
+    <string name="friends_already_friends">Цей користувач вже у вашому списку друзів.</string>
+    <string name="friends_not_friends">Цей користувач не являеться вашим другом</string>
+
+    <!-- User details -->
+    <string name="user_details_add_friend">Запропонувати дружбу</string>
+    <string name="user_details_already_friend">В списку друзів</string>
+    <string name="user_details_friend_request_sent">Дружбу запропоновано!</string>
+
+    <!-- Invite -->
+    <string name="invite_title">Запросіть друзів в гру</string>
+    <string name="invite_action">Запросити</string>
+    <string name="invite_no_users_selected">Спочатку оберіть користувачів, яких ви хочете запросити</string>
+    <string name="invite_already_invited">Запрошений</string>
+    <string name="invite_already_in_game">В грі</string>
+
+    <!-- Restore password -->
+    <string name="restore_pwd_forgot_title">Відновлення\nпаролю</string>
+    <string name="restore_pwd_action_restore">Відновити</string>
+    <string name="restore_pwd_secret_key_title">Секретни код</string>
+    <string name="restore_pwd_sent_email_text">На вашу поштову скриньку, яку ви вказали при реєстрації був відправлений секретний код. Для того, щоб відновити пароль від вашого аккаунту, введіть код нижче</string>
+    <string name="restore_pwd_reset_password_text">Чудово! Теперь придумайте новий пароль до вашого аккаунту.</string>
+    <string name="restore_pwd_action_save">Зберегти</string>
+    <string name="restore_pwd_new_password">Новий пароль</string>
+    <string name="restore_pwd_error_incorrect_keyword">Неправильний секретний код.</string>
+    <string name="restore_pwd_error_incorrect_locale">Відправлена некоректна локалізація.</string>
+    <string name="restore_pwd_error_keyword_expired">Секретний код застарів. Відправте ще одне повідомлення.</string>
+    <string name="restore_password_finish_title">У вас вийшло!</string>
+    <string name="restore_password_finish_message">Ви успішно змінили пароль, тепер увійдіть в ваш аккаунт з новими даними.</string>
+    <string name="restore_pwd_resend_keyword">Не прйшов лист</string>
+    <string name="restore_pwd_keyword_resent_title">Секретний код відправлено</string>
+    <string name="restore_pwd_keyword_resent_message">Перевірте пошту, вам щойно був висланий новий секретний код</string>
+
+    <!-- Change user icon -->
+    <string name="change_icon_submit">Обрати</string>
+    <string name="change_icon_choose_avatar">Оберіть аватар</string>
+    <string name="change_icon_success_title">У вас вийшло!</string>
+    <string name="change_icon_success_message">Вы успішно змінили ваш аватар. </string>
+    <string name="change_icon_error_title">Помилка</string>
+    <string name="change_icon_error_message">Не получається змінити ваш аватар. Проблеми з сервером. Спробуйте повторити пізніше.</string>
+
+    <!-- Feedback -->
+    <string name="feedback_title">Повідомити про помилку</string>
+    <string name="feedback_confidentiality_action">Політика конфіденційності</string>
+    <string name="feedback_hint">Опишіть вашу проблему. Наприклад: авторизація лагає не по дитячому.</string>
+    <string name="feedback_submit">Відправити</string>
+    <string name="feedback_success_title">У вас вийшло!</string>
+    <string name="feedback_success_message">Ваше повідомлення успішно відправлено команді розробників. Велике дякую вам за допомогу в розвитку проекту. Надіємось, що за допомогою вашого повідомлення ми виправимо ситуацію якомогоа скоріше.</string>
+    <string name="feedback_telegram_action">Telegram-чат</string>
+    <string name="feedback_telegram_title">Ми створили Telegram-чат для спілкування користувачів.Там ви можете описати помилку, або запропонувати нам як можна покращити додаток.</string>
+
+    <!-- Tutorial -->
+    <string name="tutorial_page_1_title">Приєднуйся до кімнати, або ж створи свою!</string>
+    <string name="tutorial_page_1_text">Hedbanz - це гра в кругу людей. Тобі необхідно набрати свою команду гравців, або ж приєднатись до інших гравців з усього світу!</string>
+    <string name="tutorial_page_2_title">Загадай слово якомусь гравцю!</string>
+    <string name="tutorial_page_2_text">Це може бути що завгодно: ім\'я відомого персонажу, кухонний предмет, або ж навіть щось космічне. Вам вирішувати наскільки сильно ви хочете загрузити ваших суперників ;)</string>
+    <string name="tutorial_page_3_title">Задавай навідні питання!</string>
+    <string name="tutorial_page_3_text">Як тільки тобі загадають слово, воно буде означати тебе. Тобі потрібно буде відгадати \"хто ти\", дял цього задавай навідні питання. Щоб допомогти, ми підготували для тебе допоміжний список.</string>
+    <string name="tutorial_page_4_title">Чесно відповідай іншим гравцям</string>
+    <string name="tutorial_page_4_text">Когда игрок отгадывает свое слово: жми \"палец вверх\" - за верное направление мысли и \"палец вниз\" - за неверное. Если игрок угадал свое слово - жми на \"корону\".</string>
+    <string name="tutorial_page_5_title">Лошадь узнают в езде, человека - в общении</string>
+    <string name="tutorial_page_5_text">Помимо игры ты можешь просто общаться с игроками, делиться секретами и просто хорошо проводить время!</string>
+    <string name="tutorial_page_6_title">Угадывайте слова, общайтесь, развивайтесь</string>
+    <string name="tutorial_page_6_text">Присоединяйся к другим игрокам и развивай навыки общения. Находи новых друзей, новые знакомства, изучай новые языки с иностранцами. Мы желаем тебе приятного времяпровождения! :)</string>
+</resources>

@@ -125,7 +125,9 @@ public class GameInteractorFacade {
     @Inject UpdateUsersInfoUseCase mUpdateUsersInfoUseCase;
     @Inject AdvertiseUseCase mAdvertiseUseCase;
 
-    @Inject @SchedulerIO Scheduler mIoScheduler;
+    @Inject
+    @SchedulerIO
+    Scheduler mIoScheduler;
     @Inject RxRoom mCurrentRoom;
     @Inject NotificationManager mNotificationManager;
 
@@ -361,6 +363,7 @@ public class GameInteractorFacade {
                     player.setWinner(false);
                 }
                 mCurrentRoom.setGameActive(true);
+                mCurrentRoom.setGameStarted(false);
             }
         };
         mWordSettingUseCase.execute(null, onNext, onError, doOnNext);
@@ -368,7 +371,12 @@ public class GameInteractorFacade {
 
     public void onWordGuessingListener(Consumer<? super PlayerGuessing> onNext,
                                        Consumer<? super Throwable> onError) {
-        mGuessWordUseCase.execute(null, onNext, onError);
+        Consumer<? super PlayerGuessing> doOnNext = playerGuessing -> {
+            if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
+                mCurrentRoom.setGameStarted(true);
+            }
+        };
+        mGuessWordUseCase.execute(null, onNext, onError, doOnNext);
     }
 
     public void onQuestionAskingListener(Consumer<? super Question> onNext,
@@ -421,7 +429,7 @@ public class GameInteractorFacade {
     }
 
     public void onUpdateUsersInfo(Consumer<? super Room> onNext,
-                                  Consumer<? super Throwable> onError){
+                                  Consumer<? super Throwable> onError) {
         Consumer<? super Room> doOnNext = room -> {
             this.mCurrentRoom.setRoom(room);
         };
@@ -587,10 +595,10 @@ public class GameInteractorFacade {
         return mGameState != null && mGameState.equals(GameState.DISCONNECTED);
     }
 
-    public int currentUsersCount(){
+    public int currentUsersCount() {
         int count = 0;
-        for (RxUser rxUser: mCurrentRoom.getRxPlayers()) {
-            if(rxUser.getUser().getPlayerStatus().equals(PlayerStatus.ACTIVE)){
+        for (RxUser rxUser : mCurrentRoom.getRxPlayers()) {
+            if (!rxUser.getUser().getPlayerStatus().equals(PlayerStatus.LEFT)) {
                 count++;
             }
         }

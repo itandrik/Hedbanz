@@ -32,9 +32,9 @@ import io.reactivex.subjects.PublishSubject;
  * who are guessing now
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
-public class GuessWordUseCase extends ObservableUseCase<PlayerGuessing, Void>{
+public class GuessWordUseCase extends ObservableUseCase<PlayerGuessing, Void> {
     private PublishSubject<PlayerGuessing> mSubject;
 
     @Inject
@@ -47,7 +47,10 @@ public class GuessWordUseCase extends ObservableUseCase<PlayerGuessing, Void>{
     }
 
     private void initSubject(GameDataRepository gameDataRepository) {
-        Observable<PlayerGuessing> observable = gameDataRepository.wordGuessingObservable();
+        Observable<PlayerGuessing> observable = gameDataRepository
+                .wordGuessingObservable()
+                .distinct(PlayerGuessing::getQuestionId);
+
         mSubject = PublishSubject.create();
         observable.subscribe(mSubject);
     }

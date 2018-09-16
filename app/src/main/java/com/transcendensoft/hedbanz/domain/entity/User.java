@@ -37,6 +37,7 @@ public class User {
     private Integer gamesNumber;
     private Integer friendsNumber;
     private UserIcon iconId;
+    private boolean isWordVisible;
 
     protected User(Long id, String email, String password, String confirmPassword,
                    Long money, Long registrationDate, String login, PlayerStatus playerStatus,
@@ -164,6 +165,14 @@ public class User {
 
     public void setIconId(UserIcon iconId) {
         this.iconId = iconId;
+    }
+
+    public boolean isWordVisible() {
+        return isWordVisible;
+    }
+
+    public void setWordVisible(boolean wordVisible) {
+        isWordVisible = wordVisible;
     }
 
     @Override

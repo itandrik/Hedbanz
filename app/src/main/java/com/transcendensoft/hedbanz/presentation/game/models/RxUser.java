@@ -55,6 +55,21 @@ public class RxUser {
         mSubject.onNext(mUser);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RxUser rxUser = (RxUser) o;
+
+        return mUser != null ? mUser.equals(rxUser.mUser) : rxUser.mUser == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return mUser != null ? mUser.hashCode() : 0;
+    }
+
     public void setIsWinner(boolean isWinner){
         mUser.setWinner(isWinner);
         mSubject.onNext(mUser);
@@ -69,6 +84,18 @@ public class RxUser {
         mUser.setWord(word);
         mSubject.onNext(mUser);
     }
+
+    public void setWordVisible(Boolean wordVisible) {
+        if(wordVisible == null){
+            wordVisible = false;
+        }
+        if(wordVisible != mUser.isWordVisible()) {
+            mUser.setWordVisible(wordVisible);
+            mSubject.onNext(mUser);
+        }
+    }
+
+
 
     public void setUser(User user){
         mUser = user;

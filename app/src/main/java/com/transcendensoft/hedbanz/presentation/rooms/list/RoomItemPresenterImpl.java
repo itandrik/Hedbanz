@@ -96,6 +96,7 @@ public class RoomItemPresenterImpl extends BasePresenter<Room, RoomItemContract.
 
         intent.putExtra(context.getString(R.string.bundle_room_id), (Long) model.getId());
         intent.putExtra(context.getString(R.string.bundle_room_password), password);
+        intent.putExtra(context.getString(R.string.bundle_is_active_game), (Boolean) model.isActive());
         context.startActivity(intent);
     }
 

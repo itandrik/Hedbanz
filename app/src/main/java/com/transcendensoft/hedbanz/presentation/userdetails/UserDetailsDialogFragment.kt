@@ -156,7 +156,8 @@ class UserDetailsDialogFragment @Inject constructor() : DialogFragment(),
         hideLoadingDialog()
         btnAddFriend.text = getString(R.string.user_details_friend_request_sent)
         btnAddFriend.isEnabled = false
-        btnAddFriend.setBackgroundResource(R.drawable.word_setted_background)
+        btnAddFriend.setBackgroundResource(R.drawable.restart_button_bg)
+        btnAddFriend.setTextColor(ContextCompat.getColor(gameActivity, R.color.textWhite))
     }
 
     override fun showInternetError() {

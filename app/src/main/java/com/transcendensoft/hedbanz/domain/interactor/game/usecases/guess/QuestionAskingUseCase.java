@@ -64,6 +64,7 @@ public class QuestionAskingUseCase extends ObservableUseCase<Question, List<RxUs
 
     private Observable<Question> getObservable(List<RxUser> users) {
         return mGameDataRepository.questionAskingObservable()
+                .distinct(Question::getQuestionId)
                 .map(question -> {
                     RxUser userWithWord = getRxUser(users, question.getUserFrom().getId());
                     if(userWithWord != null && userWithWord.getUser() != null) {

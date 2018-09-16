@@ -39,7 +39,6 @@ public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemCon
 
     public UserMenuItemPresenter(ObservableTransformer schedulersTransformer) {
         this.mSchedulersTransformer = schedulersTransformer;
-
     }
 
     @Override
@@ -62,6 +61,7 @@ public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemCon
         view().setName(model.getUser().getLogin());
         view().setIsWinner(model.getUser().isWinner());
         view().setWord(model.getUser());
+        view().setWordVisible(model.getUser());
         view().getClickObservable(model.getUser())
                 .subscribe(mItemClickObservable);
     }

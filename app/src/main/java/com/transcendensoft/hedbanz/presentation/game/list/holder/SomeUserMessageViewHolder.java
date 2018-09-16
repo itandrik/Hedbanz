@@ -81,7 +81,7 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
         if (mTvUserWord.getVisibility() == View.VISIBLE) {
             ((RelativeLayout.LayoutParams) mTvMessage.getLayoutParams()).topMargin =
                     ViewUtils.dpToPx(mContext, 16.f);
-        } else if (mIvUserImage.getVisibility() == View.VISIBLE) {  // Here was change
+        } else if (mIvUserImage.getVisibility() == View.VISIBLE) {
             ((RelativeLayout.LayoutParams)mTvMessage.getLayoutParams()).topMargin =
                     ViewUtils.dpToPx(mContext, 8.f);
         }

@@ -83,6 +83,7 @@ public interface GameContract {
         void sendMessage(String message);
         void processSetWordToUserObservable(Observable<Word> sendWordObservable);
         void setAfterRoomCreation(boolean isAfterRoomCreation);
+        void setIsActive(boolean isActiveRoom);
         void setIsLeaveFromRoom(boolean isLeaveFromRoom);
         void leaveFromRoom();
         boolean doesGameHasServerConnectionError();

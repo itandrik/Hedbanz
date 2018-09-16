@@ -66,6 +66,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     private boolean isLeaveFromRoom = false;
     private boolean isSocketInititalized = false;
     private boolean isGameActive = false;
+    private boolean isRoomActive = false;
 
     @Inject
     public GamePresenter(GameInteractorFacade gameInteractor,
@@ -81,6 +82,11 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     @Override
     public void setIsLeaveFromRoom(boolean isLeaveFromRoom) {
         this.isLeaveFromRoom = isLeaveFromRoom;
+    }
+
+    @Override
+    public void setIsActive(boolean isActiveRoom) {
+        this.isRoomActive = isActiveRoom;
     }
 
     /*------------------------------------*
@@ -356,6 +362,9 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                         if (!isAfterRoomCreation) {
                             if (mPreferenceManger.getCurrentRoomId() == -1) {
                                 mGameInteractor.joinToRoom(model.getPassword());
+                                if(isRoomActive){
+                                    mGameInteractor.restoreRoom();
+                                }
                             } else {
                                 if(!mPreferenceManger.isLastUser()) {
                                     view().showRestoreRoom();
@@ -423,7 +432,13 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 this::initRoom,
                 this::processEventListenerOnError);
         mGameInteractor.onRoomRestoredListener(
-                this::initRoom,
+                room -> {
+                    if(isRoomActive){
+                        isRoomActive = false;
+                    } else {
+                        initRoom(room);
+                    }
+                },
                 this::processEventListenerOnError);
         mGameInteractor.onErrorListener(
                 this::processRoomError,
@@ -582,8 +597,10 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             model.getMessages().add(word);
             view().addMessage(word);
 
-            updateSettingWordViewParameters(word.getUserFrom(), true, false);
-            view().focusMessageEditText();
+            if(mPreferenceManger.getUser().equals(word.getUserFrom())) {
+                updateSettingWordViewParameters(word.getUserFrom(), true, false);
+                view().focusMessageEditText();
+            }
         }, this::processEventListenerOnError);
 
         mGameInteractor.onWordSettingListener(wordReceiverUser -> {

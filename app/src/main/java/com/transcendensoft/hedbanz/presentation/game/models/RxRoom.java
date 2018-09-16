@@ -38,6 +38,7 @@ public class RxRoom {
     private Room mRoom;
     private List<RxUser> mPlayers;
     private boolean isGameActive;
+    private boolean isGameStarted;
     private PublishSubject<RxRoom> mRoomInfoSubject;
     private PublishSubject<RxUser> mRemoveUserSubject;
     private PublishSubject<RxUser> mAddUserSubject;
@@ -155,6 +156,12 @@ public class RxRoom {
     public RxRoom setGameActive(boolean gameActive) {
         isGameActive = gameActive;
         return this;
+    }
+
+    public void setGameStarted(Boolean isGameStarted) {
+        for (RxUser rxUser:mPlayers) {
+            rxUser.setWordVisible(isGameStarted);
+        }
     }
 
     public Observable<RxRoom> roomInfoObservable() {

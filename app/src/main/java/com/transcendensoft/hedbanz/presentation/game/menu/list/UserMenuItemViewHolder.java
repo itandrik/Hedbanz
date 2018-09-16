@@ -52,6 +52,7 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
     private View mItemView;
 
     private Context mContext;
+    private PreferenceManager mPreferenceManager;
 
     public UserMenuItemViewHolder(Context context, View itemView) {
         super(itemView);
@@ -59,6 +60,7 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
 
         mContext = context;
         mItemView = itemView;
+        this.mPreferenceManager = new PreferenceManager(mContext);
     }
 
     @Override
@@ -100,7 +102,7 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
 
     @Override
     public void setWord(User user) {
-        if (new PreferenceManager(mContext).getUser().equals(user)) {
+        if (mPreferenceManager.getUser().equals(user)) {
             mTvThisUser.setVisibility(View.VISIBLE);
             mIvThisUserStar.setVisibility(View.VISIBLE);
             if(mIvWin.getVisibility() == View.VISIBLE) {
@@ -122,6 +124,15 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
                     mTvWord.setVisibility(View.GONE);
                 }
             }
+        }
+    }
+
+    @Override
+    public void setWordVisible(User user) {
+        if(!mPreferenceManager.getUser().equals(user) && user.isWordVisible()){
+            mTvWord.setVisibility(View.VISIBLE);
+        } else {
+            mTvWord.setVisibility(View.GONE);
         }
     }
 

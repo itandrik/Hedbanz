@@ -40,6 +40,8 @@ public interface UserMenuItemContract {
 
         void setWord(User user);
 
+        void setWordVisible(User user);
+
         Observable<User> getClickObservable(User user);
     }
 

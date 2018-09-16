@@ -28,7 +28,8 @@ android {
         release {
             keyAlias 'hedbanz-key'
             keyPassword 'mvwxrwyb6HUasuJJVvCJhR9ZLPRQbRK7Gq9Mh64P'
-            storeFile file('D:/AndroidProjects/keystore/Hedbanz.jks')
+            storeFile file('/home/chernysh/AndroidProjects/keystore/Hedbanz.jks')
+           // storeFile file('D:/AndroidProjects/keystore/Hedbanz.jks')
             storePassword 'mvwxrwyb6HUasuJJVvCJhR9ZLPRQbRK7Gq9Mh64P'
         }
     }

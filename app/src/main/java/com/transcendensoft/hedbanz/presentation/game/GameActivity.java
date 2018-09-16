@@ -111,6 +111,8 @@ public class GameActivity extends BaseActivity implements GameContract.View {
             String password = getIntent().getStringExtra(getString(R.string.bundle_room_password));
             boolean isAfterRoomCreation = getIntent()
                     .getBooleanExtra(getString(R.string.bundle_is_after_creation), false);
+            boolean isActive = getIntent()
+                    .getBooleanExtra(getString(R.string.bundle_is_active_game), false);
             String roomIntentString = getIntent().getStringExtra(getString(R.string.bundle_room_data));
 
             Room room;
@@ -127,6 +129,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
             }
 
             mPresenter.setAfterRoomCreation(isAfterRoomCreation);
+            mPresenter.setIsActive(isActive);
             mPresenter.setModel(room);
         }
 
@@ -433,6 +436,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void addMessages(List<Message> messages) {
         if (mAdapter != null) {
             mAdapter.addAll(messages);
+            scrollToTheVeryDown();
         }
     }
 
@@ -440,7 +444,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void addMessages(int position, List<Message> messages) {
         if (mAdapter != null) {
             mAdapter.addAll(position, messages);
-            //mRecycler.scrollToPosition(position + messages.size());
+            scrollToTheVeryDown();
         }
     }
 

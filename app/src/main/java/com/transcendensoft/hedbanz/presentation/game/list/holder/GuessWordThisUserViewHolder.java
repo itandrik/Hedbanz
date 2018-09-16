@@ -180,7 +180,7 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         String startText = mContext.getString(R.string.game_set_word_start_text) + " ";
         String endText = "?";
         if (!text.toUpperCase().startsWith(startText.toUpperCase())) {
-            text = startText + text;
+            text = startText + text.substring(0,1).toLowerCase() + text.substring(1);
         } else {
             text = startText + text.substring(2);
         }
