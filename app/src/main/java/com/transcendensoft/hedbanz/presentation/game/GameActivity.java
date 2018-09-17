@@ -83,9 +83,11 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @BindView(R.id.drawerLayout) DrawerLayout mDrawerLayout;
     @BindView(R.id.fabLogout) FloatingActionButton mFabLogout;
     @BindView(R.id.fabMenu) FloatingActionButton mFabMenu;
+    @BindView(R.id.fabScrollDown) FloatingActionButton mFabScrollDown;
     @BindView(R.id.parent) RelativeLayout mParentLayout;
     @BindView(R.id.ivEmoji) ImageView mIvEmojiKeyboard;
 
+    private LinearLayoutManager mLayoutManager;
     private BroadcastReceiver mLastPlayerBroadcastReceiver;
     private EmojiPopup mEmojiPopup;
     private boolean isKeyboardOpened = false;
@@ -140,6 +142,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         initEmojiPopup();
 
         mPresenter.messageTextChanges(mEtChatMessage);
+        mFabScrollDown.hide();
     }
 
     @Override
@@ -195,10 +198,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         mRecycler.setAdapter(mAdapter);
         mRecycler.setItemAnimator(new DefaultItemAnimator());
 
-        LinearLayoutManager manager = new LinearLayoutManager(
+        mLayoutManager = new LinearLayoutManager(
                 this, LinearLayoutManager.VERTICAL, false);
-        manager.setStackFromEnd(true);
-        mRecycler.setLayoutManager(manager);
+        mLayoutManager.setStackFromEnd(true);
+        mRecycler.setLayoutManager(mLayoutManager);
         mRecycler.setItemViewCacheSize(100);
         mRecycler.setOverScrollMode(OVER_SCROLL_NEVER);
 
@@ -207,8 +210,13 @@ public class GameActivity extends BaseActivity implements GameContract.View {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 showOrHideFab(mFabLogout, dy);
                 showOrHideFab(mFabMenu, dy);
+                showOrHideFab(mFabScrollDown, dy);
                 if (dy < -50) {
                     KeyboardUtils.hideSoftInput(GameActivity.this);
+                }
+
+                if(mLayoutManager.findLastVisibleItemPosition() == mAdapter.getItemCount() - 1){
+                    mFabScrollDown.hide();
                 }
             }
 
@@ -320,6 +328,11 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         onBackPressed();
     }
 
+    @OnClick(R.id.fabScrollDown)
+    protected void onScrollDownClicked(){
+        scrollToTheVeryDown();
+    }
+
     @OnFocusChange(R.id.etChatMessage)
     protected void onEtChatFocusChange(View view, boolean hasFocus) {
         if(hasFocus){
@@ -401,6 +414,8 @@ public class GameActivity extends BaseActivity implements GameContract.View {
             mAdapter.add(message);
             if (!isScrollDown) {
                 scrollToTheVeryDown();
+            }else {
+                mFabScrollDown.show();
             }
         }
     }
@@ -411,6 +426,8 @@ public class GameActivity extends BaseActivity implements GameContract.View {
             mAdapter.add(position, message);
             if (!isScrollDown) {
                 scrollToTheVeryDown();
+            } else {
+                mFabScrollDown.show();
             }
         }
     }
@@ -436,7 +453,6 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void addMessages(List<Message> messages) {
         if (mAdapter != null) {
             mAdapter.addAll(messages);
-            scrollToTheVeryDown();
         }
     }
 
@@ -444,7 +460,6 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void addMessages(int position, List<Message> messages) {
         if (mAdapter != null) {
             mAdapter.addAll(position, messages);
-            scrollToTheVeryDown();
         }
     }
 

@@ -26,6 +26,7 @@
 -dontwarn com.google.errorprone.annotations.**
 -dontwarn org.codehaus.**
 -dontwarn okio.**
+
 # keep the class and specified members from being removed or renamed
 -keep class com.transcendensoft.hedbanz.BuildConfig { *; }
 

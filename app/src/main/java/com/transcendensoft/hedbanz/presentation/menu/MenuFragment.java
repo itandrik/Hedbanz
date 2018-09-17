@@ -205,7 +205,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
         }
     }
 
-    @OnClick(R.id.fabDown)
+    @OnClick(R.id.cvDown)
     protected void onFabDownClicked() {
         if (getActivity() != null) {
             mActivity.onBackPressed();

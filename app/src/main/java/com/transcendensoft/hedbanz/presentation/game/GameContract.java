@@ -46,6 +46,7 @@ public interface GameContract {
         void invalidateMessageWithPosition(int position);
         void setMessage(int position, Message message);
         void setIsScrollDownMessages(boolean isScroll);
+        void scrollToTheVeryDown();
 
         void showLeaveWhenServerError();
         void showFooterTyping(List<User>users);

@@ -32,7 +32,7 @@ fun View.setupKeyboardHiding(activity: Activity) {
 
     // Set up touch listener for non-text box views to hide keyboard.
     if (this !is EditText && this.id != R.id.ivEmoji && this.id != R.id.ivSend &&
-            this.id != R.id.ivSubmitWord) {
+            this.id != R.id.ivSubmitWord && this.id != R.id.fabScrollDown) {
         this.setOnTouchListener { _, _ ->
             com.transcendensoft.hedbanz.utils.KeyboardUtils.hideSoftInput(activity)
             false

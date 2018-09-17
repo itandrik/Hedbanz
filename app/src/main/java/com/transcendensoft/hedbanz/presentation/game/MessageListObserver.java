@@ -125,7 +125,10 @@ public class MessageListObserver extends DisposableObserver<PaginationState<Mess
             mView.addMessages(0, messages);
             if (!messagePaginationState.isRefreshed()) {
                 mView.invalidateMessageWithPosition(messages.size());
+            } else {
+                mView.scrollToTheVeryDown();
             }
+
             mView.showContent();
             mModel.getMessages().addAll(0, messages);
         }

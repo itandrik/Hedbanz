@@ -7,9 +7,9 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clickable="true"
-        android:focusable="true"
-        android:layout_height="wrap_content">
+        android:focusable="true">
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline"
@@ -197,11 +197,11 @@
             android:layout_marginEnd="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
-            android:visibility="gone"
             android:layout_marginTop="8dp"
             android:background="@drawable/shop_btn_background"
             android:text="@string/menu_action_shop"
             android:textColor="@color/textWhite"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -231,12 +231,12 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginLeft="16dp"
-            android:visibility="gone"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/settings_btn_background"
             android:text="@string/menu_action_settings"
             android:textColor="@color/textWhite"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -281,11 +281,11 @@
             android:id="@+id/btnExit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
             android:background="@drawable/exit_btn_background"
             android:text="@string/menu_action_logout"
             android:textColor="@color/textWhite"
@@ -311,21 +311,27 @@
             app:layout_constraintVertical_bias="0.17000002"
             app:srcCompat="@drawable/register_divider" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabDown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
+        <FrameLayout
+            android:id="@+id/cvDown"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/main_menu_button_up_background"
             android:clickable="true"
-            android:focusable="true"
-            app:backgroundTint="@color/white"
+            android:elevation="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.33999997"
-            app:srcCompat="@drawable/ic_arrow_down" />
+            android:padding="14dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/ic_arrow_down" />
+        </FrameLayout>
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmerLayout"
@@ -364,9 +370,9 @@
                     android:id="@+id/ivShimmerCircle1"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
+                    android:layout_alignParentRight="true"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="18dp"
-                    android:layout_alignParentRight="true"
                     android:background="@drawable/shimmer_non_filled_circle" />
 
                 <View
@@ -394,36 +400,36 @@
                     android:layout_alignLeft="@id/ivShimmerCircle1"
                     android:layout_alignRight="@id/ivShimmerCircle1"
                     android:layout_below="@id/ivShimmerCircle1"
-                    android:background="@color/textSecondaryLight"
-                    android:layout_marginTop="8dp" />
+                    android:layout_marginTop="8dp"
+                    android:background="@color/textSecondaryLight" />
 
                 <View
                     android:layout_width="48dp"
                     android:layout_height="8dp"
                     android:layout_alignLeft="@id/ivShimmerCircle1"
-                    android:background="@color/textSecondaryLight"
                     android:layout_alignRight="@id/ivShimmerCircle1"
                     android:layout_below="@id/shimmerLine1_1"
-                    android:layout_marginTop="4dp" />
+                    android:layout_marginTop="4dp"
+                    android:background="@color/textSecondaryLight" />
 
                 <View
                     android:id="@+id/shimmerLine2_1"
                     android:layout_width="48dp"
                     android:layout_height="8dp"
-                    android:background="@color/textSecondaryLight"
                     android:layout_alignLeft="@id/ivShimmerCircle2"
                     android:layout_alignRight="@id/ivShimmerCircle2"
                     android:layout_below="@id/ivShimmerCircle2"
-                    android:layout_marginTop="8dp" />
+                    android:layout_marginTop="8dp"
+                    android:background="@color/textSecondaryLight" />
 
                 <View
                     android:layout_width="48dp"
                     android:layout_height="8dp"
                     android:layout_alignLeft="@id/ivShimmerCircle2"
                     android:layout_alignRight="@id/ivShimmerCircle2"
-                    android:background="@color/textSecondaryLight"
                     android:layout_below="@id/shimmerLine2_1"
-                    android:layout_marginTop="4dp" />
+                    android:layout_marginTop="4dp"
+                    android:background="@color/textSecondaryLight" />
 
                 <View
                     android:id="@+id/shimmerLine3_1"
@@ -431,18 +437,18 @@
                     android:layout_height="8dp"
                     android:layout_alignLeft="@id/ivShimmerCircle3"
                     android:layout_alignRight="@id/ivShimmerCircle3"
-                    android:background="@color/textSecondaryLight"
                     android:layout_below="@id/ivShimmerCircle3"
-                    android:layout_marginTop="8dp" />
+                    android:layout_marginTop="8dp"
+                    android:background="@color/textSecondaryLight" />
 
                 <View
                     android:layout_width="48dp"
                     android:layout_height="8dp"
                     android:layout_alignLeft="@id/ivShimmerCircle3"
                     android:layout_alignRight="@id/ivShimmerCircle3"
-                    android:background="@color/textSecondaryLight"
                     android:layout_below="@id/shimmerLine3_1"
-                    android:layout_marginTop="4dp" />
+                    android:layout_marginTop="4dp"
+                    android:background="@color/textSecondaryLight" />
             </RelativeLayout>
         </com.facebook.shimmer.ShimmerFrameLayout>
     </android.support.constraint.ConstraintLayout>
