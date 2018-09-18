@@ -38,8 +38,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginRight="64dp"
-        android:layout_marginEnd="64dp"
+        android:layout_marginRight="80dp"
+        android:layout_marginEnd="80dp"
         android:layout_toEndOf="@id/ivUserImage"
         android:layout_toRightOf="@id/ivUserImage"
         android:background="@drawable/message_other_user"
@@ -77,10 +77,11 @@
 
     <TextView
         android:id="@+id/tvTime"
-        android:layout_width="wrap_content"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/tvMessage"
-        android:layout_marginLeft="4dp"
+        android:layout_marginLeft="-72dp"
+        android:layout_marginBottom="3dp"
         android:layout_toRightOf="@id/tvMessage"
         android:textColor="@color/textSecondary"
         android:textSize="10sp" />

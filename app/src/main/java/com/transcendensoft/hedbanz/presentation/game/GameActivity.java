@@ -184,7 +184,13 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, null,
                 R.string.game_toolbar_open_menu_content_description,
-                R.string.game_toolbar_close_menu_content_description);
+                R.string.game_toolbar_close_menu_content_description) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                KeyboardUtils.hideSoftInput(GameActivity.this);
+            }
+        };
         toggle.setDrawerIndicatorEnabled(false);
 
         mDrawerLayout.addDrawerListener(toggle);
@@ -215,7 +221,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     KeyboardUtils.hideSoftInput(GameActivity.this);
                 }
 
-                if(mLayoutManager.findLastVisibleItemPosition() == mAdapter.getItemCount() - 1){
+                if (mLayoutManager.findLastVisibleItemPosition() == mAdapter.getItemCount() - 1) {
                     mFabScrollDown.hide();
                 }
             }
@@ -329,13 +335,14 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     }
 
     @OnClick(R.id.fabScrollDown)
-    protected void onScrollDownClicked(){
+    protected void onScrollDownClicked() {
+        mEtChatMessage.requestFocus();
         scrollToTheVeryDown();
     }
 
     @OnFocusChange(R.id.etChatMessage)
     protected void onEtChatFocusChange(View view, boolean hasFocus) {
-        if(hasFocus){
+        if (hasFocus) {
             isScrollDown = false;
         }
     }
@@ -412,9 +419,9 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void addMessage(Message message) {
         if (mAdapter != null) {
             mAdapter.add(message);
-            if (!isScrollDown) {
+            if (!isScrollDown && mLayoutManager.findLastVisibleItemPosition() >= mAdapter.getItemCount() - 2){
                 scrollToTheVeryDown();
-            }else {
+            } else {
                 mFabScrollDown.show();
             }
         }
@@ -422,7 +429,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
     @Override
     public void addMessage(int position, Message message) {
-        if (mAdapter != null) {
+        if (mAdapter != null && mLayoutManager.findLastVisibleItemPosition() >= mAdapter.getItemCount() - 2) {
             mAdapter.add(position, message);
             if (!isScrollDown) {
                 scrollToTheVeryDown();
@@ -432,7 +439,8 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         }
     }
 
-    private void scrollToTheVeryDown() {
+    @Override
+    public void scrollToTheVeryDown() {
         mRecycler.post(() -> {
             try {
                 mRecycler.smoothScrollToPosition(mAdapter.getItemCount() - 1);

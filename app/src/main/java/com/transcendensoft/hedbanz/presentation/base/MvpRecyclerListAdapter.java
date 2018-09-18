@@ -2,6 +2,8 @@ package com.transcendensoft.hedbanz.presentation.base;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -47,6 +49,11 @@ public abstract class MvpRecyclerListAdapter<M, P extends BasePresenter, VH exte
     public void addItem(M item) {
         addInternal(item);
         notifyItemInserted(models.size());
+    }
+
+    public void sort(Comparator<M> comparator){
+        Collections.sort(models, comparator);
+        notifyDataSetChanged();
     }
 
     public void updateItem(M item) {

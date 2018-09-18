@@ -54,6 +54,7 @@ import com.transcendensoft.hedbanz.presentation.invite.InviteDialogFragment;
 import com.transcendensoft.hedbanz.presentation.userdetails.UserDetailsDialogFragment;
 import com.transcendensoft.hedbanz.utils.ViewUtils;
 
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -87,6 +88,18 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     @Inject PreferenceManager mPreferenceManger;
     @Inject @ActivityContext Context mContext;
     @Inject FirebaseAnalytics mFirebaseAnalytics;
+
+    private Comparator<RxUser> playersComparator = (o1, o2) ->{
+        if(o2.getUser().equals(mPreferenceManger.getUser())){
+            return 1;
+        }
+
+        if(o1.getUser().equals(mPreferenceManger.getUser())){
+            return -1;
+        }
+
+        return Long.compare(o1.getUser().getId(), o2.getUser().getId());
+    };
 
     @Inject
     public GameMenuFragment() {
@@ -175,6 +188,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
         if (mAdapter != null) {
             mAdapter.clearAll();
             mAdapter.addAll(rxUsers);
+            mAdapter.sort(playersComparator);
         }
     }
 
@@ -182,6 +196,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     public void addPlayer(RxUser rxUser) {
         if (mAdapter != null) {
             mAdapter.addItem(rxUser);
+            mAdapter.sort(playersComparator);
         }
     }
 

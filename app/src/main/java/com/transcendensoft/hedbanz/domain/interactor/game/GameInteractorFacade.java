@@ -83,7 +83,6 @@ public class GameInteractorFacade {
     private GameDataRepository mRepository;
     private PreferenceManager mPreferenceManger;
     private GameState mGameState = GameState.DISCONNECTED;
-    private boolean isGameActive = false;
 
     //Use cases
     @Inject OnConnectUseCase mOnConnectUseCase;
@@ -130,6 +129,8 @@ public class GameInteractorFacade {
     Scheduler mIoScheduler;
     @Inject RxRoom mCurrentRoom;
     @Inject NotificationManager mNotificationManager;
+
+    private boolean isGameStarted = true;
 
     @Inject
     public GameInteractorFacade(PreferenceManager preferenceManager,
@@ -220,16 +221,27 @@ public class GameInteractorFacade {
         Consumer<? super User> doOnNext = user -> {
             if ((mCurrentRoom != null) && (mCurrentRoom.getRoom().getPlayers() != null) &&
                     (user != null)) {
-                List<User> users = mCurrentRoom.getRoom().getPlayers();
-                if (users.contains(user)) {
-                    RxUser rxUser = getRxUser(user);
-                    if (rxUser != null) {
-                        rxUser.setStatus(PlayerStatus.ACTIVE);
+                RxUser rxUser = getRxUser(user);
+                User userFromModel = null;
+                for (User innerUser: mCurrentRoom.getRoom().getPlayers()) {
+                    if(innerUser.equals(user)){
+                        userFromModel = innerUser;
+                        break;
                     }
-                    user.setPlayerStatus(PlayerStatus.ACTIVE);
-                } else {
-                    mCurrentRoom.addPlayer(user);
                 }
+
+                if(userFromModel != null){
+                    userFromModel.setPlayerStatus(PlayerStatus.ACTIVE);
+                    userFromModel.setWordVisible(isGameStarted);
+                }
+
+                if(rxUser != null){
+                    rxUser.setStatus(PlayerStatus.ACTIVE);
+                    rxUser.setWordVisible(isGameStarted);
+                } /*else if(!mCurrentRoom.getRoom().getPlayers().contains(user)){
+                    mCurrentRoom.addPlayer(user);
+                }*/
+
                 if (mPreferenceManger.getUser().equals(user)) {
                     mNotificationManager.cancelKickNotification();
                 }
@@ -244,8 +256,11 @@ public class GameInteractorFacade {
                                      Consumer<? super Throwable> onError) {
         Consumer<? super User> doOnNext = user -> {
             if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
-                List<User> users = mCurrentRoom.getRoom().getPlayers();
-                if (!users.contains(user)) {
+                RxUser rxUser = getRxUser(user);
+               // List<User> users = mCurrentRoom.getRoom().getPlayers();
+                //if (!users.contains(user)) {
+                if(rxUser == null){
+                    user.setWordVisible(isGameStarted);
                     mCurrentRoom.addPlayer(user);
                     mCurrentRoom.setCurrentPlayersNumber(
                             (byte) (mCurrentRoom.getRoom().getCurrentPlayersNumber() + 1));
@@ -303,8 +318,9 @@ public class GameInteractorFacade {
     public void onRoomInfoListener(Consumer<? super Room> onNext,
                                    Consumer<? super Throwable> onError) {
         Consumer<? super Room> doOnNext = room -> {
-            this.mCurrentRoom.setRoom(room);
-            mPreferenceManger.setCurrentRoomId(room.getId()); // We set that we play in this room
+            setRoomInfo(room);
+           //this.mCurrentRoom.setRoom(room);
+           // mPreferenceManger.setCurrentRoomId(room.getId()); // We set that we play in this room
         };
         mRoomInfoUseCase.execute(null, onNext, onError, doOnNext);
     }
@@ -312,7 +328,8 @@ public class GameInteractorFacade {
     public void onRoomRestoredListener(Consumer<? super Room> onNext,
                                        Consumer<? super Throwable> onError) {
         Consumer<? super Room> doOnNext = room -> {
-            this.mCurrentRoom.setRoom(room);
+            setRoomInfo(room);
+            //this.mCurrentRoom.setRoom(room);
         };
         mRoomRestoreUseCase.execute(null, onNext, onError, doOnNext);
     }
@@ -320,6 +337,10 @@ public class GameInteractorFacade {
     public void onPlayersInfoUseCase(Consumer<? super List<User>> onNext,
                                      Consumer<? super Throwable> onError) {
         Consumer<? super List<User>> doOnNext = users -> {
+
+            for (User user: users) {
+                user.setWordVisible(isGameStarted);
+            }
             mCurrentRoom.getRoom().setPlayers(users);
             this.mCurrentRoom.setRoom(mCurrentRoom.getRoom());
             mGameState = GameState.CONNECTED;
@@ -343,6 +364,7 @@ public class GameInteractorFacade {
                 for (User user : mCurrentRoom.getRoom().getPlayers()) {
                     if (user.equals(word.getWordReceiverUser())) {
                         user.setWord(word.getWord());
+                        break;
                     }
                 }
             }
@@ -364,6 +386,7 @@ public class GameInteractorFacade {
                 }
                 mCurrentRoom.setGameActive(true);
                 mCurrentRoom.setGameStarted(false);
+                isGameStarted = false;
             }
         };
         mWordSettingUseCase.execute(null, onNext, onError, doOnNext);
@@ -374,6 +397,7 @@ public class GameInteractorFacade {
         Consumer<? super PlayerGuessing> doOnNext = playerGuessing -> {
             if (mCurrentRoom != null && mCurrentRoom.getRoom().getPlayers() != null) {
                 mCurrentRoom.setGameStarted(true);
+                isGameStarted = true;
             }
         };
         mGuessWordUseCase.execute(null, onNext, onError, doOnNext);
@@ -431,7 +455,8 @@ public class GameInteractorFacade {
     public void onUpdateUsersInfo(Consumer<? super Room> onNext,
                                   Consumer<? super Throwable> onError) {
         Consumer<? super Room> doOnNext = room -> {
-            this.mCurrentRoom.setRoom(room);
+            setRoomInfo(room);
+            //this.mCurrentRoom.setRoom(room);
         };
 
         mUpdateUsersInfoUseCase.execute(null, onNext, onError, doOnNext);
@@ -526,7 +551,9 @@ public class GameInteractorFacade {
     }
 
     public void setRoomInfo(Room room) {
-        room.getPlayers().add(mPreferenceManger.getUser());
+        if(!room.getPlayers().contains(mPreferenceManger.getUser())) {
+            room.getPlayers().add(mPreferenceManger.getUser());
+        }
         mPreferenceManger.setCurrentRoomId(room.getId());
         mCurrentRoom.setId(room.getId());
         mCurrentRoom.setCurrentPlayersNumber(room.getCurrentPlayersNumber());
@@ -537,6 +564,7 @@ public class GameInteractorFacade {
         mCurrentRoom.setRoom(room);
         mCurrentRoom.setStartDate(room.getStartDate());
         mCurrentRoom.setWithPassword(room.isWithPassword());
+        mCurrentRoom.setGameStarted(isGameStarted);
         if (room.getPlayers() != null && (mCurrentRoom.getRxPlayers() == null ||
                 mCurrentRoom.getRxPlayers().isEmpty())) {
             for (User user : room.getPlayers()) {
@@ -621,5 +649,9 @@ public class GameInteractorFacade {
             }
         }
         return null;
+    }
+
+    public List<RxUser> getRxUsers(){
+        return mCurrentRoom.getRxPlayers();
     }
 }

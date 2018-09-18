@@ -29,9 +29,11 @@ import com.transcendensoft.hedbanz.domain.entity.Question;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.domain.entity.Word;
 import com.transcendensoft.hedbanz.domain.repository.MessagesDataRepository;
+import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
@@ -63,16 +65,22 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, GetMessage
     @Override
     protected Observable<PaginationState<Message>> buildUseCaseObservable(GetMessagesInteractor.Param param) {
         return mDataRepository.getMessages(param.roomId, mCurrentPage, DataPolicy.API)
-                .map(messages -> mapSetMessageUserAndType(messages, param.playersCount))
+                .map(messages -> mapSetMessageUserAndType(param.getRxUsers(), messages, param.playersCount))
                 .flatMap(this::convertEntitiesToPagingResult)
                 .onErrorReturn(this::mapPaginationStateBasedOnError);
     }
 
     @NonNull
-    private List<Message> mapSetMessageUserAndType(List<Message> messages, int playersCount) {
+    private List<Message> mapSetMessageUserAndType(List<RxUser> rxUsers, List<Message> messages, int playersCount) {
         User currentUser = mPreferenceManager.getUser();
         for (int i = 0; i < messages.size(); i++) {
             Message message = messages.get(i);
+
+            RxUser rxUser = getRxUser(rxUsers, message.getUserFrom());
+            if(rxUser != null && rxUser.getUser() != null) {
+                message.getUserFrom().setWord(rxUser.getUser().getWord());
+            }
+
             if (message.getMessageType() == MessageType.SIMPLE_MESSAGE) {
                 if (currentUser.equals(message.getUserFrom())) {
                     message.setMessageType(MessageType.SIMPLE_MESSAGE_THIS_USER);
@@ -169,13 +177,25 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, GetMessage
         return messages;
     }
 
+    @Nullable
+    private RxUser getRxUser(List<RxUser> rxUsers, User user) {
+        for (RxUser rxUser : rxUsers) {
+            if (rxUser.getUser().equals(user)) {
+                return rxUser;
+            }
+        }
+        return null;
+    }
+
     public static class Param{
         private Long roomId;
         private int playersCount;
+        private List<RxUser> rxUsers;
 
-        public Param(Long roomId, int playersCount) {
+        public Param(Long roomId, int playersCount, List<RxUser> users) {
             this.roomId = roomId;
             this.playersCount = playersCount;
+            this.rxUsers = users;
         }
 
         public Long getRoomId() {
@@ -192,6 +212,15 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, GetMessage
 
         public void setPlayersCount(int playersCount) {
             this.playersCount = playersCount;
+        }
+
+        public List<RxUser> getRxUsers() {
+            return rxUsers;
+        }
+
+        public Param setRxUsers(List<RxUser> rxUsers) {
+            this.rxUsers = rxUsers;
+            return this;
         }
     }
 }

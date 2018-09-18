@@ -119,7 +119,7 @@ public class HedbanzFirebaseMessagingService extends FirebaseMessagingService im
                 mNotificationManger.notifyGameOver(notificationMessage);
                 break;
             case LAST_PLAYER:
-                if(mPreferenceManager.getCurrentRoomId() == notificationMessage.getRoomId()) {
+                if(notificationMessage.getRoomId() == (mPreferenceManager.getCurrentRoomId())) {
                     mPreferenceManager.setIsLastUser(true);
                     Intent lastPlayerIntent = new Intent(ACTION_LAST_USER);
                     sendBroadcast(lastPlayerIntent);

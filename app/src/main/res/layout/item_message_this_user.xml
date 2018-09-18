@@ -32,12 +32,13 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="1dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:theme="@style/AppTheme.RedProgressBar"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         app:layout_constraintEnd_toStartOf="@+id/tvTime"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,6 +49,8 @@
         android:layout_gravity="bottom"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        app:layout_constraintVertical_bias="1.0"
+        android:layout_marginBottom="2dp"
         android:textColor="@color/textSecondary"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"

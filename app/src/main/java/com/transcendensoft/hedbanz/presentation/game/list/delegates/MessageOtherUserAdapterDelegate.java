@@ -100,6 +100,9 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
                     } else if (prevMessage.getMessageType() != SIMPLE_MESSAGE_OTHER_USER &&
                             !prevMessage.getUserFrom().equals(userFrom)) {
                         isAddTopMargin = true;
+                    } else if(prevMessage.getMessageType() == SIMPLE_MESSAGE_OTHER_USER &&
+                            !prevMessage.getUserFrom().equals(userFrom)){
+                        isAddTopMargin = true;
                     }
                 }
             }

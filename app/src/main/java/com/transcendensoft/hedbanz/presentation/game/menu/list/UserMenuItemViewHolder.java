@@ -129,10 +129,15 @@ public class UserMenuItemViewHolder extends MvpViewHolder<UserMenuItemPresenter>
 
     @Override
     public void setWordVisible(User user) {
-        if(!mPreferenceManager.getUser().equals(user) && user.isWordVisible()){
+        if(!mPreferenceManager.getUser().equals(user) &&
+                user.isWordVisible() && !TextUtils.isEmpty(user.getWord())){
             mTvWord.setVisibility(View.VISIBLE);
         } else {
-            mTvWord.setVisibility(View.GONE);
+            if(mIvWin.getVisibility() == View.VISIBLE) {
+                mTvWord.setVisibility(View.INVISIBLE);
+            } else {
+                mTvWord.setVisibility(View.GONE);
+            }
         }
     }
 

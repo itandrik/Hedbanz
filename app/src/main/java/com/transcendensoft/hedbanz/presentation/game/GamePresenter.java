@@ -128,9 +128,11 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         }
         mPreferenceManger.setIsGameEnabled(true);
 
-        if (mGameInteractor.doesGameHasServerConnectionError()) {
+       /* if (mGameInteractor.doesGameHasServerConnectionError()*//* &&
+                mPreferenceManger.getCurrentRoomId() != -1 &&
+                !mPreferenceManger.isLastUser()*//*) {
             view().showLoadingDialog();
-        }
+        }*/
     }
 
     @Override
@@ -169,7 +171,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     public void onTopReached() {
         Timber.i("TOP reached");
         GetMessagesInteractor.Param param = new GetMessagesInteractor.Param(
-                model.getId(), model.getPlayers().size());
+                model.getId(), model.getPlayers().size(), mGameInteractor.getRxUsers());
         mGetMessagesInteractor.loadNextPage()
                 .execute(new MessageListObserver(view(), model), param);
     }
@@ -177,7 +179,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
     @Override
     public void refreshMessageHistory() {
         GetMessagesInteractor.Param param = new GetMessagesInteractor.Param(
-                model.getId(), model.getPlayers().size());
+                model.getId(), model.getPlayers().size(), mGameInteractor.getRxUsers());
         mGetMessagesInteractor.refresh(null)
                 .execute(new MessageListObserver(view(), model), param);
     }

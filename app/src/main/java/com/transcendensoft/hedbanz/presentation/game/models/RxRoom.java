@@ -15,6 +15,7 @@ package com.transcendensoft.hedbanz.presentation.game.models;
  * limitations under the License.
  */
 
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.Room;
 import com.transcendensoft.hedbanz.domain.entity.User;
 
@@ -44,6 +45,7 @@ public class RxRoom {
     private PublishSubject<RxUser> mAddUserSubject;
 
     @Inject ObservableTransformer mSchedulersTransformer;
+    @Inject PreferenceManager mPreferenceManager;
 
     public RxRoom(Room room) {
         this.mRoom = room;
@@ -66,12 +68,13 @@ public class RxRoom {
     public void setRoom(Room room) {
         mPlayers.clear();
         this.mRoom = room;
+
         for (User user : room.getPlayers()) {
             RxUser rxUser = new RxUser(user);
             mPlayers.add(rxUser);
-            if(!mRoom.getPlayers().contains(user)) {
-                mRoom.getPlayers().add(user);
-            }
+            //if(!mRoom.getPlayers().contains(user)) {
+            //    mRoom.getPlayers().add(user);
+            // }
         }
         mRoomInfoSubject.onNext(this);
     }
@@ -128,7 +131,7 @@ public class RxRoom {
     public void addPlayer(User user) {
         RxUser rxUser = new RxUser(user);
         mPlayers.add(rxUser);
-        if(!mRoom.getPlayers().contains(user)) {
+        if (!mRoom.getPlayers().contains(user)) {
             mRoom.getPlayers().add(user);
         }
         mAddUserSubject.onNext(rxUser);
@@ -144,7 +147,15 @@ public class RxRoom {
         }
         if (rxUserResult != null) {
             mPlayers.remove(rxUserResult);
-            mRoom.getPlayers().remove(user);
+            User userToDelete = null;
+            for (User innerUser : mRoom.getPlayers()) {
+                if (innerUser.equals(user)) {
+                    userToDelete = innerUser;
+                }
+            }
+            if (userToDelete != null) {
+                mRoom.getPlayers().remove(userToDelete);
+            }
             mRemoveUserSubject.onNext(rxUserResult);
         }
     }
@@ -159,7 +170,7 @@ public class RxRoom {
     }
 
     public void setGameStarted(Boolean isGameStarted) {
-        for (RxUser rxUser:mPlayers) {
+        for (RxUser rxUser : mPlayers) {
             rxUser.setWordVisible(isGameStarted);
         }
     }
