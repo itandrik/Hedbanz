@@ -46,6 +46,7 @@ public class PreferenceManager {
     private static final String IS_LAST_USER = "isLastUser";
     private static final String IS_TUTORIAL_SHOWN = "isTutorialShown";
     private static final String IS_GAME_ENABLED = "isGameEnabled";
+    private static final String IS_LANGUAGE_SHOWED = "isLanguageShowed";
 
     public PreferenceManager(Context context) {
         mPreferences = context.getSharedPreferences(PREF_NAME, 0);
@@ -157,5 +158,13 @@ public class PreferenceManager {
 
     public boolean isGameEnabled() {
         return mPreferences.getBoolean(IS_GAME_ENABLED, false);
+    }
+
+    public void setIsLanguageShowed(boolean isLanguageShowed) {
+        getEditor().putBoolean(IS_LANGUAGE_SHOWED, isLanguageShowed).apply();
+    }
+
+    public boolean isLanguageShowed() {
+        return mPreferences.getBoolean(IS_LANGUAGE_SHOWED, false);
     }
 }

@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base -->
+    <string name="admob_ads_id">ca-app-pub-5606966984883396~7037086141</string>
+
+    <!-- Temporary -->
+    <string name="in_developing">In Bearbeitung</string>
+
+    <!-- Base -->
+    <string name="app_name">Hedbanz</string>
+
+    <!-- API keys -->
+
+    <!-- Bundle -->
+    <string name="bundle_room_id">bundle_room_id</string>
+    <string name="bundle_room_password">bundle_room_password</string>
+    <string name="bundle_is_after_creation">bundle_is_after_creation</string>
+    <string name="bundle_is_active_game">bundle_is_active_game</string>
+    <string name="bundle_room_data">bundle_room_data</string>
+    <string name="bundle_is_language_after_start">bundle_is_language_after_start</string>
+    <string name="salt">$2a$10$3L8fxrPhH3/qLYhjmsuEku</string>
+
+    <!-- Tags -->
+    <string name="tag_fragment_user_details">tag_fragment_user_details</string>
+    <string name="tag_fragment_invite">tag_fragment_invite</string>
+    <string name="tag_fragment_forgot_password">tag_fragment_forgot_password</string>
+    <string name="tag_fragment_check_keyword">tag_fragment_check_keyword</string>
+    <string name="tag_fragment_reset_password">tag_fragment_reset_password</string>
+
+    <!-- Actions -->
+    <string name="action_enter">Anmelden</string>
+    <string name="action_ok">Ок</string>
+    <string name="action_yes">Ja</string>
+    <string name="action_no">Nein</string>
+    <string name="action_cancel">Abbrechen</string>
+    <string name="action_close">Schließen</string>
+    <string name="action_reload">Erneut zu versuchen</string>
+    <string name="action_loading">Download&#8230;</string>
+    <string name="action_accept">Akzeptieren</string>
+    <string name="action_decline"> Ablehnen</string>
+    <string name="action_update">Aktualisieren</string>
+    <string name="action_later">Später</string>
+
+    <!-- Errors -->
+    <string name="error_server">Es gibt ein Problem mit dem Server.Bitte versuchen Sie später noch ein mal.</string>
+    <string name="error_network"> Keine Internetverbindung.</string>
+    <string name="error_empty_list">Liste ist leer</string>
+    <string name="error_action_retry">Erneut zu versuchen</string>
+    <string name="error_undefined_error">Houston, wir haben ein Problem! Ein Serverfehler aufgetreten.</string>
+
+    <!-- Login fragment -->
+    <string name="login_intro">Beeil dich, deine Freunde warten auf dich!</string>
+    <string name="login_hint">e.g. HedbanzUser2000</string>
+    <string name="login_password_hint">*********</string>
+    <string name="login_title">Login</string>
+    <string name="login_password_title">Passwort</string>
+    <string name="login_password_recovery">Passwort vergessen?</string>
+    <string name="login_register_intro">Zum ersten Mal bei uns? Sie müssen die Registrierungsphase abschließen. Keine Sorge, das ist ein sehr schnelles Verfahren.</string>
+    <string name="login_register_button">Anmelden/Registrieren</string>
+    <string name="login_error_empty_field">Ups! Du hast dieses Feld verpasst:(</string>
+    <string name="login_error_no_such_login">Benutzer mit diesem Login existiert nicht!</string>
+    <string name="login_error_incorrect_password">Passwort ist falsch. Falle von Amnesie benutze die Password-Recovery-Funktion unten!</string>
+    <string name="login_error_email_not_available">Fiasko, diese E-Mail ist von einem anderen Benutzer belegt.</string>
+    <string name="login_error_login_not_available">Fiasko, Benutzer mit solchem Login schon existiert.</string>
+    <string name="login_error_login_available">Login frei!</string>
+
+    <!-- Register activity -->
+    <string name="register_intro">Anmelden/Registrieren</string>
+    <string name="register_email_title">E-mail</string>
+    <string name="register_email_hint">e.g. hedbanz@example.com</string>
+    <string name="register_confirm_password">Passwort bestätigen</string>
+    <string name="register_action_submit">Bestätigen</string>
+    <string name="register_validate_empty_field">Ups, du hast dieses Feld verpasst.</string>
+    <string name="register_validate_email">Dies ist eine falsche E-Mail-Adresse. Du bist irgendwo falsch.</string>
+    <string name="register_validate_password">Dies ist ein falsches Passwort. Die Länge kann zwischen 6 und 14 Zeichen betragen.</string>
+    <string name="register_validate_confirm_password">Das Passwort ist falsch.</string>
+    <string name="register_validate_login">Falsches Login. Die Länge beträgt 3&#8211; 10 Zeichen. Nur Buchstaben, Zahlen und Punkte sind erlaubt (\".\")</string>
+
+    <!-- Main menu -->
+    <string name="main_menu_new_version_title">Neue Version des Spiels ist verfügbar</string>
+    <string name="main_menu_new_version_message">Möchten Sie die neueste App-Version installieren?</string>
+
+    <!-- Rooms fragment -->
+    <string name="rooms_title">Liste der Räume</string>
+    <string name="rooms_apply_filters">Filter anwenden</string>
+    <string name="rooms_max_players_title">Maximale Anzahl der Spieler</string>
+    <string name="rooms_max_players_from">von</string>
+    <string name="rooms_max_players_to">bis</string>
+    <string name="rooms_search_hint">My_room or #100500&#8230;</string>
+    <string name="rooms_with_password">Mit Passwort</string>
+    <string name="rooms_password_title">Raumpasswort eingeben</string>
+    <string name="rooms_active">Aktiv</string>
+    <string name="room_is_full">Der Raum ist voll. Versuche, in einen anderen Raum zu gehen.</string>
+    <string name="room_cant_start_game">Das Spiel konnte nicht gestartet werden. Serverproblem.</string>
+    <string name="room_game_already_started">Es ist unmöglich, den Spielern beizutreten. Das Spiel hat bereits begonnen.</string>
+    <string name="room_user_has_max_active_rooms_number">Die maximal zulässige Anzahl gleichzeitig aktiver Spiele ist erreicht. Beende sie zuerst.</string>
+    <string name="room_user_already_in_room">Serverfehler, versuch es später erneut.</string>
+    <string name="room_unauthorized_player">Du bist kein autorisierter Benutzer.</string>
+    <string name="rooms_unauthorized_user">Du bist kein autorisierter Benutzer. Melde dich erneut in Ihrem Konto an.</string>
+
+    <!-- Create room fragment -->
+    <string name="room_creation_title">Raum erstellen.</string>
+    <string name="room_creation_room_name">Raumname</string>
+    <string name="room_creation_players_count">Anzahl der Spieler</string>
+    <string name="room_creation_1_player">%1$d Spieler</string>
+    <string name="room_creation_4_players">%1$d des Spielers</string>
+    <string name="room_creation_8_players">%1$d der Spieler</string>
+    <string name="room_creation_name_example">e.g. Game is coming!</string>
+    <string name="room_creation_action_create">Erstellen</string>
+    <string name="room_creation_error_password_incorrect">Dies ist ein falsches Passwort. Die Länge kann zwischen 6 und 14 Zeichen betragen.</string>
+    <string name="room_creation_error_password_empty">Gib Raumpasswort ein.</string>
+    <string name="room_creation_error_name_empty">Gib den Raumnamen ein.</string>
+    <string name="room_creation_error_name_already_exist">Raum mit diesem Namen existiert bereit.</string>
+    <string name="room_creation_error_creating">Raum war nicht erstellt. Serverfehler. Bitte versuche es später erneut.</string>
+    <string name="room_creation_error_invalid_password">Passwort stimmt nicht:(</string>
+
+    <!-- Menu fragment -->
+    <string name="menu_games_played">Gespielte Spiele</string>
+    <string name="menu_friends">Freunde</string>
+    <string name="menu_money">Stickoins</string>
+    <string name="menu_action_credentials">Meine Daten</string>
+    <string name="menu_action_friends">Meine Freunde</string>
+    <string name="menu_action_shop">Laden</string>
+    <string name="menu_action_help">Hilfe</string>
+    <string name="menu_action_settings">Einstellung</string>
+    <string name="menu_action_rate">Bewerten</string>
+    <string name="menu_action_feedback">Einen Fehler melden</string>
+    <string name="menu_action_logout">Abmelden</string>
+    <string name="menu_logout_error_title">Ein Fehler aufgetreten </string>
+    <string name="menu_logout_server_error">Es gibt ein Problem mit dem Server.Bitte versuchen Sie später noch ein mal.</string>
+    <string name="menu_logout_network_error">Überprüf bitte deine Internetverbindung und versuche es erneut.</string>
+
+    <!-- Credentials activity -->
+    <string name="credentials_title">Meine Daten</string>
+    <string name="credentials_old_password">Altes Passwort</string>
+    <string name="credentials_new_password">Neues Passwort</string>
+    <string name="credentials_confirm_new_password">Neues Passwort bestätigen. </string>
+    <string name="credentials_action_save_data">Daten bearbeiten</string>
+    <string name="credentials_error_confirm_password">Passwort falsch bestätigt.</string>
+    <string name="credentials_update_success">Deine Daten wurden erfolgreich aktualisiert!</string>
+
+    <!-- Game mode -->
+    <string name="game_starts">Alle Spieler sind da.\n Lass das große Spiel beginnen!</string>
+    <string name="game_typing_one_user">%1$s jemand schreibt etwas</string>
+    <string name="game_typing_two_user">%1$s и %2$s einige schreiben etwas</string>
+    <string name="game_typing_several_users">Mehrere Spieler schreiben Nachrichten</string>
+    <string name="game_user_joined">%1$s ging in den Raum</string>
+    <string name="game_user_left">%1$s verließ den Raum</string>
+    <string name="game_et_hint">Nachrichtentext</string>
+    <string name="game_set_word_title">Es ist Zeit, dem Spieler ein Wort zu erfinden. %1$s</string>
+    <string name="game_set_word_title_random">Es ist Zeit, einem zufälligen Spieler ein Wort zu erfinden. </string>
+    <string name="game_set_word_hint">Dein Wort&#8230;</string>
+    <string name="game_word_setting_error">Du hast dem Spieler kein Wort erfunden.</string>
+    <string name="game_set_word_start_text">Ich</string>
+    <string name="game_word_setted">Spieler %1$s hat dem Spieler ein Wort erfunden. %2$s</string>
+    <string name="game_word_setted_to_current_user">Spieler %1$s hat dir ein Wort erfunden</string>
+    <string name="game_word_current_user_setted">Du hast dem Spieler ein Wort erfunden %1$s</string>
+    <string name="game_error_disconnected">Warten auf Verbindung&#8230;</string>
+    <string name="game_error_reconnecting">Verbinden…&#8230;</string>
+    <string name="game_error_reconnected">Die Verbindung ist wiederhergestellt!</string>
+    <string name="game_user_afk">Spieler %1$s kurz abwesend</string>
+    <string name="game_user_returned">Spieler %1$s ist zurück im Spiel</string>
+    <string name="game_some_user_afk">Ein Spieler ist für kurze Zeit weg</string>
+    <string name="game_some_user_returned">Ein Spieler ist zurück im Spiel</string>
+    <string name="game_action_restore_room">Fortfahren</string>
+    <string name="game_action_leave_room">Leute zu werfen</string>
+    <string name="game_restore_room_title">Du hast ein aktives Spiel!</string>
+    <string name="game_restore_room_message">Etwas ist schiefgelaufen und du hast diesen Raum verlassen. Möchtest du zum Spiel zurückkehren?</string>
+    <string name="game_exit_room_message">Möchtest du dieses Spiel wirklich verlassen? Deine Freunde könnten dich missverstehen. &#8230;</string>
+    <string name="game_exit_room_message_active">Möchtest du dieses Spiel wirklich verlassen? Während im Raum andere Spieler spielen, kannst du zurückkehren.</string>
+    <string name="game_exit_room_title">Rauszugehen oder nicht rauszugehen, das ist die Frage &#8230;</string>
+    <string name="game_action_resume_game">Fortfahren</string>
+    <string name="game_action_exit_game">Leute zu werfen</string>
+    <string name="game_action_exit_game_active">Später zurückzukommen.</string>
+    <string name="game_menu_this_user">Du</string>
+    <string name="game_kicked_title">Du bist vom Raum ausgeschlossen.</string>
+    <string name="game_kicked_message">Du warst lange nicht im Spiel, als die Wörter erfunden wurden, also wurdest du vom Raum ausgeschlossen. Du kannst anderen Raum erstellen oder dich anderen Spielern anschließen.</string>
+    <string name="game_toolbar_open_menu_content_description">Menü öffnen</string>
+    <string name="game_toolbar_close_menu_content_description">Menü schließen</string>
+    <string name="game_menu_friend">Freund</string>
+    <string name="game_afk">AFK</string>
+    <string name="game_last_player_title">Du bist der letzte Spieler im Raum.</string>
+    <string name="game_last_player_message">Es passierte, dass alle Spieler den Raum verließen. Dieser Raum schließt sich. Wenn du ein neues Team aufbauen möchtest, erstell neuen Raum oder trete einem anderen bei.</string>
+    <string name="game_error_title">Fehler</string>
+    <string name="game_error_leave_when_server_error_title">Achtung</string>
+    <string name="game_error_leave_when_server_error_message">Überprüf deine Internetverbindung. Wenn du mit dem Internet zufrieden bist, befindet sich der Server jetzt in einer instabilen Verbindung mit deinem Gerät. Warte auf die Integrität der Spieldaten eine Weile, bis die Verbindung wiederhergestellt ist. Wenn du immer noch beenden möchten, drücke die entsprechende Taste. Du kannst zu dem Raum zurückkehren, wann du möchtest, fals der noch aktiv ist.</string>
+    <string name="game_error_there_is_no_such_room">Es gibt kein solchen Raum.</string>
+    <string name="game_error_there_is_no_such_user_in_room">In diesem Raum gibt es keinen solchen Spieler.</string>
+    <string name="game_error_such_player_already_voted">Du hast bereits abgestimmt.</string>
+    <string name="game_some_user_think_word_to_user">Spieler wird jetzt fragen. %1$s.\n Versuch %2$d/3</string>
+    <string name="game_some_user_think_word_to_user_error">Jetzt wird ein Spieler fragen.\n Versuch %1$d/3</string>
+    <string name="game_this_user_think_word_to_user">Stell die Frage \"Wer du bist? \". Versuch %1$d/3</string>
+    <string name="game_guess_word_error">Du hast nichts gefragt.</string>
+    <string name="game_guess_word_hint">Frage</string>
+    <string name="game_asking_total_votes">Insgesamt:</string>
+    <string name="game_user_kicked">Spieler %1$s wurde wegen langer Abwesenheit aus dem Spiel ausgeschlossen.</string>
+    <string name="game_user_kick_warning">Spieler %1$s wird vom Spiel ausgeschlossen, fals er während 60 Sekunden in den Raum nicht zurückkehrt.</string>
+    <string name="game_user_wins">Spieler %1$s hat das ihm erfundenes Wort erraten!</string>
+    <string name="game_this_user_wins">Du hast das dir erfundene Wort erraten!</string>
+    <string name="game_error_user_wins">Ein Spieler hat das ihm vorgestellte Wort erraten!</string>
+    <string name="game_over_title">Das Spiel ist beendet. \n Alle Spieler haben ihre Worte erraten.</string>
+    <string name="game_restart_question">Möchtest du das Spiel mit diesem Befehl wiederholen?</string>
+    <string name="game_win_user_alert_message">Glückwunsch, du hast dein Wort erraten und das Spiel gewonnen! Du kannst das Spiel deiner Kameraden beobachten, mit ihnen sprechen, Ratschläge erteilen. Wenn du dich langweilst, kannst du immer den Raum verlassen.</string>
+    <string name="game_win_user_alert_title">Sieg!</string>
+    <string name="game_waiting_for_users">Wir warten darauf, dass alle Spieler beitreten und dann beginnen wir das Spiel.</string>
+    <string name="game_update_users_info">Erfundene Wörter werden von anderen Spielern neu definiert. Siehe die Änderungen im Menü.</string>
+    <string name="game_advertise_explanation">Ja, dir scheint alles richtig, unten ist ein Werbebanner. Wir zeigen Werbung nur sehr selten, damit du das Spiel genießt und nichts ablenkt. Es sollte beachtet werden, dass App auf der ganzen Welt kostenlos ist, trotzdem muss sie sich weiterentwickeln.</string>
+    <string name="game_advertise_click">Ein einfacher Klick aufs Banner macht die App besser!</string>
+
+    <!-- Game notification -->
+    <string name="game_notification_title">%1$s aus dem Raum %2$s</string>
+    <string name="game_notification_title_error">Neue Nachricht</string>
+    <string name="game_notification_channel_title_message">Nachricht</string>
+    <string name="game_invite_notification_channel_title_message">Einladung zum Spiel</string>
+    <string name="game_notification_kick_warning_title">Achtung bitte! Du hast 30 Sekunden, um in den Raum zurückzukehren.</string>
+    <string name="game_notification_kick_warning_message">Deine Freunde warten auf dich im Raum %1$s, während die Wörter erfunden werden. Wenn du nicht zum Spiel zurückkehrst, wirst du nach 30 Sekunden davon ausgeschlossen. Respektiere die Zeit anderer Spieler.</string>
+    <string name="game_notification_kick_title">Du bist aus dem Raum vertrieben worden. %1$s</string>
+    <string name="game_notification_kick_message">Aufgrund der Tatsache, dass du lange nicht im Spiel warst, während die Wörter erfunden wurden, wurdest du aus dem Raum vertrieben. Versuche mit anderen Leuten zu spielen.</string>
+    <string name="game_notification_channel_title_friend">Freunde</string>
+    <string name="game_notification_friend_title">Freundschaftsanfrage</string>
+    <string name="game_notification_friend_message">Spieler %1$s möchte mit dir eine Freundschaft schließen</string>
+    <string name="game_notification_set_word_message">Kehre zum Raum %1$s zurück und erfinde ein Wort für den Spieler. %2$s</string>
+    <string name="game_notification_set_word_title">Erfinde das Wort</string>
+    <string name="game_notification_set_word_message_error">Du sollst ein Wort erfinden.</string>
+    <string name="game_notification_guess_word_title">Zeit zu erraten, wer du bist</string>
+    <string name="game_notification_guess_word_message">Geh zurück in den Raum %1$s und stell die Frage \"Wer bin ich? \".</string>
+    <string name="game_notification_guess_word_message_error">Kehre zum Spiel zurück und stelle die Frage \"Wer bin ich? \".</string>
+    <string name="game_notification_invite_title">Du wurdest eingeladen!</string>
+    <string name="game_notification_invite_message">Spieler %1$s hat dich eingeladen, mit ihm im Raum zu spielen %2$s</string>
+    <string name="game_notification_invite_message_error">Jemand hat dich eingeladen, mit ihm zu spielen </string>
+    <string name="game_notification_game_over_title">Das Spiel ist beendet</string>
+    <string name="game_notification_game_over_message">Das Spiel im Raum %1$s ist vorbei, alle Spieler haben ihre Wörter erraten. Kehre zum Raum zurück und starte ein neues Spiel.</string>
+    <string name="game_notification_game_over_message_error">Das Spiel ist vorbei, alle Spieler haben ihre Wörter erraten. Kehre zum Raum zurück und starte ein neues Spiel.</string>
+    <string name="game_notification_last_user_title">Raum %1$s ist geschlossen.</string>
+    <string name="game_notification_last_user_message">Du warst der letzte Spieler in diesem Raum, du hast niemanden zum Spielen, also der Raum hat geschlossen.</string>
+
+    <!-- Friends -->
+    <string name="friends_toolbar_title">Deine Freunde</string>
+    <string name="friends_decline_title"> Willst du nicht mit dieser Person befreundet sein?</string>
+    <string name="friends_decline_message">Möchtest du die Freundschaftsanfrage des Nutzers wirklich abbrechen? %1$s</string>
+    <string name="friends_delete_title">Willst du nicht mehr mit dieser Person befreundet sein?</string>
+    <string name="friends_delete_message">Möchtest du den Nutzer wirklich aus deiner Freundesliste entfernen?</string>
+    <string name="friends_accept_success_title">Du hast einen neuen Freund</string>
+    <string name="friends_accept_success_message">Jetzt %1$s ist er auf deiner Freundesliste</string>
+    <string name="friends_decline_success_title">Freundschaftsanfrage ist abgelehnt</string>
+    <string name="friends_decline_success_message">Du hast die Freundschaftsanfrage erfolgreich abgelehnt!</string>
+    <string name="friends_delete_success_title">Freund ist gelöscht</string>
+    <string name="friends_delete_success_message">Du hast einen Freund %1$s erfolgreich aus der Liste gelöscht.</string>
+    <string name="friends_error_title">Etwas ist schief gelaufen</string>
+    <string name="friends_error_message">Ein Fehler ist aufgetreten. Bitte versuche es später erneut.</string>
+    <string name="friends_pending">Warte auf Bestätigung</string>
+    <string name="friends_cant_send_friendship_request">Kann nicht zu Freunden hinzugefügt werden. Serverfehler.</string>
+    <string name="friends_already_friends">Dieser Benutzer ist bereits in deiner Freundesliste.</string>
+    <string name="friends_not_friends">Dieser Benutzer ist nicht dein Freund</string>
+
+    <!-- User details -->
+    <string name="user_details_add_friend">Freundschaft anbieten</string>
+    <string name="user_details_already_friend">In der Freundesliste</string>
+    <string name="user_details_friend_request_sent">Freundschaft wurde angeboten!</string>
+
+    <!-- Invite -->
+    <string name="invite_title">Lade deine Freunde zum Spiel ein</string>
+    <string name="invite_action">Einladen</string>
+    <string name="invite_no_users_selected">Wähle zuerst die Personen aus, die du einladen möchtest.</string>
+    <string name="invite_already_invited">Ist eingeladen</string>
+    <string name="invite_already_in_game">Im Spiel</string>
+
+    <!-- Restore password -->
+    <string name="restore_pwd_forgot_title">Passwort\nWiederherstellung </string>
+    <string name="restore_pwd_action_restore">Wiederherstellen</string>
+    <string name="restore_pwd_secret_key_title">Sicherheitscode</string>
+    <string name="restore_pwd_sent_email_text">Sicherheitscode wurde an deine E-Mail Adresse gesendet, die du bei der Registrierung angegeben hast. Um das Passwort von deinem Account wiederherzustellen, gib den folgenden Code ein.</string>
+    <string name="restore_pwd_reset_password_text">Wunderbar! Erstelle jetzt ein neues Passwort für deinen Account.</string>
+    <string name="restore_pwd_action_save">Speichern</string>
+    <string name="restore_pwd_new_password">Neues Passwort</string>
+    <string name="restore_pwd_error_incorrect_keyword">Falscher Sicherheitscode.</string>
+    <string name="restore_pwd_error_incorrect_locale">Ungültige Lokalisierung gesendet.</string>
+    <string name="restore_pwd_error_keyword_expired">Der Sicherheitscode ist veraltet. Sende eine andere Nachricht.</string>
+    <string name="restore_password_finish_title">Du hast es geschafft!</string>
+    <string name="restore_password_finish_message">Du hast dein Passwort erfolgreich geändert. Melde dich jetzt mit Ihrem neuen Account an.</string>
+    <string name="restore_pwd_resend_keyword">Der Brief ist nicht gekommen</string>
+    <string name="restore_pwd_keyword_resent_title">Sicherheitscode wurde gesendet</string>
+    <string name="restore_pwd_keyword_resent_message">Überprüfe die E-Mail, ein neuer Sicherheitscode wurde gerade gesendet.</string>
+
+    <!-- Change user icon -->
+    <string name="change_icon_submit">Wählen</string>
+    <string name="change_icon_choose_avatar">Wähle einen Avatar aus</string>
+    <string name="change_icon_success_title">Du hast es geschafft!</string>
+    <string name="change_icon_success_message">Du hast deinen Avatar erfolgreich geändert.</string>
+    <string name="change_icon_error_title">Fehler</string>
+    <string name="change_icon_error_message">Dein Avatar kann nicht geändert werden. Probleme mit dem Server. Versuche es später noch einmal.</string>
+
+    <!-- Feedback -->
+    <string name="feedback_title">Einen Fehler melden.</string>
+    <string name="feedback_confidentiality_action">Datenschutzrichtlinie</string>
+    <string name="feedback_hint">Beschreibe dein Problem.</string>
+    <string name="feedback_submit">Senden</string>
+    <string name="feedback_success_title">Du hast es geschafft!</string>
+    <string name="feedback_success_message">Deine Nachricht wurde erfolgreich an Entwicklungsteam gesendet. Vielen Dank für deine Hilfe bei der Entwicklung des Projekts. Wir hoffen, dass wir mit Hilfe deiner Nachricht die Situation bald korrigieren können.</string>
+    <string name="feedback_telegram_action">Telegram-Chat</string>
+    <string name="feedback_telegram_title">Wir haben einen Telegramm-Chat für die Kommunikation von Benutzern erstellt. Dort könnt ihr den Fehler beschreiben oder eine Verbesserung der Anwendung vorschlagen.</string>
+
+    <!-- Tutorial -->
+    <string name="tutorial_page_1_title">Tritt dem Raum bei oder erstelle deinen eigenen!</string>
+    <string name="tutorial_page_1_text">Hedbanz - das ist ein Gruppenspiel. Du musst dein Spieler Team rekrutieren oder anderen Leuten aus der ganzen Welt beitreten.</string>
+    <string name="tutorial_page_2_title">Erfinde das Wort für irgendeinen Spieler!</string>
+    <string name="tutorial_page_2_text">Es kann alles sein: der Name eines berühmten Charakters, ein Küchengegenstand oder sogar etwas Kosmisches. Du entscheide, ob der Player in eine Ecke gedrängt werden soll;)</string>
+    <string name="tutorial_page_3_title">Stell die Leitfragen!</string>
+    <string name="tutorial_page_3_text">Sobald du das Wort bekommst, wird es beginnen, dich zu bezeichnen. Du musst raten, wer du bist, deshalb stell  hinweisende Fragen. Um dir zu helfen, haben wir für dich eine Hilfsliste vorbereitet.</string>
+    <string name="tutorial_page_4_title">Antworte ehrlich auf die Fragen anderer Spieler.</string>
+    <string name="tutorial_page_4_text">Wenn ein Spieler sein Wort errät: Drücke \ "Finger hoch \" - für die richtige Richtung des Gedankens und \ "Finger runter \" - für die Falsche. Wenn der Spieler sein Wort erraten hat – klicke auf die \ "Krone \".</string>
+    <string name="tutorial_page_5_title">Das Pferd wird im Rennen erkannt, die Person - in Kommunikation.</string>
+    <string name="tutorial_page_5_text">Außer Spiel kannst du einfach mit Spielern chatten, Geheimnisse teilen und einfach eine gute Zeit verbringen!</string>
+    <string name="tutorial_page_6_title">Errate Wörter, kommuniziere, dich weiterentwickle!</string>
+    <string name="tutorial_page_6_text">Tritt anderen Spielern bei und entwickle Kommunikationsfähigkeiten. Finde neue Freunde, knüpfe neue Kontakten, lerne neue Sprachen mit Ausländern. Wir wünschen dir viel Spaß beim Spiel!:)</string>
+
+    <!-- Languages -->
+    <string name="change_language_submit">Wählen</string>
+    <string name="change_language_toolbar"></string>
+    <string name="language_english">English</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_ukrainian">Українська</string>
+    <string name="lang_code_en">en</string>
+    <string name="lang_code_ru">ru</string>
+    <string name="lang_code_de">de</string>
+    <string name="lang_code_uk">uk</string>
+    <string name="country_code_en">EN</string>
+    <string name="country_code_ru">RU</string>
+    <string name="country_code_de">DE</string>
+    <string name="country_code_uk">UA</string>
+</resources>

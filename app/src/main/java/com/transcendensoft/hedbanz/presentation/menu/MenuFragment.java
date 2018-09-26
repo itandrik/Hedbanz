@@ -41,6 +41,7 @@ import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconActivity;
 import com.transcendensoft.hedbanz.presentation.feedback.FeedbackActivity;
 import com.transcendensoft.hedbanz.presentation.friends.FriendsActivity;
 import com.transcendensoft.hedbanz.presentation.intro.IntroActivity;
+import com.transcendensoft.hedbanz.presentation.language.LanguageActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.CredentialsActivity;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
@@ -179,6 +180,12 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
     protected void onFeedbackClicked() {
         startActivity(new Intent(getActivity(), FeedbackActivity.class));
         mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.FEEDBACK_BUTTON, null);
+    }
+
+    @OnClick(R.id.btnLanguage)
+    protected void onLanguageClicked(){
+        startActivity(new Intent(getActivity(), LanguageActivity.class));
+        mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.LANGUAGE_BUTTON, null);
     }
 
     @OnClick(R.id.btnRate)

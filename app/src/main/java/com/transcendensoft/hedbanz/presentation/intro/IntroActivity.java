@@ -1,5 +1,8 @@
 package com.transcendensoft.hedbanz.presentation.intro;
 
+import android.content.Context;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,8 +10,11 @@ import android.support.v4.content.ContextCompat;
 
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntro2Fragment;
+import com.transcendensoft.hedbanz.HedbanzApplication;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.entity.Language;
+import com.transcendensoft.hedbanz.presentation.base.HedbanzContextWrapper;
 
 public class IntroActivity extends AppIntro2 {
     private PreferenceManager mPreferenceManager;
@@ -58,6 +64,26 @@ public class IntroActivity extends AppIntro2 {
         super.onDonePressed(currentFragment);
         mPreferenceManager.setIsTutorialShown(true);
         finish();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+            Language language = Language.Companion.getLanguageByCode(
+                    newBase, new PreferenceManager(newBase).getLocale());
+
+            super.attachBaseContext(HedbanzContextWrapper.wrap(
+                    newBase, language));
+        }
+        else {
+            super.attachBaseContext(newBase);
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        ((HedbanzApplication)getApplication()).setLocale();
     }
 
     @Override

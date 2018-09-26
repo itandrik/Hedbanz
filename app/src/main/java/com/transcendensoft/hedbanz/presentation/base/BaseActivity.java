@@ -16,13 +16,19 @@ package com.transcendensoft.hedbanz.presentation.base;
  */
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.EditText;
 
+import com.transcendensoft.hedbanz.HedbanzApplication;
 import com.transcendensoft.hedbanz.R;
+import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.entity.Language;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
 import com.transcendensoft.hedbanz.utils.NetworkUtils;
@@ -44,6 +50,7 @@ import io.reactivex.disposables.Disposable;
 public abstract class BaseActivity extends DaggerAppCompatActivity implements BaseView {
     private ProgressDialog mProgressDialog;
     @Inject CompositeDisposable mViewCompositeDisposable;
+    @Inject PreferenceManager mPreferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +73,26 @@ public abstract class BaseActivity extends DaggerAppCompatActivity implements Ba
         }
         mProgressDialog.dismiss();
         mProgressDialog = null;
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+            Language language = Language.Companion.getLanguageByCode(
+                    newBase, new PreferenceManager(newBase).getLocale());
+
+            super.attachBaseContext(HedbanzContextWrapper.wrap(
+                    newBase, language));
+        }
+        else {
+            super.attachBaseContext(newBase);
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        ((HedbanzApplication)getApplication()).setLocale();
     }
 
     protected void addRxBindingDisposable(Disposable disposable){

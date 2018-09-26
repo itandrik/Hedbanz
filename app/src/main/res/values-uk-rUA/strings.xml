@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Base -->
     <string name="admob_ads_id">ca-app-pub-5606966984883396~7037086141</string>
@@ -15,6 +16,7 @@
     <string name="bundle_is_after_creation">bundle_is_after_creation</string>
     <string name="bundle_is_active_game">bundle_is_active_game</string>
     <string name="bundle_room_data">bundle_room_data</string>
+    <string name="bundle_is_language_after_start">bundle_is_language_after_start</string>
 
     <string name="salt">$2a$10$3L8fxrPhH3/qLYhjmsuEku</string>
 
@@ -74,7 +76,7 @@
     <string name="register_validate_email">Це некоректна електронна адреса. Ви десь помилились.</string>
     <string name="register_validate_password">Це некоректний пароль. Допустимая довжина від 6 до 14 символів.</string>
     <string name="register_validate_confirm_password">Пароль підтверджено неправильно.</string>
-    <string name="register_validate_login">Некоректний логін. Довжина 3&#8211;10 символов. Допустимі тільки літери, цифри и крапка (\".\")</string>
+    <string name="register_validate_login">Некоректний логін. Довжина 3&#8211;10 символів. Допустимі тільки літери, цифри и крапка (\".\")</string>
 
     <!-- Main menu -->
     <string name="main_menu_new_version_title">Новая версія додатку доступна</string>
@@ -86,7 +88,7 @@
     <string name="rooms_max_players_title">Максимальна кількість гравців</string>
     <string name="rooms_max_players_from">від</string>
     <string name="rooms_max_players_to">до</string>
-    <string name="rooms_search_hint">My_room or #100500...</string>
+    <string name="rooms_search_hint">My_room or #100500&#8230;</string>
     <string name="rooms_with_password">З паролем</string>
     <string name="rooms_password_title">Введіть пароль від кімнати</string>
     <string name="rooms_active">Активна</string>
@@ -107,7 +109,7 @@
     <string name="room_creation_8_players">%1$d гравці</string>
     <string name="room_creation_name_example">e.g. Game is coming!</string>
     <string name="room_creation_action_create">Створити</string>
-    <string name="room_creation_error_password_incorrect">Це некоректний пароль. Допустимая довжина овід 6 до 14 символів.</string>
+    <string name="room_creation_error_password_incorrect">Це некоректний пароль. Допустимая довжина від 6 до 14 символів.</string>
     <string name="room_creation_error_password_empty">Введіть пароль від кімнати</string>
     <string name="room_creation_error_name_empty">Введіть ім\'я кімнати</string>
     <string name="room_creation_error_name_already_exist">Кімната з таким ім\'ям вже існує</string>
@@ -316,4 +318,20 @@
     <string name="tutorial_page_5_text">Помимо игры ты можешь просто общаться с игроками, делиться секретами и просто хорошо проводить время!</string>
     <string name="tutorial_page_6_title">Угадывайте слова, общайтесь, развивайтесь</string>
     <string name="tutorial_page_6_text">Присоединяйся к другим игрокам и развивай навыки общения. Находи новых друзей, новые знакомства, изучай новые языки с иностранцами. Мы желаем тебе приятного времяпровождения! :)</string>
+
+    <!-- Languages -->
+    <string name="change_language_submit">Обрати</string>
+    <string name="change_language_toolbar">Оберіть мову</string>
+    <string name="language_english">English</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_ukrainian">Українська</string>
+    <string name="lang_code_en">en</string>
+    <string name="lang_code_ru">ru</string>
+    <string name="lang_code_de">de</string>
+    <string name="lang_code_uk">uk</string>
+    <string name="country_code_en">EN</string>
+    <string name="country_code_ru">RU</string>
+    <string name="country_code_de">DE</string>
+    <string name="country_code_uk">UA</string>
 </resources>

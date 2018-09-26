@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_marginRight="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:background="@drawable/white_rounded_bg"
+    android:layout_height="?attr/listPreferredItemHeight"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/ivCountryFlag"
+        app:srcCompat="@drawable/ic_ukraine"
+        android:layout_width="55dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true" />
+
+    <android.support.v7.widget.AppCompatRadioButton
+        android:id="@+id/rbCountrySelected"
+        app:buttonTint="@color/google_green"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/tvCountryName"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_toLeftOf="@id/rbCountrySelected"
+        android:layout_toRightOf="@id/ivCountryFlag"
+        android:gravity="center_vertical|left"
+        android:textColor="@color/textPrimary"
+        android:textSize="16sp" />
+</RelativeLayout>

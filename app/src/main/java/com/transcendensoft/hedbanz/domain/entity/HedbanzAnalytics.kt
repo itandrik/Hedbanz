@@ -34,6 +34,7 @@ const val RATE_BUTTON = "Menu_Button_Rate"
 const val FEEDBACK_BUTTON = "Menu_Button_Feedback"
 const val EXIT_BUTTON = "Menu_Button_Logout"
 const val USER_IMAGE_BUTTON = "Menu_User_Image"
+const val LANGUAGE_BUTTON = "Menu_Button_Language"
 
 // Game menu
 const val INVITE_BUTTON = "Game_Menu_Invite"

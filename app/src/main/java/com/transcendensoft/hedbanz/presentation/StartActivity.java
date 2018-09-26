@@ -1,7 +1,9 @@
 package com.transcendensoft.hedbanz.presentation;
 
 import android.animation.Animator;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,8 +20,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.transcendensoft.hedbanz.HedbanzApplication;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
+import com.transcendensoft.hedbanz.domain.entity.Language;
+import com.transcendensoft.hedbanz.presentation.base.HedbanzContextWrapper;
+import com.transcendensoft.hedbanz.presentation.language.LanguageActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.login.LoginFragment;
 import com.transcendensoft.hedbanz.utils.ViewUtils;
@@ -41,11 +47,35 @@ public class StartActivity extends DaggerAppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (mPreferenceManager.isAuthorised()) {
-            startMainActivity();
+        if (mPreferenceManager.isLanguageShowed()) {
+            if (mPreferenceManager.isAuthorised()) {
+                startMainActivity();
+            } else {
+                showLoginWithAnimation();
+            }
         } else {
-            showLoginWithAnimation();
+            startLoginActivity();
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+            Language language = Language.Companion.getLanguageByCode(
+                    newBase, new PreferenceManager(newBase).getLocale());
+
+            super.attachBaseContext(HedbanzContextWrapper.wrap(
+                    newBase, language));
+        }
+        else {
+            super.attachBaseContext(newBase);
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        ((HedbanzApplication)getApplication()).setLocale();
     }
 
     private void startMainActivity() {
@@ -68,6 +98,14 @@ public class StartActivity extends DaggerAppCompatActivity {
 
         initHatAnimation();
         initSmileAnimation();
+    }
+
+    private void startLoginActivity() {
+        Intent intent = new Intent(this, LanguageActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(getString(R.string.bundle_is_language_after_start), true);
+        startActivity(intent);
+        finish();
     }
 
     private void initHatAnimation() {
@@ -223,7 +261,7 @@ public class StartActivity extends DaggerAppCompatActivity {
                 .start();
     }
 
-    private void hideSmile(){
+    private void hideSmile() {
         mIvHat.animate()
                 .setDuration(200)
                 .alpha(0.f)
@@ -236,7 +274,7 @@ public class StartActivity extends DaggerAppCompatActivity {
                 .start();
         LoginFragment loginFragment = (LoginFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.loginFragment);
-        if(loginFragment != null) {
+        if (loginFragment != null) {
             loginFragment.showIcon();
         }
     }

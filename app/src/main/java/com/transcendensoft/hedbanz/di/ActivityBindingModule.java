@@ -32,6 +32,8 @@ import com.transcendensoft.hedbanz.presentation.friends.FriendsActivity;
 import com.transcendensoft.hedbanz.presentation.friends.FriendsModule;
 import com.transcendensoft.hedbanz.presentation.game.GameActivity;
 import com.transcendensoft.hedbanz.presentation.game.GameModule;
+import com.transcendensoft.hedbanz.presentation.language.LanguageActivity;
+import com.transcendensoft.hedbanz.presentation.language.LanguageModule;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivityModule;
 import com.transcendensoft.hedbanz.presentation.restorepwd.RestorePasswordActivity;
@@ -98,4 +100,8 @@ public interface ActivityBindingModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = FeedbackModule.class)
     FeedbackActivity feedbackActivity();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = LanguageModule.class)
+    LanguageActivity languageActivity();
 }
