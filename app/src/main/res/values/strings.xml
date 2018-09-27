@@ -179,8 +179,8 @@
     <string name="game_toolbar_close_menu_content_description">Close menu</string>
     <string name="game_menu_friend">Friend</string>
     <string name="game_afk">AFK</string>
-    <string name="game_last_player_title">You are the last player in room</string>
-    <string name="game_last_player_message">All players left from the room. This room is closing, if you want to gather up another team, then create new room or join to another one.</string>
+    <string name="game_last_player_title">You are the last player in the room</string>
+    <string name="game_last_player_message">All players left from the room, so this room is closing. If you want to gather up another team, you should create new room or join to another one.</string>
     <string name="game_error_title">Error</string>
     <string name="game_error_leave_when_server_error_title">Warning</string>
     <string name="game_error_leave_when_server_error_message">Check your internet connection. If everything OK with your internet, then server has unstable connection with your device. For the wholeness game data it would be nice of to wait some until connection will restore. If you still want to leave from room, press corresponding button. After that return to room, whenever you would like to, if this room will be still active.</string>

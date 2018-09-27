@@ -316,7 +316,7 @@
 
     <!-- Languages -->
     <string name="change_language_submit">Wählen</string>
-    <string name="change_language_toolbar"></string>
+    <string name="change_language_toolbar">Sprache wählen</string>
     <string name="language_english">English</string>
     <string name="language_german">Deutsch</string>
     <string name="language_russian">Русский</string>

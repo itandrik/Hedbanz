@@ -15,7 +15,6 @@ package com.transcendensoft.hedbanz.presentation.game.menu.list;
  * limitations under the License.
  */
 
-import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
@@ -34,7 +33,6 @@ import timber.log.Timber;
 public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemContract.View>
         implements UserMenuItemContract.Presenter {
     private ObservableTransformer mSchedulersTransformer;
-    private PreferenceManager mPreferenceManager;
     private PublishSubject<User> mItemClickObservable = PublishSubject.create();
 
     public UserMenuItemPresenter(ObservableTransformer schedulersTransformer) {

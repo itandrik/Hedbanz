@@ -15,9 +15,7 @@ package com.transcendensoft.hedbanz;
  * limitations under the License.
  */
 
-import android.content.Context;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.crashlytics.android.Crashlytics;
@@ -25,7 +23,6 @@ import com.squareup.leakcanary.LeakCanary;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.di.component.DaggerAppComponent;
 import com.transcendensoft.hedbanz.domain.entity.Language;
-import com.transcendensoft.hedbanz.presentation.base.HedbanzContextWrapper;
 import com.transcendensoft.hedbanz.utils.logging.CrashReportingTree;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.ios.IosEmojiProvider;
@@ -109,7 +106,7 @@ public class HedbanzApplication extends DaggerApplication implements HasServiceI
         setLocale();
     }
 
-    @Override
+    /*@Override
     protected void attachBaseContext(Context newBase) {
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
             Language language = Language.Companion.getLanguageByCode(
@@ -121,7 +118,7 @@ public class HedbanzApplication extends DaggerApplication implements HasServiceI
         else {
             super.attachBaseContext(newBase);
         }
-    }
+    }*/
 
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {

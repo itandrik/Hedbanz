@@ -12,7 +12,6 @@ import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
-import com.franmontiel.localechanger.utils.ActivityRecreationHelper
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager
 import com.transcendensoft.hedbanz.domain.entity.Language
@@ -39,16 +38,6 @@ class LanguageActivity : BaseActivity() {
 
         initToolbar()
         initRecycler()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        ActivityRecreationHelper.onResume(this)
-    }
-
-    override fun onDestroy() {
-        ActivityRecreationHelper.onDestroy(this)
-        super.onDestroy()
     }
 
     private fun initToolbar(){
@@ -97,7 +86,8 @@ class LanguageActivity : BaseActivity() {
 
     private fun changeLanguageConfig(language: Language) {
         val localeCode = getString(language.localeCode)
-        if(preferenceManager.locale != localeCode) {
+        if(preferenceManager.locale != localeCode ||
+                intent.getBooleanExtra(getString(R.string.bundle_is_language_after_start), false)) {
             preferenceManager.locale = localeCode
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
