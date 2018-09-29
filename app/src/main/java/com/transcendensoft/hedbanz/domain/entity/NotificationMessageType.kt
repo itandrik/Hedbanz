@@ -34,6 +34,7 @@ enum class NotificationMessageType(val id: Int) {
     GAME_OVER(8),
     NEW_ROOM_CREATED(9),
     LAST_PLAYER(10),
+    ASKING_QUESTION(11),
     APP_NEW_VERSION(20),
     GLOBAL(21),
     UNDEFINED(100500);

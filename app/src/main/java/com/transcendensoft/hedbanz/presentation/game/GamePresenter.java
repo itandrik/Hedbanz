@@ -262,7 +262,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                             model.getMessages().add(question);
                             view().addMessage(question);
 
-                            disposeAll();
+                            //disposeAll();
                         },
                         err -> Timber.e("Error while guess word. Message : " + err.getMessage())
                 ));

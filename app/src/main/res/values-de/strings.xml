@@ -151,7 +151,7 @@
     <string name="game_set_word_title_random">Es ist Zeit, einem zufälligen Spieler ein Wort zu erfinden. </string>
     <string name="game_set_word_hint">Dein Wort&#8230;</string>
     <string name="game_word_setting_error">Du hast dem Spieler kein Wort erfunden.</string>
-    <string name="game_set_word_start_text">Ich</string>
+    <string name="game_set_word_start_text">Bin ich</string>
     <string name="game_word_setted">Spieler %1$s hat dem Spieler ein Wort erfunden. %2$s</string>
     <string name="game_word_setted_to_current_user">Spieler %1$s hat dir ein Wort erfunden</string>
     <string name="game_word_current_user_setted">Du hast dem Spieler ein Wort erfunden %1$s</string>
@@ -225,6 +225,9 @@
     <string name="game_notification_guess_word_title">Zeit zu erraten, wer du bist</string>
     <string name="game_notification_guess_word_message">Geh zurück in den Raum %1$s und stell die Frage \"Wer bin ich? \".</string>
     <string name="game_notification_guess_word_message_error">Kehre zum Spiel zurück und stelle die Frage \"Wer bin ich? \".</string>
+    <string name="game_notification_asking_question_title">Spieler %1$s wartet auf deine Antwort</string>
+    <string name="game_notification_asking_question_message">Kehre zum Raum %1$s zurück und antworte ihm endlich</string>
+    <string name="game_notification_asking_question_message_error">Kehre zum Spiel zurück und antworte ihm endlich</string>
     <string name="game_notification_invite_title">Du wurdest eingeladen!</string>
     <string name="game_notification_invite_message">Spieler %1$s hat dich eingeladen, mit ihm im Raum zu spielen %2$s</string>
     <string name="game_notification_invite_message_error">Jemand hat dich eingeladen, mit ihm zu spielen </string>

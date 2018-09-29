@@ -61,6 +61,7 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
         private const val KICK_NOTIFICATION_ID = 6
         private const val GAME_OVER_NOTIFICATION_ID = 7
         private const val LAST_USER_NOTIFICATION_ID = 8
+        private const val ASKING_QUESTION_NOTIFICATION_ID = 9
 
         private const val MESSAGE_NOTIFICATION_REQUEST_CODE = 100
         private const val SET_WORD_NOTIFICATION_REQUEST_CODE = 101
@@ -70,6 +71,7 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
         private const val KICK_NOTIFICATION_REQUEST_CODE = 105
         private const val GAME_OVER_REQUEST_CODE = 106
         private const val LAST_USER_REQUEST_CODE = 107
+        private const val ASKING_QUESTION_REQUEST_CODE = 108
 
         private const val GAME_CHANNEL_ID = "GAME_CHANNEL"
         private const val FRIEND_CHANNEL_ID = "FRIENDS_CHANNEL"
@@ -264,6 +266,41 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
         }
 
         notify(GUESS_WORD_NOTIFICATION_ID, notification)
+    }
+
+    fun notifyAskingQuestion(message: NotificationMessage){
+        createNotificationChannel(
+                GAME_CHANNEL_ID,
+                mContext.getString(R.string.game_notification_channel_title_message))
+
+        val text = mContext.getString(R.string.game_notification_asking_question_message, message.roomName)
+        var spannedNotificationText = SpannableString(text)
+        if (message.roomName != null) {
+            spannedNotificationText.spanWith(message.roomName) {
+                what = StyleSpan(android.graphics.Typeface.ITALIC)
+                flags = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            }
+        } else {
+            spannedNotificationText = SpannableString(
+                    mContext.getString(R.string.game_notification_asking_question_message_error))
+        }
+
+        val title = mContext.getString(R.string.game_notification_asking_question_title)
+        val spannableTitle = SpannableString(title)
+        spannableTitle.setSpan(StyleSpan(android.graphics.Typeface.BOLD),
+                0, title.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        val notification = notification(GAME_CHANNEL_ID) {
+            setContentTitle(spannableTitle)
+            setContentText(spannedNotificationText)
+
+            setStyle(NotificationCompat.BigTextStyle().bigText(text))
+
+            val pendingIntent = getPendingIntentForGame(message, ASKING_QUESTION_REQUEST_CODE)
+            setContentIntent(pendingIntent)
+        }
+
+        notify(ASKING_QUESTION_NOTIFICATION_ID, notification)
     }
 
     fun notifyInviteToGame(message: NotificationMessage){
@@ -463,6 +500,7 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
         cancelNotification(KICK_NOTIFICATION_ID)
         cancelNotification(GUESS_WORD_NOTIFICATION_ID)
         cancelNotification(SET_WORD_NOTIFICATION_ID)
+        cancelNotification(ASKING_QUESTION_NOTIFICATION_ID)
     }
 
     private fun cancelNotification(notificationId: Int){

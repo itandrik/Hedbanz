@@ -54,6 +54,7 @@ import com.transcendensoft.hedbanz.presentation.invite.InviteDialogFragment;
 import com.transcendensoft.hedbanz.presentation.userdetails.UserDetailsDialogFragment;
 import com.transcendensoft.hedbanz.utils.ViewUtils;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -187,16 +188,21 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     public void clearAndAddPlayers(List<RxUser> rxUsers) {
         if (mAdapter != null) {
             mAdapter.clearAll();
+            Collections.sort(rxUsers, playersComparator);
             mAdapter.addAll(rxUsers);
-            mAdapter.sort(playersComparator);
+            //mAdapter.sort(playersComparator);
         }
     }
 
     @Override
     public void addPlayer(RxUser rxUser) {
         if (mAdapter != null) {
-            mAdapter.addItem(rxUser);
-            mAdapter.sort(playersComparator);
+            List<RxUser> rxUsers = mAdapter.getModels();
+            rxUsers.add(rxUser);
+            Collections.sort(rxUsers, playersComparator);
+
+            mAdapter.clearAll();
+            mAdapter.addAll(rxUsers);
         }
     }
 

@@ -124,6 +124,10 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         } else {
             mIvSubmitWord.setVisibility(View.VISIBLE);
             mPbGuessLoading.setVisibility(View.GONE);
+            mIvSubmitWord.getDrawable().setColorFilter(ContextCompat.getColor(mContext, R.color.google_green),
+                    android.graphics.PorterDuff.Mode.SRC_IN);
+            mRvGuessHelpers.setEnabled(true);
+            ((GuessWordsHelperAdapter) mRvGuessHelpers.getAdapter()).enable();
             mTietGuessWord.setEnabled(true);
             mIvSubmitWord.setEnabled(true);
         }

@@ -20,6 +20,7 @@ import com.transcendensoft.hedbanz.domain.entity.User;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
+import timber.log.Timber;
 
 /**
  * Common entity for game activity and menu fragment to show
@@ -73,6 +74,7 @@ public class RxUser {
     public void setIsWinner(boolean isWinner){
         mUser.setWinner(isWinner);
         mSubject.onNext(mUser);
+        Timber.i("RXUSER: setIsWinner " + isWinner + " to user " + mUser.getLogin());
     }
 
     public void setIsFriend(boolean isFriend){
@@ -94,8 +96,6 @@ public class RxUser {
             mSubject.onNext(mUser);
         }
     }
-
-
 
     public void setUser(User user){
         mUser = user;

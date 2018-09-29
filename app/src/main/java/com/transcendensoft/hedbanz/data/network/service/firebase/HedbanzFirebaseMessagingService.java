@@ -101,6 +101,9 @@ public class HedbanzFirebaseMessagingService extends FirebaseMessagingService im
             case GUESS_WORD:
                 mNotificationManger.notifyGuessWord(notificationMessage);
                 break;
+            case ASKING_QUESTION:
+                mNotificationManger.notifyAskingQuestion(notificationMessage);
+                break;
             case FRIEND:
                 mNotificationManger.notifyFriendRequest(notificationMessage);
                 break;

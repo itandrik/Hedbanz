@@ -155,6 +155,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     (mAdapter.getItems().size() > 0) && !isScrollDown) {
                 scrollToTheVeryDown();
             }
+            initAdapterClickListeners();
         }
         registerReceiver(mLastPlayerBroadcastReceiver, new IntentFilter(ACTION_LAST_USER));
     }
@@ -199,7 +200,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
     private void initRecycler() {
         mAdapter.setBottomReachedListener(mPresenter);
-        initAdapterClickListeners();
+        //initAdapterClickListeners();
 
         mRecycler.setAdapter(mAdapter);
         mRecycler.setItemAnimator(new DefaultItemAnimator());

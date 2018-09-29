@@ -229,6 +229,9 @@
     <string name="game_notification_guess_word_title">Час відгадати хто ви</string>
     <string name="game_notification_guess_word_message">Поверніться в кімнату %1$s та задайте питання про те хто ви</string>
     <string name="game_notification_guess_word_message_error">Поверніться в гру та задайте питання про те хто ви</string>
+    <string name="game_notification_asking_question_title">Гравець %1$s чекає на вашу відповідь</string>
+    <string name="game_notification_asking_question_message">Поверніться в кімнату %1$s і дайте вже йому ту відповідь</string>
+    <string name="game_notification_asking_question_message_error">Поверніться до гри і дайте вже йому ту відповідь</string>
     <string name="game_notification_invite_title">Вас запросили!</string>
     <string name="game_notification_invite_message">Гравець %1$s запросив вас пограти з ним в кімнаті %2$s</string>
     <string name="game_notification_invite_message_error">Хтось запросив вас пограти з ним</string>
@@ -313,11 +316,11 @@
     <string name="tutorial_page_3_title">Задавай навідні питання!</string>
     <string name="tutorial_page_3_text">Як тільки тобі загадають слово, воно буде означати тебе. Тобі потрібно буде відгадати \"хто ти\", для цього задавай навідні питання. Щоб допомогти, ми підготували для тебе допоміжний список.</string>
     <string name="tutorial_page_4_title">Чесно відповідай іншим гравцям</string>
-    <string name="tutorial_page_4_text">Когда игрок отгадывает свое слово: жми \"палец вверх\" - за верное направление мысли и \"палец вниз\" - за неверное. Если игрок угадал свое слово - жми на \"корону\".</string>
-    <string name="tutorial_page_5_title">Лошадь узнают в езде, человека - в общении</string>
-    <string name="tutorial_page_5_text">Помимо игры ты можешь просто общаться с игроками, делиться секретами и просто хорошо проводить время!</string>
-    <string name="tutorial_page_6_title">Угадывайте слова, общайтесь, развивайтесь</string>
-    <string name="tutorial_page_6_text">Присоединяйся к другим игрокам и развивай навыки общения. Находи новых друзей, новые знакомства, изучай новые языки с иностранцами. Мы желаем тебе приятного времяпровождения! :)</string>
+    <string name="tutorial_page_4_text">Коли гравець відгадує свє слово: тисни \"палець вверх\" - якщо наппрям думки вірний і \"палець вниз\" - за невірний. Якщо гравець відгадав своє слово - тисни на \"корону\".</string>
+    <string name="tutorial_page_5_title">Кінь пізнається в їзді, людина — в спілкуванні.</string>
+    <string name="tutorial_page_5_text">Окрім гри ти можеш просто спілкуватись з гравцями, ділитись секретами та просто чудово проводити час!</string>
+    <string name="tutorial_page_6_title">Відгадуй слова, спікуйся, розвивайся</string>
+    <string name="tutorial_page_6_text">Приєднуйся до інших гравців і розвивай навики спілкування. Знаходь нових друзів, нові знайомства, вивчай нові мови з іноземцями. Ми бажаємо тобі приємного проведення часу! :)</string>
 
     <!-- Languages -->
     <string name="change_language_submit">Обрати</string>

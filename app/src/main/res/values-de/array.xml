@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="guess_helpers">
+        <item>Bin ich Lebewesen?</item>
+        <item>Bin ich etwas Materielles?</item>
+        <item>Bin ich ein Elektrogerät?</item>
+        <item>Bin ich ein Mensch?</item>
+        <item>Bin ich ein Charakter¬?</item>
+        <item>Bin ich aus Metall gemacht?</item>
+        <item>Bin ich Comics Character?</item>
+        <item>Bin ich auf unserer Erde?</item>
+        <item>Bin ich Superstar?</item>
+        <item>Bin ich aus Holz gemacht?</item>
+        <item>Bin ich aus Plastik gemacht?</item>
+        <item>Bin ich aus Stein gemacht?</item>
+        <item>Habe ich einen flüssiger Zustand?</item>
+        <item>Habe ich einen fester Zustand?</item>
+        <item>Habe ich einen gasförmigen Zustand?</item>
+        <item>Bin ich ein Filmheld/Protagonist?</item>
+        <item>Bin ich Politiker?</item>
+        <item>Existiere ich jetzt?</item>
+        <item>Bin ich Lebensmittel?</item>
+        <item>Bin ich essbar?</item>
+        <item>Bin ich Arzt/Ärztin?</item>
+        <item>Bin ich Wissenschaftler?</item>
+        <item>Bin ich ein Tier?</item>
+        <item>Bin ich ein Computerspielheld?</item>
+        <item>Bin ich ein flauschiges Tier?</item>
+        <item>Bin ich ein Vögel?</item>
+        <item>Bin ich größer als Handy?</item>
+        <item>Kann ich schwimmen?</item>
+        <item>Bin ich ein abstraktes Wort?</item>
+        <item>Bin ich ein Beruf?</item>
+        <item>Bin ich ein Objekt der Garderobe?</item>
+        <item>Bin ich weiblich?</item>
+        <item>Bin ich männlich?</item>
+        <item>Bin ich eine Pflanze?</item>
+        <item>Bin ich eine berühmte Person?</item>
+        <item>Bin ich eine historische Person?</item>
+        <item>Bin ich Sportler?</item>
+        <item>Komme ich aus der Mythologie?</item>
+        <item>Bin ich ein Werkzeug?</item>
+        <item>Bin ich ein echtes Subjekt/eine Person?</item>
+        <item>Bin ich Musiker/Musikerin?</item>
+        <item>Bin ich ein Schriftsteller/Schriftstellerin?</item>
+        <item>Bin ich ein Einrichtungsgegenstand?</item>
+        <item>Bin ich ein Spiel?</item>
+        <item>Bin ich eine Figur?</item>
+        <item>Bin ich eine Formel?</item>
+        <item>Bin ein Märchenfigur?</item>
+        <item>Bin ich etwas Wissenschaftliches?</item>
+        <item>Bin ich nur unter dem Mikroskop sichtbar?</item>
+        <item>Habe ich Makrogröße?</item>
+    </string-array>
+</resources>

@@ -82,7 +82,7 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
             ((RelativeLayout.LayoutParams) mTvMessage.getLayoutParams()).topMargin =
                     ViewUtils.dpToPx(mContext, 16.f);
         } else if (mIvUserImage.getVisibility() == View.VISIBLE) {
-            ((RelativeLayout.LayoutParams)mTvMessage.getLayoutParams()).topMargin =
+            ((RelativeLayout.LayoutParams) mTvMessage.getLayoutParams()).topMargin =
                     ViewUtils.dpToPx(mContext, 8.f);
         }
     }
@@ -96,7 +96,7 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
             ((RelativeLayout.LayoutParams) mIvUserImage.getLayoutParams()).topMargin =
                     ViewUtils.dpToPx(mContext, 16.f);
         } else {
-           // ((RelativeLayout.LayoutParams) mIvUserImage.getLayoutParams()).topMargin =
+            // ((RelativeLayout.LayoutParams) mIvUserImage.getLayoutParams()).topMargin =
             //        ViewUtils.dpToPx(mContext, 8.f);
         }
     }
@@ -116,9 +116,9 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
             mIvUserImage.setVisibility(View.INVISIBLE);
             mSeparator.setVisibility(View.VISIBLE);
             mRlContainer.setMinimumHeight(0);
-            ((RelativeLayout.LayoutParams)mTvMessage.getLayoutParams())
+            ((RelativeLayout.LayoutParams) mTvMessage.getLayoutParams())
                     .topMargin = ViewUtils.dpToPx(mContext, 3);
-            ((RelativeLayout.LayoutParams)mIvUserImage.getLayoutParams())
+            ((RelativeLayout.LayoutParams) mIvUserImage.getLayoutParams())
                     .topMargin = ViewUtils.dpToPx(mContext, 3);
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) itemView.getLayoutParams();
             params.height = RecyclerView.LayoutParams.WRAP_CONTENT;
@@ -154,7 +154,7 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindIsWinner(boolean isWinner, boolean isHide) {
-        if (isWinner) {
+        if (isWinner && !isHide) {
             mIvWin.setVisibility(View.VISIBLE);
             mTvUserWord.setVisibility(View.GONE);
         } else {

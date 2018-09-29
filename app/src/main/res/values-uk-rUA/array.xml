@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="guess_helpers">
+        <item>Я жива істота?</item>
+        <item>Я щось матеріальне?</item>
+        <item>Я електричний предмет?</item>
+        <item>Я людина?</item>
+        <item>Я персонаж?</item>
+        <item>Я виготовлений з металу?</item>
+        <item>Я герой коміксів?</item>
+        <item>Я є на нашій планеті?</item>
+        <item>Я зірка?</item>
+        <item>Я виготовлений з дерева?</item>
+        <item>Я виготовлений з пластику?</item>
+        <item>Я виготовлений з каменю?</item>
+        <item>Я маю рідкий стан?</item>
+        <item>Я маю твердий стан?</item>
+        <item>Я маю газоподібний стан?</item>
+        <item>Я герой фільму?</item>
+        <item>Я політик?</item>
+        <item>Я існую зараз?</item>
+        <item>Я їжа?</item>
+        <item>Я їстівний(-а)?</item>
+        <item>Я лікар?</item>
+        <item>Я вчений?</item>
+        <item>Я тварина?</item>
+        <item>Я герой комп\'ютерної гри?</item>
+        <item>Я пухнаста тваринка?</item>
+        <item>Я літаюча тваринка?</item>
+        <item>Я більший ніж телефон?</item>
+        <item>Я вмію плавати?</item>
+        <item>Я абстрактне слово?</item>
+        <item>Я якась професія?</item>
+        <item>Я предмет гардеробу?</item>
+        <item>Я жінка?</item>
+        <item>Я чоловік?</item>
+        <item>Я рослина?</item>
+        <item>Я відома особистість?</item>
+        <item>Я історична особистість?</item>
+        <item>Я спортсмен?</item>
+        <item>Я з міфології?</item>
+        <item>Я інструмент?</item>
+        <item>Я реальний предмет/людина?</item>
+        <item>Я музикант?</item>
+        <item>Я письменник?</item>
+        <item>Я предмет інтер\'єру?</item>
+        <item>Я якась гра?</item>
+        <item>Я фігура?</item>
+        <item>Я формула?</item>
+        <item>Я казковий герой?</item>
+        <item>Я щось наукове?</item>
+        <item>Я атомарних розмірів?</item>
+        <item>Я маю макро розміри?</item>
+    </string-array>
+</resources>

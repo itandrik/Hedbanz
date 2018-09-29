@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * @author Andrii Chernysh
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 public abstract class MvpRecyclerListAdapter<M, P extends BasePresenter, VH extends MvpViewHolder>
         extends MvpRecyclerAdapter<M, P, VH> {
@@ -32,8 +32,16 @@ public abstract class MvpRecyclerListAdapter<M, P extends BasePresenter, VH exte
 
     public void clearAll() {
         models.clear();
+        for (BasePresenter basePresenter : presenters.values()) {
+            basePresenter.disposeAll();
+            basePresenter.destroy();
+        }
         presenters.clear();
         notifyDataSetChanged();
+    }
+
+    public List<M> getModels(){
+        return models;
     }
 
     public void addAll(Collection<M> data) {
@@ -51,7 +59,7 @@ public abstract class MvpRecyclerListAdapter<M, P extends BasePresenter, VH exte
         notifyItemInserted(models.size());
     }
 
-    public void sort(Comparator<M> comparator){
+    public void sort(Comparator<M> comparator) {
         Collections.sort(models, comparator);
         notifyDataSetChanged();
     }
@@ -78,7 +86,7 @@ public abstract class MvpRecyclerListAdapter<M, P extends BasePresenter, VH exte
     }
 
     public void removeLastItem() {
-        int position = models.size()-1;
+        int position = models.size() - 1;
         if (position >= 0) {
             M model = models.get(position);
             models.remove(position);

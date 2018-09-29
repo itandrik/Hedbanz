@@ -229,6 +229,9 @@
     <string name="game_notification_guess_word_title">Время угадать кто же вы</string>
     <string name="game_notification_guess_word_message">Вернитесь в комнату %1$s и задайте вопрос о том кто вы</string>
     <string name="game_notification_guess_word_message_error">Вернитесь в игру и задайте вопрос о том кто вы</string>
+    <string name="game_notification_asking_question_title">Игрок %1$s ждет, когда вы ответите ему</string>
+    <string name="game_notification_asking_question_message">Вернитесь в комнату %1$s и ответьте уже ему наконец</string>
+    <string name="game_notification_asking_question_message_error">Вернитесь в игру и ответьте уже ему наконец</string>
     <string name="game_notification_invite_title">Вас пригласили!</string>
     <string name="game_notification_invite_message">Игрок %1$s пригласил вас поиграть с ним в комнате %2$s</string>
     <string name="game_notification_invite_message_error">Кто-то пригласил вас поиграть с ним</string>

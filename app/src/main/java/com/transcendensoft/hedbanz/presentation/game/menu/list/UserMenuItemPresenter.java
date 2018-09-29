@@ -20,6 +20,7 @@ import com.transcendensoft.hedbanz.presentation.base.BasePresenter;
 import com.transcendensoft.hedbanz.presentation.game.models.RxUser;
 
 import io.reactivex.ObservableTransformer;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -34,6 +35,7 @@ public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemCon
         implements UserMenuItemContract.Presenter {
     private ObservableTransformer mSchedulersTransformer;
     private PublishSubject<User> mItemClickObservable = PublishSubject.create();
+    private Disposable disposable;
 
     public UserMenuItemPresenter(ObservableTransformer schedulersTransformer) {
         this.mSchedulersTransformer = schedulersTransformer;
@@ -43,13 +45,19 @@ public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemCon
     protected void updateView() {
         if (model != null) {
             updateUserView();
+        }
+    }
 
-            addDisposable(model.userObservable()
+    @Override
+    public void setModel(RxUser model) {
+        super.setModel(model);
+        if(disposable == null || disposable.isDisposed()){
+            disposable = model.userObservable()
                     .compose(applySchedulers())
                     .subscribe(user -> {
                         model.setUser(user);
                         updateUserView();
-                    }, Timber::e));
+                    }, Timber::e);
         }
     }
 
@@ -66,7 +74,8 @@ public class UserMenuItemPresenter extends BasePresenter<RxUser, UserMenuItemCon
 
     @Override
     public void destroy() {
-        // stub
+        disposable.dispose();
+        disposable = null;
     }
 
     @SuppressWarnings("unchecked")

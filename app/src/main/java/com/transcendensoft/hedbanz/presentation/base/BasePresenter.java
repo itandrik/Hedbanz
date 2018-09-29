@@ -6,6 +6,7 @@ import java.lang.ref.WeakReference;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import timber.log.Timber;
 
 /**
  * @author Andrii Chernysh
@@ -14,7 +15,7 @@ import io.reactivex.disposables.Disposable;
 public abstract class BasePresenter<M,V> {
     protected M model;
     private WeakReference<V> view;
-    private CompositeDisposable mCompositeDisposable;
+    private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
     public void setModel(M model) {
         resetState();
@@ -32,8 +33,6 @@ public abstract class BasePresenter<M,V> {
         if (setupDone()) {
             updateView();
         }
-
-        mCompositeDisposable = new CompositeDisposable();
     }
 
     public void unbindView() {
@@ -43,13 +42,19 @@ public abstract class BasePresenter<M,V> {
     }
 
     public void disposeAll(){
+        Timber.i("RX mCompositeDisposable == null: " + (mCompositeDisposable == null) +
+                "; isDisposed = " + mCompositeDisposable.isDisposed());
         if(mCompositeDisposable != null && !mCompositeDisposable.isDisposed()){
+            Timber.i("RX Dispose composite disposable");
             mCompositeDisposable.dispose();
+            mCompositeDisposable.clear();
+            mCompositeDisposable = new CompositeDisposable();
         }
     }
 
     protected void addDisposable(Disposable disposable){
         if(mCompositeDisposable != null && !mCompositeDisposable.isDisposed()){
+            Timber.i("RX add disposable. Size: " + mCompositeDisposable.size());
             mCompositeDisposable.add(disposable);
         }
     }

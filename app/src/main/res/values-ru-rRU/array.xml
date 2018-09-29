@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="guess_helpers">
+        <item>Я живое?</item>
+        <item>Я материальное?</item>
+        <item>Я электический предмет?</item>
+        <item>Я человек?</item>
+        <item>Я персонаж?</item>
+        <item>Я из металла?</item>
+        <item>Я герой комиксов?</item>
+        <item>Я есть на этой планете?</item>
+        <item>Я звезда?</item>
+        <item>Я сделан из дерева?</item>
+        <item>Я сделан из пластика?</item>
+        <item>Я сделан из камня?</item>
+        <item>Я имею жидкое состояние?</item>
+        <item>Я имею твердое состояние?</item>
+        <item>Я имею газообразное состояние?</item>
+        <item>Я герой фильма?</item>
+        <item>Я политик?</item>
+        <item>Я существую сейчас?</item>
+        <item>Я еда?</item>
+        <item>Я съедобный(-ая)?</item>
+        <item>Я врач?</item>
+        <item>Я учёный?</item>
+        <item>Я животное?</item>
+        <item>Я герой компьютерной игры?</item>
+        <item>Я пушистое животное?</item>
+        <item>Я ползучее животное?</item>
+        <item>Я больше чем телефон?</item>
+        <item>Я умею плавать?</item>
+        <item>Я абстрактное слово?</item>
+        <item>Я какая-то профессия?</item>
+        <item>Я предмет из гардероба?</item>
+        <item>Я женщина?</item>
+        <item>Я растение?</item>
+        <item>Я известная личность?</item>
+        <item>Я историческая личность?</item>
+        <item>Я спортсмен?</item>
+        <item>Я из мифологии?</item>
+        <item>Я инструмент?</item>
+        <item>Я реальный предмет/человек?</item>
+        <item>Я музыкант?</item>
+        <item>Я писатель?</item>
+        <item>Я предмет интерьера?</item>
+        <item>Я какая-то игра?</item>
+        <item>Я фигура?</item>
+        <item>Я формула?</item>
+        <item>Я сказочный герой?</item>
+        <item>Я что-то научное?</item>
+        <item>Я атомарных размеров?</item>
+        <item>Я имею макро размеры?</item>
+        <item>Я актер?</item>
+    </string-array>
+</resources>
