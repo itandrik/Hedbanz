@@ -70,7 +70,7 @@ class GuessWordThisUserAdapterDelegate @Inject constructor() :
                     .shuffled()
                     .subList(0, 10)
 
-            holder.bindRecyclerViewGuessHelpers(helperStringsList)
+            holder.bindRecyclerViewGuessHelpers(helperStringsList, message.questionId)
             holder.bindLoading(message.isLoading, message.isFinished)
             holder.bindText(message.message)
             holder.bindTitle(message.attempts)
@@ -79,16 +79,16 @@ class GuessWordThisUserAdapterDelegate @Inject constructor() :
 
             holder.submitWordObservable(message.questionId).subscribe(guessWordSubject)
 
-            holder.helperStringsObservable
-                    .map {
+            holder.getHelperStringsObservable(message.questionId).subscribe(helperStringSubject)
+                    /*.flatMap {
                         val question = Question()
                         question.message = it
                         question.questionId = message.questionId
-                        Timber.i("RXANSWER: map in delegate. ID: ${question.questionId}")
+                        Timber.i("RXANSWER: flatmap in delegate. ID: ${question.questionId}")
 
-                        question
-                    }
-                    .subscribe(helperStringSubject)
+                        Observable.just(question)
+                    }*/
+
 
             holder.guessWordEtFocusedObservable().subscribe(guessWordFocusedSubject)
         }

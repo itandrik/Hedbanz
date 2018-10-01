@@ -164,6 +164,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     protected void onPause() {
         super.onPause();
         if (mPresenter != null) {
+            Timber.i("RXANSWER: onPause. Dispose subscribers.");
             mPresenter.unbindView();
         }
         stopTypingAnimation();
@@ -244,6 +245,8 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
     private void initAdapterClickListeners() {
         if (mPresenter != null) {
+            Timber.i("RXANSWER: onResume");
+
             mPresenter.processRetryNetworkPagination(
                     mAdapter.retryNetworkClickObservable());
             mPresenter.processRetryServerPagination(

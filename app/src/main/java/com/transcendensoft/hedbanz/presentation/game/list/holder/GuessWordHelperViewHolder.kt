@@ -2,6 +2,7 @@ package com.transcendensoft.hedbanz.presentation.game.list.holder
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.transcendensoft.hedbanz.domain.entity.Question
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.item_guess_word_helper.view.*
 import timber.log.Timber
@@ -39,11 +40,14 @@ class GuessWordHelperViewHolder(private val mItemView: View?) : RecyclerView.Vie
         }
     }
 
-    fun guessWordHelperObservable() =
-            Observable.create<String> { emitter ->
+    fun guessWordHelperObservable(questionId: Long) =
+            Observable.create<Question> { emitter ->
                 mItemView?.setOnClickListener {
-                    Timber.i("RXANSWER: on click on helper. message: ${mTvHelperGuessWord?.text.toString().trim()}")
-                    emitter.onNext(mTvHelperGuessWord?.text.toString().trim())
+                    Timber.i("RXANSWER: on click on helper. message:" +
+                            " ${mTvHelperGuessWord?.text.toString().trim()} + questionId: $questionId")
+                    val result = Question(questionId = questionId)
+                    result.message = mTvHelperGuessWord?.text.toString().trim()
+                    emitter.onNext(result)
                 }
             }!!
 

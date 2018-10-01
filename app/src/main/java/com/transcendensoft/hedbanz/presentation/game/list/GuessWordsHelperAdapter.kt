@@ -4,8 +4,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.transcendensoft.hedbanz.R
+import com.transcendensoft.hedbanz.domain.entity.Question
 import com.transcendensoft.hedbanz.presentation.game.list.holder.GuessWordHelperViewHolder
-import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
@@ -31,10 +31,11 @@ import javax.inject.Inject
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class GuessWordsHelperAdapter @Inject constructor(private val helperStrings: List<String>) :
+class GuessWordsHelperAdapter @Inject constructor(private val helperStrings: List<String>,
+                                                  var questionId: Long) :
         RecyclerView.Adapter<GuessWordHelperViewHolder>() {
-    val helperStringsSubject: PublishSubject<String> = PublishSubject.create()
-    var isEnabled = true;
+    val helperStringsSubject: PublishSubject<Question> = PublishSubject.create()
+    var isEnabled = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GuessWordHelperViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -47,7 +48,7 @@ class GuessWordsHelperAdapter @Inject constructor(private val helperStrings: Lis
     override fun onBindViewHolder(holder: GuessWordHelperViewHolder, position: Int) {
         val helperString = helperStrings[position]
         holder.bindText(helperString)
-        holder.guessWordHelperObservable().subscribe(helperStringsSubject)
+        holder.guessWordHelperObservable(questionId).subscribe(helperStringsSubject)
         holder.setEnabled(isEnabled)
     }
 

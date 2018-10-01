@@ -56,7 +56,7 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.tvGuessWordTitle) TextView mTvGuessWordTitle;
 
     private Context mContext;
-    private PublishSubject<String> mHelperStringsSubject = PublishSubject.create();
+    private PublishSubject<Question> mHelperStringsObservable = PublishSubject.create();
 
     public GuessWordThisUserViewHolder(Context context, View itemView) {
         super(itemView);
@@ -65,19 +65,19 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         mContext = context;
     }
 
-    public void bindRecyclerViewGuessHelpers(List<String> helperStrings) {
+    public void bindRecyclerViewGuessHelpers(List<String> helperStrings, long questionId) {
         if (mRvGuessHelpers.getAdapter() == null || mRvGuessHelpers.getAdapter().getItemCount() == 0) {
-            GuessWordsHelperAdapter adapter = new GuessWordsHelperAdapter(helperStrings);
+            GuessWordsHelperAdapter adapter = new GuessWordsHelperAdapter(helperStrings, questionId);
             mRvGuessHelpers.setItemAnimator(new DefaultItemAnimator());
             mRvGuessHelpers.setLayoutManager(new LinearLayoutManager(
                     mContext, LinearLayoutManager.HORIZONTAL, false));
             mRvGuessHelpers.setAdapter(adapter);
 
             adapter.getHelperStringsSubject()
-                    .doOnNext(s -> {
-                        mTietGuessWord.setText(s);
+                    .doOnNext(question -> {
+                        mTietGuessWord.setText(question.getMessage());
                         mTietGuessWord.clearFocus();
-                    }).subscribe(mHelperStringsSubject);
+                    }).subscribe(mHelperStringsObservable);
         }
     }
 
@@ -153,8 +153,12 @@ public class GuessWordThisUserViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public Observable<String> getHelperStringsObservable() {
-        return mHelperStringsSubject;
+    public Observable<Question> getHelperStringsObservable(long questionId) {
+        GuessWordsHelperAdapter adapter = (GuessWordsHelperAdapter)(mRvGuessHelpers.getAdapter());
+        adapter.setQuestionId(questionId);
+        adapter.notifyDataSetChanged();
+
+        return mHelperStringsObservable;
     }
 
     /*public Observable<Question> helperStringsObservable(Long questionId) {
