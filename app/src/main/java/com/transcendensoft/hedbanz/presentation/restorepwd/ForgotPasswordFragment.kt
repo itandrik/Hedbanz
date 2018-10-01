@@ -70,6 +70,11 @@ class ForgotPasswordFragment @Inject constructor() : BaseFragment() {
         mPresenter.forgotPassword(etLogin.text.toString())
     }
 
+    @OnClick(R.id.ivBack)
+    fun onBackClicked(){
+        mActivity.onBackPressed()
+    }
+
     fun showLoginError(@StringRes messageId: Int){
         hideAll()
         tvErrorLogin.visibility = View.VISIBLE

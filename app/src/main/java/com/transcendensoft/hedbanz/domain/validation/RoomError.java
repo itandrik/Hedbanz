@@ -37,6 +37,7 @@ public enum RoomError {
     USER_HAS_MAX_ACTIVE_ROOMS_NUMBER(305, R.string.room_user_has_max_active_rooms_number),
     ROOM_ALREADY_EXIST(306, R.string.room_creation_error_name_already_exist),
     SUCH_PLAYER_ALREADY_IN_ROOM(307,  R.string.room_user_already_in_room),
+    UNABLE_TO_RESTART_GAME(309,  R.string.room_unable_to_restart_game),
     UNAUTHORIZED_PLAYER(401, R.string.room_unauthorized_player),
     SUCH_PLAYER_ALREADY_VOTED(201, R.string.game_error_such_player_already_voted),
 

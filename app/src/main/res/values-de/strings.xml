@@ -95,6 +95,7 @@
     <string name="room_game_already_started">Es ist unmöglich, den Spielern beizutreten. Das Spiel hat bereits begonnen.</string>
     <string name="room_user_has_max_active_rooms_number">Die maximal zulässige Anzahl gleichzeitig aktiver Spiele ist erreicht. Beende sie zuerst.</string>
     <string name="room_user_already_in_room">Serverfehler, versuch es später erneut.</string>
+    <string name="room_unable_to_restart_game"></string>
     <string name="room_unauthorized_player">Du bist kein autorisierter Benutzer.</string>
     <string name="rooms_unauthorized_user">Du bist kein autorisierter Benutzer. Melde dich erneut in Ihrem Konto an.</string>
 

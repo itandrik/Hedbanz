@@ -11,6 +11,7 @@ import com.transcendensoft.hedbanz.domain.entity.PlayerGuessing
 import com.transcendensoft.hedbanz.domain.entity.Question
 import com.transcendensoft.hedbanz.presentation.game.list.holder.GuessWordThisUserViewHolder
 import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -74,16 +75,21 @@ class GuessWordThisUserAdapterDelegate @Inject constructor() :
             holder.bindText(message.message)
             holder.bindTitle(message.attempts)
 
+            Timber.i("RXANSWER: onbind in delegate. ID: ${message.questionId}")
+
             holder.submitWordObservable(message.questionId).subscribe(guessWordSubject)
+
             holder.helperStringsObservable
                     .map {
                         val question = Question()
                         question.message = it
                         question.questionId = message.questionId
+                        Timber.i("RXANSWER: map in delegate. ID: ${question.questionId}")
 
                         question
                     }
                     .subscribe(helperStringSubject)
+
             holder.guessWordEtFocusedObservable().subscribe(guessWordFocusedSubject)
         }
     }

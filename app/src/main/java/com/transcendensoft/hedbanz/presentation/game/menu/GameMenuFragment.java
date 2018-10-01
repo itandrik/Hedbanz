@@ -90,12 +90,12 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     @Inject @ActivityContext Context mContext;
     @Inject FirebaseAnalytics mFirebaseAnalytics;
 
-    private Comparator<RxUser> playersComparator = (o1, o2) ->{
-        if(o2.getUser().equals(mPreferenceManger.getUser())){
+    private Comparator<RxUser> playersComparator = (o1, o2) -> {
+        if (o2.getUser().equals(mPreferenceManger.getUser())) {
             return 1;
         }
 
-        if(o1.getUser().equals(mPreferenceManger.getUser())){
+        if (o1.getUser().equals(mPreferenceManger.getUser())) {
             return -1;
         }
 
@@ -127,6 +127,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
         super.onResume();
         if (mPresenter != null) {
             mPresenter.bindView(this);
+            initRecyclerClickListeners();
         }
     }
 
@@ -158,8 +159,6 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
         LinearLayoutManager manager = new LinearLayoutManager(
                 mContext, LinearLayoutManager.VERTICAL, false);
         mRecycler.setLayoutManager(manager);
-
-        initRecyclerClickListeners();
     }
 
     private void initCollapsingToolbar() {
@@ -185,7 +184,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     }
 
     @Override
-    public void clearAndAddPlayers(List<RxUser> rxUsers) {
+    public synchronized void clearAndAddPlayers(List<RxUser> rxUsers) {
         if (mAdapter != null) {
             mAdapter.clearAll();
             Collections.sort(rxUsers, playersComparator);
@@ -195,7 +194,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     }
 
     @Override
-    public void addPlayer(RxUser rxUser) {
+    public synchronized void addPlayer(RxUser rxUser) {
         if (mAdapter != null) {
             List<RxUser> rxUsers = mAdapter.getModels();
             rxUsers.add(rxUser);

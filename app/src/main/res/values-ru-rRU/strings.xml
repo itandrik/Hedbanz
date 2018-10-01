@@ -97,6 +97,7 @@
     <string name="room_game_already_started">Невозможно присоединиться к игрокам. Игра уже началась</string>
     <string name="room_user_has_max_active_rooms_number">Вы достигли максимально допустимого количества одновременных активных игр. Завершите их сначала.</string>
     <string name="room_user_already_in_room">Ошибка сервера, попробуйте попытку позже.</string>
+    <string name="room_unable_to_restart_game">Невозможно начать игру заново. Возможно вы не доиграли текущую? Если все нормально, тогда создайте новую комнату.</string>
     <string name="room_unauthorized_player">Вы не являетесь авторизованным пользователем.</string>
     <string name="rooms_unauthorized_user">Вы не являетесь авторизованным пользователем. Войдите в ваш аккаунт снова</string>
 

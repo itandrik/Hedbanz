@@ -232,6 +232,22 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
             val thumbsDownDisabledDrawable = VectorDrawableCompat.create(
                     mContext.resources, R.drawable.thumbs_down_disabled, null)
             mIvThumbsDown?.setImageDrawable(thumbsDownDisabledDrawable)
+        } else {
+            mCvThumbsUp?.isEnabled = true
+            mCvThumbsUp?.isClickable = true
+            mCvThumbsUp?.setCardBackgroundColor(ContextCompat
+                    .getColor(mContext, R.color.textWhite))
+            val thumbsUpDrawable = VectorDrawableCompat.create(
+                    mContext.resources, R.drawable.thumbs_up, null)
+            mIvThumbsUp?.setImageDrawable(thumbsUpDrawable)
+
+            mCvThumbsDown?.isEnabled = true
+            mCvThumbsDown?.isClickable = true
+            mCvThumbsDown?.setCardBackgroundColor(ContextCompat
+                    .getColor(mContext, R.color.textWhite))
+            val thumbsDownDrawable = VectorDrawableCompat.create(
+                    mContext.resources, R.drawable.thumbs_down, null)
+            mIvThumbsDown?.setImageDrawable(thumbsDownDrawable)
         }
     }
 

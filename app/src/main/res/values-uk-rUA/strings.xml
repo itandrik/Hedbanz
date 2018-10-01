@@ -113,6 +113,7 @@
     <string name="room_creation_error_password_empty">Введіть пароль від кімнати</string>
     <string name="room_creation_error_name_empty">Введіть ім\'я кімнати</string>
     <string name="room_creation_error_name_already_exist">Кімната з таким ім\'ям вже існує</string>
+    <string name="room_unable_to_restart_game">Неможливо почати гру знову. Можливо ви ще не дограли попередню? Якщо все нормально, тоді створіть нову кімнату.</string>
     <string name="room_creation_error_creating">Не вдалось створити кімнату. Помилка серверу. Спробуйте знову пізніше</string>
     <string name="room_creation_error_invalid_password">Пароль не підходить :(</string>
 
@@ -191,8 +192,8 @@
     <string name="game_error_there_is_no_such_room">Такої кімнати не існує</string>
     <string name="game_error_there_is_no_such_user_in_room">Такого гравця немає в цій кімнаті.</string>
     <string name="game_error_such_player_already_voted">Ви вже проголосували</string>
-    <string name="game_some_user_think_word_to_user">Зараз буде запитувати гравцеь %1$s.\n Спроба %2$d/3</string>
-    <string name="game_some_user_think_word_to_user_error">Зараз буде запитувати якийсь гравцеь.\n Спроба %1$d/3</string>
+    <string name="game_some_user_think_word_to_user">Зараз буде запитувати гравець %1$s.\n Спроба %2$d/3</string>
+    <string name="game_some_user_think_word_to_user_error">Зараз буде запитувати якийсь гравець.\n Спроба %1$d/3</string>
     <string name="game_this_user_think_word_to_user">Задайте питання про те хто ви. Спроба %1$d/3</string>
     <string name="game_guess_word_error">Ви нічого не ввели</string>
     <string name="game_guess_word_hint">Питання</string>

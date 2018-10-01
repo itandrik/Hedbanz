@@ -237,6 +237,8 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     @Override
     public void processGuessWordSubmit(Observable<Question> clickObservable) {
+        Timber.i("RXANSWER: add disposable");
+
         addDisposable(clickObservable
                 .distinct(Question::getQuestionId)
                 .filter(question -> {
@@ -249,6 +251,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 })
                 .subscribe(
                         questionFromView -> {
+                            Timber.i("RXANSWER: callback in presenter. Question id: " + questionFromView.getQuestionId());
                             Question question = mGameInteractor.guessWord(questionFromView.getQuestionId(),
                                     questionFromView.getMessage());
 

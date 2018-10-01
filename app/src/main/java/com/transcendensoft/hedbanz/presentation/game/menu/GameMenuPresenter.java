@@ -51,6 +51,11 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
         }
     }
 
+    @Override
+    public void destroy() {
+
+    }
+
     private void updateRoomInfo() {
         if (view() != null) {
             view().clearAndAddPlayers(model.getRxPlayers());
@@ -90,11 +95,6 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
     @SuppressWarnings("unchecked")
     private <S> ObservableTransformer<S, S> applySchedulers() {
         return (ObservableTransformer<S, S>) mSchedulersTransformer;
-    }
-
-    @Override
-    public void destroy() {
-
     }
 
     @Override

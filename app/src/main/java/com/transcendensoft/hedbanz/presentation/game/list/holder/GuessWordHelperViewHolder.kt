@@ -4,6 +4,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.item_guess_word_helper.view.*
+import timber.log.Timber
+
 /**
  * Copyright 2017. Andrii Chernysh
  *
@@ -40,6 +42,7 @@ class GuessWordHelperViewHolder(private val mItemView: View?) : RecyclerView.Vie
     fun guessWordHelperObservable() =
             Observable.create<String> { emitter ->
                 mItemView?.setOnClickListener {
+                    Timber.i("RXANSWER: on click on helper. message: ${mTvHelperGuessWord?.text.toString().trim()}")
                     emitter.onNext(mTvHelperGuessWord?.text.toString().trim())
                 }
             }!!

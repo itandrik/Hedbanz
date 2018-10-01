@@ -95,6 +95,7 @@
     <string name="room_game_already_started">Can’t join to players. Game is already started</string>
     <string name="room_user_has_max_active_rooms_number"> You have reached the maximum allowed number of simultaneous active games. Finish them first.</string>
     <string name="room_user_already_in_room">Server error, try again later.</string>
+    <string name="room_unable_to_restart_game">Unable to restart game. Maybe you didn\'t finish previous one? If everything OK, try to create new room.</string>
     <string name="room_unauthorized_player">You are not authorized user.</string>
     <string name="rooms_unauthorized_user"> You are not authorized user. Sign in to your account again please</string>
 

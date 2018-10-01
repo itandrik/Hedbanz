@@ -125,6 +125,8 @@ public class GetMessagesInteractor extends PaginationUseCase<Message, GetMessage
                     askingQuestion.setAllUsersCount(playersCount - 1);
                     askingQuestion.setFinished(true);
                     askingQuestion.setLoading(false);
+                    askingQuestion.setWin( (((double) askingQuestion.getWinVoters().size()) /
+                            (double)(playersCount - 1)) > 0.8);
                 }
 
                 messages.remove(i);

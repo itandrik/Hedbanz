@@ -31,7 +31,6 @@ import com.transcendensoft.hedbanz.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
-import timber.log.Timber;
 
 /**
  * {@link android.support.v7.widget.RecyclerView.ViewHolder}
@@ -98,6 +97,8 @@ public class WordSettingViewHolder extends RecyclerView.ViewHolder {
             mPbWordLoading.setVisibility(View.GONE);
             mTietSetWord.setEnabled(true);
             mIvSetWord.setEnabled(true);
+            mIvSetWord.setColorFilter(ContextCompat.getColor(mContext, R.color.google_green),
+                    android.graphics.PorterDuff.Mode.SRC_IN);
         }
     }
 

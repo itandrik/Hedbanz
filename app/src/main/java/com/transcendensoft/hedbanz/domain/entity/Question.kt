@@ -44,6 +44,7 @@ data class Question(
         super.clone()
         return copy(questionId = this.questionId,
                 yesVoters = this.yesVoters, noVoters = this.noVoters,
+                winVoters = this.winVoters,
                 vote = this.vote, allUsersCount = this.allUsersCount,
                 messageParent = this.messageParent, isWin = this.isWin,
                 attempt = this.attempt)
