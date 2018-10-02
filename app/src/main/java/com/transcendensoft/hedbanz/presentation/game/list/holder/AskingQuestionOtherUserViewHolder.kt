@@ -251,6 +251,18 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
         }
     }
 
+    fun bindTopMargin(isTopMarginNeeded: Boolean) {
+        if (isTopMarginNeeded) {
+            val params = itemView.layoutParams as RecyclerView.LayoutParams
+            params.topMargin = ViewUtils.dpToPx(mContext, 8f)
+            itemView.layoutParams = params
+        } else {
+            val params = itemView.layoutParams as RecyclerView.LayoutParams
+            params.topMargin = ViewUtils.dpToPx(mContext, 0f)
+            itemView.layoutParams = params
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun setTotalInfo(usersThumbsUp: List<User>, usersThumbsDown: List<User>,
                              usersWin: List<User>, allUsersCount: Int) {

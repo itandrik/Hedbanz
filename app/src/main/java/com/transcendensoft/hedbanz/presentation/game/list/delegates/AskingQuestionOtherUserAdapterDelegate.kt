@@ -76,6 +76,16 @@ class AskingQuestionOtherUserAdapterDelegate @Inject constructor(
                 word = userFrom.word
             }
 
+            var isAddTopMargin = false
+            if (items.size > 1 && position != 0) {
+                val prevMessage = items[position - 1]
+                if (prevMessage.userFrom != null) {
+                    if (prevMessage.userFrom != userFrom) {
+                        isAddTopMargin = true
+                    }
+                }
+            }
+
             holder.bindUserWord(word)
             holder.bindShowHideLoginAndImage(false)
             holder.bindUserLogin(login)
@@ -86,6 +96,7 @@ class AskingQuestionOtherUserAdapterDelegate @Inject constructor(
             holder.bindProgress(question.yesVoters, question.noVoters,
                     question.winVoters, question.allUsersCount ?: 0)
             holder.bindWin(question.isWin)
+            holder.bindTopMargin(isAddTopMargin)
 
             val isEnableThumbsDownClick = !question.noVoters.contains(currentUser)
             holder.thumbsDownClickObservable(question.questionId, isEnableThumbsDownClick)

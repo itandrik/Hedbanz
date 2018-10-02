@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 public class UserCrudValidator implements Validator<User, UserError> {
     private static final String EMAIL_REGEX = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     private static final String LOGIN_REGEX = "^[a-zA-Z0-9.]{3,10}$";
-    private static final String PASSWORD_REGEX = "\\S{4,14}";
+    private static final String PASSWORD_REGEX = "\\S{6,20}";
 
     private static final Pattern LOGIN_PATTERN =
             Pattern.compile(LOGIN_REGEX);

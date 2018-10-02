@@ -185,7 +185,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     }
 
     @Override
-    public void clearAndAddPlayers(List<RxUser> rxUsers) {
+    public synchronized void clearAndAddPlayers(List<RxUser> rxUsers) {
         if (mAdapter != null) {
             try {
                 mAdapter.clearAll();
@@ -199,7 +199,7 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     }
 
     @Override
-    public void addPlayer(RxUser rxUser) {
+    public synchronized void addPlayer(RxUser rxUser) {
         if (mAdapter != null) {
             try {
                 List<RxUser> rxUsers = mAdapter.getModels();

@@ -15,6 +15,8 @@ package com.transcendensoft.hedbanz.domain.interactor.user;
  * limitations under the License.
  */
 
+import android.text.TextUtils;
+
 import com.transcendensoft.hedbanz.data.exception.HedbanzApiException;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.data.repository.UserDataRepositoryImpl;
@@ -67,7 +69,9 @@ public class UpdateUserInteractor extends ObservableUseCase<User, UpdateUserInte
 
         if(params.isUpdateOldPassword) {
             if (isUserValid(user) & isOldPasswordValid(oldPassword)) { // needs to check both states
-                user.setPassword(SecurityUtils.hash(user.getPassword()));
+                if(!TextUtils.isEmpty(user.getPassword())) {
+                    user.setPassword(SecurityUtils.hash(user.getPassword()));
+                }
                 oldPassword = SecurityUtils.hash(oldPassword);
 
                 return mUserRepository.updateUser(user.getId(), user.getLogin(),
@@ -92,15 +96,15 @@ public class UpdateUserInteractor extends ObservableUseCase<User, UpdateUserInte
             mUserException.addUserError(validator.getError());
             result = false;
         }
-        if (!validator.isPasswordValid()) {
+        /*if (!validator.isPasswordValid()) {
             mUserException.addUserError(validator.getError());
             result = false;
-        }
-        if (!validator.isConfirmPasswordValid()) {
+        }*/
+        /*if (!validator.isConfirmPasswordValid()) {
             mUserException.addUserError(validator.getError());
 
             result = false;
-        }
+        }*/
         return result;
     }
 

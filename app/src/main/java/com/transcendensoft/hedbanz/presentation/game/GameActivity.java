@@ -160,6 +160,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
             initAdapterClickListeners();
         }
         registerReceiver(mLastPlayerBroadcastReceiver, new IntentFilter(ACTION_LAST_USER));
+        showFooterTyping(null);
     }
 
     @Override
@@ -168,6 +169,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         if (mPresenter != null) {
             mPresenter.unbindView();
         }
+        showFooterTyping(null);
         stopTypingAnimation();
         unregisterReceiver(mLastPlayerBroadcastReceiver);
     }

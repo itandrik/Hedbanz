@@ -53,7 +53,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         raspberryType {
-            initWith(debug)
+            initWith(release)
             buildConfigField("String", 'HOST_LINK', '\"http://176.36.146.229\"')
             buildConfigField("String", 'PORT_API', '\":8085/\"')
             buildConfigField("String", 'PORT_SOCKET', '\":9092\"')

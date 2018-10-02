@@ -291,6 +291,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
         mShimmerFrameLayout.setVisibility(View.GONE);
         mShimmerFrameLayout.stopShimmerAnimation();
 
+        mTvUsername.setText(user.getLogin());
         mTvMoney.setText(String.valueOf(user.getMoney()));
         mTvFriends.setText(String.valueOf(user.getFriendsNumber()));
         mTvGamesPlayed.setText(String.valueOf(user.getGamesNumber()));
