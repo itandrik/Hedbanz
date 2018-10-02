@@ -42,10 +42,8 @@ public abstract class BasePresenter<M,V> {
     }
 
     public void disposeAll(){
-        Timber.i("RX mCompositeDisposable == null: " + (mCompositeDisposable == null) +
-                "; isDisposed = " + mCompositeDisposable.isDisposed());
+
         if(mCompositeDisposable != null && !mCompositeDisposable.isDisposed()){
-            Timber.i("RX Dispose composite disposable");
             mCompositeDisposable.dispose();
             mCompositeDisposable.clear();
             mCompositeDisposable = new CompositeDisposable();
@@ -54,7 +52,6 @@ public abstract class BasePresenter<M,V> {
 
     protected void addDisposable(Disposable disposable){
         if(mCompositeDisposable != null && !mCompositeDisposable.isDisposed()){
-            Timber.i("RX add disposable. Size: " + mCompositeDisposable.size());
             mCompositeDisposable.add(disposable);
         }
     }

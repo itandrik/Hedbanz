@@ -56,6 +56,7 @@ import com.transcendensoft.hedbanz.utils.ViewUtils;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -184,24 +185,32 @@ public class GameMenuFragment extends BaseFragment implements GameMenuContract.V
     }
 
     @Override
-    public synchronized void clearAndAddPlayers(List<RxUser> rxUsers) {
+    public void clearAndAddPlayers(List<RxUser> rxUsers) {
         if (mAdapter != null) {
-            mAdapter.clearAll();
-            Collections.sort(rxUsers, playersComparator);
-            mAdapter.addAll(rxUsers);
-            //mAdapter.sort(playersComparator);
+            try {
+                mAdapter.clearAll();
+                Collections.sort(rxUsers, playersComparator);
+                mAdapter.addAll(rxUsers);
+                //mAdapter.sort(playersComparator);
+            } catch (ConcurrentModificationException e) {
+                Timber.e(e);
+            }
         }
     }
 
     @Override
-    public synchronized void addPlayer(RxUser rxUser) {
+    public void addPlayer(RxUser rxUser) {
         if (mAdapter != null) {
-            List<RxUser> rxUsers = mAdapter.getModels();
-            rxUsers.add(rxUser);
-            Collections.sort(rxUsers, playersComparator);
+            try {
+                List<RxUser> rxUsers = mAdapter.getModels();
+                rxUsers.add(rxUser);
+                Collections.sort(rxUsers, playersComparator);
 
-            mAdapter.clearAll();
-            mAdapter.addAll(rxUsers);
+                mAdapter.clearAll();
+                mAdapter.addAll(rxUsers);
+            } catch (ConcurrentModificationException e) {
+                Timber.e(e);
+            }
         }
     }
 

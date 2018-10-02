@@ -33,6 +33,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 import static com.transcendensoft.hedbanz.domain.entity.MessageType.SIMPLE_MESSAGE_OTHER_USER;
 
 /**
@@ -106,6 +108,9 @@ public class MessageOtherUserAdapterDelegate extends AdapterDelegate<List<Messag
                     }
                 }
             }
+
+            Timber.i("MESSAGE_OTHER. Message: " + message.getMessage() + "; topMargin: " +
+                    isAddTopMargin + "; isHideLoginAndImage: " + isHideLoginAndImage);
 
             viewHolder.bindUserWord(word);
             viewHolder.bindShowHideLoginAndImage(isHideLoginAndImage);

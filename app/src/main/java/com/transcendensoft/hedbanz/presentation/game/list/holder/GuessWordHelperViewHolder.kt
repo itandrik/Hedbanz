@@ -43,8 +43,6 @@ class GuessWordHelperViewHolder(private val mItemView: View?) : RecyclerView.Vie
     fun guessWordHelperObservable(questionId: Long) =
             Observable.create<Question> { emitter ->
                 mItemView?.setOnClickListener {
-                    Timber.i("RXANSWER: on click on helper. message:" +
-                            " ${mTvHelperGuessWord?.text.toString().trim()} + questionId: $questionId")
                     val result = Question(questionId = questionId)
                     result.message = mTvHelperGuessWord?.text.toString().trim()
                     emitter.onNext(result)

@@ -85,22 +85,18 @@ public class RxRoom {
 
     public void setId(long id) {
         mRoom.setId(id);
-        mRoomInfoSubject.onNext(this);
     }
 
     public void setPassword(String password) {
         mRoom.setPassword(password);
-        mRoomInfoSubject.onNext(this);
     }
 
     public void setMaxPlayers(byte maxPlayers) {
         mRoom.setMaxPlayers(maxPlayers);
-        mRoomInfoSubject.onNext(this);
     }
 
     public void setPlayers(List<RxUser> players) {
         mPlayers = players;
-        mRoomInfoSubject.onNext(this);
     }
 
     public void setCurrentPlayersNumber(byte currentPlayersNumber) {
@@ -110,21 +106,21 @@ public class RxRoom {
 
     public void setStartDate(long startDate) {
         mRoom.setStartDate(startDate);
-        mRoomInfoSubject.onNext(this);
     }
 
     public void setEndDate(long endDate) {
         mRoom.setEndDate(endDate);
-        mRoomInfoSubject.onNext(this);
     }
 
     public void setName(String name) {
         mRoom.setName(name);
-        mRoomInfoSubject.onNext(this);
     }
 
     public void setWithPassword(boolean withPassword) {
         mRoom.setWithPassword(withPassword);
+    }
+
+    public void notifyRoomInfo(){
         mRoomInfoSubject.onNext(this);
     }
 

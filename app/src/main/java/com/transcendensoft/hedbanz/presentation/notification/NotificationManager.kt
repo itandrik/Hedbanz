@@ -285,13 +285,23 @@ class NotificationManager @Inject constructor(@ApplicationContext val mContext: 
                     mContext.getString(R.string.game_notification_asking_question_message_error))
         }
 
-        val title = mContext.getString(R.string.game_notification_asking_question_title)
-        val spannableTitle = SpannableString(title)
+        val title = mContext.getString(R.string.game_notification_asking_question_title, message.senderName)
+        var spannedNotificationTitle = SpannableString(title)
+        if (!message.senderName.isNullOrEmpty()) {
+            spannedNotificationTitle.spanWith(message.senderName!!) {
+                what = StyleSpan(android.graphics.Typeface.BOLD)
+                flags = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            }
+        } else {
+            spannedNotificationTitle = SpannableString(
+                    mContext.getString(R.string.game_notification_asking_question_title, ""))
+        }
+        /*val spannableTitle = SpannableString(title)
         spannableTitle.setSpan(StyleSpan(android.graphics.Typeface.BOLD),
-                0, title.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                0, title.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)*/
 
         val notification = notification(GAME_CHANNEL_ID) {
-            setContentTitle(spannableTitle)
+            setContentTitle(spannedNotificationTitle)
             setContentText(spannedNotificationText)
 
             setStyle(NotificationCompat.BigTextStyle().bigText(text))

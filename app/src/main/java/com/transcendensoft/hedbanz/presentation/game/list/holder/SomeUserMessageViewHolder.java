@@ -84,6 +84,9 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
         } else if (mIvUserImage.getVisibility() == View.VISIBLE) {
             ((RelativeLayout.LayoutParams) mTvMessage.getLayoutParams()).topMargin =
                     ViewUtils.dpToPx(mContext, 8.f);
+        } else {
+            ((RelativeLayout.LayoutParams) mTvMessage.getLayoutParams()).topMargin =
+                    ViewUtils.dpToPx(mContext, 4.f);
         }
     }
 
@@ -171,6 +174,10 @@ public class SomeUserMessageViewHolder extends RecyclerView.ViewHolder {
         if (isTopMarginNeeded) {
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) itemView.getLayoutParams();
             params.topMargin = ViewUtils.dpToPx(mContext, 8);
+            itemView.setLayoutParams(params);
+        } else {
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) itemView.getLayoutParams();
+            params.topMargin = ViewUtils.dpToPx(mContext, 0);
             itemView.setLayoutParams(params);
         }
     }

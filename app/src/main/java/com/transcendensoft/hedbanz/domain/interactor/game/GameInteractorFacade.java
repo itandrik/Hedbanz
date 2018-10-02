@@ -565,6 +565,7 @@ public class GameInteractorFacade {
         mCurrentRoom.setStartDate(room.getStartDate());
         mCurrentRoom.setWithPassword(room.isWithPassword());
         mCurrentRoom.setGameStarted(isGameStarted);
+        mCurrentRoom.notifyRoomInfo();
         if (room.getPlayers() != null && (mCurrentRoom.getRxPlayers() == null ||
                 mCurrentRoom.getRxPlayers().isEmpty())) {
             for (User user : room.getPlayers()) {

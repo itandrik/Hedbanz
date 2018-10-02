@@ -59,15 +59,25 @@ public class StartActivity extends DaggerAppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        if(mIvHat != null) {
+            mIvHat.clearAnimation();
+        }
+        if(mIvSmile != null) {
+            mIvSmile.clearAnimation();
+        }
+        super.onDestroy();
+    }
+
+    @Override
     protected void attachBaseContext(Context newBase) {
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
             Language language = Language.Companion.getLanguageByCode(
                     newBase, new PreferenceManager(newBase).getLocale());
 
             super.attachBaseContext(HedbanzContextWrapper.wrap(
                     newBase, language));
-        }
-        else {
+        } else {
             super.attachBaseContext(newBase);
         }
     }
@@ -75,7 +85,7 @@ public class StartActivity extends DaggerAppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ((HedbanzApplication)getApplication()).setLocale();
+        ((HedbanzApplication) getApplication()).setLocale();
     }
 
     private void startMainActivity() {
@@ -153,32 +163,35 @@ public class StartActivity extends DaggerAppCompatActivity {
         int yToGo = screenHeight / 2 - smileHeight / 2 - mIvHat.getHeight() / 2 +
                 ViewUtils.dpToPx(this, 16);
 
+        Animator.AnimatorListener listener = new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                // Do not need to implement
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                showLoginFragment();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+                // Do not need to implement
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+                // Do not need to implement
+            }
+        };
         mIvHat.animate()
                 .setDuration(700)
                 .setStartDelay(2300)
                 .translationY(yToGo)
                 .setInterpolator(new BounceInterpolator())
-                .setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animator) {
-                        // Do not need to implement
-                    }
+                .setListener(listener)
+                .start();
 
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        showLoginFragment();
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animator) {
-                        // Do not need to implement
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animator) {
-                        // Do not need to implement
-                    }
-                }).start();
     }
 
     private void showLoginFragment() {
@@ -189,6 +202,50 @@ public class StartActivity extends DaggerAppCompatActivity {
         int topCoordSmileX = ViewUtils.dpToPx(this, 44);
         int topCoordSmileY = (int) (hatSize * 0.17 + topCoordsHatY);
 
+        Animator.AnimatorListener hatListener = new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        };
+
+        Animator.AnimatorListener smileListener = new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                hideSmile();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        };
+
         mIvHat.animate()
                 .setDuration(1000)
                 .setStartDelay(0)
@@ -197,28 +254,9 @@ public class StartActivity extends DaggerAppCompatActivity {
                 .setInterpolator(new DecelerateInterpolator())
                 .x(topCoordsHatX - hatSize / 2)
                 .y(topCoordsHatY - hatSize / 2)
-                .setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animator) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animator) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animator) {
-
-                    }
-                })
+                .setListener(hatListener)
                 .start();
+
         mIvSmile.animate()
                 .setDuration(1000)
                 .setStartDelay(0)
@@ -227,27 +265,7 @@ public class StartActivity extends DaggerAppCompatActivity {
                 .setInterpolator(new DecelerateInterpolator())
                 .x(topCoordSmileX - smileSize / 2)
                 .y(topCoordSmileY - smileSize / 2)
-                .setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animator) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        hideSmile();
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animator) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animator) {
-
-                    }
-                })
+                .setListener(smileListener)
                 .start();
 
         mFlLoginContainer.setTranslationY(mFlLoginContainer.getHeight() / 4);

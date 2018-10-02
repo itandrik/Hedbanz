@@ -75,8 +75,6 @@ class GuessWordThisUserAdapterDelegate @Inject constructor() :
             holder.bindText(message.message)
             holder.bindTitle(message.attempts)
 
-            Timber.i("RXANSWER: onbind in delegate. ID: ${message.questionId}")
-
             holder.submitWordObservable(message.questionId).subscribe(guessWordSubject)
 
             holder.getHelperStringsObservable(message.questionId).subscribe(helperStringSubject)

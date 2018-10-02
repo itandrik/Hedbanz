@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 /**
@@ -58,6 +59,8 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
 
     private void updateRoomInfo() {
         if (view() != null) {
+            Timber.i("CONCURRENT: updateRoomInfo");
+
             view().clearAndAddPlayers(model.getRxPlayers());
             view().setRoomName(model.getRoom().getName());
             view().setMaxPlayersCount(model.getRoom().getMaxPlayers());
@@ -74,20 +77,26 @@ public class GameMenuPresenter extends BasePresenter<RxRoom, GameMenuContract.Vi
 
     private void subscribeToRoomObservables() {
         addDisposable(model.roomInfoObservable()
-                .compose(applySchedulers())
+               // .compose(applySchedulers())
+                //.onBackpressureBuffer()
+                //.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rxRoom -> {
+                    Timber.i("CONCURRENT: onnext updateRoomInfo");
                     updateRoomInfo();
                 }, Timber::e));
 
         addDisposable(model.addUserObservable()
                 .compose(applySchedulers())
                 .subscribe(rxUser -> {
+                    Timber.i("CONCURRENT: onnext addPlayer");
                     view().addPlayer(rxUser);
                 }, Timber::e));
 
         addDisposable(model.removeUserObservable()
                 .compose(applySchedulers())
                 .subscribe(rxUser -> {
+                    Timber.i("CONCURRENT: onnext removePlayer");
                     view().removePlayer(rxUser);
                 }, Timber::e));
     }

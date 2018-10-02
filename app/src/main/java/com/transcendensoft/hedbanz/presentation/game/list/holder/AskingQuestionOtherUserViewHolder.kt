@@ -255,8 +255,9 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : Rec
     private fun setTotalInfo(usersThumbsUp: List<User>, usersThumbsDown: List<User>,
                              usersWin: List<User>, allUsersCount: Int) {
         mTvTotal?.let {
-            mTvTotal.text = "${mContext.getString(R.string.game_asking_total_votes)} " +
-                    "${usersThumbsUp.size + usersThumbsDown.size + usersWin.size}/$allUsersCount"
+            val totalVoted = usersThumbsUp.size + usersThumbsDown.size + usersWin.size
+            val textVoted = if(totalVoted > allUsersCount) "$totalVoted/$totalVoted" else "$totalVoted/$allUsersCount"
+            mTvTotal.text = "${mContext.getString(R.string.game_asking_total_votes)} " + textVoted
         }
     }
 

@@ -128,7 +128,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         }
         mPreferenceManger.setIsGameEnabled(true);
 
-       /* if (mGameInteractor.doesGameHasServerConnectionError()*//* &&
+        /* if (mGameInteractor.doesGameHasServerConnectionError()*//* &&
                 mPreferenceManger.getCurrentRoomId() != -1 &&
                 !mPreferenceManger.isLastUser()*//*) {
             view().showLoadingDialog();
@@ -237,13 +237,12 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
     @Override
     public void processGuessWordSubmit(Observable<Question> clickObservable) {
-        Timber.i("RXANSWER: add disposable");
 
         addDisposable(clickObservable
                 .distinct(Question::getQuestionId)
                 .filter(question -> {
                     Message lastMessage = model.getMessages().get(model.getMessages().size() - 1);
-                    if(lastMessage instanceof PlayerGuessing){
+                    if (lastMessage instanceof PlayerGuessing) {
                         PlayerGuessing lastPlayerGuessing = (PlayerGuessing) lastMessage;
                         return (lastPlayerGuessing.getQuestionId() - 1) != question.getQuestionId();
                     }
@@ -264,8 +263,6 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
 
                             model.getMessages().add(question);
                             view().addMessage(question);
-
-                            //disposeAll();
                         },
                         err -> Timber.e("Error while guess word. Message : " + err.getMessage())
                 ));
@@ -367,11 +364,11 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                         if (!isAfterRoomCreation) {
                             if (mPreferenceManger.getCurrentRoomId() == -1) {
                                 mGameInteractor.joinToRoom(model.getPassword());
-                                if(isRoomActive){
+                                if (isRoomActive) {
                                     mGameInteractor.restoreRoom();
                                 }
                             } else {
-                                if(!mPreferenceManger.isLastUser()) {
+                                if (!mPreferenceManger.isLastUser()) {
                                     view().showRestoreRoom();
                                 }
                             }
@@ -438,7 +435,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 this::processEventListenerOnError);
         mGameInteractor.onRoomRestoredListener(
                 room -> {
-                    if(isRoomActive){
+                    if (isRoomActive) {
                         isRoomActive = false;
                     } else {
                         initRoom(room);
@@ -570,7 +567,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             }
 
             // Delete guess message if there was revoting for win after guess appeared
-            if(user.equals(mPreferenceManger.getUser())) {
+            if (user.equals(mPreferenceManger.getUser())) {
                 Message guessWordMessage = null;
                 int guessWordMessagePosition = 0;
                 for (int i = model.getMessages().size() - 1; i >= 0; i--) {
@@ -602,7 +599,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
             model.getMessages().add(word);
             view().addMessage(word);
 
-            if(mPreferenceManger.getUser().equals(word.getUserFrom())) {
+            if (mPreferenceManger.getUser().equals(word.getUserFrom())) {
                 updateSettingWordViewParameters(word.getUserFrom(), true, false);
                 view().focusMessageEditText();
             }
@@ -694,7 +691,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         );
     }
 
-    private void initUpdateUsersInfoListener(){
+    private void initUpdateUsersInfoListener() {
         mGameInteractor.onUpdateUsersInfo(
                 this::processUpdateUsersInfoEvent,
                 this::processEventListenerOnError
@@ -868,7 +865,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
                 modelQuestion.setYesVoters(question.getYesVoters());
                 modelQuestion.setNoVoters(question.getNoVoters());
                 modelQuestion.setWinVoters(question.getWinVoters());
-                modelQuestion.setAllUsersCount(mGameInteractor.currentUsersCount()-1);
+                modelQuestion.setAllUsersCount(mGameInteractor.currentUsersCount() - 1);
 
                 view().setMessage(i, modelQuestion);
                 return;
@@ -924,7 +921,7 @@ public class GamePresenter extends BasePresenter<Room, GameContract.View>
         view().addMessage(message);
     }
 
-    private void processUpdateUsersInfoEvent(Room room){
+    private void processUpdateUsersInfoEvent(Room room) {
         Message message = new Message.Builder()
                 .setMessageType(MessageType.UPDATE_USERS_INFO)
                 .build();

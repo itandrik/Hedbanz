@@ -49,6 +49,7 @@ import com.transcendensoft.hedbanz.utils.extension.ViewExtensionsKt;
 import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiPopup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -94,6 +95,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     private boolean isScrollDown = false;
     private boolean isEmojiKeyboardImageClicked = false;
     private MediaPlayer mMediaPlayer;
+    private List<AlertDialog> mDialogsToDismiss = new ArrayList<>();
 
     /*------------------------------------*
      *-------- Activity lifecycle --------*
@@ -164,7 +166,6 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     protected void onPause() {
         super.onPause();
         if (mPresenter != null) {
-            Timber.i("RXANSWER: onPause. Dispose subscribers.");
             mPresenter.unbindView();
         }
         stopTypingAnimation();
@@ -173,10 +174,11 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         if (mPresenter != null) {
             mPresenter.destroy();
+            clearAllDialogs();
         }
+        super.onDestroy();
     }
 
     /*------------------------------------*
@@ -317,6 +319,14 @@ public class GameActivity extends BaseActivity implements GameContract.View {
         });
     }
 
+    private void clearAllDialogs() {
+        for (AlertDialog alertDialog : mDialogsToDismiss) {
+            alertDialog.setOnDismissListener(null);
+            alertDialog.setOnCancelListener(null);
+            alertDialog.dismiss();
+        }
+    }
+
     private void initEmojiPopup() {
         mEmojiPopup = EmojiPopup.Builder.fromRootView(mParentLayout).build(mEtChatMessage);
     }
@@ -366,7 +376,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 positiveButtonText = getString(R.string.game_action_exit_game);
             }
 
-            new AlertDialog.Builder(this)
+            AlertDialog alertDialog = new AlertDialog.Builder(this)
                     .setCancelable(true)
                     .setMessage(text)
                     .setTitle(getString(R.string.game_exit_room_title))
@@ -377,7 +387,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     .setNegativeButton(getString(R.string.game_action_resume_game), (dialog, which) -> {
                         dialog.dismiss();
                     })
-                    .show();
+                    .create();
+
+            mDialogsToDismiss.add(alertDialog);
+            alertDialog.show();
         }
     }
 
@@ -423,7 +436,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     public void addMessage(Message message) {
         if (mAdapter != null) {
             mAdapter.add(message);
-            if (!isScrollDown && mLayoutManager.findLastVisibleItemPosition() >= mAdapter.getItemCount() - 2){
+            if (!isScrollDown && mLayoutManager.findLastVisibleItemPosition() >= mAdapter.getItemCount() - 2) {
                 scrollToTheVeryDown();
             } else {
                 mFabScrollDown.show();
@@ -557,12 +570,15 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @Override
     public void showWinDialog() {
         Drawable icon = VectorDrawableCompat.create(getResources(), R.drawable.ic_win_happy, null);
-        new AlertDialog.Builder(this)
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setMessage(getString(R.string.game_win_user_alert_message))
                 .setTitle(getString(R.string.game_win_user_alert_title))
                 .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> dialog.dismiss())
                 .setIcon(icon)
-                .show();
+                .create();
+
+        mDialogsToDismiss.add(alertDialog);
+        alertDialog.show();
     }
 
     @Override
@@ -708,7 +724,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
 
     @Override
     public void showRestoreRoom() {
-        new AlertDialog.Builder(this)
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setPositiveButton(getString(R.string.game_action_restore_room), (dialog, which) -> {
                     mPresenter.restoreRoom();
                 })
@@ -719,7 +735,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 .setCancelable(false)
                 .setTitle(getString(R.string.game_restore_room_title))
                 .setMessage(getString(R.string.game_restore_room_message))
-                .show();
+                .create();
+
+        mDialogsToDismiss.add(alertDialog);
+        alertDialog.show();
     }
 
     @Override
@@ -742,7 +761,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @Override
     public void showUserKicked() {
         Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
-        new AlertDialog.Builder(this)
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> {
                     mNotificationManager.cancelKickNotification();
                     mPreferenceManager.setIsUserKicked(false);
@@ -758,14 +777,17 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 .setIcon(d)
                 .setTitle(getString(R.string.game_kicked_title))
                 .setMessage(getString(R.string.game_kicked_message))
-                .show();
+                .create();
+
+        mDialogsToDismiss.add(alertDialog);
+        alertDialog.show();
     }
 
     @Override
     public void showLastUserDialog() {
         if (!mPreferenceManager.isUserKicked()) {
             Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
-            new AlertDialog.Builder(this)
+            AlertDialog alertDialog = new AlertDialog.Builder(this)
                     .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> {
                         mPreferenceManager.setIsLastUser(false);
                         dialog.dismiss();
@@ -784,7 +806,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                     .setIcon(d)
                     .setTitle(getString(R.string.game_last_player_title))
                     .setMessage(getString(R.string.game_last_player_message))
-                    .show();
+                    .create();
+
+            mDialogsToDismiss.add(alertDialog);
+            alertDialog.show();
         }
     }
 
@@ -797,7 +822,7 @@ public class GameActivity extends BaseActivity implements GameContract.View {
     @Override
     public void showErrorDialog(@StringRes int message) {
         Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_unhappy, null);
-        new AlertDialog.Builder(this)
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> {
                     dialog.dismiss();
                     leaveFromRoom(true);
@@ -806,13 +831,16 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 .setIcon(d)
                 .setTitle(getString(R.string.game_error_title))
                 .setMessage(getString(message))
-                .show();
+                .create();
+
+        mDialogsToDismiss.add(alertDialog);
+        alertDialog.show();
     }
 
     @Override
     public void showLeaveWhenServerError() {
         Drawable d = VectorDrawableCompat.create(getResources(), R.drawable.ic_dialog_server_error, null);
-        new AlertDialog.Builder(this)
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setPositiveButton(getString(R.string.game_action_resume_game),
                         (dialog, which) -> dialog.dismiss())
                 .setNegativeButton(getString(R.string.game_action_leave_room),
@@ -820,7 +848,10 @@ public class GameActivity extends BaseActivity implements GameContract.View {
                 .setIcon(d)
                 .setTitle(getString(R.string.game_error_leave_when_server_error_title))
                 .setMessage(getString(R.string.game_error_leave_when_server_error_message))
-                .show();
+                .create();
+
+        mDialogsToDismiss.add(alertDialog);
+        alertDialog.show();
     }
 
     private void leaveFromRoom(boolean isAfterErrorLastOrKicked) {
