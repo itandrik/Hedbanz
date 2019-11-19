@@ -44,6 +44,12 @@ android {
             buildConfigField("String", 'PORT_API', '\":8085/\"')
             buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
         }
+        dynsatyType {
+            initWith(debug)
+            buildConfigField("String", 'HOST_LINK', '\"http://192.168.0.110\"')
+            buildConfigField("String", 'PORT_API', '\":8085/\"')
+            buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
+        }
     }
 }
 

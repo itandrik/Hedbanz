@@ -51,7 +51,7 @@ import javax.inject.Inject
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class NotificationManager @Inject constructor(@ApplicationContext val mContext: Context) {
+class  NotificationManager @Inject constructor(@ApplicationContext val mContext: Context) {
     companion object {
         private const val MESSAGE_NOTIFICATION_ID = 1
         private const val SET_WORD_NOTIFICATION_ID = 2

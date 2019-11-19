@@ -29,7 +29,7 @@ android {
             keyAlias 'hedbanz-key'
             keyPassword 'mvwxrwyb6HUasuJJVvCJhR9ZLPRQbRK7Gq9Mh64P'
             //storeFile file('/home/chernysh/AndroidProjects/keystore/Hedbanz.jks')
-            storeFile file('D:/AndroidProjects/keystore/Hedbanz.jks')
+            //storeFile file('D:/AndroidProjects/keystore/Hedbanz.jks')
             storePassword 'mvwxrwyb6HUasuJJVvCJhR9ZLPRQbRK7Gq9Mh64P'
         }
     }
@@ -73,6 +73,12 @@ android {
         kiselBrotherType {
             initWith(debug)
             buildConfigField("String", 'HOST_LINK', '\"http://176.96.221.97\"')
+            buildConfigField("String", 'PORT_API', '\":8085/\"')
+            buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
+        }
+        dynsatyType {
+            initWith(debug)
+            buildConfigField("String", 'HOST_LINK', '\"http://192.168.0.110\"')
             buildConfigField("String", 'PORT_API', '\":8085/\"')
             buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
         }
@@ -187,15 +193,16 @@ dependencies {
     //Utils
     implementation 'com.jakewharton:butterknife:8.8.1'
     kapt 'com.jakewharton:butterknife-compiler:8.8.1'
-    implementation 'com.jakewharton.timber:timber:4.5.1'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 
     //4.6.1 has bugs
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    varashTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    dormitoryTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    raspberryTypeImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
-    kiselBrotherTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    varashTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    dormitoryTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    raspberryTypeImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+    kiselBrotherTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+    dynsatyTypeImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
 
     //Tests
     testImplementation 'junit:junit:4.12'
