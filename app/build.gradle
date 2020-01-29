@@ -43,6 +43,10 @@ android {
         versionName "1.0.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+
+        buildConfigField("String", 'HOST_LINK', '\"http://192.168.88.87\"')
+        buildConfigField("String", 'PORT_API', '\":8085/\"')
+        buildConfigField("String", 'PORT_SOCKET', '\":9093\"')
     }
     buildTypes {
         release {
@@ -50,12 +54,6 @@ android {
             shrinkResources true
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-        dynsatyType {
-            initWith(debug)
-            buildConfigField("String", 'HOST_LINK', '\"http://192.168.88.87\"')
-            buildConfigField("String", 'PORT_API', '\":8085/\"')
-            buildConfigField("String", 'PORT_SOCKET', '\":9093\"')
         }
     }
     packagingOptions {
@@ -172,12 +170,7 @@ dependencies {
 
     //4.6.1 has bugs
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
-    varashTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
-    dormitoryTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
-    raspberryTypeImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
-    kiselBrotherTypeImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
-    dynsatyTypeImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
 
     //Tests
     testImplementation 'junit:junit:4.12'
