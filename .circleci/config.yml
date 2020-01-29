@@ -1,0 +1,208 @@
+version: 2
+
+references:
+  container_config: &container_config
+    docker:
+      - image: circleci/android:api-28-alpha
+
+    working_directory: ~/code
+
+    environment:
+      GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx1536m -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1\""
+      TERM: dumb
+
+    resource_class: large
+
+  workspace_root: &workspace_root
+                    /tmp/workspace
+
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
+  general_cache_key: &general_cache_key
+    key: smart_dynasty-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "gradle.properties" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+
+jobs:
+  build:
+    <<: *container_config
+    steps:
+    - checkout
+    -
+      run:
+        command: gem install bundler && bundle install
+        name: configure build
+    -
+      restore_cache:
+        <<: *general_cache_key
+    -
+      run:
+        name: chmod permissions
+        command: chmod +x ./gradlew
+    -
+      run:
+        name: "Setting telegram credentials"
+        command: |
+          bundle exec fastlane set_telegram_creds token:$TELEGRAM_TOKEN chat_id:$TELEGRAM_CHAT_ID
+    -
+      run:
+        name: "Initial Build"
+        command: |
+          bundle exec fastlane build
+    -
+      save_cache:
+        <<: *general_cache_key
+        paths:
+        - ~/.gradle
+        - ~/.m2
+        - /opt/android-sdk-linux/licenses/
+  test:
+    <<: *container_config
+    steps:
+      - checkout
+      -
+        run:
+          command: gem install bundler && bundle install
+          name: configure build
+      -
+        restore_cache:
+          <<: *general_cache_key
+      -
+        run:
+          name: chmod permissions
+          command: chmod +x ./gradlew
+      -
+        run:
+          name: "Run Tests"
+          command: |
+            bundle exec fastlane test
+      -
+        store_artifacts:
+          path: app/build/reports/tests/
+          destination: tests_reports/
+      -
+        store_test_results:
+          path: ~/code/app/build/test-results
+  stage:
+    <<: *container_config
+    steps:
+      - checkout
+      - run:
+          command: bundle update fastlane && gem install bundler && bundle install
+          name: configure build
+      - restore_cache:
+          <<: *general_cache_key
+      - run:
+          name: "Install Firebase CLI"
+          command: |
+            curl -sL firebase.tools | bash
+      - run:
+          name: "Deploy stage build to Firebase"
+          command: |
+            bundle exec fastlane stage branch:${CIRCLE_BRANCH} app_id:$FIREBASE_APP_ID firebase_token:$FIREBASE_TOKEN
+#  prod:
+#    <<: *container_config
+#    steps:
+#      - checkout
+#      -
+#        run:
+#          command: gem install bundler && bundle install
+#          name: configure build
+#      -
+#        restore_cache:
+#          <<: *general_cache_key
+#      -
+#        run:
+#          name: chmod permissions
+#          command: chmod +x ./gradlew
+#      -
+#        run:
+#          name: "Sign apk prod"
+#          command: |
+#            echo $KEYSTORE_FILE | base64 --decode > /home/circleci/code/app/hedbanz.jks
+#            bundle exec fastlane sign_apk type:Release keystore_path:/home/circleci/code/app/hedbanz.jks store_password:$STORE_PASSWORD key_alias:$KEY_ALIAS key_password:$KEY_PASSWORD
+#      -
+#        run:
+#          name: "Deploy to firebase prod build"
+#          command: |
+#            bundle exec fastlane firebase_app_distribution api_token:$ORG_GRADLE_PROJECT_FABRIC_TOKEN build_secret:$FABRIC_BUILD_SECRET notes:PROD,$CIRCLE_BRANCH
+  prod_aab:
+    <<: *container_config
+    steps:
+      - checkout
+      - run:
+          command: bundle update fastlane && gem install bundler && bundle install
+          name: configure build
+      - restore_cache:
+          <<: *general_cache_key
+      - run:
+          name: "Sign aab prod"
+          command: |
+            echo $KEYSTORE_FILE | base64 --decode > /home/circleci/code/app/hedbanz.jks
+            bundle exec fastlane sign_aab_lane type:Release keystore_path:/home/circleci/code/app/hedbanz.jks store_password:$STORE_PASSWORD key_alias:$KEY_ALIAS key_password:$KEY_PASSWORD
+      - run:
+          name: "save signed aab to workspace"
+          command: |
+            mkdir -p /tmp/workspace/built_aabs/aab/
+            mv App/app/build/outputs/bundle/release/app-release.aab /tmp/workspace/built_aabs/aab/
+            mv App/app/build/outputs/mapping/release/mapping.txt /tmp/workspace/built_aabs/aab/
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - built_aabs/aab
+
+  deploy:
+    <<: *container_config
+    steps:
+      - checkout
+      - *attach_workspace
+      - run:
+          command: bundle update fastlane && gem install bundler && bundle install
+          name: configure build
+      - run:
+          name: "Fastlane deploy"
+          command: |
+             bundle exec fastlane deploy_aab path:/tmp/workspace/built_aabs/aab/app-release.aab mapping:/tmp/workspace/built_aabs/aab/mapping.txt
+
+
+#  deploy:
+#    <<: *container_config
+#    steps:
+#      - checkout
+#      - *attach_workspace
+#      -
+#        run:
+#          command: gem install bundler && bundle install
+#          name: configure build
+#      -
+#        run:
+#          name: "Fastlane deploy"
+#          command: |
+#            bundle exec fastlane deploy json_data:$GOOGLE_API_JSON mapping:/tmp/workspace/built_apks/prodApk/mapping.txt
+
+workflows:
+  version: 2
+  build_tests_deploy:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - stage:
+          requires:
+            - build
+      - prod_aab:
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+          requires:
+            - test
+      - deploy:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - prod_aab

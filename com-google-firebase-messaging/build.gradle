@@ -23,32 +23,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        raspberryType {
-            buildConfigField("String", 'HOST_LINK', '\"http://176.36.146.229\"')
-            buildConfigField("String", 'PORT_API', '\":8085/\"')
-            buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
-        }
-        dormitoryType {
-            buildConfigField("String", 'HOST_LINK', '\"http://77.47.204.201\"')
-            buildConfigField("String", 'PORT_API', '\":8082/\"')
-            buildConfigField("String", 'PORT_SOCKET', '\":9090\"')
-        }
-        varashType {
-            buildConfigField("String", 'HOST_LINK', '\"http://134.249.164.155\"')
-            buildConfigField("String", 'PORT_API', '\":8085/\"')
-            buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
-        }
-        kiselBrotherType {
-            initWith(debug)
-            buildConfigField("String", 'HOST_LINK', '\"http://176.96.221.97\"')
-            buildConfigField("String", 'PORT_API', '\":8085/\"')
-            buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
-        }
         dynsatyType {
             initWith(debug)
-            buildConfigField("String", 'HOST_LINK', '\"http://192.168.0.110\"')
+            buildConfigField("String", 'HOST_LINK', '\"http://192.168.88.87\"')
             buildConfigField("String", 'PORT_API', '\":8085/\"')
-            buildConfigField("String", 'PORT_SOCKET', '\":9092\"')
+            buildConfigField("String", 'PORT_SOCKET', '\":9093\"')
         }
     }
 }
