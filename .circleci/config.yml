@@ -23,6 +23,7 @@ references:
   general_cache_key: &general_cache_key
     key: smart_dynasty-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "gradle.properties" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
 
+
 jobs:
   build:
     <<: *container_config
