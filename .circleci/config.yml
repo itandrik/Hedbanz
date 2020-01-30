@@ -97,6 +97,9 @@ jobs:
       - restore_cache:
           <<: *general_cache_key
       - run:
+          name: chmod permissions
+          command: chmod +x ./gradlew
+      - run:
           name: "Install Firebase CLI"
           command: |
             curl -sL firebase.tools | bash
@@ -139,6 +142,9 @@ jobs:
           name: configure build
       - restore_cache:
           <<: *general_cache_key
+      - run:
+          name: chmod permissions
+          command: chmod +x ./gradlew
       - run:
           name: "Sign aab prod"
           command: |
