@@ -1,6 +1,6 @@
 package com.transcendensoft.hedbanz.presentation.language.list
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.transcendensoft.hedbanz.R
@@ -29,7 +29,7 @@ import javax.inject.Inject
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-class LanguageAdapter @Inject constructor() : RecyclerView.Adapter<LanguageViewHolder>() {
+class LanguageAdapter @Inject constructor() : androidx.recyclerview.widget.RecyclerView.Adapter<LanguageViewHolder>() {
     var items: MutableList<SelectableLanguage> = mutableListOf()
         set(value) {
             field.clear()

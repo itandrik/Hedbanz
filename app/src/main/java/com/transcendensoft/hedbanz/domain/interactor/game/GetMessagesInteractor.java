@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.domain.interactor.game;
  * limitations under the License.
  */
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;

@@ -1,6 +1,6 @@
 package com.transcendensoft.hedbanz.presentation.feedback
 
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import android.widget.EditText
 import com.transcendensoft.hedbanz.presentation.base.BaseView
 import com.transcendensoft.hedbanz.presentation.changeicon.list.SelectableIcon

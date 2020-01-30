@@ -1,7 +1,7 @@
 package com.transcendensoft.hedbanz.presentation.friends.list.holder
 
-import android.support.annotation.DrawableRes
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.DrawableRes
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
 import kotlinx.android.synthetic.main.item_friend_pending.view.*
@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.item_friend_pending.view.*
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class PendingFriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class PendingFriendViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
     private var mIvIcon = itemView.ivFriendIcon
     private var mTvFriendName = itemView.tvFriendName
 

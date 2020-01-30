@@ -15,11 +15,11 @@ package com.transcendensoft.hedbanz.presentation.game.list.holder;
  * limitations under the License.
  */
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 /**
- * {@link android.support.v7.widget.RecyclerView.ViewHolder}
+ * {@link RecyclerView.ViewHolder}
  * for view that represents loading item.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com

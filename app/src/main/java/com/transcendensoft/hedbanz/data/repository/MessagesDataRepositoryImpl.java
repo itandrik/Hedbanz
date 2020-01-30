@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.data.repository;
  * limitations under the License.
  */
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.transcendensoft.hedbanz.data.models.MessageDTO;
 import com.transcendensoft.hedbanz.data.models.QuestionDTO;

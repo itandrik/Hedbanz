@@ -1,10 +1,10 @@
 package com.transcendensoft.hedbanz.presentation.invite.list
 
 import android.content.Context
-import android.support.annotation.DrawableRes
-import android.support.v7.widget.AppCompatCheckBox
-import android.support.v7.widget.CardView
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.DrawableRes
+import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -38,12 +38,12 @@ import kotlinx.android.synthetic.main.item_friend_invite.view.*
  *         Developed by <u>Transcendensoft</u>
  */
 class InviteViewHolder(private val mContext: Context,
-                       private val mItemView: View) : RecyclerView.ViewHolder(mItemView) {
+                       private val mItemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mItemView) {
     private val mIvIcon: ImageView? = mItemView.ivFriendIcon
     private val mTvFriendName: TextView? = mItemView.tvFriendName
     private val mTvSystemText: TextView? = mItemView.tvSystemText
     private val mChbSelect: AppCompatCheckBox? = mItemView.chbFriendSelected
-    private val mCard: CardView? = mItemView.friendCard
+    private val mCard: androidx.cardview.widget.CardView? = mItemView.friendCard
 
     fun bindFriendIcon(@DrawableRes drawable: Int) {
         mIvIcon?.setImageResource(drawable)

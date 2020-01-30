@@ -1,6 +1,6 @@
 package com.transcendensoft.hedbanz.presentation.game.list.delegates
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
@@ -39,7 +39,7 @@ import javax.inject.Inject
  */
 class UserWinsAdapterDelegate @Inject constructor() :
         AdapterDelegate<List<@JvmSuppressWildcards Message>>() {
-    override fun onCreateViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup?): androidx.recyclerview.widget.RecyclerView.ViewHolder {
         val context = parent?.context
         val itemView = LayoutInflater.from(context)
                 .inflate(R.layout.item_user_wins, parent, false)
@@ -53,7 +53,7 @@ class UserWinsAdapterDelegate @Inject constructor() :
     }
 
     override fun onBindViewHolder(items: List<Message>, position: Int,
-                                  holder: RecyclerView.ViewHolder, payloads: MutableList<Any>) {
+                                  holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, payloads: MutableList<Any>) {
         val message = items[position]
         val winsHolder = holder as UserWinsViewHolder
 

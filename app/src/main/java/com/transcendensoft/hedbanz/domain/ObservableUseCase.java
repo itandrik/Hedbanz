@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.domain;
  * limitations under the License.
  */
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;

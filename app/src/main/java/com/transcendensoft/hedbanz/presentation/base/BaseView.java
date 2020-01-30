@@ -15,8 +15,8 @@ package com.transcendensoft.hedbanz.presentation.base;
  * limitations under the License.
  */
 
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import android.widget.EditText;
 
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;

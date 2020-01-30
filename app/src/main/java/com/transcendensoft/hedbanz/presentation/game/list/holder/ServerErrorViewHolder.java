@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.presentation.game.list.holder;
  * limitations under the License.
  */
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 import io.reactivex.Observable;
 
 /**
- * {@link android.support.v7.widget.RecyclerView.ViewHolder}
+ * {@link RecyclerView.ViewHolder}
  * for view that represents error that related to network.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com

@@ -6,12 +6,12 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,14 +59,14 @@ import javax.inject.Inject
 class InviteDialogFragment @Inject constructor() : DialogFragment(),
         HasSupportFragmentInjector, InviteContract.View {
     @Inject lateinit var mPresenter: InvitePresenter
-    @Inject lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
+    @Inject lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
     @Inject lateinit var mAdapter: InviteAdapter
     @Inject lateinit var mActivity: GameActivity
 
     private lateinit var mProgressDialog: ProgressDialog
     lateinit var mRoom: Room
 
-    @BindView(R.id.rvInviteFriends) lateinit var mRecycler: RecyclerView
+    @BindView(R.id.rvInviteFriends) lateinit var mRecycler: androidx.recyclerview.widget.RecyclerView
     @BindView(R.id.rlEmptyListContainer) lateinit var mRlEmptyListContainer: RelativeLayout
     @BindView(R.id.rlErrorNetwork) lateinit var mRlErrorNetwork: ConstraintLayout
     @BindView(R.id.rlErrorServer) lateinit var mRlErrorServer: ConstraintLayout
@@ -76,7 +76,8 @@ class InviteDialogFragment @Inject constructor() : DialogFragment(),
     /*------------------------------------*
      *-------- Fragment lifecycle --------*
      *------------------------------------*/
-    override fun onAttach(context: Context?) {
+
+    override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
     }
@@ -85,9 +86,9 @@ class InviteDialogFragment @Inject constructor() : DialogFragment(),
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_invite, container, false)
 
-        if (dialog != null && dialog.window != null) {
-            dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog.window.requestFeature(Window.FEATURE_NO_TITLE)
+        if (dialog != null && dialog?.window != null) {
+            dialog!!.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog!!.window.requestFeature(Window.FEATURE_NO_TITLE)
         }
 
         ButterKnife.bind(this, view)
@@ -104,11 +105,14 @@ class InviteDialogFragment @Inject constructor() : DialogFragment(),
         if (dialog != null) {
             // retrieve display dimensions
             val displayRectangle = Rect()
-            val window = dialog.window
-            window.decorView.getWindowVisibleDisplayFrame(displayRectangle)
+            val window = dialog!!.window
 
-            dialog.window.setLayout((displayRectangle.width() * 0.8f).toInt(),
-                    (displayRectangle.height() * 0.5f).toInt())
+            if(window != null) {
+                window.decorView.getWindowVisibleDisplayFrame(displayRectangle)
+
+                window.setLayout((displayRectangle.width() * 0.8f).toInt(),
+                        (displayRectangle.height() * 0.5f).toInt())
+            }
         }
     }
 
@@ -134,9 +138,9 @@ class InviteDialogFragment @Inject constructor() : DialogFragment(),
     }
 
     private fun initRecycler(){
-        mRecycler.itemAnimator = DefaultItemAnimator()
-        mRecycler.layoutManager = LinearLayoutManager(
-                activity, LinearLayoutManager.VERTICAL, false)
+        mRecycler.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
+        mRecycler.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
+                activity, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL, false)
         mRecycler.adapter = mAdapter
     }
 
@@ -145,7 +149,7 @@ class InviteDialogFragment @Inject constructor() : DialogFragment(),
         mPresenter.setModel(listOf())
     }
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> =
+    override fun supportFragmentInjector(): AndroidInjector<androidx.fragment.app.Fragment> =
             fragmentDispatchingAndroidInjector
 
     /*------------------------------------*

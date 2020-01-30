@@ -1,10 +1,10 @@
 package com.transcendensoft.hedbanz.presentation.language.list
 
 import android.content.Context
-import android.support.annotation.DrawableRes
-import android.support.annotation.StringRes
-import android.support.graphics.drawable.VectorDrawableCompat
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.transcendensoft.hedbanz.domain.entity.SelectableLanguage
 import kotlinx.android.synthetic.main.item_language.view.*
@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.item_language.view.*
  * Developed by <u>Transcendensoft</u>
  */
 class LanguageViewHolder(private val mContext: Context,
-                         private val mItemView: View) : RecyclerView.ViewHolder(mItemView) {
+                         private val mItemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mItemView) {
     private val mTvLanguage = mItemView.tvCountryName
     private val mIvLanguage = mItemView.ivCountryFlag
     private val mRbLanguage = mItemView.rbCountrySelected

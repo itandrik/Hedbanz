@@ -6,10 +6,10 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.graphics.drawable.VectorDrawableCompat
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,7 +56,7 @@ import javax.inject.Inject
 class UserDetailsDialogFragment @Inject constructor() : DialogFragment(),
         HasSupportFragmentInjector, UserDetailsContract.View {
     @Inject lateinit var mPresenter: UserDetailsPresenter
-    @Inject lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
+    @Inject lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
     @Inject lateinit var gameActivity: GameActivity
 
     @BindView(R.id.btnAddFriend) lateinit var btnAddFriend: Button
@@ -68,10 +68,10 @@ class UserDetailsDialogFragment @Inject constructor() : DialogFragment(),
     var user: User? = null
     lateinit var mProgressDialog: ProgressDialog
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> =
+    override fun supportFragmentInjector(): AndroidInjector<androidx.fragment.app.Fragment> =
             fragmentDispatchingAndroidInjector
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
         initProgressDialog()
@@ -88,9 +88,9 @@ class UserDetailsDialogFragment @Inject constructor() : DialogFragment(),
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_user_details, container, false)
 
-        if (dialog != null && dialog.window != null) {
-            dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog.window.requestFeature(Window.FEATURE_NO_TITLE)
+        if (dialog != null && dialog!!.window != null) {
+            dialog!!.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog!!.window.requestFeature(Window.FEATURE_NO_TITLE)
         }
 
         ButterKnife.bind(this, view)
@@ -104,11 +104,13 @@ class UserDetailsDialogFragment @Inject constructor() : DialogFragment(),
         if (dialog != null) {
             // retrieve display dimensions
             val displayRectangle = Rect()
-            val window = dialog.window
-            window.decorView.getWindowVisibleDisplayFrame(displayRectangle)
+            val window = dialog!!.window
 
-            dialog.window.setLayout((displayRectangle.width() * 0.8f).toInt(),
-                    ViewGroup.LayoutParams.WRAP_CONTENT)
+            if(window != null) {
+                window.decorView.getWindowVisibleDisplayFrame(displayRectangle)
+                window.setLayout((displayRectangle.width() * 0.8f).toInt(),
+                        ViewGroup.LayoutParams.WRAP_CONTENT)
+            }
         }
     }
 

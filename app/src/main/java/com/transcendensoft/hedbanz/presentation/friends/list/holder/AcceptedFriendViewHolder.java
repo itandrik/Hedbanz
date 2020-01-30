@@ -15,8 +15,8 @@ package com.transcendensoft.hedbanz.presentation.friends.list.holder;
  * limitations under the License.
  */
 
-import android.support.annotation.DrawableRes;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.DrawableRes;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 import io.reactivex.Observable;
 
 /**
- * {@link android.support.v7.widget.RecyclerView.ViewHolder}
+ * {@link RecyclerView.ViewHolder}
  * for view that represents already accepted friend
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com

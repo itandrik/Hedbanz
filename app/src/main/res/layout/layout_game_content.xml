@@ -128,18 +128,18 @@
             android:visibility="gone"
             app:srcCompat="@drawable/ic_happy" />
 
-        <android.support.design.widget.CoordinatorLayout
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/clSwipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/tvSystemField">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvGameList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <android.support.design.widget.FloatingActionButton
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -152,7 +152,7 @@
                 app:rippleColor="@color/textWhite"
                 app:srcCompat="@drawable/ic_menu" />
 
-            <android.support.design.widget.FloatingActionButton
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabScrollDown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -166,7 +166,7 @@
                 app:rippleColor="@color/textSecondary"
                 app:srcCompat="@drawable/ic_arrow_down" />
 
-            <android.support.design.widget.FloatingActionButton
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabLogout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -178,7 +178,7 @@
                 app:layout_anchorGravity="top|left|start"
                 app:rippleColor="@color/textWhite"
                 app:srcCompat="@drawable/ic_exit_from_room" />
-        </android.support.design.widget.CoordinatorLayout>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </RelativeLayout>
 
     <include

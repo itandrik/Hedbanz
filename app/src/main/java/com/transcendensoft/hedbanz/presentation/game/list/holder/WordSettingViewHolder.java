@@ -16,10 +16,10 @@ package com.transcendensoft.hedbanz.presentation.game.list.holder;
  */
 
 import android.content.Context;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
 import io.reactivex.Observable;
 
 /**
- * {@link android.support.v7.widget.RecyclerView.ViewHolder}
+ * {@link RecyclerView.ViewHolder}
  * for view that represents that word are setting for specific user
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com

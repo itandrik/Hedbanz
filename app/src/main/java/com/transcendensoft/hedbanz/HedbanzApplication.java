@@ -16,7 +16,7 @@ package com.transcendensoft.hedbanz;
  */
 
 import android.content.res.Configuration;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.crashlytics.android.Crashlytics;
 import com.squareup.leakcanary.LeakCanary;

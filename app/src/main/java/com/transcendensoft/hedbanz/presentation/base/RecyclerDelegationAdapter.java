@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.presentation.base;
  * limitations under the License.
  */
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter;
 

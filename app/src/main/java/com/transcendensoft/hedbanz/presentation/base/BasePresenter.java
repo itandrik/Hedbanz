@@ -1,12 +1,11 @@
 package com.transcendensoft.hedbanz.presentation.base;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import timber.log.Timber;
 
 /**
  * @author Andrii Chernysh

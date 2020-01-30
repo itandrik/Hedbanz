@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.presentation.game.list;
  * limitations under the License.
  */
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 
 import com.transcendensoft.hedbanz.domain.entity.Message;

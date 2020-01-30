@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.utils.logging;
  * limitations under the License.
  */
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;

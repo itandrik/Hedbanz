@@ -2,7 +2,7 @@ package com.transcendensoft.hedbanz.presentation.game.list.holder
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
 import android.widget.RelativeLayout
@@ -36,7 +36,7 @@ import java.sql.Timestamp
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-class AskingQuestionThisUserViewHolder(context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
+class AskingQuestionThisUserViewHolder(context: Context, itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
     private val mPbThumbsUp = itemView.numberProgressBarThumbsUp
     private val mPbThumbsDown = itemView.numberProgressBarThumbsDown
     private val mPbWin = itemView.numberProgressBarWin

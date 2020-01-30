@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true" />
 
-    <android.support.v7.widget.AppCompatRadioButton
+    <androidx.appcompat.widget.AppCompatRadioButton
         android:id="@+id/rbCountrySelected"
         app:buttonTint="@color/google_green"
         android:layout_width="wrap_content"

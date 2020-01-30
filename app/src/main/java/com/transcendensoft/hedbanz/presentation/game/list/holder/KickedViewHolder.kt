@@ -1,7 +1,7 @@
 package com.transcendensoft.hedbanz.presentation.game.list.holder
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.transcendensoft.hedbanz.R
 import kotlinx.android.synthetic.main.item_kick.view.*
@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.item_kick.view.*
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class KickedViewHolder (val mContext: Context?, itemView: View) : RecyclerView.ViewHolder(itemView) {
+class KickedViewHolder (val mContext: Context?, itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
     private val mTvUserKicked = itemView.tvUserKicked
 
     fun bindUserLogin(login: String?) {

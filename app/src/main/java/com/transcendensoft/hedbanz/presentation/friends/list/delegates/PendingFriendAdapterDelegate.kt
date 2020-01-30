@@ -1,6 +1,6 @@
 package com.transcendensoft.hedbanz.presentation.friends.list.delegates
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
@@ -44,7 +44,7 @@ class PendingFriendAdapterDelegate @Inject constructor():
             items[position].isPending && !items[position].isAccepted
 
 
-    override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup): androidx.recyclerview.widget.RecyclerView.ViewHolder {
         val context = parent.context
         val itemView = LayoutInflater.from(context)
                 .inflate(R.layout.item_friend_pending, parent, false)
@@ -52,7 +52,7 @@ class PendingFriendAdapterDelegate @Inject constructor():
     }
 
     override fun onBindViewHolder(items: List<Friend>, position: Int,
-                                  holder: RecyclerView.ViewHolder,
+                                  holder: androidx.recyclerview.widget.RecyclerView.ViewHolder,
                                   payloads: List<Any>) {
         val friend = items[position]
         if(holder is PendingFriendViewHolder) {

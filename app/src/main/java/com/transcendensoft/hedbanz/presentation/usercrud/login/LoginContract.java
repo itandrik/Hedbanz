@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.presentation.usercrud.login;
  * limitations under the License.
  */
 
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.base.BaseView;

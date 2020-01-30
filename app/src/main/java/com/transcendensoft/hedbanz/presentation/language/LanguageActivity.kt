@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -26,7 +26,7 @@ class LanguageActivity : BaseActivity() {
     @Inject lateinit var preferenceManager: PreferenceManager
     @Inject lateinit var languageAdapter: LanguageAdapter
 
-    @BindView(R.id.rvLanguages) lateinit var recyclerView: RecyclerView
+    @BindView(R.id.rvLanguages) lateinit var recyclerView: androidx.recyclerview.widget.RecyclerView
     @BindView(R.id.tvToolbarTitle) lateinit var toolbarTitle: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,11 +45,11 @@ class LanguageActivity : BaseActivity() {
     }
 
     private fun initRecycler() {
-        recyclerView.itemAnimator = DefaultItemAnimator()
-        recyclerView.layoutManager = LinearLayoutManager(
-                this, LinearLayoutManager.VERTICAL, false)
+        recyclerView.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
+        recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
+                this, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = languageAdapter
-        recyclerView.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+        recyclerView.overScrollMode = androidx.recyclerview.widget.RecyclerView.OVER_SCROLL_NEVER
 
         addLanguagesToAdapter()
     }

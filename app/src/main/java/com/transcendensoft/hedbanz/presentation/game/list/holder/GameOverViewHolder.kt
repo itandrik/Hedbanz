@@ -1,8 +1,8 @@
 package com.transcendensoft.hedbanz.presentation.game.list.holder
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.transcendensoft.hedbanz.R
 import io.reactivex.Observable
@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.item_game_over.view.*
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class GameOverViewHolder(val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
+class GameOverViewHolder(val context: Context, itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
     fun bindEnabledButtons(isEnabled: Boolean){
         if(isEnabled){
             itemView.btnRestart?.isEnabled = true

@@ -1,6 +1,6 @@
 package com.transcendensoft.hedbanz.presentation.changeicon.list
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.transcendensoft.hedbanz.R
@@ -29,7 +29,7 @@ import javax.inject.Inject
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class ChangeIconAdapter @Inject constructor(): RecyclerView.Adapter<ChangeIconViewHolder>() {
+class ChangeIconAdapter @Inject constructor(): androidx.recyclerview.widget.RecyclerView.Adapter<ChangeIconViewHolder>() {
     var items: MutableList<SelectableIcon> = mutableListOf()
         set(value) {
             field.clear()

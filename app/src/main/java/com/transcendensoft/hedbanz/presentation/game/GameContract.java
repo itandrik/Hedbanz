@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.presentation.game;
  * limitations under the License.
  */
 
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 import android.widget.EditText;
 
 import com.transcendensoft.hedbanz.domain.entity.Message;

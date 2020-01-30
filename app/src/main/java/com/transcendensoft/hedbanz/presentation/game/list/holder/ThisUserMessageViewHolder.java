@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.presentation.game.list.holder;
  * limitations under the License.
  */
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -30,7 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * {@link android.support.v7.widget.RecyclerView.ViewHolder}
+ * {@link RecyclerView.ViewHolder}
  * for view that represents a message_received from current user.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com

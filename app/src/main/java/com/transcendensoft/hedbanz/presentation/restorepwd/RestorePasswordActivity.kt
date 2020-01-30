@@ -2,8 +2,8 @@ package com.transcendensoft.hedbanz.presentation.restorepwd
 
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
 import android.view.WindowManager
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity

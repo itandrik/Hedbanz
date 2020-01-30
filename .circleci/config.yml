@@ -91,6 +91,8 @@ jobs:
     <<: *container_config
     steps:
       - checkout
+      - run: yes | sdkmanager --licenses || exit 0
+      - run: yes | sdkmanager --update || exit 0
       - run:
           command: bundle update fastlane && gem install bundler && bundle install
           name: configure build
@@ -137,6 +139,8 @@ jobs:
     <<: *container_config
     steps:
       - checkout
+      - run: yes | sdkmanager --licenses || exit 0
+      - run: yes | sdkmanager --update || exit 0
       - run:
           command: bundle update fastlane && gem install bundler && bundle install
           name: configure build

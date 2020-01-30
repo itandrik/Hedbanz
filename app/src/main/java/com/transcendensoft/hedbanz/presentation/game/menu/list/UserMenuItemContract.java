@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.presentation.game.menu.list;
  * limitations under the License.
  */
 
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 
 import com.transcendensoft.hedbanz.domain.entity.PlayerStatus;
 import com.transcendensoft.hedbanz.domain.entity.User;

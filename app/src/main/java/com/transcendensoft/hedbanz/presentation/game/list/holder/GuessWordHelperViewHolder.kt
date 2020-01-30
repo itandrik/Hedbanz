@@ -1,6 +1,6 @@
 package com.transcendensoft.hedbanz.presentation.game.list.holder
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.transcendensoft.hedbanz.domain.entity.Question
 import io.reactivex.Observable
@@ -30,7 +30,7 @@ import timber.log.Timber
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-class GuessWordHelperViewHolder(private val mItemView: View) : RecyclerView.ViewHolder(mItemView) {
+class GuessWordHelperViewHolder(private val mItemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mItemView) {
     private val mTvHelperGuessWord = mItemView.tvGuessWordHelper
     private val mCvGuessWordHelper = mItemView.cvGuessWordHelper
 

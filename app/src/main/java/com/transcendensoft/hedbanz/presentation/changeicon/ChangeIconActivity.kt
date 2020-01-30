@@ -1,11 +1,11 @@
 package com.transcendensoft.hedbanz.presentation.changeicon
 
 import android.os.Bundle
-import android.support.graphics.drawable.VectorDrawableCompat
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -40,7 +40,7 @@ import javax.inject.Inject
  *         Developed by <u>Transcendensoft</u>
  */
 class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
-    @BindView(R.id.rvUserIcons) lateinit var rvUserIcons: RecyclerView
+    @BindView(R.id.rvUserIcons) lateinit var rvUserIcons: androidx.recyclerview.widget.RecyclerView
     @BindView(R.id.tvToolbarTitle) lateinit var tvToolbarTitle: TextView
 
     @Inject lateinit var presenter: ChangeIconPresenter
@@ -79,10 +79,10 @@ class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
      *---------- Initialization ----------*
      *------------------------------------*/
     private fun initRecycler() {
-        val layoutManager = GridLayoutManager(this, 3,
-                GridLayoutManager.VERTICAL, false)
+        val layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 3,
+                androidx.recyclerview.widget.GridLayoutManager.VERTICAL, false)
         rvUserIcons.layoutManager = layoutManager
-        rvUserIcons.itemAnimator = DefaultItemAnimator()
+        rvUserIcons.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
         rvUserIcons.adapter = adapter
 
         presenter.processIconSelected(adapter.clickSubject)

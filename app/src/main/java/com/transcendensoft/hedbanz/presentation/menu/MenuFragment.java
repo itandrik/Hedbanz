@@ -19,10 +19,10 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.graphics.drawable.VectorDrawableCompat;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -274,7 +274,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
         mIvImage.setVisibility(View.GONE);
 
         mShimmerFrameLayout.setVisibility(View.VISIBLE);
-        mShimmerFrameLayout.startShimmerAnimation();
+        mShimmerFrameLayout.startShimmer();
     }
 
     @Override
@@ -289,7 +289,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
         mIvImage.setVisibility(View.VISIBLE);
 
         mShimmerFrameLayout.setVisibility(View.GONE);
-        mShimmerFrameLayout.stopShimmerAnimation();
+        mShimmerFrameLayout.stopShimmer();
 
         mTvUsername.setText(user.getLogin());
         mTvMoney.setText(String.valueOf(user.getMoney()));

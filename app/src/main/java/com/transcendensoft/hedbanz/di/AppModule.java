@@ -17,7 +17,7 @@ package com.transcendensoft.hedbanz.di;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.transcendensoft.hedbanz.HedbanzApplication;

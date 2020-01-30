@@ -16,7 +16,7 @@ package com.transcendensoft.hedbanz.presentation.custom.widget;
  */
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 
 /**
@@ -25,7 +25,7 @@ import android.util.AttributeSet;
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-public class SquareImageView extends android.support.v7.widget.AppCompatImageView{
+public class SquareImageView extends androidx.appcompat.widget.AppCompatImageView{
     public SquareImageView(Context context) {
         super(context);
     }

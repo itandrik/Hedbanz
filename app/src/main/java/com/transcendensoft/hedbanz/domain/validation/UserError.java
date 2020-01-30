@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.domain.validation;
  * limitations under the License.
  */
 
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.transcendensoft.hedbanz.R;
 

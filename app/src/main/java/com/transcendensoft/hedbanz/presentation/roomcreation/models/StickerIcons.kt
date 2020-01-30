@@ -1,6 +1,6 @@
 package com.transcendensoft.hedbanz.presentation.roomcreation.models
 
-import android.support.annotation.DrawableRes
+import androidx.annotation.DrawableRes
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.utils.extension.random
 

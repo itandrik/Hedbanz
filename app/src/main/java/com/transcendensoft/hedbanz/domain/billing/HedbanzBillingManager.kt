@@ -32,9 +32,9 @@ class HedbanzBillingManager(context: Context) : PurchasesUpdatedListener {
     private val billingClient = BillingClient.newBuilder(context).setListener(this).build()
     private var isConnected: Boolean = false
 
-    override fun onPurchasesUpdated(responseCode: Int, purchases: MutableList<Purchase>?) {
+    override fun onPurchasesUpdated(billingResult: BillingResult, purchases: MutableList<Purchase>?) {
         Timber.i("OnPurchasesUpdated. Response code: " +
-                "${getBillingResponseCodeString(responseCode)} " +
+                "${getBillingResponseCodeString(billingResult.responseCode)} " +
                 "Purchases: ${purchases?.joinToString(separator = ", ")}")
     }
 
@@ -44,11 +44,11 @@ class HedbanzBillingManager(context: Context) : PurchasesUpdatedListener {
         onStartInitialization()
 
         billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(responseCode: Int) {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
                 Timber.i("BILLING. onBillingSetupFinished. Response code: " +
-                        "${getBillingResponseCodeString(responseCode)} ")
+                        "${getBillingResponseCodeString(billingResult.responseCode)} ")
                 isConnected = true
-                onSetupFinished(responseCode, getBillingResponseCodeString(responseCode))
+                onSetupFinished(billingResult.responseCode, getBillingResponseCodeString(billingResult.responseCode))
             }
 
             override fun onBillingServiceDisconnected() {
@@ -71,13 +71,13 @@ class HedbanzBillingManager(context: Context) : PurchasesUpdatedListener {
 
         onStart()
         if (!isConnected) {
-            onError(getBillingResponseCodeString(BillingClient.BillingResponse.SERVICE_DISCONNECTED))
+            onError(getBillingResponseCodeString(BillingClient.BillingResponseCode.SERVICE_DISCONNECTED))
         } else {
-            billingClient.querySkuDetailsAsync(params.build()) { responseCode, skuDetailsList ->
+            billingClient.querySkuDetailsAsync(params.build()) { billingResponse, skuDetailsList ->
                 Timber.i("BILLING. querySkuDetailsAsync. Response: " +
-                        "${getBillingResponseCodeString(responseCode)}. Sku list: " +
+                        "${getBillingResponseCodeString(billingResponse.responseCode)}. Sku list: " +
                         skuDetailsList.joinToString(separator = ", "))
-                onComplete(responseCode, getBillingResponseCodeString(responseCode), skuDetailsList)
+                onComplete(billingResponse.responseCode, getBillingResponseCodeString(billingResponse.responseCode), skuDetailsList)
             }
         }
     }
@@ -103,13 +103,13 @@ class HedbanzBillingManager(context: Context) : PurchasesUpdatedListener {
                       onError: (errorMessage: String) -> Unit) {
         onStart()
         if (!isConnected) {
-            onError(getBillingResponseCodeString(BillingClient.BillingResponse.SERVICE_DISCONNECTED))
+            onError(getBillingResponseCodeString(BillingClient.BillingResponseCode.SERVICE_DISCONNECTED))
         } else {
-            billingClient.queryPurchaseHistoryAsync(type) { responseCode, purchasesList ->
+            billingClient.queryPurchaseHistoryAsync(type) { billingResult, purchasesList ->
                 Timber.i("BILLING. queryPurchaseHistoryAsync. Response: " +
-                        "${getBillingResponseCodeString(responseCode)}. Sku list: " +
+                        "${getBillingResponseCodeString(billingResult.responseCode)}. Sku list: " +
                         purchasesList.joinToString(separator = ", "))
-                onComplete(responseCode, getBillingResponseCodeString(responseCode), purchasesList)
+                onComplete(billingResult.responseCode, getBillingResponseCodeString(billingResult.responseCode), purchasesList.map { Purchase(it.sku, it.signature) }) // TODO check if correct
             }
         }
     }
@@ -132,55 +132,54 @@ class HedbanzBillingManager(context: Context) : PurchasesUpdatedListener {
                         onStart: () -> Unit,
                         onComplete: (responseCode: Int, responseMessage: String) -> Unit,
                         onError: (errorMessage: String) -> Unit) {
-        if(isConnected) {
+        if (isConnected) {
             onStart()
-            billingClient.consumeAsync(purchaseToken) { responseCode, _ ->
-                onComplete(responseCode, getBillingResponseCodeString(responseCode))
+            billingClient.consumeAsync(ConsumeParams.newBuilder().setPurchaseToken(purchaseToken).build()) { billingResult, t ->
+                onComplete(billingResult.responseCode, getBillingResponseCodeString(billingResult.responseCode))
             }
         } else {
-            onError(getBillingResponseCodeString(BillingClient.BillingResponse.SERVICE_UNAVAILABLE))
+            onError(getBillingResponseCodeString(BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE))
         }
     }
 
-    private fun purchase(activity: Activity, skuId: String, type: String): Int{
+    private fun purchase(activity: Activity, skuId: String, type: String): Int {
         val flowParams = BillingFlowParams.newBuilder()
-                .setSku(skuId)
-                .setType(type)
+                .setOldSku(skuId, type)
                 .build()
 
-        return billingClient.launchBillingFlow(activity, flowParams)
+        return billingClient.launchBillingFlow(activity, flowParams).responseCode
     }
 
-    fun purchaseSubscription(activity: Activity, skuId: String){
+    fun purchaseSubscription(activity: Activity, skuId: String) {
         purchase(activity, skuId, BillingClient.SkuType.SUBS)
     }
 
-    fun purchaseItem(activity: Activity, skuId: String){
+    fun purchaseItem(activity: Activity, skuId: String) {
         purchase(activity, skuId, BillingClient.SkuType.INAPP)
     }
 
     fun getBillingResponseCodeString(responseCode: Int) =
             when (responseCode) {
-                BillingClient.BillingResponse.BILLING_UNAVAILABLE -> "Billing unavailable." +
+                BillingClient.BillingResponseCode.BILLING_UNAVAILABLE -> "Billing unavailable." +
                         " Version for the Billing API is not supported for the requested type"
-                BillingClient.BillingResponse.DEVELOPER_ERROR -> "Developer error." +
+                BillingClient.BillingResponseCode.DEVELOPER_ERROR -> "Developer error." +
                         " Incorrect arguments have been sent to the Billing API"
-                BillingClient.BillingResponse.ERROR -> "Error. An error occurs" +
+                BillingClient.BillingResponseCode.ERROR -> "Error. An error occurs" +
                         " during the API action being executed"
-                BillingClient.BillingResponse.FEATURE_NOT_SUPPORTED -> "Feature not supported." +
+                BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED -> "Feature not supported." +
                         " Requested action is not supported by play services on the current device"
-                BillingClient.BillingResponse.ITEM_ALREADY_OWNED -> "ITEM_ALREADY_OWNED." +
+                BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> "ITEM_ALREADY_OWNED." +
                         " User attempts to purchases an item that they already own"
-                BillingClient.BillingResponse.ITEM_NOT_OWNED -> "ITEM_NOT_OWNED." +
+                BillingClient.BillingResponseCode.ITEM_NOT_OWNED -> "ITEM_NOT_OWNED." +
                         " User attempts to consume an item that they do not currently own"
-                BillingClient.BillingResponse.ITEM_UNAVAILABLE -> "ITEM_UNAVAILABLE." +
+                BillingClient.BillingResponseCode.ITEM_UNAVAILABLE -> "ITEM_UNAVAILABLE." +
                         " User attempts to purchases a product that is not available for purchase"
-                BillingClient.BillingResponse.OK -> "OK. Request is successful"
-                BillingClient.BillingResponse.SERVICE_DISCONNECTED -> "SERVICE_DISCONNECTED." +
+                BillingClient.BillingResponseCode.OK -> "OK. Request is successful"
+                BillingClient.BillingResponseCode.SERVICE_DISCONNECTED -> "SERVICE_DISCONNECTED." +
                         " Play service is not connected at the point of the request"
-                BillingClient.BillingResponse.SERVICE_UNAVAILABLE -> "SERVICE_UNAVAILABLE." +
+                BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE -> "SERVICE_UNAVAILABLE." +
                         " An error occurs in relation to the devices network connectivity"
-                BillingClient.BillingResponse.USER_CANCELED -> "USER cancelled." +
+                BillingClient.BillingResponseCode.USER_CANCELED -> "USER cancelled." +
                         " User cancels the request that is currently taking place"
                 else -> "Unknown response code"
             }

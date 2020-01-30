@@ -1,6 +1,6 @@
 package com.transcendensoft.hedbanz.presentation.game.list.holder
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 
 /**
@@ -27,4 +27,4 @@ import android.view.View
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class UpdateUsersInfoViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView)
+class UpdateUsersInfoViewHolder (itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView)

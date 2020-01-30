@@ -1,6 +1,6 @@
 package com.transcendensoft.hedbanz.presentation.game.list.holder
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.item_waiting_for_users.view.*
 
@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.main.item_waiting_for_users.view.*
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class WaitingForUsersViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView) {
+class WaitingForUsersViewHolder (itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
     private val mTvWaitingForUsers = itemView.tvWaitingForGame
 
     fun bindWaitingForUsersText(text:String){

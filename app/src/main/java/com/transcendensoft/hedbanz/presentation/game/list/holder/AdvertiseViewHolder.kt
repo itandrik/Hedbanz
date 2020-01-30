@@ -1,6 +1,6 @@
 package com.transcendensoft.hedbanz.presentation.game.list.holder
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -30,7 +30,7 @@ import timber.log.Timber
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class AdvertiseViewHolder (mItemView: View) : RecyclerView.ViewHolder(mItemView) {
+class AdvertiseViewHolder (mItemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mItemView) {
     private val adView = mItemView.adView
 
     fun bindAdvertise() {

@@ -1,6 +1,6 @@
 package com.transcendensoft.hedbanz.domain.entity
 
-import android.support.annotation.DrawableRes
+import androidx.annotation.DrawableRes
 import com.transcendensoft.hedbanz.R
 
 /**

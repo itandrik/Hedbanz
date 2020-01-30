@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.utils;
  * limitations under the License.
  */
 
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 
 import com.transcendensoft.hedbanz.R;
 

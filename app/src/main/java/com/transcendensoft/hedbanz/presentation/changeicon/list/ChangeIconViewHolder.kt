@@ -1,8 +1,8 @@
 package com.transcendensoft.hedbanz.presentation.changeicon.list
 
 import android.content.Context
-import android.support.graphics.drawable.VectorDrawableCompat
-import android.support.v7.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.item_user_icon.view.*
@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.item_user_icon.view.*
  *         Developed by <u>Transcendensoft</u>
  */
 class ChangeIconViewHolder(private val context: Context,
-                           private val mItemView: View) : RecyclerView.ViewHolder(mItemView) {
+                           private val mItemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mItemView) {
     fun bindUserIcon(iconId: Int) {
         val drawable = VectorDrawableCompat.create(context.resources, iconId, null)
         mItemView.ivIcon?.setImageDrawable(drawable)

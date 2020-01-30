@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.presentation.custom.transform;
  * limitations under the License.
  */
 
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 
 import static android.view.View.GONE;

@@ -2,10 +2,10 @@ package com.transcendensoft.hedbanz.presentation.game.list.holder
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.annotation.DrawableRes
-import android.support.graphics.drawable.VectorDrawableCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.DrawableRes
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
@@ -41,7 +41,7 @@ import kotlinx.android.synthetic.main.item_message_some_user.view.*
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-class AskingQuestionOtherUserViewHolder(context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
+class AskingQuestionOtherUserViewHolder(context: Context, itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
     private val mCvThumbsUp = itemView.cvThumbsUp
     private val mCvThumbsDown = itemView.cvThumbsDown
     private val mIvThumbsUp = itemView.ivThumbsUp
@@ -253,11 +253,11 @@ class AskingQuestionOtherUserViewHolder(context: Context, itemView: View) : Recy
 
     fun bindTopMargin(isTopMarginNeeded: Boolean) {
         if (isTopMarginNeeded) {
-            val params = itemView.layoutParams as RecyclerView.LayoutParams
+            val params = itemView.layoutParams as androidx.recyclerview.widget.RecyclerView.LayoutParams
             params.topMargin = ViewUtils.dpToPx(mContext, 8f)
             itemView.layoutParams = params
         } else {
-            val params = itemView.layoutParams as RecyclerView.LayoutParams
+            val params = itemView.layoutParams as androidx.recyclerview.widget.RecyclerView.LayoutParams
             params.topMargin = ViewUtils.dpToPx(mContext, 0f)
             itemView.layoutParams = params
         }

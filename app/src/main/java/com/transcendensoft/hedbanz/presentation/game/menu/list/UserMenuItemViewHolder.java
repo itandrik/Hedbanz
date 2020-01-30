@@ -17,7 +17,7 @@ package com.transcendensoft.hedbanz.presentation.game.menu.list;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.graphics.drawable.VectorDrawableCompat;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;

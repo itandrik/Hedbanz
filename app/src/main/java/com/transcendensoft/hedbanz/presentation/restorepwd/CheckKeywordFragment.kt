@@ -1,7 +1,7 @@
 package com.transcendensoft.hedbanz.presentation.restorepwd
 
 import android.os.Bundle
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater

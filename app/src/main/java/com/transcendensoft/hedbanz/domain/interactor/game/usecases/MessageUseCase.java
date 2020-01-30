@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.domain.interactor.game.usecases;
  * limitations under the License.
  */
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.ObservableUseCase;

@@ -15,7 +15,7 @@ package com.transcendensoft.hedbanz.presentation.friends.list;
  * limitations under the License.
  */
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.transcendensoft.hedbanz.domain.entity.Friend;
 import com.transcendensoft.hedbanz.presentation.base.RecyclerDelegationAdapter;

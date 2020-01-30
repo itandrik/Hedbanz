@@ -1,6 +1,6 @@
 package com.transcendensoft.hedbanz.presentation.game.list
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.transcendensoft.hedbanz.R
@@ -33,7 +33,7 @@ import javax.inject.Inject
  */
 class GuessWordsHelperAdapter @Inject constructor(private val helperStrings: List<String>,
                                                   var questionId: Long) :
-        RecyclerView.Adapter<GuessWordHelperViewHolder>() {
+        androidx.recyclerview.widget.RecyclerView.Adapter<GuessWordHelperViewHolder>() {
     val helperStringsSubject: PublishSubject<Question> = PublishSubject.create()
     var isEnabled = true
 

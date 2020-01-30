@@ -1,6 +1,6 @@
 package com.transcendensoft.hedbanz.presentation.game.list.delegates
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,7 +44,7 @@ class GameOverAdapterDelegate @Inject constructor() :
     val restartSubject: PublishSubject<View> = PublishSubject.create()
     val cancelSubject: PublishSubject<View> = PublishSubject.create()
 
-    override fun onCreateViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup?): androidx.recyclerview.widget.RecyclerView.ViewHolder {
         val context = parent?.context
         val itemView = LayoutInflater.from(context)
                 .inflate(R.layout.item_game_over, parent, false)
@@ -57,7 +57,7 @@ class GameOverAdapterDelegate @Inject constructor() :
     }
 
     override fun onBindViewHolder(items: List<Message>, position: Int,
-                                  holder: RecyclerView.ViewHolder, payloads: MutableList<Any>) {
+                                  holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, payloads: MutableList<Any>) {
         if(holder is GameOverViewHolder) {
             holder.restartClickObservable().subscribe(restartSubject)
             holder.cancelClickObservable().subscribe(cancelSubject)
