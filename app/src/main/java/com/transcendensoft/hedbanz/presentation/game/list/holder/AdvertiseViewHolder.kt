@@ -30,8 +30,8 @@ import timber.log.Timber
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class AdvertiseViewHolder (private val mItemView: View?) : RecyclerView.ViewHolder(mItemView) {
-    private val adView = mItemView?.adView
+class AdvertiseViewHolder (mItemView: View) : RecyclerView.ViewHolder(mItemView) {
+    private val adView = mItemView.adView
 
     fun bindAdvertise() {
         val adRequest = AdRequest.Builder().build()

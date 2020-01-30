@@ -30,8 +30,8 @@ import kotlinx.android.synthetic.main.item_kick_warning.view.*
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class KickWarningViewHolder(val mContext: Context?, itemView: View?) : RecyclerView.ViewHolder(itemView) {
-    private val mTvUserKicked = itemView?.tvUserKickWarning
+class KickWarningViewHolder(val mContext: Context?, itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val mTvUserKicked = itemView.tvUserKickWarning
 
     fun bindUserLogin(login: String?) {
         mTvUserKicked?.text = mContext?.getString(R.string.game_user_kick_warning, login ?: "")

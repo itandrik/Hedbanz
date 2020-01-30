@@ -30,9 +30,9 @@ import timber.log.Timber
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-class GuessWordHelperViewHolder(private val mItemView: View?) : RecyclerView.ViewHolder(mItemView) {
-    private val mTvHelperGuessWord = mItemView?.tvGuessWordHelper
-    private val mCvGuessWordHelper = mItemView?.cvGuessWordHelper
+class GuessWordHelperViewHolder(private val mItemView: View) : RecyclerView.ViewHolder(mItemView) {
+    private val mTvHelperGuessWord = mItemView.tvGuessWordHelper
+    private val mCvGuessWordHelper = mItemView.cvGuessWordHelper
 
     fun bindText(text: String?) {
         if(!text.isNullOrEmpty()){

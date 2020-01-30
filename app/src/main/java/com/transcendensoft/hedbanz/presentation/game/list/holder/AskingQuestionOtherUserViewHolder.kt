@@ -41,30 +41,30 @@ import kotlinx.android.synthetic.main.item_message_some_user.view.*
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-class AskingQuestionOtherUserViewHolder(context: Context, itemView: View?) : RecyclerView.ViewHolder(itemView) {
-    private val mCvThumbsUp = itemView?.cvThumbsUp
-    private val mCvThumbsDown = itemView?.cvThumbsDown
-    private val mIvThumbsUp = itemView?.ivThumbsUp
-    private val mIvThumbsDown = itemView?.ivThumbsDown
-    private val mCvWin = itemView?.cvWin
-    private val mPbThumbsUp = itemView?.numberProgressBarThumbsUp
-    private val mPbThumbsDown = itemView?.numberProgressBarThumbsDown
-    private val mPbWin = itemView?.numberProgressBarWin
-    private val mTvPlayersThumbsUp = itemView?.tvPlayersThumbsUp
-    private val mTvPlayersThumbsDown = itemView?.tvPlayersThumbsDown
-    private val mTvPlayersWin = itemView?.tvPlayersWin
-    private val mThumbsUpPlayersDivider = itemView?.dividerThumbsUpPlayers
-    private val mThumbsDownPlayersDivider = itemView?.dividerThumbsDownPlayers
-    private val mWinPlayersDivider = itemView?.dividerWinPlayers
-    private val mTvUserWord = itemView?.tvUserWord
-    private val mIvWinIcon = itemView?.ivWinIcon
-    private val mTvMessage = itemView?.tvMessage
-    private val mIvUserImage = itemView?.ivUserImage
-    private val mTvLogin = itemView?.tvLogin
-    private val mSeparator = itemView?.separator
-    private val mRlContainer = itemView?.rlSomeMessageContainer
-    private val mTvTime = itemView?.tvTime
-    private val mTvTotal = itemView?.tvTotal
+class AskingQuestionOtherUserViewHolder(context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val mCvThumbsUp = itemView.cvThumbsUp
+    private val mCvThumbsDown = itemView.cvThumbsDown
+    private val mIvThumbsUp = itemView.ivThumbsUp
+    private val mIvThumbsDown = itemView.ivThumbsDown
+    private val mCvWin = itemView.cvWin
+    private val mPbThumbsUp = itemView.numberProgressBarThumbsUp
+    private val mPbThumbsDown = itemView.numberProgressBarThumbsDown
+    private val mPbWin = itemView.numberProgressBarWin
+    private val mTvPlayersThumbsUp = itemView.tvPlayersThumbsUp
+    private val mTvPlayersThumbsDown = itemView.tvPlayersThumbsDown
+    private val mTvPlayersWin = itemView.tvPlayersWin
+    private val mThumbsUpPlayersDivider = itemView.dividerThumbsUpPlayers
+    private val mThumbsDownPlayersDivider = itemView.dividerThumbsDownPlayers
+    private val mWinPlayersDivider = itemView.dividerWinPlayers
+    private val mTvUserWord = itemView.tvUserWord
+    private val mIvWinIcon = itemView.ivWinIcon
+    private val mTvMessage = itemView.tvMessage
+    private val mIvUserImage = itemView.ivUserImage
+    private val mTvLogin = itemView.tvLogin
+    private val mSeparator = itemView.separator
+    private val mRlContainer = itemView.rlSomeMessageContainer
+    private val mTvTime = itemView.tvTime
+    private val mTvTotal = itemView.tvTotal
 
     private val mContext = context
 

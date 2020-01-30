@@ -16,7 +16,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        buildConfigField("String", 'HOST_LINK', '\"http://192.168.88.87\"')
+        buildConfigField("String", 'HOST_LINK', '\"http://192.168.88.88\"')
         buildConfigField("String", 'PORT_API', '\":8085/\"')
         buildConfigField("String", 'PORT_SOCKET', '\":9093\"')
 

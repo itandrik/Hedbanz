@@ -27,4 +27,4 @@ import android.view.View
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class UpdateUsersInfoViewHolder (itemView: View?) : RecyclerView.ViewHolder(itemView)
+class UpdateUsersInfoViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView)

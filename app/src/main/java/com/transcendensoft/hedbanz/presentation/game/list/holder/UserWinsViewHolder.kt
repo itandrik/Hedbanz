@@ -29,8 +29,8 @@ import kotlinx.android.synthetic.main.item_user_wins.view.*
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class UserWinsViewHolder (val context: Context, itemView: View?) : RecyclerView.ViewHolder(itemView) {
-    private val mTvUserWinsLogin = itemView?.tvUserWinsLogin
+class UserWinsViewHolder (val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val mTvUserWinsLogin = itemView.tvUserWinsLogin
 
     fun bindThisUserWins(){
         mTvUserWinsLogin?.text = context.getString(R.string.game_this_user_wins)

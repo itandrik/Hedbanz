@@ -31,10 +31,10 @@ import kotlinx.android.synthetic.main.item_language.view.*
  * Developed by <u>Transcendensoft</u>
  */
 class LanguageViewHolder(private val mContext: Context,
-                         private val mItemView: View?) : RecyclerView.ViewHolder(mItemView) {
-    private val mTvLanguage = mItemView?.tvCountryName
-    private val mIvLanguage = mItemView?.ivCountryFlag
-    private val mRbLanguage = mItemView?.rbCountrySelected
+                         private val mItemView: View) : RecyclerView.ViewHolder(mItemView) {
+    private val mTvLanguage = mItemView.tvCountryName
+    private val mIvLanguage = mItemView.ivCountryFlag
+    private val mRbLanguage = mItemView.rbCountrySelected
 
     fun bindFlag(@DrawableRes drawableRes: Int) {
         val drawable = VectorDrawableCompat.create(mContext.resources, drawableRes, null)

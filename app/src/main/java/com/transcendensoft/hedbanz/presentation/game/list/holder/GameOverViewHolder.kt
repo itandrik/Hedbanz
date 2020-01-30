@@ -31,39 +31,39 @@ import kotlinx.android.synthetic.main.item_game_over.view.*
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class GameOverViewHolder(val context: Context, itemView: View?) : RecyclerView.ViewHolder(itemView) {
+class GameOverViewHolder(val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bindEnabledButtons(isEnabled: Boolean){
         if(isEnabled){
-            itemView?.btnRestart?.isEnabled = true
-            itemView?.btnRestart?.isClickable = true
-            itemView?.btnRestart?.setBackgroundResource(R.drawable.restart_button_bg)
-            itemView?.btnCancel?.setTextColor(ContextCompat.getColor(context, R.color.textSecondaryDark))
+            itemView.btnRestart?.isEnabled = true
+            itemView.btnRestart?.isClickable = true
+            itemView.btnRestart?.setBackgroundResource(R.drawable.restart_button_bg)
+            itemView.btnCancel?.setTextColor(ContextCompat.getColor(context, R.color.textSecondaryDark))
 
-            itemView?.btnCancel?.isEnabled = true
-            itemView?.btnCancel?.isClickable = true
-            itemView?.btnCancel?.setBackgroundResource(R.drawable.cancel_button_bg)
+            itemView.btnCancel?.isEnabled = true
+            itemView.btnCancel?.isClickable = true
+            itemView.btnCancel?.setBackgroundResource(R.drawable.cancel_button_bg)
         } else {
-            itemView?.btnRestart?.isEnabled = false
-            itemView?.btnRestart?.isClickable = false
-            itemView?.btnRestart?.setBackgroundResource(R.drawable.message_this_user)
-            itemView?.btnRestart?.setTextColor(ContextCompat.getColor(context, R.color.textSecondaryDark))
+            itemView.btnRestart?.isEnabled = false
+            itemView.btnRestart?.isClickable = false
+            itemView.btnRestart?.setBackgroundResource(R.drawable.message_this_user)
+            itemView.btnRestart?.setTextColor(ContextCompat.getColor(context, R.color.textSecondaryDark))
 
-            itemView?.btnCancel?.isEnabled = false
-            itemView?.btnCancel?.isClickable = false
-            itemView?.btnCancel?.setBackgroundResource(R.drawable.message_other_user)
+            itemView.btnCancel?.isEnabled = false
+            itemView.btnCancel?.isClickable = false
+            itemView.btnCancel?.setBackgroundResource(R.drawable.message_other_user)
         }
     }
 
     fun restartClickObservable() =
             Observable.create<View> {emitter ->
-                itemView?.btnRestart?.setOnClickListener {
+                itemView.btnRestart?.setOnClickListener {
                     emitter.onNext(it)
                 }
             }!!
 
     fun cancelClickObservable() =
             Observable.create<View> { emitter ->
-                itemView?.btnCancel?.setOnClickListener {
+                itemView.btnCancel?.setOnClickListener {
                     emitter.onNext(it)
                 }
             }!!

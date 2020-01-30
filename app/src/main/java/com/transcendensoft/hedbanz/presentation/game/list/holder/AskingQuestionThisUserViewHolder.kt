@@ -36,21 +36,21 @@ import java.sql.Timestamp
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-class AskingQuestionThisUserViewHolder(context: Context, itemView: View?) : RecyclerView.ViewHolder(itemView) {
-    private val mPbThumbsUp = itemView?.numberProgressBarThumbsUp
-    private val mPbThumbsDown = itemView?.numberProgressBarThumbsDown
-    private val mPbWin = itemView?.numberProgressBarWin
-    private val mTvPlayersThumbsUp = itemView?.tvPlayersThumbsUp
-    private val mTvPlayersThumbsDown = itemView?.tvPlayersThumbsDown
-    private val mTvPlayersWin = itemView?.tvPlayersWin
-    private val mThumbsUpPlayersDivider = itemView?.dividerThumbsUpPlayers
-    private val mThumbsDownPlayersDivider = itemView?.dividerThumbsDownPlayers
-    private val mWinPlayersDivider = itemView?.dividerWinPlayers
+class AskingQuestionThisUserViewHolder(context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val mPbThumbsUp = itemView.numberProgressBarThumbsUp
+    private val mPbThumbsDown = itemView.numberProgressBarThumbsDown
+    private val mPbWin = itemView.numberProgressBarWin
+    private val mTvPlayersThumbsUp = itemView.tvPlayersThumbsUp
+    private val mTvPlayersThumbsDown = itemView.tvPlayersThumbsDown
+    private val mTvPlayersWin = itemView.tvPlayersWin
+    private val mThumbsUpPlayersDivider = itemView.dividerThumbsUpPlayers
+    private val mThumbsDownPlayersDivider = itemView.dividerThumbsDownPlayers
+    private val mWinPlayersDivider = itemView.dividerWinPlayers
 
-    private val mTvMessage = itemView?.tvMessage
-    private val mTvTime = itemView?.tvTime
-    private val mPbLoading = itemView?.pbMessageLoading
-    private val mTvTotal = itemView?.tvTotal
+    private val mTvMessage = itemView.tvMessage
+    private val mTvTime = itemView.tvTime
+    private val mPbLoading = itemView.pbMessageLoading
+    private val mTvTotal = itemView.tvTotal
     private val mContext = context
 
     fun bindMessage(message: String) {
