@@ -6,59 +6,19 @@
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:id="@+id/sectionSummary"
+        android:id="@+id/sectionRooms"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+        app:layout_constraintBottom_toTopOf="@id/flFullscreenFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <fragment
-            android:id="@+id/summaryNavFragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:id="@+id/roomsFragment"
+            android:name="com.transcendensoft.hedbanz.presentation.rooms.RoomsFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:defaultNavHost="true"
-            app:navGraph="@navigation/accounts" />
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/sectionMoveMoney"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <fragment
-            android:id="@+id/moveMoneyNavFragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:defaultNavHost="false"
-            app:navGraph="@navigation/move_money" />
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/sectionImpact"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <fragment
-            android:id="@+id/impactNavFragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:defaultNavHost="false"
-            app:navGraph="@navigation/impact" />
+            android:layout_height="match_parent" />
     </FrameLayout>
 
     <FrameLayout
@@ -66,21 +26,21 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+        app:layout_constraintBottom_toTopOf="@id/flFullscreenFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <fragment
-            android:id="@+id/settingsNavFragment"
+            android:id="@+id/settingsFragment"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:defaultNavHost="false"
+            app:defaultNavHost="true"
             app:navGraph="@navigation/settings" />
     </FrameLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+   <!-- <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomNavigationView"
         style="@style/BottomNavigationView"
         android:layout_width="0dp"
@@ -92,6 +52,23 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/dashboard_bottom_menu" />
+        app:menu="@menu/dashboard_bottom_menu" />-->
+
+    <FrameLayout
+        android:id="@+id/flFullscreenFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:translationZ="24dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <fragment
+            android:name="com.transcendensoft.hedbanz.presentation.roomcreation.CreateRoomFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

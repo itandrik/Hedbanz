@@ -67,6 +67,7 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/license.txt'
         exclude 'META-INF/license'
+        exclude 'META-INF/proguard/coroutines.pro'
     }
     lintOptions {
         abortOnError false

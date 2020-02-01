@@ -29,7 +29,7 @@ import dagger.Lazy;
 import static com.transcendensoft.hedbanz.data.network.service.firebase.HedbanzFirebaseMessagingService.ACTION_NEW_VERSION_AVAILABLE;
 
 public class MainActivity extends BaseActivity {
-    @BindView(R.id.verticalViewPager) VerticalViewPager mViewPager;
+    //@BindView(R.id.verticalViewPager) VerticalViewPager mViewPager;
 
     @Inject Lazy<MainFragment> mainFragmentLazy;
     @Inject Lazy<MenuFragment> menuFragmentLazy;
@@ -47,7 +47,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this, this);
-        initViewPager();
+        //initViewPager();
         initNewVersionReceiver();
 
         if(!mPreferenceManager.isTutorialShown()){
@@ -79,14 +79,14 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void initViewPager() {
+   /* private void initViewPager() {
         MainScreenFragmentAdapter adapter = new MainScreenFragmentAdapter.Holder(getSupportFragmentManager())
                 .add(mainFragmentLazy.get())
                 .add(menuFragmentLazy.get())
                 .set();
         mViewPager.setAdapter(adapter);
         mViewPager.setOverScrollMode(View.OVER_SCROLL_ALWAYS);
-    }
+    }*/
 
     private void initNewVersionReceiver() {
         mNewVersionReceiver = new BroadcastReceiver() {
@@ -101,16 +101,16 @@ public class MainActivity extends BaseActivity {
     }
 
     public void openMenu() {
-        mViewPager.setCurrentItem(1, true);
+        //mViewPager.setCurrentItem(1, true);
     }
 
     @Override
     public void onBackPressed() {
-        if (mViewPager.getCurrentItem() != 0) {
-            mViewPager.setCurrentItem(0, true);
-        } else {
+        //if (mViewPager.getCurrentItem() != 0) {
+        //    mViewPager.setCurrentItem(0, true);
+       // } else {
             super.onBackPressed();
-        }
+       // }
     }
 
     @Override
