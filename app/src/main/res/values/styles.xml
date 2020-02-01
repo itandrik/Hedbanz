@@ -10,14 +10,14 @@
         <item name="android:windowActionBar">false</item>
     </style>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="ThemeMainTranslucentToolbar" parent="Theme.AppCompat.Light">
+    <style name="ThemeMainTranslucentToolbar" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -25,7 +25,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="ThemeMain" parent="Theme.AppCompat.Light">
+    <style name="ThemeMain" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/textDarkRed</item>
         <item name="colorPrimaryDark">@color/textDarkRed</item>
         <item name="colorAccent">@color/textDarkRed</item>
@@ -34,7 +34,7 @@
         <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
     </style>
 
-    <style name="ThemeRegister" parent="Theme.AppCompat.Light">
+    <style name="ThemeRegister" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/textDarkRed</item>
         <item name="colorPrimaryDark">@color/textDarkRed</item>
         <item name="colorAccent">@color/textDarkRed</item>

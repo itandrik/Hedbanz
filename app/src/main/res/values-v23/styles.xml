@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="ThemeMainTranslucentToolbar" parent="Theme.AppCompat.Light">
+    <style name="ThemeMainTranslucentToolbar" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -12,7 +12,7 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
-    <style name="ThemeMain" parent="Theme.AppCompat.Light">
+    <style name="ThemeMain" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/textDarkRed</item>
         <item name="colorPrimaryDark">@color/textDarkRed</item>
         <item name="colorAccent">@color/textDarkRed</item>
@@ -23,7 +23,7 @@
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <style name="ThemeRegister" parent="Theme.AppCompat.Light">
+    <style name="ThemeRegister" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/textDarkRed</item>
         <item name="colorPrimaryDark">@color/textDarkRed</item>
         <item name="colorAccent">@color/textDarkRed</item>

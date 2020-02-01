@@ -5,13 +5,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import androidx.appcompat.app.AlertDialog;
+
 import android.view.View;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
@@ -19,6 +26,8 @@ import com.transcendensoft.hedbanz.presentation.custom.widget.VerticalViewPager;
 import com.transcendensoft.hedbanz.presentation.game.GameActivity;
 import com.transcendensoft.hedbanz.presentation.intro.IntroActivity;
 import com.transcendensoft.hedbanz.presentation.menu.MenuFragment;
+import com.transcendensoft.hedbanz.presentation.roomcreation.CreateRoomFragment;
+import com.transcendensoft.hedbanz.presentation.rooms.RoomsFragment;
 
 import javax.inject.Inject;
 
@@ -29,12 +38,26 @@ import dagger.Lazy;
 import static com.transcendensoft.hedbanz.data.network.service.firebase.HedbanzFirebaseMessagingService.ACTION_NEW_VERSION_AVAILABLE;
 
 public class MainActivity extends BaseActivity {
-    //@BindView(R.id.verticalViewPager) VerticalViewPager mViewPager;
+    @BindView(R.id.tvMenuRooms)
+    AppCompatTextView mTvMenuRooms;
+    @BindView(R.id.tvMenuSettings)
+    AppCompatTextView mTvMenuSettings;
+    @BindView(R.id.fabNewRoom)
+    FloatingActionButton mFabNewRoom;
 
-    @Inject Lazy<MainFragment> mainFragmentLazy;
-    @Inject Lazy<MenuFragment> menuFragmentLazy;
-    @Inject PreferenceManager mPreferenceManager;
+    @Inject
+    Lazy<CreateRoomFragment> createRoomFragmentLazy;
+    @Inject
+    Lazy<RoomsFragment> roomsFragmentLazy;
+    @Inject
+    Lazy<MenuFragment> menuFragmentLazy;
+
+    @Inject
+    PreferenceManager mPreferenceManager;
     private BroadcastReceiver mNewVersionReceiver;
+
+    private int redColor;
+    private int textPrimaryColor;
 
     @Inject
     public MainActivity() {
@@ -47,10 +70,14 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this, this);
-        //initViewPager();
-        initNewVersionReceiver();
 
-        if(!mPreferenceManager.isTutorialShown()){
+        redColor = ContextCompat.getColor(this, R.color.textDarkRed);
+        textPrimaryColor = ContextCompat.getColor(this, R.color.textPrimary);
+
+        initNewVersionReceiver();
+        initBottomNavigation();
+
+        if (!mPreferenceManager.isTutorialShown()) {
             startActivity(new Intent(this, IntroActivity.class));
         }
     }
@@ -59,7 +86,7 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         registerReceiver(mNewVersionReceiver, new IntentFilter(ACTION_NEW_VERSION_AVAILABLE));
-        if(mPreferenceManager.isAppNewVersionAvailable()){
+        if (mPreferenceManager.isAppNewVersionAvailable()) {
             showNewVersionAvailableDialog();
         }
     }
@@ -77,6 +104,30 @@ public class MainActivity extends BaseActivity {
                     mPreferenceManager.getCurrentRoomId());
             startActivity(intent);
         }
+    }
+
+    private void initBottomNavigation() {
+        mTvMenuRooms.setOnClickListener(v -> {
+            mTvMenuRooms.setTextColor(redColor);
+            mTvMenuRooms.setSupportCompoundDrawablesTintList(ColorStateList.valueOf(redColor));
+            mTvMenuSettings.setTextColor(textPrimaryColor);
+            mTvMenuSettings.setSupportCompoundDrawablesTintList(ColorStateList.valueOf(textPrimaryColor));
+
+            // TODO
+        });
+
+        mTvMenuSettings.setOnClickListener(v -> {
+            mTvMenuSettings.setTextColor(redColor);
+            mTvMenuSettings.setSupportCompoundDrawablesTintList(ColorStateList.valueOf(redColor));
+            mTvMenuRooms.setTextColor(textPrimaryColor);
+            mTvMenuRooms.setSupportCompoundDrawablesTintList(ColorStateList.valueOf(textPrimaryColor));
+
+            // TODO
+        });
+
+        mFabNewRoom.setOnClickListener(v -> {
+            // TODO
+        });
     }
 
    /* private void initViewPager() {
@@ -108,9 +159,9 @@ public class MainActivity extends BaseActivity {
     public void onBackPressed() {
         //if (mViewPager.getCurrentItem() != 0) {
         //    mViewPager.setCurrentItem(0, true);
-       // } else {
-            super.onBackPressed();
-       // }
+        // } else {
+        super.onBackPressed();
+        // }
     }
 
     @Override
@@ -150,9 +201,9 @@ public class MainActivity extends BaseActivity {
                 .setIcon(icon)
                 .setCancelable(true)
                 .setOnCancelListener(dialog -> {
-                            mPreferenceManager.setAppNewVersion(false);
-                            dialog.dismiss();
-                        })
+                    mPreferenceManager.setAppNewVersion(false);
+                    dialog.dismiss();
+                })
                 .show();
     }
 

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="?listPreferredItemHeight">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvMenuRooms"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:drawableStart="@drawable/ic_rooms_disabled"
+        android:drawableLeft="@drawable/ic_rooms_disabled"
+        android:drawablePadding="16dp"
+        android:focusable="true"
+        android:gravity="center_vertical|start"
+        android:paddingStart="16dp"
+        android:paddingLeft="16dp"
+        android:text="@string/rooms_title"
+        android:textColor="@color/textDarkRed"
+        app:drawableTint="@color/textDarkRed"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvMenuSettings"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvMenuSettings"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:drawableEnd="@drawable/ic_settings"
+        android:drawableRight="@drawable/ic_settings"
+        android:drawablePadding="16dp"
+        android:focusable="true"
+        android:gravity="center_vertical|end"
+        android:paddingEnd="16dp"
+        android:paddingRight="16dp"
+        android:text="@string/menu_action_settings"
+        android:textColor="@color/textPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvMenuRooms"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
