@@ -89,9 +89,7 @@ class ChangeIconFragment : BaseFragment(), ChangeIconContract.View {
     }
 
     private fun initToolbar() {
-        setupNavigationToolbar((requireActivity() as MainActivity).toolbar) {
-            this.tvToolbarTitle.text = getString(R.string.change_icon_choose_avatar)
-        }
+        setupNavigationToolbar((requireActivity() as MainActivity).toolbar, getString(R.string.change_icon_choose_avatar))
     }
 
     private fun initClickListeners() {

@@ -65,7 +65,7 @@
             android:theme="@style/ThemeMain"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:name=".presentation.friends.FriendsActivity"
+            android:name=".presentation.friends.FriendsFragment"
             android:screenOrientation="portrait"
             android:theme="@style/ThemeMain"
             android:windowSoftInputMode="adjustPan" />

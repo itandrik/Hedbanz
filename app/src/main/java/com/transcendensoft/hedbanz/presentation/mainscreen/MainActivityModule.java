@@ -25,6 +25,8 @@ import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.di.scope.FragmentScope;
 import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconFragment;
 import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconModule;
+import com.transcendensoft.hedbanz.presentation.friends.FriendsFragment;
+import com.transcendensoft.hedbanz.presentation.friends.FriendsModule;
 import com.transcendensoft.hedbanz.presentation.menu.MenuFragmentModule;
 import com.transcendensoft.hedbanz.presentation.roomcreation.CreateRoomContract;
 import com.transcendensoft.hedbanz.presentation.roomcreation.CreateRoomFragment;
@@ -75,12 +77,12 @@ public interface MainActivityModule {
     CredentialsFragment credentialsFragment();
 
     @FragmentScope
-    @ContributesAndroidInjector(modules = FriendsModule.class)
-    FriendsFragment friendsFragment();
-
-    @FragmentScope
     @ContributesAndroidInjector(modules = FeedbackModule.class)
     FeedbackFragment feedbackFragment();*/
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = FriendsModule.class)
+    FriendsFragment friendsFragment();
 
     @ActivityContext
     @Binds

@@ -17,10 +17,22 @@
             app:popExitAnim="@anim/slide_right_out"
             app:enterAnim="@anim/slide_left_in"
             app:exitAnim="@anim/slide_left_out"/>
+        <action
+            android:id="@+id/action_menuFragment_to_friendsFragment"
+            app:destination="@id/friendsFragment"
+            app:popEnterAnim="@anim/slide_right_in"
+            app:popExitAnim="@anim/slide_right_out"
+            app:enterAnim="@anim/slide_left_in"
+            app:exitAnim="@anim/slide_left_out"/>
     </fragment>
 
     <fragment
         android:id="@+id/changeIconFragment"
         android:name="com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconFragment"
         android:label="ChangeIconFragment" />
+    <fragment
+        android:id="@+id/friendsFragment"
+        android:name="com.transcendensoft.hedbanz.presentation.friends.FriendsFragment"
+        android:label="fragment_friends"
+        tools:layout="@layout/fragment_friends" />
 </navigation>

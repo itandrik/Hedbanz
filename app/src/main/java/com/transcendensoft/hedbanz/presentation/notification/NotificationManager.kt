@@ -23,7 +23,7 @@ import com.crashlytics.android.Crashlytics
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.di.qualifier.ApplicationContext
 import com.transcendensoft.hedbanz.domain.entity.NotificationMessage
-import com.transcendensoft.hedbanz.presentation.friends.FriendsActivity
+import com.transcendensoft.hedbanz.presentation.friends.FriendsFragment
 import com.transcendensoft.hedbanz.presentation.game.GameActivity
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity
 import com.transcendensoft.hedbanz.utils.extension.spanWith
@@ -183,7 +183,7 @@ class  NotificationManager @Inject constructor(@ApplicationContext val mContext:
             }
             setContentText(text)
 
-            val intent = Intent(mContext, FriendsActivity::class.java)
+            val intent = Intent(mContext, FriendsFragment::class.java)
             val pendingIntent = PendingIntent.getActivity(
                     mContext, FRIEND_NOTIFICATION_REQUEST_CODE,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT)

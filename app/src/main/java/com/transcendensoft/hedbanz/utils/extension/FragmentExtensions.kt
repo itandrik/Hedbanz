@@ -40,7 +40,7 @@ inline fun <reified T : Activity> Fragment.openActivityForResult(requestCode: In
   startActivityForResult(Intent(requireContext(), T::class.java).apply { block.invoke(this) }, requestCode, options)
 }
 
-fun Fragment.setupNavigationToolbar(toolbar: Toolbar, block: Toolbar.() -> Unit = {}) {
+fun Fragment.setupNavigationToolbar(toolbar: Toolbar, title: String) {
   val arrowBackDrawable = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_arrow_back)
 
   toolbar.apply {
@@ -52,7 +52,7 @@ fun Fragment.setupNavigationToolbar(toolbar: Toolbar, block: Toolbar.() -> Unit 
     ivAppIcon.visibility = View.GONE
     groupToolbarTitle.visibility = View.VISIBLE
 
-    block.invoke(this)
+    tvToolbarTitle.text = title
   }
 }
 

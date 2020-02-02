@@ -35,8 +35,4 @@ public interface FriendsModule {
     @ActivityScope
     @Binds
     FriendsContract.Presenter bindFriendsPresenter(FriendsPresenter friendsPresenter);
-
-    @ActivityContext
-    @Binds
-    Context bindActivityContext(FriendsActivity friendsActivity);
 }

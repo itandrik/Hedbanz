@@ -40,7 +40,7 @@ import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.feedback.FeedbackActivity;
-import com.transcendensoft.hedbanz.presentation.friends.FriendsActivity;
+import com.transcendensoft.hedbanz.presentation.friends.FriendsFragment;
 import com.transcendensoft.hedbanz.presentation.intro.IntroActivity;
 import com.transcendensoft.hedbanz.presentation.language.LanguageActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
@@ -155,13 +155,13 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
 
     @OnClick(R.id.tvFriends)
     protected void onFriendsAmountClicked() {
-        startActivity(new Intent(mActivity, FriendsActivity.class));
+        NavHostFragment.findNavController(this).navigate(R.id.action_menuFragment_to_friendsFragment);
         mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.FRIENDS_CIRCLE, null);
     }
 
     @OnClick(R.id.btnFriends)
     protected void onFriendsButtonClicked() {
-        startActivity(new Intent(mActivity, FriendsActivity.class));
+        NavHostFragment.findNavController(this).navigate(R.id.action_menuFragment_to_friendsFragment);
         mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.FRIENDS_BUTTON, null);
     }
 

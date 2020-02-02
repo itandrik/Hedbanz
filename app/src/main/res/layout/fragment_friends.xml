@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/windowBackground">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar_friends"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFriends"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
         android:scrollbars="vertical" />
 
     <include
@@ -24,7 +16,6 @@
         layout="@layout/layout_error_network"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
         android:visibility="gone" />
 
     <include
@@ -32,7 +23,6 @@
         layout="@layout/layout_error_server"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
         android:visibility="gone" />
 
     <include
@@ -40,7 +30,6 @@
         layout="@layout/layout_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
         android:visibility="gone" />
 
     <include
@@ -48,6 +37,5 @@
         layout="@layout/layout_empty_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
         android:visibility="gone" />
 </RelativeLayout>

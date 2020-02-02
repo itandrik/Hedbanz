@@ -1,19 +1,30 @@
 package com.transcendensoft.hedbanz.presentation.friends;
 
+import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.domain.entity.Friend;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
+import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.friends.list.FriendsAdapter;
+import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
+import com.transcendensoft.hedbanz.utils.extension.FragmentExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +40,7 @@ import static android.view.View.GONE;
 /**
  * Activity that shows friends. User can remove friend here.
  */
-public class FriendsActivity extends BaseActivity implements FriendsContract.View {
+public class FriendsFragment extends BaseFragment implements FriendsContract.View {
     @BindView(R.id.rvFriends) RecyclerView mRecycler;
     @BindView(R.id.rlEmptyListContainer) RelativeLayout mRlEmptyList;
     @BindView(R.id.rlErrorNetwork) ConstraintLayout mRlErrorNetwork;
@@ -42,19 +53,29 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
     /*------------------------------------*
      *-------- Activity lifecycle --------*
      *------------------------------------*/
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friends);
 
-        ButterKnife.bind(this, this);
-        mPresenter.bindView(this);
-        mPresenter.setModel(new ArrayList<>());
-        initRecycler();
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_friends, container, false);
+
+        ButterKnife.bind(this, view);
+
+        return view;
     }
 
     @Override
-    protected void onResume() {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mPresenter.bindView(this);
+        mPresenter.setModel(new ArrayList<>());
+        initRecycler();
+        initToolbar();
+    }
+
+    @Override
+    public void onResume() {
         super.onResume();
         if (mPresenter != null) {
             mPresenter.bindView(this);
@@ -62,7 +83,7 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         if (mPresenter != null) {
             mPresenter.unbindView();
@@ -70,7 +91,7 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         if (mPresenter != null) {
             mPresenter.destroy();
@@ -82,7 +103,7 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
      *------------------------------------*/
     private void initRecycler() {
         mRecycler.setLayoutManager(new LinearLayoutManager(
-                this, LinearLayoutManager.VERTICAL, false));
+                requireContext(), LinearLayoutManager.VERTICAL, false));
         mRecycler.setItemAnimator(new DefaultItemAnimator());
         mRecycler.setAdapter(mAdapter);
 
@@ -98,17 +119,11 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
                 mAdapter.deleteFriendObservable());
     }
 
-    /*------------------------------------*
-     *-------- On click listeners --------*
-     *------------------------------------*/
-    @OnClick(R.id.ivBack)
-    protected void onBackClicked() {
-        onBackPressed();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    private void initToolbar() {
+        FragmentExtensionsKt.setupNavigationToolbar(this,
+                ((MainActivity) requireActivity()).getToolbar(),
+                getString(R.string.friends_toolbar_title)
+        );
     }
 
     /*------------------------------------*
@@ -140,7 +155,7 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
      *------------------------------------*/
     @Override
     public void sureToDeclineFriend(Friend friend) {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(requireContext())
                 .setTitle(getString(R.string.friends_decline_title))
                 .setMessage(getString(R.string.friends_decline_message, friend.getLogin()))
                 .setPositiveButton(getString(R.string.action_yes),
@@ -156,7 +171,7 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
 
     @Override
     public void sureToDeleteFriend(Friend friend) {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(requireContext())
                 .setTitle(getString(R.string.friends_delete_title))
                 .setMessage(getString(R.string.friends_delete_message, friend.getLogin()))
                 .setPositiveButton(getString(R.string.action_yes),
@@ -173,7 +188,7 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
     @Override
     public void successAcceptFriend(Friend friend) {
         hideLoadingDialog();
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(requireContext())
                 .setTitle(getString(R.string.friends_accept_success_title))
                 .setMessage(getString(R.string.friends_accept_success_message, friend.getLogin()))
                 .setPositiveButton(getString(R.string.action_ok),
@@ -185,7 +200,7 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
     @Override
     public void successDeclineFriend(Friend friend) {
         hideLoadingDialog();
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(requireContext())
                 .setTitle(getString(R.string.friends_decline_success_title))
                 .setMessage(getString(R.string.friends_decline_success_message, friend.getLogin()))
                 .setPositiveButton(getString(R.string.action_ok),
@@ -197,7 +212,7 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
     @Override
     public void successDeleteFriend(Friend friend) {
         hideLoadingDialog();
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(requireContext())
                 .setTitle(getString(R.string.friends_delete_success_title))
                 .setMessage(getString(R.string.friends_delete_success_message, friend.getLogin()))
                 .setPositiveButton(getString(R.string.action_ok),
@@ -209,7 +224,7 @@ public class FriendsActivity extends BaseActivity implements FriendsContract.Vie
     @Override
     public void errorFriend(Friend friend) {
         hideLoadingDialog();
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(requireContext())
                 .setTitle(getString(R.string.friends_error_title))
                 .setMessage(getString(R.string.friends_error_title))
                 .setPositiveButton(getString(R.string.action_ok),
