@@ -42,7 +42,6 @@ import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.intro.IntroActivity;
 import com.transcendensoft.hedbanz.presentation.language.LanguageActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
-import com.transcendensoft.hedbanz.presentation.usercrud.CredentialsFragment;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.extension.FragmentExtensionsKt;
 
@@ -189,6 +188,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
     @OnClick(R.id.btnHelp)
     protected void onHelpClicked() {
         startActivity(new Intent(getActivity(), IntroActivity.class));
+        requireActivity().overridePendingTransition(R.anim.slide_left_in, R.anim.slide_left_out);
         mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.HELP_BUTTON, null);
     }
 
@@ -207,6 +207,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
     @OnClick(R.id.btnLanguage)
     protected void onLanguageClicked(){
         startActivity(new Intent(getActivity(), LanguageActivity.class));
+        requireActivity().overridePendingTransition(R.anim.slide_left_in, R.anim.slide_left_out);
         mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.LANGUAGE_BUTTON, null);
     }
 
