@@ -17,14 +17,14 @@ package com.transcendensoft.hedbanz.presentation.mainscreen;
 
 import android.content.Context;
 
+import androidx.navigation.fragment.NavHostFragment;
+
+import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.di.qualifier.ActivityContext;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
 import com.transcendensoft.hedbanz.di.scope.FragmentScope;
+import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconFragment;
 import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconModule;
-import com.transcendensoft.hedbanz.presentation.feedback.FeedbackModule;
-import com.transcendensoft.hedbanz.presentation.friends.FriendsModule;
-import com.transcendensoft.hedbanz.presentation.language.LanguageFragment;
-import com.transcendensoft.hedbanz.presentation.language.LanguageModule;
 import com.transcendensoft.hedbanz.presentation.menu.MenuFragmentModule;
 import com.transcendensoft.hedbanz.presentation.roomcreation.CreateRoomContract;
 import com.transcendensoft.hedbanz.presentation.roomcreation.CreateRoomFragment;
@@ -36,7 +36,6 @@ import com.transcendensoft.hedbanz.presentation.rooms.list.RoomItemContract;
 import com.transcendensoft.hedbanz.presentation.rooms.list.RoomItemPresenterImpl;
 import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.presentation.menu.MenuFragment;
-import com.transcendensoft.hedbanz.presentation.usercrud.UserCrudModule;
 
 import java.util.ArrayList;
 
@@ -51,7 +50,7 @@ import dagger.android.support.DaggerAppCompatActivity;
  * and other instances for menu and rooms presentation.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
- *         Developed by <u>Transcendensoft</u>
+ * Developed by <u>Transcendensoft</u>
  */
 @Module
 public interface MainActivityModule {
@@ -68,6 +67,10 @@ public interface MainActivityModule {
     MenuFragment menuFragment();
 
     @FragmentScope
+    @ContributesAndroidInjector(modules = ChangeIconModule.class)
+    ChangeIconFragment changeIconFragment();
+
+    /*@FragmentScope
     @ContributesAndroidInjector(modules = UserCrudModule.class)
     CredentialsFragment credentialsFragment();
 
@@ -76,16 +79,8 @@ public interface MainActivityModule {
     FriendsFragment friendsFragment();
 
     @FragmentScope
-    @ContributesAndroidInjector(modules = ChangeIconModule.class)
-    ChangeIconFragment changeIconFragment();
-
-    @FragmentScope
     @ContributesAndroidInjector(modules = FeedbackModule.class)
-    FeedbackFragment feedbackFragment();
-
-    @FragmentScope
-    @ContributesAndroidInjector(modules = LanguageModule.class)
-    LanguageFragment languageFragment();
+    FeedbackFragment feedbackFragment();*/
 
     @ActivityContext
     @Binds
@@ -106,7 +101,13 @@ public interface MainActivityModule {
 
     @Provides
     @ActivityScope
-    static RoomList provideModel(){
+    static RoomList provideModel() {
         return new RoomList(new ArrayList<>());
+    }
+
+    @Provides
+    @ActivityScope
+    static NavHostFragment provideNavHostFragment() {
+        return NavHostFragment.create(R.navigation.profile);
     }
 }

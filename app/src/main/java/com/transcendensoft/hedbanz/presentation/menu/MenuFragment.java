@@ -21,8 +21,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import androidx.appcompat.app.AlertDialog;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,14 +39,14 @@ import com.transcendensoft.hedbanz.domain.entity.HedbanzAnalyticsKt;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
-import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconActivity;
 import com.transcendensoft.hedbanz.presentation.feedback.FeedbackActivity;
 import com.transcendensoft.hedbanz.presentation.friends.FriendsActivity;
 import com.transcendensoft.hedbanz.presentation.intro.IntroActivity;
-import com.transcendensoft.hedbanz.presentation.language.LanguageFragment;
+import com.transcendensoft.hedbanz.presentation.language.LanguageActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.CredentialsActivity;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
+import com.transcendensoft.hedbanz.utils.extension.FragmentExtensionsKt;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -56,7 +58,7 @@ import butterknife.OnClick;
 
 /**
  * Fragment that shows user info and menu items such as:
- * changing user data, friends, shop, help, settings.
+ * changing user data, friends, shop, help, profile.
  *
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
@@ -98,6 +100,17 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        NavHostFragment.findNavController(this).addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if(destination.getId() == R.id.menuFragment) {
+                FragmentExtensionsKt.setupMainScreenToolbar(this, ((MainActivity) requireActivity()).getToolbar(), getString(R.string.menu_title));
+            }
+        });
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (mPresenter != null) {
@@ -136,7 +149,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
 
     @OnClick(R.id.ivUserImage)
     protected void onUserImageClicked(){
-        startActivity(new Intent(getActivity(), ChangeIconActivity.class));
+        NavHostFragment.findNavController(this).navigate(R.id.action_menuFragment_to_changeIconFragment);
         mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.USER_IMAGE_BUTTON, null);
     }
 
@@ -184,7 +197,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
 
     @OnClick(R.id.btnLanguage)
     protected void onLanguageClicked(){
-        startActivity(new Intent(getActivity(), LanguageFragment.class));
+        startActivity(new Intent(getActivity(), LanguageActivity.class));
         mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.LANGUAGE_BUTTON, null);
     }
 

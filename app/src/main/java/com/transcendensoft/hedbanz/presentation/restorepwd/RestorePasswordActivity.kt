@@ -71,8 +71,8 @@ class RestorePasswordActivity : BaseActivity(), RestorePasswordContract.View {
         mForgotPasswordFragment.hideAll()
         val tag = getString(R.string.tag_fragment_check_keyword)
         supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.login_page_left_in, R.anim.login_page_left_out,
-                        R.anim.login_page_right_in, R.anim.login_page_right_out)
+                .setCustomAnimations(R.anim.slide_left_in, R.anim.slide_left_out,
+                        R.anim.slide_right_in, R.anim.slide_right_out)
                 .replace(R.id.flRestorePasswordFragmentContainer,
                         mCheckKeywordFragment, tag)
                 .addToBackStack(tag)
@@ -83,8 +83,8 @@ class RestorePasswordActivity : BaseActivity(), RestorePasswordContract.View {
         mCheckKeywordFragment.hideAll()
         val tag = getString(R.string.tag_fragment_reset_password)
         supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.login_page_left_in, R.anim.login_page_left_out,
-                        R.anim.login_page_right_in, R.anim.login_page_right_out)
+                .setCustomAnimations(R.anim.slide_left_in, R.anim.slide_left_out,
+                        R.anim.slide_right_in, R.anim.slide_right_out)
                 .replace(R.id.flRestorePasswordFragmentContainer,
                         mResetPasswordFragment, tag)
                 .commit()

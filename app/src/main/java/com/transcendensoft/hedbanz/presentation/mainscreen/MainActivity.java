@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.Group;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import androidx.appcompat.app.AlertDialog;
 
@@ -32,6 +33,7 @@ import com.transcendensoft.hedbanz.presentation.intro.IntroActivity;
 import com.transcendensoft.hedbanz.presentation.menu.MenuFragment;
 import com.transcendensoft.hedbanz.presentation.roomcreation.CreateRoomFragment;
 import com.transcendensoft.hedbanz.presentation.rooms.RoomsFragment;
+import com.transcendensoft.hedbanz.utils.extension.FragmentExtensionsKt;
 
 import javax.inject.Inject;
 
@@ -42,30 +44,20 @@ import dagger.Lazy;
 import static com.transcendensoft.hedbanz.data.network.service.firebase.HedbanzFirebaseMessagingService.ACTION_NEW_VERSION_AVAILABLE;
 
 public class MainActivity extends BaseActivity {
-    @BindView(R.id.tvMenuRooms)
-    AppCompatTextView mTvMenuRooms;
-    @BindView(R.id.tvMenuSettings)
-    AppCompatTextView mTvMenuProfile;
-    @BindView(R.id.fabNewRoom)
-    FloatingActionButton mFabNewRoom;
-    @BindView(R.id.flCreateRoomFragment)
-    FrameLayout mFlCreateRoomFragmentContainer;
-    @BindView(R.id.toolbarMain)
-    Toolbar mToolbar;
-    @BindView(R.id.tvToolbarTitle)
-    TextView mTvToolbarTitle;
-    @BindView(R.id.groupSearchIcon)
-    Group mGroupSearchIcon;
+    @BindView(R.id.tvMenuRooms) AppCompatTextView mTvMenuRooms;
+    @BindView(R.id.tvMenuSettings) AppCompatTextView mTvMenuProfile;
+    @BindView(R.id.fabNewRoom) FloatingActionButton mFabNewRoom;
+    @BindView(R.id.flCreateRoomFragment) FrameLayout mFlCreateRoomFragmentContainer;
+    @BindView(R.id.toolbarMain) Toolbar mToolbar;
+    @BindView(R.id.tvToolbarTitle) TextView mTvToolbarTitle;
+    @BindView(R.id.groupSearchIcon) Group mGroupSearchIcon;
+    @BindView(R.id.viewBottomNavigationDivider) View mBottomNavigationDivider;
 
-    @Inject
-    Lazy<CreateRoomFragment> createRoomFragmentLazy;
-    @Inject
-    Lazy<RoomsFragment> roomsFragmentLazy;
-    @Inject
-    Lazy<MenuFragment> menuFragmentLazy;
+    @Inject Lazy<CreateRoomFragment> createRoomFragmentLazy;
+    @Inject Lazy<RoomsFragment> roomsFragmentLazy;
+    @Inject Lazy<NavHostFragment> menuFragmentLazy;
 
-    @Inject
-    PreferenceManager mPreferenceManager;
+    @Inject PreferenceManager mPreferenceManager;
     private BroadcastReceiver mNewVersionReceiver;
 
     private int redColor;
@@ -140,8 +132,10 @@ public class MainActivity extends BaseActivity {
                 mTvMenuRooms.setSupportCompoundDrawablesTintList(ColorStateList.valueOf(redColor));
                 mTvMenuProfile.setTextColor(textPrimaryColor);
                 mTvMenuProfile.setSupportCompoundDrawablesTintList(ColorStateList.valueOf(textPrimaryColor));
-                mTvToolbarTitle.setText(getString(R.string.rooms_title));
+                FragmentExtensionsKt.setupMainScreenToolbar(roomsFragmentLazy.get(), mToolbar, getString(R.string.rooms_title));
                 mGroupSearchIcon.setVisibility(View.VISIBLE);
+                mBottomNavigationDivider.setVisibility(View.GONE);
+                mFabNewRoom.show();
 
                 getSupportFragmentManager().beginTransaction().hide(activeFragment).show(roomsFragmentLazy.get()).commit();
                 activeFragment = roomsFragmentLazy.get();
@@ -149,7 +143,7 @@ public class MainActivity extends BaseActivity {
         });
 
         mTvMenuProfile.setOnClickListener(v -> {
-            if (!(activeFragment instanceof MenuFragment)) {
+            if (!(activeFragment instanceof NavHostFragment)) {
                 mTvMenuProfile.setTextColor(redColor);
                 mTvMenuProfile.setSupportCompoundDrawablesTintList(ColorStateList.valueOf(redColor));
                 mTvMenuRooms.setTextColor(textPrimaryColor);
@@ -157,6 +151,8 @@ public class MainActivity extends BaseActivity {
                 mTvToolbarTitle.setText(getString(R.string.menu_title));
                 roomsFragmentLazy.get().hideFilters();
                 mGroupSearchIcon.setVisibility(View.GONE);
+                mFabNewRoom.hide();
+                mBottomNavigationDivider.setVisibility(View.VISIBLE);
 
                 getSupportFragmentManager().beginTransaction().hide(activeFragment).show(menuFragmentLazy.get()).commit();
                 activeFragment = menuFragmentLazy.get();
@@ -189,6 +185,8 @@ public class MainActivity extends BaseActivity {
     public void onBackPressed() {
         if(mFlCreateRoomFragmentContainer.getVisibility() == View.VISIBLE){
             mFlCreateRoomFragmentContainer.setVisibility(View.GONE);
+        } else if(activeFragment instanceof NavHostFragment) {
+            ((NavHostFragment)activeFragment).getNavController().navigateUp();
         } else {
             super.onBackPressed();
         }

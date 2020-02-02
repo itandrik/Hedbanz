@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/white"
+        app:titleTextColor="@color/textPrimary"
         app:popupTheme="@style/AppTheme.PopupOverlay">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -112,6 +113,12 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:constraint_referenced_ids="ivSearch" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupToolbarTitle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:constraint_referenced_ids="tvToolbarTitle" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
 </com.google.android.material.appbar.AppBarLayout>

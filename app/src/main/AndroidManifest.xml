@@ -80,7 +80,7 @@
             android:theme="@style/ThemeMain"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".presentation.changeicon.ChangeIconActivity"
+            android:name=".presentation.changeicon.ChangeIconFragment"
             android:screenOrientation="portrait"
             android:theme="@style/ThemeMain" />
         <activity
@@ -89,7 +89,7 @@
             android:theme="@style/ThemeMain"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:name=".presentation.language.LanguageFragment"
+            android:name=".presentation.language.LanguageActivity"
             android:screenOrientation="portrait"
             android:configChanges="locale"
             android:theme="@style/ThemeMain"

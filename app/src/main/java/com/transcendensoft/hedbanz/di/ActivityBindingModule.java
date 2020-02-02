@@ -20,12 +20,15 @@ import com.transcendensoft.hedbanz.data.network.service.firebase.FirebaseMessagi
 import com.transcendensoft.hedbanz.data.network.service.firebase.HedbanzFirebaseInstanceIdService;
 import com.transcendensoft.hedbanz.data.network.service.firebase.HedbanzFirebaseMessagingService;
 import com.transcendensoft.hedbanz.di.scope.ActivityScope;
+import com.transcendensoft.hedbanz.di.scope.FragmentScope;
 import com.transcendensoft.hedbanz.di.scope.ServiceScope;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.StartActivityModule;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
 import com.transcendensoft.hedbanz.presentation.game.GameActivity;
 import com.transcendensoft.hedbanz.presentation.game.GameModule;
+import com.transcendensoft.hedbanz.presentation.language.LanguageActivity;
+import com.transcendensoft.hedbanz.presentation.language.LanguageModule;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivityModule;
 import com.transcendensoft.hedbanz.presentation.restorepwd.RestorePasswordActivity;
@@ -75,4 +78,8 @@ public interface ActivityBindingModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = RestorePasswordModule.class)
     RestorePasswordActivity restorePasswordActivity();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = LanguageModule.class)
+    LanguageActivity languageActivity();
 }

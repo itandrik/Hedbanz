@@ -31,7 +31,7 @@ class LanguageActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_language)
+        setContentView(R.layout.fragment_language)
         ButterKnife.bind(this, this)
 
         preferenceManager.setIsLanguageShowed(true)

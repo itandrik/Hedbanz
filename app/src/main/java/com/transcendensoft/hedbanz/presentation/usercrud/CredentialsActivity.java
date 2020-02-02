@@ -102,7 +102,7 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.login_page_left_in, R.anim.login_page_left_out);
+        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_left_out);
     }
 
     /*------------------------------------*

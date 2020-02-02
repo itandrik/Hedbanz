@@ -1,20 +1,21 @@
 package com.transcendensoft.hedbanz.presentation.changeicon
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.OnClick
 import com.transcendensoft.hedbanz.R
 import com.transcendensoft.hedbanz.domain.entity.User
-import com.transcendensoft.hedbanz.presentation.base.BaseActivity
+import com.transcendensoft.hedbanz.presentation.base.BaseFragment
 import com.transcendensoft.hedbanz.presentation.changeicon.list.ChangeIconAdapter
 import com.transcendensoft.hedbanz.presentation.changeicon.list.SelectableIcon
+import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity
+import com.transcendensoft.hedbanz.utils.extension.setupNavigationToolbar
+import kotlinx.android.synthetic.main.fragment_change_user_icon.*
+import kotlinx.android.synthetic.main.toolbar_main.tvToolbarTitle
+import kotlinx.android.synthetic.main.toolbar_main.view.*
 import javax.inject.Inject
 
 /**
@@ -39,25 +40,23 @@ import javax.inject.Inject
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  *         Developed by <u>Transcendensoft</u>
  */
-class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
-    @BindView(R.id.rvUserIcons) lateinit var rvUserIcons: androidx.recyclerview.widget.RecyclerView
-    @BindView(R.id.tvToolbarTitle) lateinit var tvToolbarTitle: TextView
+class ChangeIconFragment : BaseFragment(), ChangeIconContract.View {
 
-    @Inject lateinit var presenter: ChangeIconPresenter
-    @Inject lateinit var adapter: ChangeIconAdapter
+    @Inject
+    lateinit var presenter: ChangeIconPresenter
+    @Inject
+    lateinit var adapter: ChangeIconAdapter
 
-    /*------------------------------------*
-     *-------- Activity lifecycle --------*
-     *------------------------------------*/
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_change_user_icon, null, false)
 
-        setContentView(R.layout.activity_change_user_icon)
-        ButterKnife.bind(this, this)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         presenter.setModel(User())
         initRecycler()
         initToolbar()
+        initClickListeners()
     }
 
     override fun onResume() {
@@ -79,8 +78,9 @@ class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
      *---------- Initialization ----------*
      *------------------------------------*/
     private fun initRecycler() {
-        val layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 3,
+        val layoutManager = androidx.recyclerview.widget.GridLayoutManager(requireContext(), 3,
                 androidx.recyclerview.widget.GridLayoutManager.VERTICAL, false)
+
         rvUserIcons.layoutManager = layoutManager
         rvUserIcons.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
         rvUserIcons.adapter = adapter
@@ -89,20 +89,15 @@ class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
     }
 
     private fun initToolbar() {
-        tvToolbarTitle.text = getString(R.string.change_icon_choose_avatar)
+        setupNavigationToolbar((requireActivity() as MainActivity).toolbar) {
+            this.tvToolbarTitle.text = getString(R.string.change_icon_choose_avatar)
+        }
     }
 
-    /*------------------------------------*
-     *-------- On click listeners --------*
-     *------------------------------------*/
-    @OnClick(R.id.btnSaveUserIcon)
-    fun saveIconClicked() {
-        presenter.updateUserIcon()
-    }
-
-    @OnClick(R.id.ivBack)
-    fun onBackClicked(){
-        onBackPressed()
+    private fun initClickListeners() {
+        btnSaveUserIcon.setOnClickListener {
+            presenter.updateUserIcon()
+        }
     }
 
     /*------------------------------------*
@@ -125,7 +120,7 @@ class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
      *------------------------------------*/
     override fun showSuccessUpdateUserIcon() {
         val d = VectorDrawableCompat.create(resources, R.drawable.ic_win_happy, null)
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(requireContext())
                 .setPositiveButton(getString(R.string.action_ok)) { dialog, _ -> dialog.dismiss() }
                 .setIcon(d)
                 .setTitle(getString(R.string.change_icon_success_title))
@@ -135,7 +130,7 @@ class ChangeIconActivity : BaseActivity(), ChangeIconContract.View {
 
     override fun showErrorUpdateUserIcon() {
         val d = VectorDrawableCompat.create(resources, R.drawable.ic_unhappy, null)
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(requireContext())
                 .setPositiveButton(getString(R.string.action_ok)) { dialog, _ -> dialog.dismiss() }
                 .setIcon(d)
                 .setTitle(getString(R.string.change_icon_error_title))

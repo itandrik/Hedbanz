@@ -151,7 +151,7 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
         Intent intent = new Intent(mActivity, RegisterActivity.class);
         startActivity(intent);
         if(mActivity != null) {
-            mActivity.overridePendingTransition(R.anim.login_page_right_in, R.anim.login_page_right_out);
+            mActivity.overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
         }
         mFirebaseAnalytics.logEvent(REGISTER_BUTTON, null);
     }
@@ -162,7 +162,7 @@ public class LoginFragment extends BaseFragment implements LoginContract.View{
         Intent intent = new Intent(mActivity, RestorePasswordActivity.class);
         startActivity(intent);
         if(mActivity != null) {
-            mActivity.overridePendingTransition(R.anim.login_page_left_in, R.anim.login_page_left_out);
+            mActivity.overridePendingTransition(R.anim.slide_left_in, R.anim.slide_left_out);
         }
         mFirebaseAnalytics.logEvent(PASSWORD_RECOVERY_BUTTON, null);
     }
