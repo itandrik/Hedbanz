@@ -24,21 +24,12 @@ import com.transcendensoft.hedbanz.di.scope.ServiceScope;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.StartActivityModule;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
-import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconActivity;
-import com.transcendensoft.hedbanz.presentation.changeicon.ChangeIconModule;
-import com.transcendensoft.hedbanz.presentation.feedback.FeedbackActivity;
-import com.transcendensoft.hedbanz.presentation.feedback.FeedbackModule;
-import com.transcendensoft.hedbanz.presentation.friends.FriendsActivity;
-import com.transcendensoft.hedbanz.presentation.friends.FriendsModule;
 import com.transcendensoft.hedbanz.presentation.game.GameActivity;
 import com.transcendensoft.hedbanz.presentation.game.GameModule;
-import com.transcendensoft.hedbanz.presentation.language.LanguageActivity;
-import com.transcendensoft.hedbanz.presentation.language.LanguageModule;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivityModule;
 import com.transcendensoft.hedbanz.presentation.restorepwd.RestorePasswordActivity;
 import com.transcendensoft.hedbanz.presentation.restorepwd.RestorePasswordModule;
-import com.transcendensoft.hedbanz.presentation.usercrud.CredentialsActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.RegisterActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.UserCrudModule;
 
@@ -66,20 +57,12 @@ public interface ActivityBindingModule {
     GameActivity gameActivity();
 
     @ActivityScope
-    @ContributesAndroidInjector(modules = UserCrudModule.class)
-    CredentialsActivity credentialsActivity();
-
-    @ActivityScope
     @ContributesAndroidInjector(modules = StartActivityModule.class)
     StartActivity startActivity();
 
     @ActivityScope
     @ContributesAndroidInjector(modules = MainActivityModule.class)
     MainActivity mainActivity();
-
-    @ActivityScope
-    @ContributesAndroidInjector(modules = FriendsModule.class)
-    FriendsActivity friendsActivity();
 
     @ServiceScope
     @ContributesAndroidInjector(modules = FirebaseInstanceIdModule.class)
@@ -92,16 +75,4 @@ public interface ActivityBindingModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = RestorePasswordModule.class)
     RestorePasswordActivity restorePasswordActivity();
-
-    @ActivityScope
-    @ContributesAndroidInjector(modules = ChangeIconModule.class)
-    ChangeIconActivity changeIconActivity();
-
-    @ActivityScope
-    @ContributesAndroidInjector(modules = FeedbackModule.class)
-    FeedbackActivity feedbackActivity();
-
-    @ActivityScope
-    @ContributesAndroidInjector(modules = LanguageModule.class)
-    LanguageActivity languageActivity();
 }

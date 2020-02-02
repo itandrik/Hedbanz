@@ -118,6 +118,7 @@
     <string name="room_creation_error_invalid_password">Пароль не подходит :(</string>
 
     <!-- Menu fragment -->
+    <string name="menu_title">Профиль</string>
     <string name="menu_games_played">Игр сыграно</string>
     <string name="menu_friends">Друзей</string>
     <string name="menu_money">Стикоинов</string>

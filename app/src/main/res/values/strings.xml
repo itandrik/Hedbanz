@@ -116,6 +116,7 @@
     <string name="room_creation_error_invalid_password">Invalid password :(</string>
 
     <!-- Menu fragment -->
+    <string name="menu_title">Profile</string>
     <string name="menu_games_played">Games played</string>
     <string name="menu_friends">Friends</string>
     <string name="menu_money">Sticoins</string>
@@ -260,7 +261,7 @@
     <!-- User details -->
     <string name="user_details_add_friend">Offer friendship</string>
     <string name="user_details_already_friend">In friends list</string>
-    <string name="user_details_friend_request_sent">Friendship oeffered!</string>
+    <string name="user_details_friend_request_sent">Friendship offered!</string>
 
     <!-- Invite -->
     <string name="invite_title">Invite your friends to the game</string>

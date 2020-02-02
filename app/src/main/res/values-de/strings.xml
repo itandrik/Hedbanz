@@ -116,6 +116,7 @@
     <string name="room_creation_error_invalid_password">Passwort stimmt nicht:(</string>
 
     <!-- Menu fragment -->
+    <string name="menu_title">Profile</string> <!-- TODO translate -->
     <string name="menu_games_played">Gespielte Spiele</string>
     <string name="menu_friends">Freunde</string>
     <string name="menu_money">Stickoins</string>

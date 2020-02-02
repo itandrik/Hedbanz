@@ -25,7 +25,7 @@ import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.Language;
 import com.transcendensoft.hedbanz.presentation.base.HedbanzContextWrapper;
-import com.transcendensoft.hedbanz.presentation.language.LanguageActivity;
+import com.transcendensoft.hedbanz.presentation.language.LanguageFragment;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.presentation.usercrud.login.LoginFragment;
 import com.transcendensoft.hedbanz.utils.ViewUtils;
@@ -111,7 +111,7 @@ public class StartActivity extends DaggerAppCompatActivity {
     }
 
     private void startLoginActivity() {
-        Intent intent = new Intent(this, LanguageActivity.class);
+        Intent intent = new Intent(this, LanguageFragment.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(getString(R.string.bundle_is_language_after_start), true);
         startActivity(intent);

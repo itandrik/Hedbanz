@@ -26,13 +26,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.constraintlayout.widget.Group;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -59,7 +60,6 @@ import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.custom.widget.rangeseekbar.RangeSeekBar;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
-import com.transcendensoft.hedbanz.presentation.mainscreen.MainFragment;
 import com.transcendensoft.hedbanz.presentation.rooms.list.RoomsAdapter;
 import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.utils.extension.ViewExtensionsKt;
@@ -98,18 +98,19 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
      * Searching and filters
      */
     @BindView(R.id.cvFilters) CardView mCvFilters;
-    @BindView(R.id.fabSearchRoom) FloatingActionButton mFabSearch;
     @BindView(R.id.chbApplyFilters) CheckBox mChbApplyFilters;
     @BindView(R.id.chbWithPassword) CheckBox mChbWithPassword;
     @BindView(R.id.rsbMaxPlayers) RangeSeekBar mRangeSeekBarMaxPlayers;
     @BindView(R.id.tvFilterMaxPlayersTitle) TextView mTvFilterMaxPlayersTitle;
     @BindView(R.id.filterDividerView) View mFilterDividerView;
 
-    private RelativeLayout mRlSearchContainer;
-    private TextView mTvToolbarTitle;
     private SearchView mSvRoomSearch;
     private ImageView mIvSearchFilter;
     private ImageView mIvCloseSearch;
+    private Group mGroupGeneralToolbarWidgets;
+    private Group mGroupSearchRoom;
+    private ImageView mIvSearch;
+
     private BroadcastReceiver mRoomsReceiver;
 
     @Inject RoomsPresenter mPresenter;
@@ -195,37 +196,19 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     }
 
     private void initRecycler() {
-        //mAdapter = new RoomsAdapter(mPresenter);
         mAdapter.setBottomReachedListener(mPresenter);
         mRecycler.setItemAnimator(new DefaultItemAnimator());
-        mRecycler.setLayoutManager(new LinearLayoutManager(
-                getActivity(), LinearLayoutManager.VERTICAL, false));
         mRecycler.setAdapter(mAdapter);
-
-        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0 && mFabSearch.isShown()) {
-                    mFabSearch.hide();
-                } else if ((dy < 0) && (mRlSearchContainer.getVisibility() != VISIBLE)) {
-                    mFabSearch.show();
-                }
-            }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-        });
     }
 
     private void initSearchView() {
-        MainFragment mainFragment = (MainFragment) getParentFragment();
-        if (mainFragment != null) {
-            Toolbar toolbar = mainFragment.getToolbar();
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            Toolbar toolbar = mainActivity.getToolbar();
             if (toolbar != null) {
-                mTvToolbarTitle = toolbar.findViewById(R.id.tvToolbarTitle);
-                mRlSearchContainer = toolbar.findViewById(R.id.rlSearchContainer);
+                mGroupGeneralToolbarWidgets = toolbar.findViewById(R.id.groupGeneralToolbarWidgets);
+                mGroupSearchRoom = toolbar.findViewById(R.id.groupSearchRoom);
+                mIvSearch = toolbar.findViewById(R.id.ivSearch);
                 mIvCloseSearch = toolbar.findViewById(R.id.ivCloseSearch);
                 mIvSearchFilter = toolbar.findViewById(R.id.ivSearchFilter);
                 mSvRoomSearch = toolbar.findViewById(R.id.svSearchRoom);
@@ -236,6 +219,11 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     }
 
     private void initSearchOnClickListeners() {
+        mIvSearch.setOnClickListener(v -> {
+            openSearch();
+            mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.SEARCH_BUTTON, null);
+        });
+
         mIvCloseSearch.setOnClickListener(v -> {
             closeSearchAndRefresh();
             mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.CLOSE_FILTER_BUTTON, null);
@@ -401,20 +389,15 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         }
     }
 
-    @OnClick(R.id.fabSearchRoom)
-    protected void onFabSearchClicked() {
-        mTvToolbarTitle.setVisibility(GONE);
-        mRlSearchContainer.setVisibility(View.VISIBLE);
+    private void openSearch() {
+        mGroupGeneralToolbarWidgets.setVisibility(GONE);
+        mGroupSearchRoom.setVisibility(View.VISIBLE);
         mSvRoomSearch.onActionViewExpanded();
-        mFabSearch.hide();
-        mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.SEARCH_BUTTON, null);
     }
 
     public void closeSearchAndRefresh() {
-        mTvToolbarTitle.setVisibility(View.VISIBLE);
-        mRlSearchContainer.setVisibility(View.GONE);
-        mCvFilters.setVisibility(GONE);
-        mFabSearch.show();
+        mGroupGeneralToolbarWidgets.setVisibility(View.VISIBLE);
+        mGroupSearchRoom.setVisibility(GONE);
         mChbApplyFilters.setChecked(false);
         mSvRoomSearch.setQuery("", false);
         mPresenter.clearFilters();
@@ -423,12 +406,9 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
 
     public void hideFilters() {
         try {
-            mTvToolbarTitle.setVisibility(View.VISIBLE);
-            mRlSearchContainer.setVisibility(View.GONE);
+            mGroupGeneralToolbarWidgets.setVisibility(View.VISIBLE);
+            mGroupSearchRoom.setVisibility(View.GONE);
             mCvFilters.setVisibility(GONE);
-            if(mAdapter.getItemCount() != 0) {
-                mFabSearch.show();
-            }
         } catch (NullPointerException e) {
             Timber.e(e);
         }
@@ -458,7 +438,6 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
     @Override
     public void showContent() {
         hideAll();
-        mFabSearch.setVisibility(VISIBLE);
         mRefreshLayout.setVisibility(View.VISIBLE);
     }
 
@@ -511,6 +490,5 @@ public class RoomsFragment extends BaseFragment implements RoomsContract.View {
         mFlLoadingContainer.setVisibility(GONE);
         mRefreshLayout.setVisibility(GONE);
         mRlEmptyList.setVisibility(GONE);
-        mFabSearch.setVisibility(GONE);
     }
 }

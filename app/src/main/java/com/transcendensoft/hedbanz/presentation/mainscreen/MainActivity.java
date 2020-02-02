@@ -6,23 +6,27 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.Group;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import androidx.appcompat.app.AlertDialog;
 
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
-import com.transcendensoft.hedbanz.presentation.custom.widget.VerticalViewPager;
 import com.transcendensoft.hedbanz.presentation.game.GameActivity;
 import com.transcendensoft.hedbanz.presentation.intro.IntroActivity;
 import com.transcendensoft.hedbanz.presentation.menu.MenuFragment;
@@ -41,9 +45,17 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.tvMenuRooms)
     AppCompatTextView mTvMenuRooms;
     @BindView(R.id.tvMenuSettings)
-    AppCompatTextView mTvMenuSettings;
+    AppCompatTextView mTvMenuProfile;
     @BindView(R.id.fabNewRoom)
     FloatingActionButton mFabNewRoom;
+    @BindView(R.id.flCreateRoomFragment)
+    FrameLayout mFlCreateRoomFragmentContainer;
+    @BindView(R.id.toolbarMain)
+    Toolbar mToolbar;
+    @BindView(R.id.tvToolbarTitle)
+    TextView mTvToolbarTitle;
+    @BindView(R.id.groupSearchIcon)
+    Group mGroupSearchIcon;
 
     @Inject
     Lazy<CreateRoomFragment> createRoomFragmentLazy;
@@ -58,6 +70,7 @@ public class MainActivity extends BaseActivity {
 
     private int redColor;
     private int textPrimaryColor;
+    private Fragment activeFragment;
 
     @Inject
     public MainActivity() {
@@ -73,8 +86,10 @@ public class MainActivity extends BaseActivity {
 
         redColor = ContextCompat.getColor(this, R.color.textDarkRed);
         textPrimaryColor = ContextCompat.getColor(this, R.color.textPrimary);
+        mTvToolbarTitle.setText(getString(R.string.rooms_title));
 
         initNewVersionReceiver();
+        initFragmentManager();
         initBottomNavigation();
 
         if (!mPreferenceManager.isTutorialShown()) {
@@ -106,38 +121,57 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    private void initFragmentManager() {
+        activeFragment = roomsFragmentLazy.get();
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.flPageContainer, menuFragmentLazy.get(), "MenuFragmentTag")
+                .hide(menuFragmentLazy.get()).commit();
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.flPageContainer, roomsFragmentLazy.get(), "RoomsFragmentTag")
+                .commit();
+    }
+
     private void initBottomNavigation() {
         mTvMenuRooms.setOnClickListener(v -> {
-            mTvMenuRooms.setTextColor(redColor);
-            mTvMenuRooms.setSupportCompoundDrawablesTintList(ColorStateList.valueOf(redColor));
-            mTvMenuSettings.setTextColor(textPrimaryColor);
-            mTvMenuSettings.setSupportCompoundDrawablesTintList(ColorStateList.valueOf(textPrimaryColor));
+            if (!(activeFragment instanceof RoomsFragment)) {
+                mTvMenuRooms.setTextColor(redColor);
+                mTvMenuRooms.setSupportCompoundDrawablesTintList(ColorStateList.valueOf(redColor));
+                mTvMenuProfile.setTextColor(textPrimaryColor);
+                mTvMenuProfile.setSupportCompoundDrawablesTintList(ColorStateList.valueOf(textPrimaryColor));
+                mTvToolbarTitle.setText(getString(R.string.rooms_title));
+                mGroupSearchIcon.setVisibility(View.VISIBLE);
 
-            // TODO
+                getSupportFragmentManager().beginTransaction().hide(activeFragment).show(roomsFragmentLazy.get()).commit();
+                activeFragment = roomsFragmentLazy.get();
+            }
         });
 
-        mTvMenuSettings.setOnClickListener(v -> {
-            mTvMenuSettings.setTextColor(redColor);
-            mTvMenuSettings.setSupportCompoundDrawablesTintList(ColorStateList.valueOf(redColor));
-            mTvMenuRooms.setTextColor(textPrimaryColor);
-            mTvMenuRooms.setSupportCompoundDrawablesTintList(ColorStateList.valueOf(textPrimaryColor));
+        mTvMenuProfile.setOnClickListener(v -> {
+            if (!(activeFragment instanceof MenuFragment)) {
+                mTvMenuProfile.setTextColor(redColor);
+                mTvMenuProfile.setSupportCompoundDrawablesTintList(ColorStateList.valueOf(redColor));
+                mTvMenuRooms.setTextColor(textPrimaryColor);
+                mTvMenuRooms.setSupportCompoundDrawablesTintList(ColorStateList.valueOf(textPrimaryColor));
+                mTvToolbarTitle.setText(getString(R.string.menu_title));
+                roomsFragmentLazy.get().hideFilters();
+                mGroupSearchIcon.setVisibility(View.GONE);
 
-            // TODO
+                getSupportFragmentManager().beginTransaction().hide(activeFragment).show(menuFragmentLazy.get()).commit();
+                activeFragment = menuFragmentLazy.get();
+            }
         });
 
         mFabNewRoom.setOnClickListener(v -> {
-            // TODO
+            mFlCreateRoomFragmentContainer.setVisibility(View.VISIBLE);
+            roomsFragmentLazy.get().hideFilters();
+            mGroupSearchIcon.setVisibility(View.GONE);
+            mTvToolbarTitle.setText(getString(R.string.room_creation_title));
+
+            // TODO add animation
         });
     }
-
-   /* private void initViewPager() {
-        MainScreenFragmentAdapter adapter = new MainScreenFragmentAdapter.Holder(getSupportFragmentManager())
-                .add(mainFragmentLazy.get())
-                .add(menuFragmentLazy.get())
-                .set();
-        mViewPager.setAdapter(adapter);
-        mViewPager.setOverScrollMode(View.OVER_SCROLL_ALWAYS);
-    }*/
 
     private void initNewVersionReceiver() {
         mNewVersionReceiver = new BroadcastReceiver() {
@@ -151,17 +185,13 @@ public class MainActivity extends BaseActivity {
         };
     }
 
-    public void openMenu() {
-        //mViewPager.setCurrentItem(1, true);
-    }
-
     @Override
     public void onBackPressed() {
-        //if (mViewPager.getCurrentItem() != 0) {
-        //    mViewPager.setCurrentItem(0, true);
-        // } else {
-        super.onBackPressed();
-        // }
+        if(mFlCreateRoomFragmentContainer.getVisibility() == View.VISIBLE){
+            mFlCreateRoomFragmentContainer.setVisibility(View.GONE);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -218,5 +248,9 @@ public class MainActivity extends BaseActivity {
         }
         dialog.dismiss();
         mPreferenceManager.setAppNewVersion(false);
+    }
+
+    public Toolbar getToolbar() {
+        return mToolbar;
     }
 }
