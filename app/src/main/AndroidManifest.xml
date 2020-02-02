@@ -55,11 +55,6 @@
             android:theme="@style/ThemeRegister"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".presentation.usercrud.CredentialsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/ThemeRegister"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
             android:name=".presentation.game.GameActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ThemeMain"

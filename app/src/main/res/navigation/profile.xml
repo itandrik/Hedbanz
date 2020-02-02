@@ -31,6 +31,13 @@
             app:exitAnim="@anim/slide_left_out"
             app:popEnterAnim="@anim/slide_right_in"
             app:popExitAnim="@anim/slide_right_out" />
+        <action
+            android:id="@+id/action_menuFragment_to_credentialsFragment"
+            app:destination="@id/credentialsFragment"
+            app:enterAnim="@anim/slide_left_in"
+            app:exitAnim="@anim/slide_left_out"
+            app:popEnterAnim="@anim/slide_right_in"
+            app:popExitAnim="@anim/slide_right_out"/>
     </fragment>
 
     <fragment
@@ -46,4 +53,9 @@
         android:id="@+id/feedbackFragment"
         android:name="com.transcendensoft.hedbanz.presentation.feedback.FeedbackFragment"
         android:label="FeedbackFragment" />
+    <fragment
+        android:id="@+id/credentialsFragment"
+        android:name="com.transcendensoft.hedbanz.presentation.usercrud.CredentialsFragment"
+        android:label="activity_credentials"
+        tools:layout="@layout/fragment_credentials" />
 </navigation>

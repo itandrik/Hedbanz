@@ -40,6 +40,8 @@ import com.transcendensoft.hedbanz.presentation.rooms.list.RoomItemContract;
 import com.transcendensoft.hedbanz.presentation.rooms.list.RoomItemPresenterImpl;
 import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.presentation.menu.MenuFragment;
+import com.transcendensoft.hedbanz.presentation.usercrud.CredentialsFragment;
+import com.transcendensoft.hedbanz.presentation.usercrud.UserCrudModule;
 
 import java.util.ArrayList;
 
@@ -74,9 +76,9 @@ public interface MainActivityModule {
     @ContributesAndroidInjector(modules = ChangeIconModule.class)
     ChangeIconFragment changeIconFragment();
 
-    /*@FragmentScope
-    @ContributesAndroidInjector(modules = UserCrudModule.class)
-    CredentialsFragment credentialsFragment();;*/
+    @FragmentScope
+    @ContributesAndroidInjector
+    CredentialsFragment credentialsFragment();
 
     @FragmentScope
     @ContributesAndroidInjector(modules = FeedbackModule.class)

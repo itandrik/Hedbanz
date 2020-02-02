@@ -39,11 +39,10 @@ import com.transcendensoft.hedbanz.domain.entity.HedbanzAnalyticsKt;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
-import com.transcendensoft.hedbanz.presentation.feedback.FeedbackFragment;
 import com.transcendensoft.hedbanz.presentation.intro.IntroActivity;
 import com.transcendensoft.hedbanz.presentation.language.LanguageActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
-import com.transcendensoft.hedbanz.presentation.usercrud.CredentialsActivity;
+import com.transcendensoft.hedbanz.presentation.usercrud.CredentialsFragment;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.extension.FragmentExtensionsKt;
 
@@ -116,7 +115,6 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
                 case R.id.feedbackFragment:
                     FragmentExtensionsKt.setupNavigationToolbar(this, ((MainActivity) requireActivity()).getToolbar(), getString(R.string.feedback_title));
                     break;
-
             }
         });
     }
@@ -154,7 +152,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
 
     @OnClick(R.id.btnCredentials)
     protected void onCredentialsClicked() {
-        startActivity(new Intent(getActivity(), CredentialsActivity.class));
+        NavHostFragment.findNavController(this).navigate(R.id.action_menuFragment_to_credentialsFragment);
         mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.CREDENTIALS_BUTTON, null);
     }
 
@@ -233,13 +231,6 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
         if (mPresenter != null) {
             mPresenter.unbindFirebaseToken();
             mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.EXIT_BUTTON, null);
-        }
-    }
-
-    @OnClick(R.id.cvDown)
-    protected void onFabDownClicked() {
-        if (getActivity() != null) {
-            mActivity.onBackPressed();
         }
     }
 

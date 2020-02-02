@@ -1,14 +1,17 @@
 package com.transcendensoft.hedbanz.presentation.usercrud;
 
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -18,10 +21,12 @@ import com.bumptech.glide.Glide;
 import com.transcendensoft.hedbanz.R;
 import com.transcendensoft.hedbanz.data.prefs.PreferenceManager;
 import com.transcendensoft.hedbanz.domain.entity.User;
-import com.transcendensoft.hedbanz.presentation.base.BaseActivity;
+import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
+import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
 import com.transcendensoft.hedbanz.utils.AndroidUtils;
 import com.transcendensoft.hedbanz.utils.KeyboardUtils;
 import com.transcendensoft.hedbanz.utils.ViewUtils;
+import com.transcendensoft.hedbanz.utils.extension.FragmentExtensionsKt;
 
 import javax.inject.Inject;
 
@@ -30,8 +35,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.view.View.GONE;
+import static com.google.android.gms.internal.zzahf.runOnUiThread;
 
-public class CredentialsActivity extends BaseActivity implements UserCrudContract.View {
+public class CredentialsFragment extends BaseFragment implements UserCrudContract.View {
     @BindView(R.id.ivSmileGif) ImageView mIvSmileGif;
     @BindView(R.id.etLogin) EditText mEtLogin;
     @BindView(R.id.etEmail) EditText mEtEmail;
@@ -52,29 +58,30 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
     /*------------------------------------*
      *-------- Activity lifecycle --------*
      *------------------------------------*/
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_credentials);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources()
-                    .getColor(R.color.colorPrimaryLight));
-        }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_credentials, container, false);
 
-        ButterKnife.bind(this, this);
+        ButterKnife.bind(this, view);
 
-        int size = (int) ViewUtils.dpToPx(this, 100);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        int size = ViewUtils.dpToPx(requireContext(), 100);
         Glide.with(this).asGif().load(R.raw.smile_gif_new).preload(size, size);
 
         initPasswordIcon();
         initUserData();
+        initToolbar();
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         if (mPresenter != null) {
             mPresenter.bindView(this);
@@ -84,7 +91,7 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         if (mPresenter != null) {
             mPresenter.unbindView();
@@ -92,22 +99,23 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         if (mPresenter != null) {
             mPresenter.destroy();
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_left_out);
-    }
-
     /*------------------------------------*
      *---------- Initialization ----------*
      *------------------------------------*/
+
+    private void initToolbar() {
+        FragmentExtensionsKt.setupNavigationToolbar(this,
+                ((MainActivity) requireActivity()).getToolbar(),
+                getString(R.string.credentials_title)
+        );
+    }
 
     private void initEditTextListeners() {
         mPresenter.initAnimEditTextListener(mEtLogin);
@@ -128,7 +136,7 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
         Drawable drawable = VectorDrawableCompat.create(
                 getResources(), R.drawable.ic_password, null);
         drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, ContextCompat.getColor(this, R.color.textDarkRed));
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(requireContext(), R.color.textDarkRed));
         mEtOldPassword.setCompoundDrawablesWithIntrinsicBounds(drawable, null,null,null);
         mEtNewPassword.setCompoundDrawablesWithIntrinsicBounds(drawable, null,null,null);
     }
@@ -142,7 +150,7 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
         mEtNewPassword.setText("");
         mEtConfirmPassword.setText("");
         mEtOldPassword.setText("");
-        AndroidUtils.showShortToast(this, R.string.credentials_update_success);
+        AndroidUtils.showShortToast(requireContext(), R.string.credentials_update_success);
         handleKeyboard(KeyboardUtils.KeyboardState.HIDE, null);
     }
 
@@ -179,11 +187,6 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
         }
     }
 
-    @OnClick(R.id.ivBack)
-    protected void onBackClicked() {
-        onBackPressed();
-    }
-
     /*------------------------------------*
      *-------- Error and loading ---------*
      *------------------------------------*/
@@ -214,7 +217,7 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
             mPbLoginLoading.setVisibility(View.INVISIBLE);
             Drawable drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_check, null);
             mTvLoginAvailability.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
-            mTvLoginAvailability.setTextColor(ContextCompat.getColor(this, R.color.loginSuccess));
+            mTvLoginAvailability.setTextColor(ContextCompat.getColor(requireContext(), R.color.loginSuccess));
             mTvLoginAvailability.setText(getString(R.string.login_error_login_available));
             mTvLoginAvailability.setVisibility(View.VISIBLE);
         });
@@ -227,7 +230,7 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
             mPbLoginLoading.setVisibility(View.INVISIBLE);
             Drawable drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_sad, null);
             mTvLoginAvailability.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
-            mTvLoginAvailability.setTextColor(ContextCompat.getColor(this, R.color.loginError));
+            mTvLoginAvailability.setTextColor(ContextCompat.getColor(requireContext(), R.color.loginError));
             mTvLoginAvailability.setText(getString(R.string.login_error_login_not_available));
             mTvLoginAvailability.setVisibility(View.VISIBLE);
         });
@@ -275,13 +278,13 @@ public class CredentialsActivity extends BaseActivity implements UserCrudContrac
     @Override
     public void showServerError() {
         hideAll();
-        AndroidUtils.showShortToast(this, R.string.error_server);
+        AndroidUtils.showShortToast(requireContext(), R.string.error_server);
     }
 
     @Override
     public void showNetworkError() {
         hideAll();
-        AndroidUtils.showShortToast(this, R.string.error_network);
+        AndroidUtils.showShortToast(requireContext(), R.string.error_network);
     }
 
     @Override
