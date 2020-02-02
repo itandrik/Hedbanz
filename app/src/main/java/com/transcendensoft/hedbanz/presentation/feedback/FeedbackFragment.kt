@@ -4,9 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import androidx.appcompat.app.AlertDialog
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageView
@@ -16,6 +18,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.bumptech.glide.Glide
+import com.google.android.gms.internal.zzahf.runOnUiThread
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.transcendensoft.hedbanz.BuildConfig
 import com.transcendensoft.hedbanz.R
@@ -23,9 +26,12 @@ import com.transcendensoft.hedbanz.data.prefs.PreferenceManager
 import com.transcendensoft.hedbanz.domain.entity.CONFIDENTIALITY_BUTTON
 import com.transcendensoft.hedbanz.domain.entity.FEEDBACK_SUBMIT_BUTTON
 import com.transcendensoft.hedbanz.domain.entity.TELEGRAM_BUTTON
-import com.transcendensoft.hedbanz.presentation.base.BaseActivity
+import com.transcendensoft.hedbanz.presentation.base.BaseFragment
+import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity
 import com.transcendensoft.hedbanz.utils.AndroidUtils
 import com.transcendensoft.hedbanz.utils.extension.setupKeyboardHiding
+import com.transcendensoft.hedbanz.utils.extension.setupNavigationToolbar
+import kotlinx.android.synthetic.main.fragment_feedback.*
 import javax.inject.Inject
 
 
@@ -50,32 +56,20 @@ import javax.inject.Inject
  * @author Andrii Chernysh. E-mail: itcherry97@gmail.com
  * Developed by <u>Transcendensoft</u>
  */
-class FeedbackActivity : BaseActivity(), FeedbackContract.View {
-    @BindView(R.id.ivSmileGif) lateinit var ivSmileGif: ImageView
-    @BindView(R.id.etFeedback) lateinit var etFeedback: EditText
-    @BindView(R.id.tvErrorFeedback) lateinit var tvFeedbackError: TextView
-    @BindView(R.id.parentLayout) lateinit var parentLayout: ScrollView
+class FeedbackFragment : BaseFragment(), FeedbackContract.View {
 
     @Inject lateinit var presenter: FeedbackPresenter
     @Inject lateinit var firebaseAnalytics: FirebaseAnalytics
     @Inject lateinit var preferenceManager: PreferenceManager
 
-    /*------------------------------------*
-     *-------- Activity lifecycle --------*
-     *------------------------------------*/
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_feedback, container, false);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val window = window
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.statusBarColor = resources.getColor(R.color.colorPrimaryLight)
-        }
-
-        setContentView(R.layout.activity_feedback)
-        ButterKnife.bind(this, this)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         parentLayout.setupKeyboardHiding(this)
+        initClickListeners()
+        initToolbar()
     }
 
     override fun onResume() {
@@ -97,31 +91,28 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     /*------------------------------------*
      *-------- On click listeners --------*
      *------------------------------------*/
-    @OnClick(R.id.btnSubmitFeedback)
-    fun onSubmitFeedbackClicked() {
-        hideError()
-        presenter.submitFeedback(etFeedback.text.toString())
-        firebaseAnalytics.logEvent(FEEDBACK_SUBMIT_BUTTON, null)
-
+    private fun initToolbar() {
+        setupNavigationToolbar((requireActivity() as MainActivity).toolbar, getString(R.string.feedback_title))
     }
 
-    @OnClick(R.id.btnConfidentiality)
-    fun onConfidentialityClicked() {
-        val url = "${BuildConfig.HOST_LINK}${BuildConfig.PORT_API}" +
-                "privacy-policies?lang=${preferenceManager.locale}"
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-        firebaseAnalytics.logEvent(CONFIDENTIALITY_BUTTON, null)
-    }
+    private fun initClickListeners() {
+        btnSubmitFeedback.setOnClickListener {
+            hideError()
+            presenter.submitFeedback(etFeedback.text.toString())
+            firebaseAnalytics.logEvent(FEEDBACK_SUBMIT_BUTTON, null)
+        }
 
-    @OnClick(R.id.btnTelegram)
-    fun onTelegramClicked() {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(TELEGRAM_LINK)))
-        firebaseAnalytics.logEvent(TELEGRAM_BUTTON, null)
-    }
+        btnConfidentiality.setOnClickListener{
+            val url = "${BuildConfig.HOST_LINK}${BuildConfig.PORT_API}" +
+                    "privacy-policies?lang=${preferenceManager.locale}"
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            firebaseAnalytics.logEvent(CONFIDENTIALITY_BUTTON, null)
+        }
 
-    @OnClick(R.id.ivBack)
-    fun onBackClicked() {
-        onBackPressed()
+        btnTelegram.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(TELEGRAM_LINK)))
+            firebaseAnalytics.logEvent(TELEGRAM_BUTTON, null)
+        }
     }
 
     /*------------------------------------*
@@ -141,18 +132,18 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
     override fun showNetworkError() {
         super.showNetworkError()
-        AndroidUtils.showShortToast(this, R.string.error_network)
+        AndroidUtils.showShortToast(requireContext(), R.string.error_network)
     }
 
     override fun showServerError() {
         super.showServerError()
-        AndroidUtils.showShortToast(this, R.string.error_server)
+        AndroidUtils.showShortToast(requireContext(), R.string.error_server)
     }
 
     override fun showFeedbackSuccess() {
         hideLoadingDialog()
         val d = VectorDrawableCompat.create(resources, R.drawable.ic_win_happy, null)
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(requireContext())
                 .setPositiveButton(getString(R.string.action_ok)) { dialog, _ -> dialog.dismiss() }
                 .setOnDismissListener { etFeedback.setText("") }
                 .setIcon(d)
@@ -162,17 +153,17 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     override fun showFeedbackError(message: Int) {
-        tvFeedbackError.text = getString(message)
-        tvFeedbackError.visibility = View.VISIBLE
+        tvErrorFeedback.text = getString(message)
+        tvErrorFeedback.visibility = View.VISIBLE
     }
 
     override fun hideError() {
-        tvFeedbackError.text = ""
-        tvFeedbackError.visibility = View.GONE
+        tvErrorFeedback.text = ""
+        tvErrorFeedback.visibility = View.GONE
     }
 
     override fun showSubmitError() {
-        AndroidUtils.showLongToast(this, getString(R.string.error_server))
+        AndroidUtils.showLongToast(requireContext(), getString(R.string.error_server))
     }
 
     override fun startSmileAnimation() {

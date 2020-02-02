@@ -39,8 +39,7 @@ import com.transcendensoft.hedbanz.domain.entity.HedbanzAnalyticsKt;
 import com.transcendensoft.hedbanz.domain.entity.User;
 import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
-import com.transcendensoft.hedbanz.presentation.feedback.FeedbackActivity;
-import com.transcendensoft.hedbanz.presentation.friends.FriendsFragment;
+import com.transcendensoft.hedbanz.presentation.feedback.FeedbackFragment;
 import com.transcendensoft.hedbanz.presentation.intro.IntroActivity;
 import com.transcendensoft.hedbanz.presentation.language.LanguageActivity;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
@@ -104,8 +103,20 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
         super.onViewCreated(view, savedInstanceState);
 
         NavHostFragment.findNavController(this).addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if(destination.getId() == R.id.menuFragment) {
-                FragmentExtensionsKt.setupMainScreenToolbar(this, ((MainActivity) requireActivity()).getToolbar(), getString(R.string.menu_title));
+            switch (destination.getId()){
+                case R.id.menuFragment:
+                    FragmentExtensionsKt.setupMainScreenToolbar(this, ((MainActivity) requireActivity()).getToolbar(), getString(R.string.menu_title));
+                    break;
+                case R.id.changeIconFragment:
+                    FragmentExtensionsKt.setupNavigationToolbar(this, ((MainActivity) requireActivity()).getToolbar(), getString(R.string.change_icon_choose_avatar));
+                    break;
+                case R.id.friendsFragment:
+                    FragmentExtensionsKt.setupNavigationToolbar(this, ((MainActivity) requireActivity()).getToolbar(), getString(R.string.friends_toolbar_title));
+                    break;
+                case R.id.feedbackFragment:
+                    FragmentExtensionsKt.setupNavigationToolbar(this, ((MainActivity) requireActivity()).getToolbar(), getString(R.string.feedback_title));
+                    break;
+
             }
         });
     }
@@ -191,7 +202,7 @@ public class MenuFragment extends BaseFragment implements MenuFragmentContract.V
 
     @OnClick(R.id.btnFeedback)
     protected void onFeedbackClicked() {
-        startActivity(new Intent(getActivity(), FeedbackActivity.class));
+        NavHostFragment.findNavController(this).navigate(R.id.action_menuFragment_to_feedbackFragment);
         mFirebaseAnalytics.logEvent(HedbanzAnalyticsKt.FEEDBACK_BUTTON, null);
     }
 

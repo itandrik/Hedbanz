@@ -65,11 +65,6 @@
             android:theme="@style/ThemeMain"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:name=".presentation.friends.FriendsFragment"
-            android:screenOrientation="portrait"
-            android:theme="@style/ThemeMain"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
             android:name=".presentation.restorepwd.RestorePasswordActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ThemeRegister"
@@ -79,15 +74,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/ThemeMain"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".presentation.changeicon.ChangeIconFragment"
-            android:screenOrientation="portrait"
-            android:theme="@style/ThemeMain" />
-        <activity
-            android:name=".presentation.feedback.FeedbackActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/ThemeMain"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".presentation.language.LanguageActivity"
             android:screenOrientation="portrait"

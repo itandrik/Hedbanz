@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.fragment.app.Fragment
 import com.transcendensoft.hedbanz.R
 
 /**
@@ -44,6 +45,26 @@ fun View.setupKeyboardHiding(activity: Activity) {
         for (i in 0 until this.childCount) {
             val innerView = this.getChildAt(i)
             innerView.setupKeyboardHiding(activity)
+        }
+    }
+}
+
+fun View.setupKeyboardHiding(fragment: Fragment) {
+
+    // Set up touch listener for non-text box views to hide keyboard.
+    if (this !is EditText && this.id != R.id.ivEmoji && this.id != R.id.ivSend &&
+            this.id != R.id.ivSubmitWord && this.id != R.id.fabScrollDown) {
+        this.setOnTouchListener { _, _ ->
+            com.transcendensoft.hedbanz.utils.KeyboardUtils.hideSoftInput(fragment.activity)
+            false
+        }
+    }
+
+    //If a layout container, iterate over children and seed recursion.
+    if (this is ViewGroup) {
+        for (i in 0 until this.childCount) {
+            val innerView = this.getChildAt(i)
+            innerView.setupKeyboardHiding(fragment)
         }
     }
 }

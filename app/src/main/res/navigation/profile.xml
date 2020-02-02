@@ -9,21 +9,28 @@
         android:id="@+id/menuFragment"
         android:name="com.transcendensoft.hedbanz.presentation.menu.MenuFragment"
         android:label="fragment_menu"
-        tools:layout="@layout/fragment_menu" >
+        tools:layout="@layout/fragment_menu">
         <action
             android:id="@+id/action_menuFragment_to_changeIconFragment"
             app:destination="@id/changeIconFragment"
-            app:popEnterAnim="@anim/slide_right_in"
-            app:popExitAnim="@anim/slide_right_out"
             app:enterAnim="@anim/slide_left_in"
-            app:exitAnim="@anim/slide_left_out"/>
+            app:exitAnim="@anim/slide_left_out"
+            app:popEnterAnim="@anim/slide_right_in"
+            app:popExitAnim="@anim/slide_right_out" />
         <action
             android:id="@+id/action_menuFragment_to_friendsFragment"
             app:destination="@id/friendsFragment"
-            app:popEnterAnim="@anim/slide_right_in"
-            app:popExitAnim="@anim/slide_right_out"
             app:enterAnim="@anim/slide_left_in"
-            app:exitAnim="@anim/slide_left_out"/>
+            app:exitAnim="@anim/slide_left_out"
+            app:popEnterAnim="@anim/slide_right_in"
+            app:popExitAnim="@anim/slide_right_out" />
+        <action
+            android:id="@+id/action_menuFragment_to_feedbackFragment"
+            app:destination="@id/feedbackFragment"
+            app:enterAnim="@anim/slide_left_in"
+            app:exitAnim="@anim/slide_left_out"
+            app:popEnterAnim="@anim/slide_right_in"
+            app:popExitAnim="@anim/slide_right_out" />
     </fragment>
 
     <fragment
@@ -35,4 +42,8 @@
         android:name="com.transcendensoft.hedbanz.presentation.friends.FriendsFragment"
         android:label="fragment_friends"
         tools:layout="@layout/fragment_friends" />
+    <fragment
+        android:id="@+id/feedbackFragment"
+        android:name="com.transcendensoft.hedbanz.presentation.feedback.FeedbackFragment"
+        android:label="FeedbackFragment" />
 </navigation>
