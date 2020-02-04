@@ -89,21 +89,4 @@ class FeedbackPresenter @Inject constructor(
             }
         }
     }
-
-    /*------------------------------------*
-     *------- Animation for smile --------*
-     *------------------------------------*/
-    override fun initAnimEditTextListener(editText: EditText) {
-        addDisposable(
-                RxTextView.textChanges(editText)
-                        .skip(1)
-                        .filter { text -> !TextUtils.isEmpty(text) }
-                        .compose(RxUtils.debounceFirst(500, TimeUnit.MILLISECONDS))
-                        .doOnNext { view()?.startSmileAnimation() }
-                        .mergeWith(RxTextView.textChanges(editText)
-                                .skip(1)
-                                .debounce(500, TimeUnit.MILLISECONDS)
-                                .doOnNext { view()?.stopSmileAnimation() })
-                        .subscribe())
-    }
 }

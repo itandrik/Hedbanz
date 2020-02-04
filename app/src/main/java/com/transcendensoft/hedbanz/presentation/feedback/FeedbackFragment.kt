@@ -75,7 +75,6 @@ class FeedbackFragment : BaseFragment(), FeedbackContract.View {
     override fun onResume() {
         super.onResume()
         presenter.bindView(this)
-        presenter.initAnimEditTextListener(etFeedback)
     }
 
     override fun onPause() {
@@ -164,16 +163,6 @@ class FeedbackFragment : BaseFragment(), FeedbackContract.View {
 
     override fun showSubmitError() {
         AndroidUtils.showLongToast(requireContext(), getString(R.string.error_server))
-    }
-
-    override fun startSmileAnimation() {
-        runOnUiThread { Glide.with(this).asGif().load(R.raw.smile_gif_new).into(ivSmileGif) }
-    }
-
-    override fun stopSmileAnimation() {
-        runOnUiThread {
-            Glide.with(this).load(R.drawable.logo_for_anim).into(ivSmileGif)
-        }
     }
 
     companion object {

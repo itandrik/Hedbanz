@@ -35,12 +35,9 @@ interface FeedbackContract {
         fun showFeedbackError(@StringRes message: Int)
         fun showSubmitError()
         fun hideError()
-        fun startSmileAnimation()
-        fun stopSmileAnimation()
     }
 
     interface Presenter {
         fun submitFeedback(feedbackText: String)
-        fun initAnimEditTextListener(editText: EditText)
     }
 }

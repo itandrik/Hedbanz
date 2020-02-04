@@ -297,12 +297,12 @@
 
     <!-- Feedback -->
     <string name="feedback_title">Report a bug</string>
-    <string name="feedback_confidentiality_action">Privay policy</string>
+    <string name="feedback_confidentiality_action"><u>Privacy policy</u></string>
     <string name="feedback_hint">Describe your problem. For example: authorization has a lot of bugs.</string>
     <string name="feedback_submit">Send</string>
     <string name="feedback_success_title">You did it!</string>
     <string name="feedback_success_message">Your message was successfully sent to the development team. Thank you very much for your development support. We hope that with the help of your message, we will be able to correct the situation soon.</string>
-    <string name="feedback_telegram_action">Telegram-chat</string>
+    <string name="feedback_telegram_action"><u>Telegram-chat</u></string>
     <string name="feedback_telegram_title">We have created Telegram-chat for users communication purpose. There you can describe the bug or suggest improvements for the application.</string>
 
     <!-- Tutorial -->

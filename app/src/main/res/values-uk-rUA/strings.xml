@@ -302,12 +302,12 @@
 
     <!-- Feedback -->
     <string name="feedback_title">Повідомити про помилку</string>
-    <string name="feedback_confidentiality_action">Політика конфіденційності</string>
+    <string name="feedback_confidentiality_action"><u>Політика конфіденційності</u>v</string>
     <string name="feedback_hint">Опишіть вашу проблему. Наприклад: авторизація лагає не по дитячому.</string>
     <string name="feedback_submit">Відправити</string>
     <string name="feedback_success_title">У вас вийшло!</string>
     <string name="feedback_success_message">Ваше повідомлення успішно відправлено команді розробників. Велике дякую вам за допомогу в розвитку проекту. Надіємось, що за допомогою вашого повідомлення ми виправимо ситуацію якомогоа скоріше.</string>
-    <string name="feedback_telegram_action">Telegram-чат</string>
+    <string name="feedback_telegram_action"><u>Telegram-чат</u></string>
     <string name="feedback_telegram_title">Ми створили Telegram-чат для спілкування користувачів.Там ви можете описати помилку, або запропонувати нам як можна покращити додаток.</string>
 
     <!-- Tutorial -->

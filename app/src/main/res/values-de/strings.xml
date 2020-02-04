@@ -297,12 +297,12 @@
 
     <!-- Feedback -->
     <string name="feedback_title">Einen Fehler melden.</string>
-    <string name="feedback_confidentiality_action">Datenschutzrichtlinie</string>
+    <string name="feedback_confidentiality_action"><u>Datenschutzrichtlinie</u></string>
     <string name="feedback_hint">Beschreibe dein Problem.</string>
     <string name="feedback_submit">Senden</string>
     <string name="feedback_success_title">Du hast es geschafft!</string>
     <string name="feedback_success_message">Deine Nachricht wurde erfolgreich an Entwicklungsteam gesendet. Vielen Dank für deine Hilfe bei der Entwicklung des Projekts. Wir hoffen, dass wir mit Hilfe deiner Nachricht die Situation bald korrigieren können.</string>
-    <string name="feedback_telegram_action">Telegram-Chat</string>
+    <string name="feedback_telegram_action"><u>Telegram-Chat</u></string>
     <string name="feedback_telegram_title">Wir haben einen Telegramm-Chat für die Kommunikation von Benutzern erstellt. Dort könnt ihr den Fehler beschreiben oder eine Verbesserung der Anwendung vorschlagen.</string>
 
     <!-- Tutorial -->

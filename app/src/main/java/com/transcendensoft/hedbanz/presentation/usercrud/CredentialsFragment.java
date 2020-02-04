@@ -38,7 +38,6 @@ import static android.view.View.GONE;
 import static com.google.android.gms.internal.zzahf.runOnUiThread;
 
 public class CredentialsFragment extends BaseFragment implements UserCrudContract.View {
-    @BindView(R.id.ivSmileGif) ImageView mIvSmileGif;
     @BindView(R.id.etLogin) EditText mEtLogin;
     @BindView(R.id.etEmail) EditText mEtEmail;
     @BindView(R.id.etOldPassword) EditText mEtOldPassword;
@@ -72,8 +71,6 @@ public class CredentialsFragment extends BaseFragment implements UserCrudContrac
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        int size = ViewUtils.dpToPx(requireContext(), 100);
-        Glide.with(this).asGif().load(R.raw.smile_gif_new).preload(size, size);
 
         initPasswordIcon();
         initUserData();
@@ -86,7 +83,6 @@ public class CredentialsFragment extends BaseFragment implements UserCrudContrac
         if (mPresenter != null) {
             mPresenter.bindView(this);
             mPresenter.initNameCheckingListener(mEtLogin);
-            initEditTextListeners();
         }
     }
 
@@ -115,14 +111,6 @@ public class CredentialsFragment extends BaseFragment implements UserCrudContrac
                 ((MainActivity) requireActivity()).getToolbar(),
                 getString(R.string.credentials_title)
         );
-    }
-
-    private void initEditTextListeners() {
-        mPresenter.initAnimEditTextListener(mEtLogin);
-        mPresenter.initAnimEditTextListener(mEtEmail);
-        mPresenter.initAnimEditTextListener(mEtOldPassword);
-        mPresenter.initAnimEditTextListener(mEtNewPassword);
-        mPresenter.initAnimEditTextListener(mEtConfirmPassword);
     }
 
     private void initUserData(){
@@ -156,16 +144,12 @@ public class CredentialsFragment extends BaseFragment implements UserCrudContrac
 
     @Override
     public void startSmileAnimation() {
-        runOnUiThread(() -> {
-            Glide.with(this).asGif().load(R.raw.smile_gif_new).into(mIvSmileGif);
-        });
+        // Empty
     }
 
     @Override
     public void stopSmileAnimation() {
-        runOnUiThread(() -> {
-            Glide.with(this).load(R.drawable.logo_for_anim).into(mIvSmileGif);
-        });
+        // Empty
     }
 
     /*------------------------------------*

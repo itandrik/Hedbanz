@@ -48,7 +48,7 @@
             android:name=".presentation.mainscreen.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ThemeMain"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".presentation.usercrud.RegisterActivity"
             android:screenOrientation="portrait"

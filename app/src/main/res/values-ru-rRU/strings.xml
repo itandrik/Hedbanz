@@ -302,12 +302,12 @@
 
     <!-- Feedback -->
     <string name="feedback_title">Сообщить об ошибке</string>
-    <string name="feedback_confidentiality_action">Политика конфиденциальности</string>
+    <string name="feedback_confidentiality_action"><u>Политика конфиденциальности</u></string>
     <string name="feedback_hint">Опишите вашу проблему. Например: авторизация лагает не по детски</string>
     <string name="feedback_submit">Отправить</string>
     <string name="feedback_success_title">У вас получилось!</string>
     <string name="feedback_success_message">Ваше сообщение успешно отправлено команде разработчиков. Большое спасибо вам за помощь в развитии проекта. Надеемся, что с помощью вашего сообщения мы сможем исправить ситуацию в скором времени.</string>
-    <string name="feedback_telegram_action">Telegram-чат</string>
+    <string name="feedback_telegram_action"><u>Telegram-чат</u></string>
     <string name="feedback_telegram_title">Мы создали Telegram-чат для общения пользователей. Там вы можете описать ошибку или предложить о улучшении приложения.</string>
 
     <!-- Tutorial -->
