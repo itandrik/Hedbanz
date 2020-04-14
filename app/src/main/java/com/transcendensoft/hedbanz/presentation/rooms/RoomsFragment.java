@@ -61,6 +61,7 @@ import com.transcendensoft.hedbanz.presentation.StartActivity;
 import com.transcendensoft.hedbanz.presentation.base.BaseFragment;
 import com.transcendensoft.hedbanz.presentation.custom.widget.rangeseekbar.RangeSeekBar;
 import com.transcendensoft.hedbanz.presentation.mainscreen.MainActivity;
+import com.transcendensoft.hedbanz.presentation.rooms.list.DividerItemDecoration;
 import com.transcendensoft.hedbanz.presentation.rooms.list.RoomsAdapter;
 import com.transcendensoft.hedbanz.presentation.rooms.models.RoomList;
 import com.transcendensoft.hedbanz.utils.extension.ViewExtensionsKt;

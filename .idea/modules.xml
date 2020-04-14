@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Hedbanz.iml" filepath="$PROJECT_DIR$/.idea/Hedbanz.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/com-google-firebase-messaging/com-google-firebase-messaging.iml" filepath="$PROJECT_DIR$/com-google-firebase-messaging/com-google-firebase-messaging.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Hedbanz.iml" filepath="$PROJECT_DIR$/.idea/Hedbanz.iml" group="Hedbanz" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="Hedbanz/app" />
+      <module fileurl="file://$PROJECT_DIR$/com-google-firebase-messaging/com-google-firebase-messaging.iml" filepath="$PROJECT_DIR$/com-google-firebase-messaging/com-google-firebase-messaging.iml" group="Hedbanz/com-google-firebase-messaging" />
     </modules>
   </component>
 </project>

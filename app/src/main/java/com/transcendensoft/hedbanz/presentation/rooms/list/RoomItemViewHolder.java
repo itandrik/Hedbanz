@@ -31,6 +31,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.transcendensoft.hedbanz.R;
@@ -52,7 +53,7 @@ public class RoomItemViewHolder extends MvpViewHolder<RoomItemPresenterImpl> imp
     @BindView(R.id.tvRoomName) TextView mTvName;
     @BindView(R.id.ivRoomIcon) ImageView mIvIcon;
     @BindView(R.id.ivRoomLocked) ImageView mIvProtected;
-    @BindView(R.id.roomCard) CardView mCardContainer;
+    @BindView(R.id.rlItemContainer) RelativeLayout mCardContainer;
     @BindView(R.id.llErrorContainer) LinearLayout mLlError;
     @BindView(R.id.tvRoomsErrorText) TextView mTvErrorText;
     @BindView(R.id.btnReload) Button mBtnRetryError;
